@@ -17,7 +17,19 @@
 .tab{
     padding-left: 20px;
 }
+html{
+    background-color: gainsboro;
+}
+head, body{
+    margin-top: 0%;
+    margin-bottom: 0%;
+    margin-right: 20%;
+    margin-left: 20%;
+    background-color: white;
+    padding: 10px;
+}
 h1{
+    margin-top: 0px;
     font-size: 30px;
 }
 h3{
@@ -30,6 +42,14 @@ h4{
     font-size: 18px;
     margin-top: 3px;
     margin-bottom: 10px;
+}
+h5{
+    font-size: 15px;
+    width: 75%;
+    margin-left: 10px;
+    margin-top: 5px;
+    margin-bottom: 1px;
+    border-bottom: 1px solid #cccccc;
 }
 a{
     color: #0275d8;
@@ -56,17 +76,28 @@ tr, td{
     text-align: center;
 }
 p{
+    font-size: 16px;
     margin: 3px;
     width: 85%;
 }
 img{
-    width: 35px;
+    width: 30px;
 }
 @media(max-width:650px){
-    table{
+    table, #마작의역{
         width: 95%;
     }
     img{
-        width: 6%;
+        width: 4.5%;
+    }
+}
+    
+@media(max-width:1150px){
+    html{
+        background-color: gainsboro;
+    }
+    head, body{
+        margin-right: 0%;
+        margin-left: 0%;
     }
 }
