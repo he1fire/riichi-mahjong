@@ -3,77 +3,15 @@
 <head>
     <title>마작의 역/역만</title>
     <meta charset="utf-8">
-    <style>
-        #now{
-            font-weight: bold;
-        }
-        .dashedbox{
-            background-color: #eeeeee;
-            color: black;
-            width: 650px;
-            border: 2px dashed #cccccc;
-            text-align: center;
-            padding: 5px;
-        }
-        .solidbox{
-            color: black;
-            width: 400px;
-            border: 1px solid #cccccc;
-            padding: 5px;
-            margin-top: 20px;
-        }
-        .rowgrid{
-            display: grid;
-            grid-template-rows: 1fr 1fr;
-        }
-        .tablename{
-            background-color: #00dddd;
-            color: white;
-            font-size: 20px;
-            border: 1px solid #cccccc
-        }
-        .tab{
-            padding-left: 20px;
-        }
-        h1{
-            font-size: 30px;
-        }
-        h3{
-            margin-top: 30px;
-            padding-bottom: 5px;
-            font-size: 20px;
-            border-bottom: 1px solid #cccccc;
-        }
-        
-        a{
-            color: #0275d8;
-            text-decoration: none;
-        }
-        table{
-            border-collapse: collapse;
-            background-color: #eeeeee;
-            color: black;
-            margin: auto;
-        }
-        th, td{
-            border: 1px solid #cccccc;
-            text-align: center;
-        }
-        p{
-            margin: 3px;
-        }
-        img{
-            width: 35px;
-        }
-    </style>
+    <link rel="stylesheet" href="style.css">
 </head>
 
 <body>
     <h1>마작의 역/역만</h1>
-    <table style="width: 85%; border: 3px solid #00dddd; width: 600px;">
-        <tr>
-            <td colspan="6" class="tablename"><b>마작의 역</b></td>
-        </tr>
+    <table id="마작의역">
+        <th colspan="6">
+            <b>마작의 역</b>
+        </th>
         <tr>
                 <td><a href="1판역.html">1판역</a></td>
                 <td><a href="2판역.html">2판역</a></td>
@@ -83,100 +21,115 @@
                 <td id="now"><a href="역만.html">역만</a></td>
         </tr>
         <tr>
-            <td colspan="2" class="solidbox"><a href="점수 계산기.html">점수 계산기</td>
-            <td colspan=2 class="solidbox"><a href="부·판 계산법.html">부·판 계산법</td>
-            <td colspan=2 class="solidbox"><a href="요약.html">요약</td>
+            <td colspan="2"><a href="점수 계산기.html">점수 계산기</td>
+            <td colspan="2"><a href="부·판 계산법.html">부·판 계산법</td>
+            <td colspan="2"><a href="요약.html">요약</td>
+        </tr>
+        <tr>
+            <td colspan="6">※ 리치마작의 역을 설명하고 있으며, 작혼을 기준으로 설명합니다.</td>
         </tr>
     </table>
     
-    <div class="solidbox" id="목차">
-        목차
+    <div id="목차">
+        <h4>목차</h4>
         <div class="tab">
-            <p><a href="#1">1. </a>사암각(四暗刻)</p>
-            <p class="tab"><a href="#1.1">1.1. </a>사암각단기(四暗刻単騎)</p>
-            <p><a href="#2">2. </a>국사무쌍(国士無双)</p>
-            <p class="tab"><a href="#2.1">2.1. </a>국사무쌍 13면팅(国士無双 十三面聽)</p>
-            <p><a href="#3">3. </a>구련보등(九蓮宝燈)</p>
-            <p class="tab"><a href="#3.1">3.1. </a>순정구련보등(純正九蓮宝燈)</p>
+            <p><a href="#1">1. </a>천화(天和)</p>
+            <p><a href="#2">2. </a>지화(地和)</p>
+            <p><a href="#3">3. </a>사암각(四暗刻)</p>
+            <p class="tab"><a href="#3.1">3.1. </a>사암각단기(四暗刻単騎)</p>
+            <p><a href="#4">4. </a>국사무쌍(国士無双)</p>
+            <p class="tab"><a href="#4.1">4.1. </a>국사무쌍 13면팅(国士無双 十三面聽)</p>
+            <p><a href="#5">5. </a>구련보등(九蓮宝燈)</p>
+            <p class="tab"><a href="#5.1">5.1. </a>순정구련보등(純正九蓮宝燈)</p>
 
         </div>
     </div>
 
-    <h3><a id="1" href="#목차">1. </a>사암각(四暗刻) - 멘젠 한정</h3>
-    <div class="dashedbox rowgrid">
-        <div>
-            <img src="vo/qkf.png"> <img src="vo/qkf.png"> <img src="vo/qkf.png"> <img src="vo/9tkr.png"> <img src="vo/9tkr.png"> <img src="vo/9tkr.png"> <img src="vo/tj.png"> <img src="vo/tj.png"> <img src="vo/tj.png"> <img src="vo/8xhd.png"> <img src="vo/8xhd.png"> <img src="vo/5aks.png"> <img src="vo/5aks.png">
-        </div>
-        <div>
-            대기패 : <img src="vo/8xhd.png">, <img src="vo/5aks.png"> 쯔모
-        </div>
-    </div>
-    <p style="width: 85%;">
+    <h3><a id="1" href="#목차">1. </a>천화(天和) - 멘젠 한정</h3>
+    <p>
+        친이 처음 받은 14패로 바로 화료하는, 즉 국을 시작하고 받은 패가 어떤 형태로든 역이 성립되어 있는 경우. 글자 그대로 하늘이 내린 패. 사기가 아닌 이상 오직 운만으로 가능한 역이며, 수많은 마작 플레이어들의 로망이다. 지화는 울어서라도 막을 수 있지만 천화는 첫 쯔모도 하지 않고 바로 터지는 역이기 때문에 무슨 짓을 해도 막을 수 없다.
+    </p>
+
+    <h3><a id="2" href="#목차">2. </a>지화(地和) - 멘젠 한정</h3>
+    <p>
+        자가 순정 1순에 쯔모를 하여 화료하는 것. 천화와 대조를 이루는 땅(패산)에서 솟아난 패. 단, 순정 1순에 한하므로 자기 차례가 오기 전 누군가가 울었을 경우 깨진다.
+    </p>
+
+    <h3><a id="3" href="#목차">3. </a>사암각(四暗刻) - 멘젠 한정</h3>
+    <table>
+        <tr>
+            <td><img src="vo/qkf.png"> <img src="vo/qkf.png"> <img src="vo/qkf.png"> <img src="vo/9tkr.png"> <img src="vo/9tkr.png"> <img src="vo/9tkr.png"> <img src="vo/tj.png"> <img src="vo/tj.png"> <img src="vo/tj.png"> <img src="vo/8xhd.png"> <img src="vo/8xhd.png"> <img src="vo/5aks.png"> <img src="vo/5aks.png"></td>
+        </tr>
+        <tr>
+            <td>대기패 : <img src="vo/8xhd.png"> or <img src="vo/5aks.png"> 쯔모</td>
+        </tr>
+    </table>
+    <p>
         안커 4개가 들어있기만 하면 패의 종류를 따지지 않고 역만이 된다. 4개 모두 안커여야 하므로 쌍봉대기일 경우 론으로는 사암각이 안 되며, 이 경우 삼암각 대대화에 그치게 된다. 겉보기에는 멘젠으로 안커를 4개나 모아야 되기에 어려워 보일 수는 있으나 4안커라는 제약 만 있을뿐 타 역만처럼 패 종류의 제약도 없기에 경우의 수는 적지않다.
     </p>
 
-    <h3><a id="1.1" href="#목차">1.1. </a>사암각단기(四暗刻単騎) - 멘젠 한정</h3>
-    <div class="dashedbox rowgrid">
-        <div>
-            <img src="vo/1aks.png"> <img src="vo/1aks.png"> <img src="vo/1aks.png"> <img src="vo/7xhd.png"> <img src="vo/7xhd.png"> <img src="vo/7xhd.png"> <img src="vo/ska.png"> <img src="vo/ska.png"> <img src="vo/ska.png"> <img src="vo/1tkr.png"> <img src="vo/1tkr.png"> <img src="vo/1tkr.png"> <img src="vo/qor.png">
-        </div>
-        <div>
-            대기패 : <img src="vo/qor.png">
-        </div>
-    </div>
-    <p style="width: 85%;">
+    <h3><a id="3.1" href="#목차">3.1. </a>사암각단기(四暗刻単騎) - 멘젠 한정</h3>
+    <table>
+        <tr>
+            <td><img src="vo/1aks.png"> <img src="vo/1aks.png"> <img src="vo/1aks.png"> <img src="vo/7xhd.png"> <img src="vo/7xhd.png"> <img src="vo/7xhd.png"> <img src="vo/ska.png"> <img src="vo/ska.png"> <img src="vo/ska.png"> <img src="vo/1tkr.png"> <img src="vo/1tkr.png"> <img src="vo/1tkr.png"> <img src="vo/qor.png"></td>
+        </tr>
+        <tr>
+            <td>대기패 : <img src="vo/qor.png"></td>
+        </tr>
+    </table>
+    <p>
         이미 안커 4개가 만들어진 상태에서 단기팅으로 기다리는 경우. 일반 사암각에 비해 텐파이 자체가 크게 어렵지만, 대신 텐파이까지만 오기만 하면 론 화료가 가능한 단기대기가 되는 게 이점이다. 특수 대기 형태를 인정하는 룰로 플레이하면 이 대기로 화료했을 시 더블 역만이다.
     </p>
 
-    <h3><a id="2" href="#목차">2. </a>국사무쌍(国士無双) - 멘젠 한정</h3>
-    <div class="dashedbox rowgrid">
-        <div>
-            <img src="vo/1aks.png"> <img src="vo/9aks.png"> <img src="vo/1tkr.png"> <img src="vo/9tkr.png"> <img src="vo/1xhd.png"> <img src="vo/9xhd.png"> <img src="vo/ehd.png"> <img src="vo/ska.png"> <img src="vo/tj.png"> <img src="vo/qnr.png"> <img src="vo/qor.png"> <img src="vo/qkf.png"> <img src="vo/qkf.png">
-        </div>
-        <div>
-            대기패 : <img src="vo/wnd.png">
-        </div>
-    </div>
-    <p style="width: 85%;">
+    <h3><a id="4" href="#목차">4. </a>국사무쌍(国士無双) - 멘젠 한정</h3>
+    <table>
+        <tr>
+            <td><img src="vo/1aks.png"> <img src="vo/9aks.png">  <img src="vo/9tkr.png"> <img src="vo/1xhd.png"> <img src="vo/9xhd.png"> <img src="vo/ehd.png"> <img src="vo/ska.png"> <img src="vo/tj.png"> <img src="vo/qnr.png"> <img src="vo/qor.png"> <img src="vo/qkf.png"> <img src="vo/qkf.png"> <img src="vo/wnd.png"></td>
+        </tr>
+        <tr>
+            <td>대기패 : <img src="vo/1tkr.png"></td>
+        </tr>
+    </table>
+    <p>
         본래 명칭만 봐도 알 수 있듯이 13종의 요구패(1통, 9통, 1삭, 9삭, 1만, 9만, 동, 남, 서, 북, 백, 발, 중)를 모두 갖추고 있다는 뜻이다. 화료시에는 14패가 되어야 하므로 어느 것 하나는 2개를 모아야 한다. 칠대자와 함께 2 3 3 3 3 형태가 아닌 둘 뿐인 예외에 해당한다.
     </p>
 
-    <h3><a id="2.1" href="#목차">2.1. </a>국사무쌍 13면팅(国士無双 十三面聽) - 멘젠 한정</h3>
-    <div class="dashedbox rowgrid">
-        <div>
-            <img src="vo/1aks.png"> <img src="vo/9aks.png"> <img src="vo/1tkr.png"> <img src="vo/9tkr.png"> <img src="vo/1xhd.png"> <img src="vo/9xhd.png"> <img src="vo/ehd.png"> <img src="vo/ska.png"> <img src="vo/tj.png"> <img src="vo/qnr.png"> <img src="vo/qor.png"> <img src="vo/qkf.png"> <img src="vo/wnd.png">
-        </div>
-        <div>
-            대기패 : <img src="vo/1aks.png">, <img src="vo/9aks.png">, <img src="vo/1tkr.png">, <img src="vo/9tkr.png">, <img src="vo/1xhd.png">, <img src="vo/9xhd.png">, <img src="vo/ehd.png">, <img src="vo/ska.png">, <img src="vo/tj.png">, <img src="vo/qnr.png">, <img src="vo/qor.png">, <img src="vo/qkf.png">, <img src="vo/wnd.png">
-        </div>
-    </div>
-    <p style="width: 85%;">
+    <h3><a id="4.1" href="#목차">4.1. </a>국사무쌍 13면팅(国士無双 十三面聽) - 멘젠 한정</h3>
+    <table>
+        <tr>
+            <td><img src="vo/1aks.png"> <img src="vo/9aks.png"> <img src="vo/1tkr.png"> <img src="vo/9tkr.png"> <img src="vo/1xhd.png"> <img src="vo/9xhd.png"> <img src="vo/ehd.png"> <img src="vo/ska.png"> <img src="vo/tj.png"> <img src="vo/qnr.png"> <img src="vo/qor.png"> <img src="vo/qkf.png"> <img src="vo/wnd.png"></td>
+        </tr>
+        <tr>
+            <td>대기패 : <img src="vo/1aks.png"> or <img src="vo/9aks.png"> or <img src="vo/1tkr.png"> ... or <img src="vo/wnd.png"></td>
+        </tr>
+    </table>
+    <p>
         텐파이 시점에 이미 13종의 패를 다 모은 상태에서 13개중 아무거나 하나 더 받으면 날 수 있는 상태. 특수 대기 형태를 인정하는 룰로 플레이하면 이 대기로 화료했을 시 더블 역만이다. 요구패 13종이 중복 없이 전부 하나씩만 뽑은 상태로 텐파이가 되어야 하므로 국사무쌍은 상대적으로 쉬운 역만이지만, 국사무쌍 13면팅은 굉장히 난이도가 높다.
     </p>
 
-    <h3><a id="3" href="#목차">3. </a>구련보등(九蓮宝燈) - 멘젠 한정</h3>
-    <div class="dashedbox rowgrid">
-        <div>
-            <img src="vo/1aks.png"> <img src="vo/1aks.png"> <img src="vo/1aks.png"> <img src="vo/2aks.png"> <img src="vo/3aks.png"> <img src="vo/4aks.png">  <img src="vo/6aks.png"> <img src="vo/7aks.png"> <img src="vo/8aks.png"> <img src="vo/9aks.png"> <img src="vo/9aks.png"> <img src="vo/9aks.png"> <img src="vo/9aks.png">
-        </div>
-        <div>
-            대기패 : <img src="vo/5aks.png">
-        </div>
-    </div>
-    <p style="width: 85%;">
+    <h3><a id="5" href="#목차">5. </a>구련보등(九蓮宝燈) - 멘젠 한정</h3>
+    <table>
+        <tr>
+            <td><img src="vo/1aks.png"> <img src="vo/1aks.png"> <img src="vo/1aks.png"> <img src="vo/2aks.png"> <img src="vo/3aks.png"> <img src="vo/4aks.png">  <img src="vo/6aks.png"> <img src="vo/7aks.png"> <img src="vo/8aks.png"> <img src="vo/9aks.png"> <img src="vo/9aks.png"> <img src="vo/9aks.png"> <img src="vo/9aks.png"></td>
+        </tr>
+        <tr>
+            <td>대기패 : <img src="vo/5aks.png"></td>
+        </tr>
+    </table>
+    <p>
     한 종류의 수패로 1112345678999에 1~9패 중 아무거나 한 개 더 있는 형태로 완성하면 된다. 마작에서 최악의 난이도를 자랑하는 역 중 하나. 이미 하위역인 멘젠 청일색도 평균적으로 1000번의 화료 중 한 번밖에 안 나올 정도로 상당한 난이도를 자랑한다.
     </p>
 
-    <h3><a id="3.1" href="#목차">3.1. </a>순정구련보등(純正九蓮宝燈) - 멘젠 한정</h3>
-    <div class="dashedbox rowgrid">
-        <div>
-            <img src="vo/1aks.png"> <img src="vo/1aks.png"> <img src="vo/1aks.png"> <img src="vo/2aks.png"> <img src="vo/3aks.png"> <img src="vo/4aks.png"> <img src="vo/5aks.png"> <img src="vo/6aks.png"> <img src="vo/7aks.png"> <img src="vo/8aks.png"> <img src="vo/9aks.png"> <img src="vo/9aks.png"> <img src="vo/9aks.png">
-        </div>
-        <div>
-            대기패 : <img src="vo/1aks.png">, <img src="vo/2aks.png">, <img src="vo/3aks.png">, <img src="vo/4aks.png">, <img src="vo/5aks.png">, <img src="vo/6aks.png">, <img src="vo/7aks.png">, <img src="vo/8aks.png">, <img src="vo/9aks.png">
-        </div>
-    </div>
-    <p style="width: 85%;">
+    <h3><a id="5.1" href="#목차">5.1. </a>순정구련보등(純正九蓮宝燈) - 멘젠 한정</h3>
+    <table>
+        <tr>
+            <td><img src="vo/1aks.png"> <img src="vo/1aks.png"> <img src="vo/1aks.png"> <img src="vo/2aks.png"> <img src="vo/3aks.png"> <img src="vo/4aks.png"> <img src="vo/5aks.png"> <img src="vo/6aks.png"> <img src="vo/7aks.png"> <img src="vo/8aks.png"> <img src="vo/9aks.png"> <img src="vo/9aks.png"> <img src="vo/9aks.png"></td>
+        </tr>
+        <tr>
+            <td>대기패 : <img src="vo/1aks.png"> or <img src="vo/2aks.png"> or <img src="vo/3aks.png"> ... or <img src="vo/9aks.png"></td>
+        </tr>
+    </table>
+    <p>
         안 그래도 난이도가 안드로메다인 구련보등의 더 어려운 형태. 처음부터 1112345678999 형태, 즉 9면대기로 텐파이 해야만 인정된다. 특수 대기 형태를 인정하는 룰로 플레이하면 이 대기로 화료했을 시 더블 역만이다.
     </p>
 </body>

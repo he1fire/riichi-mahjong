@@ -1,0 +1,72 @@
+#now{
+    font-weight: bold;
+}
+#마작의역{
+    width: 85%;
+    border: 3px solid #00dddd;
+    width: 600px;
+    margin: auto;
+}
+#목차{
+    color: black;
+    width: 400px;
+    border: 1px solid #cccccc;
+    padding: 5px;
+    margin-top: 20px;
+}
+.tab{
+    padding-left: 20px;
+}
+h1{
+    font-size: 30px;
+}
+h3{
+    margin-top: 30px;
+    padding-bottom: 5px;
+    font-size: 20px;
+    border-bottom: 1px solid #cccccc;
+}
+h4{
+    font-size: 18px;
+    margin-top: 3px;
+    margin-bottom: 10px;
+}
+a{
+    color: #0275d8;
+    text-decoration: none;
+}
+table{
+    border-collapse: collapse;
+    background-color: #eeeeee;
+    color: black;
+    width: 650px;
+    border: 2px dashed #cccccc;
+    text-align: center;
+    padding: 0px;
+}
+th{
+    background-color: #00dddd;
+    color: white;
+    font-size: 20px;
+    border: 1px solid #cccccc
+}
+tr, td{
+    padding: 5px;
+    border: 1px solid #cccccc;
+    text-align: center;
+}
+p{
+    margin: 3px;
+    width: 85%;
+}
+img{
+    width: 35px;
+}
+@media(max-width:650px){
+    table{
+        width: 95%;
+    }
+    img{
+        width: 6%;
+    }
+}
