@@ -15,7 +15,7 @@
     margin-top: 20px;
 }
 .tab{
-    padding-left: 20px;
+    margin-left: 20px;
 }
 html{
     background-color: gainsboro;
@@ -23,10 +23,11 @@ html{
 head, body{
     margin-top: 0%;
     margin-bottom: 0%;
-    margin-right: 20%;
-    margin-left: 20%;
+    margin-right: auto;
+    margin-left: auto;
     background-color: white;
     padding: 10px;
+    width: 900px;
 }
 h1{
     margin-top: 0px;
@@ -59,7 +60,7 @@ table{
     border-collapse: collapse;
     background-color: #eeeeee;
     color: black;
-    width: 650px;
+    width: 700px;
     border: 2px dashed #cccccc;
     text-align: center;
     padding: 0px;
@@ -80,24 +81,11 @@ p{
     margin: 3px;
     width: 85%;
 }
-img{
-    width: 30px;
-}
-@media(max-width:650px){
+@media(max-width:775px){
+    head, body{
+        width: auto;
+    }
     table, #마작의역{
         width: 95%;
-    }
-    img{
-        width: 4.5%;
-    }
-}
-    
-@media(max-width:1150px){
-    html{
-        background-color: gainsboro;
-    }
-    head, body{
-        margin-right: 0%;
-        margin-left: 0%;
     }
 }
