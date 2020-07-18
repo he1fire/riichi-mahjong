@@ -21,6 +21,7 @@ html{
     background-color: gainsboro;
 }
 head, body{
+    word-break: keep-all;
     margin-top: 0%;
     margin-bottom: 0%;
     margin-right: auto;
