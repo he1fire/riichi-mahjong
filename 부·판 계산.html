@@ -5,22 +5,7 @@
   <title>부·판 계산</title>
   <meta charset="utf-8">
   <link rel="stylesheet" href="style.css">
-  <script>
-    function f(fan, bu){
-      var arr=new Array();
-      var a=fan.value, b=bu.value, x=0;
-      if (a<1 || b>110)
-        alert('shit');
-      else{
-        if (b!=25 && b%10!=0){
-          b-=b%10;
-          b+=10;
-        }
-        x=a*1000+Number(b);
-        alert(x);
-      }
-    }
-  </script>
+  <script src="table.js"></script>
 </head>
 
 <body>
@@ -62,13 +47,34 @@
   </div>
   <h3><a id="1" href="#목차">1. </a>부·판 입력</h3>
   <p>
-    판:<br><input type="number" id="fan"><br>
-    부:<br><input type="number" id="bu"><br>
+    판: <input type="number" id="판"> 부: <input type="number" id="부"><br>
+    <form>
+      <input type="radio" name="who" value="chin" checked="checked">친
+      <input type="radio" name="who" value="ja">자<br>
+      <input type="radio" name="how" value="ron" checked="checked">론
+      <input type="radio" name="how" value="tsumo">쯔모
+    </form>
     <br><input type="button" value="출력" onclick="
-      var fan=document.querySelector('#fan');
-      var bu=document.querySelector('#bu');
-      f(fan,bu);
+      var fan_value=document.querySelector('#판').value;
+      var bu_value=document.querySelector('#부').value;
+      var count=document.querySelector('#출력');
+      var whos=document.getElementsByName('who');
+      var who_value;
+      for(var i=0; i<whos.length; i++) {
+          if(whos[i].checked) {
+              who_value = whos[i].value;
+          }
+      }
+      var hows=document.getElementsByName('how');
+      var how_value;
+      for(var i=0; i<hows.length; i++) {
+          if(hows[i].checked) {
+              how_value = hows[i].value;
+          }
+      }
+      count.value=f(fan_value, bu_value, who_value, how_value);
     ">
+    <input type="text" id="출력" readonly>
   </p>
   <h3><a id="2" href="#목차">2. </a>화료패 입력</h3>
   <p>
