@@ -36,25 +36,23 @@
     <h5>부·판 계산기</h5>
     <div class="tab">
       <p><a href="#1">1. </a>부·판 입력</p>
-      <p><a href="#2">2. </a>화료패 입력</p>
     </div>
     <h5>부·판 계산법</h5>
     <div class="tab">
-      <p><a href="#3">3. </a>부수 계산</p>
-      <p><a href="#4">4. </a>실제 점수 계산</p>
-      <p><a href="#5">5. </a>점수표</p>
+      <p><a href="#2">2. </a>부수 계산</p>
+      <p><a href="#3">3. </a>실제 점수 계산</p>
+      <p><a href="#4">4. </a>점수표</p>
     </div>
   </div>
   <h3><a id="1" href="#목차">1. </a>부·판 입력</h3>
-  <p>
-    판: <input type="number" id="판"> 부: <input type="number" id="부"><br>
-    <form>
-      <input type="radio" name="who" value="chin" checked="checked">친
-      <input type="radio" name="who" value="ja">자<br>
-      <input type="radio" name="how" value="ron" checked="checked">론
-      <input type="radio" name="how" value="tsumo">쯔모
-    </form>
-    <br><input type="button" value="출력" onclick="
+  <p style="font-size: 18px; font-weight: bold;">
+    <label>판:<input type="number" id="판" min="1" max="13"></label>
+    <label>부:<input type="number" id="부" min="20" max="110"></label><br>
+    <label><input type="radio" name="who" value="chin" checked="checked">친</label>
+    <label><input type="radio" name="who" value="ja">자</label><br>
+    <label><input type="radio" name="how" value="ron" checked="checked">론</label>
+    <label><input type="radio" name="how" value="tsumo">쯔모</label><br>
+    <input type="button" value="출력" onclick="
       var fan_value=document.querySelector('#판').value;
       var bu_value=document.querySelector('#부').value;
       var count=document.querySelector('#출력');
@@ -76,11 +74,7 @@
     ">
     <input type="text" id="출력" readonly>
   </p>
-  <h3><a id="2" href="#목차">2. </a>화료패 입력</h3>
-  <p>
-    hi
-  </p>
-  <h3><a id="3" href="#목차">3. </a>부수 계산</h3>
+  <h3><a id="2" href="#목차">2. </a>부수 계산</h3>
   <p>1. 부저: 20부 (기본 부수)</p>
   <p>2. 특수한 경우 (아래의 두 경우는 부수가 고정이며, 3번이후의 내용을 계산하지 않는다.)</p>
   <p class="tab">- 멘젠쯔모+핑후: 20부 고정</p>
@@ -99,17 +93,17 @@
   <p class="tab">- 슌쯔: +0부</p>
   <p class="tab">- 중장패: 밍커 +2부, 안커 +4부, 밍깡 +8부, 안깡 +16부</p>
   <p class="tab">- 요구패: 밍커 +4부, 안커 +8부, 밍깡 +16부, 안깡 +32부</p>
-  <h3><a id="4" href="#목차">4. </a>실제 점수 계산</h3>
+  <h3><a id="3" href="#목차">3. </a>실제 점수 계산</h3>
   <p>
     부수와 판수를 조합해 점수를 계산하면 되는데 아래의 점수표를 참고해 계산할 수 있다.<br>5판 이상인 때는 부수를 계산할 필요가 없이 해당하는 점수를 받으면 되지만, 5판 미만인 때는 항상 부수·판수를 모두
     고려한다.<br>연장으로 인해 장봉이 존재할 경우 장봉 1개당 300점의 화료점이 가산된다.<br>친일 때 받는 점수는 자일 때 받는 점수의 1.5배이며, 다른 플레이어가 쯔모한 경우 친이 잃는 점수는 자의
     두 배이다.
   </p>
-  <h3><a id="5" href="#목차">5. </a>점수표</h3>
+  <h3><a id="4" href="#목차">4. </a>점수표</h3>
   <p>
     4판 이하
   </p>
-  <table style="margin: auto; width: auto;">
+  <table class="cnttable">
     <tr>
       <td colspan="4">친</td>
       <td rowspan="2">부수</td>
@@ -228,7 +222,7 @@
   <p>
     5판 이상
   </p>
-  <table style="margin: auto; width: auto;">
+  <table class="cnttable">
     <tr>
       <td>친</td>
       <td>판수</td>
