@@ -37,4 +37,16 @@ function f(Y, X, who, how){
             ans=String(tsumo1)+'/'+String(tsumo2)+' ALL';
     }
     return ans;
-  }
+}
+
+function openFullScreenMode() {
+    var docV = document.documentElement;
+    if (docV.requestFullscreen)
+        docV.requestFullscreen();
+    else if (docV.webkitRequestFullscreen) // Chrome, Safari (webkit)
+        docV.webkitRequestFullscreen();
+    else if (docV.mozRequestFullScreen) // Firefox
+        docV.mozRequestFullScreen();
+    else if (docV.msRequestFullscreen) // IE or Edge
+        docV.msRequestFullscreen();
+}

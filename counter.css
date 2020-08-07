@@ -1,0 +1,73 @@
+#동{
+  /* text-align: center;
+  font-size: 90px;
+  position: fixed;
+  bottom: 0px;
+  left: 0;
+  right: 0; */
+  position: fixed;
+  text-align: center;
+  vertical-align: bottom;
+  font-size: 90px;
+  width: 400px;
+  height: 100px;
+  bottom: 0;
+  right: 50%;
+  margin: 0 -200px 0 0;
+  transform: translate(0,-20px);
+}
+#남{
+  position: fixed;
+  text-align: center;
+  vertical-align: bottom;
+  font-size: 90px;
+  width: 400px;
+  height: 100px;
+  top: 50%;
+  right: 0;
+  margin: -50px 0 0 0;
+  -ms-transform: rotate(270deg);
+  -webkit-transform: rotate(270deg);
+  transform: rotate(270deg) translate(0,130px);
+}
+#서{
+  /* text-align: center;
+  font-size: 90px;
+  position: fixed;
+  top: 0px;
+  left: 0;
+  right: 0;
+  transform: rotate(180deg); */
+  position: fixed;
+  text-align: center;
+  vertical-align: bottom;
+  font-size: 90px;
+  width: 400px;
+  height: 100px;
+  top: 0;
+  right: 50%;
+  margin: 0 -200px 0 0;
+  -ms-transform: rotate(180deg);
+  -webkit-transform: rotate(180deg);
+  transform: rotate(180deg) translate(0,-20px);
+}
+#북{
+  position: fixed;
+  text-align: center;
+  vertical-align: bottom;
+  font-size: 90px;
+  width: 400px;
+  height: 100px;
+  top: 50%;
+  left: 0;
+  margin: -50px 0 0 0;
+  -ms-transform: rotate(90deg);
+  -webkit-transform: rotate(90deg);
+  transform: rotate(90deg) translate(0,130px);
+}
+html, body{
+  overflow: hidden;
+  position: relative;
+  height: 100%;
+  width: 100%;
+}
