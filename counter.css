@@ -117,7 +117,7 @@
   grid-row-start: 2; 
   grid-row-end: 3;
   margin: auto;
-  font-size: 30px;
+  font-size: 40px;
 }
 .tsumo{
   border: 1px dashed gray;
@@ -126,7 +126,7 @@
   grid-row-start: 3; 
   grid-row-end: 4;
   margin: auto;
-  font-size: 30px;
+  font-size: 40px;
 }
 .no_drag{
   -ms-user-select: none; 
@@ -140,8 +140,5 @@ html, body{
   position: relative;
   height: 100%;
   width: 100%;
-  font-family: "바탕체";
-}
-input{
-  font-family: "바탕체";
+  font-family: serif;
 }
