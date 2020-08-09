@@ -43,10 +43,36 @@ function openFullScreenMode() {
     var docV = document.documentElement;
     if (docV.requestFullscreen)
         docV.requestFullscreen();
-    else if (docV.webkitRequestFullscreen) // Chrome, Safari (webkit)
+    else if (docV.webkitRequestFullscreen)
         docV.webkitRequestFullscreen();
-    else if (docV.mozRequestFullScreen) // Firefox
+    else if (docV.mozRequestFullScreen)
         docV.mozRequestFullScreen();
-    else if (docV.msRequestFullscreen) // IE or Edge
+    else if (docV.msRequestFullscreen)
         docV.msRequestFullscreen();
+    
+    // document.querySelector('body').onclick='null';
+}
+
+function richii(who){
+    var score=document.querySelector(who).innerText;
+    score=Number(score);
+    var arr=['Down', 'Right', 'Up', "Left"];
+    var stick=['#DownPerson_Richii', '#RightPerson_Richii', '#UpPerson_Richii', "#LeftPerson_Richii"];
+    for (var i=0;i<arr.length;i++){
+        if (who.indexOf(arr[i])!==-1){
+            if (document.querySelector(stick[i]).style.visibility===''){
+                document.querySelector(stick[i]).style.visibility='visible';
+                if (score>=10)
+                    document.querySelector(who).innerText=score-10;
+                else
+                    alert("점수가 모자라 리치를 걸수 없습니다.");
+            }
+            else{
+                document.querySelector(stick[i]).style.visibility='';
+                document.querySelector(who).innerText=score+10;
+            }
+        }
+    }
+    
+    
 }

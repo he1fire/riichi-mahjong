@@ -10,25 +10,53 @@
 
 <body onclick="openFullScreenMode();">
   <div class="container" id="DownPerson">
-    <div class="richii"><div class="circle"></div></div>
-    <div class="wind no_drag">東</div>
-    <div class="score no_drag"><span style="font-size: 80px;">250</span><span style="font-size: 50px;">00</span></div>
+    <div class="richii" id="DownPerson_Richii">
+      <div class="circle"></div>
+    </div>
+    <div class="wind no_drag">
+      <label>東<input type="button" onclick="richii('#DownPerson_Score');" style="display: none;"></label>
+    </div>
+    <div class="score no_drag">
+      <span id="DownPerson_Score" style="font-size: 80px;">250</span><span style="font-size: 50px;">00</span>
+    </div>
   </div>
+
   <div class="container" id="RightPerson">
-    <div class="richii"><div class="circle"></div></div>
-    <div class="wind no_drag">南</div>
-    <div class="score no_drag"><span style="font-size: 80px;">250</span><span style="font-size: 50px;">00</span></div>
+    <div class="richii" id="RightPerson_Richii">
+      <div class="circle"></div>
+    </div>
+    <div class="wind no_drag">
+      <label>南<input type="button" onclick="richii('#RightPerson_Score');" style="display: none;"></label>
+    </div>
+    <div class="score no_drag">
+      <span id="RightPerson_Score" style="font-size: 80px;">250</span><span style="font-size: 50px;">00</span>
+    </div>
   </div>
+
   <div class="container" id="UpPerson">
-    <div class="richii"><div class="circle"></div></div>
-    <div class="wind no_drag">西</div>
-    <div class="score no_drag"><span style="font-size: 80px;">250</span><span style="font-size: 50px;">00</span></div>
+    <div class="richii" id="UpPerson_Richii">
+      <div class="circle"></div>
+    </div>
+    <div class="wind no_drag">
+      <label>西<input type="button" onclick="richii('#UpPerson_Score');" style="display: none;"></label>
+    </div>
+    <div class="score no_drag">
+      <span id="UpPerson_Score" style="font-size: 80px;">250</span><span style="font-size: 50px;">00</span>
+    </div>
   </div>
+
   <div class="container" id="LeftPerson">
-    <div class="richii"><div class="circle"></div></div>
-    <div class="wind no_drag">北</div>
-    <div class="score no_drag"><span style="font-size: 80px;">250</span><span style="font-size: 50px;">00</span></div>
+    <div class="richii" id="LeftPerson_Richii">
+      <div class="circle"></div>
+    </div>
+    <div class="wind no_drag">
+      <label>北<input type="button" onclick="richii('#LeftPerson_Score');" style="display: none;"></label>
+    </div>
+    <div class="score no_drag">
+      <span id="LeftPerson_Score" style="font-size: 80px;">250</span><span style="font-size: 50px;">00</span>
+    </div>
   </div>
+
 </body>
 
 </html>
