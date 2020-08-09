@@ -3,13 +3,6 @@
   -webkit-text-size-adjust:none;
 }
 #DownPerson{
-  /* text-align: center;
-  font-size: 90px;
-  position: fixed;
-  bottom: 0px;
-  left: 0;
-  right: 0; */
-  background-color: gainsboro;
   position: fixed;
   text-align: center;
   vertical-align: bottom;
@@ -19,7 +12,6 @@
   transform: translate(0px,-10px);
 }
 #RightPerson{
-  background-color: gainsboro;
   position: fixed;
   text-align: center;
   vertical-align: bottom;
@@ -31,14 +23,6 @@
   transform: rotate(270deg) translate(0,73px);
 }
 #UpPerson{
-  /* text-align: center;
-  font-size: 90px;
-  position: fixed;
-  top: 0px;
-  left: 0;
-  right: 0;
-  transform: rotate(180deg); */
-  background-color: gainsboro;
   position: fixed;
   text-align: center;
   vertical-align: bottom;
@@ -50,7 +34,6 @@
   transform: rotate(180deg) translate(0px,-10px);;
 }
 #LeftPerson{
-  background-color: gainsboro;
   position: fixed;
   text-align: center;
   vertical-align: bottom;
