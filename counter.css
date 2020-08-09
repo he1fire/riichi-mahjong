@@ -31,7 +31,7 @@
   margin: 0 -140px 0 0;
   -ms-transform: rotate(180deg);
   -webkit-transform: rotate(180deg);
-  transform: rotate(180deg) translate(0px,-5px);;
+  transform: rotate(180deg) translate(0px,-5px);
 }
 #LeftPerson{
   position: fixed;
@@ -126,6 +126,7 @@
   grid-row-start: 1;
   grid-row-end: 3;
   font-size: 40px;
+  transform: translate(-5px,-5px);
 }
 .richii{
   grid-column-start: 1;
@@ -143,7 +144,7 @@
   grid-row-end: 4;
   margin: auto;
   font-size: 0px;
-  transform: translate(0,-10px);
+  transform: translate(20px,-10px);
 }
 .ron{
   grid-column-start: 3;
@@ -169,6 +170,14 @@
   margin: auto;
   font-size: 20px;
 }
+.popup{
+  background-color: rgba( 0, 0, 0, 0.3 );
+  width: 100%;
+  height: 100%;
+  position: fixed;
+  display: none;
+  z-index: 1;
+}
 .no_drag{
   -ms-user-select: none; 
   -moz-user-select: -moz-none;
@@ -176,6 +185,7 @@
   -webkit-user-select: none;
   user-select: none;
 }
+
 html, body{
   overflow: hidden;
   position: relative;

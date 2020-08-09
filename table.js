@@ -79,3 +79,6 @@ function richii(who){
         }
     }
 }
+function ryuukyoku(){
+    // document.querySelector('#ryuukyoku_popup').style.display='inline';
+}
