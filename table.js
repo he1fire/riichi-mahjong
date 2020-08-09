@@ -56,20 +56,25 @@ function openFullScreenMode() {
 function richii(who){
     var score=document.querySelector(who).innerText;
     score=Number(score);
+    var count=document.querySelector('#richii_count').innerText;
+    count=Number(count);
     var arr=['Down', 'Right', 'Up', "Left"];
     var stick=['#DownPerson_Richii', '#RightPerson_Richii', '#UpPerson_Richii', "#LeftPerson_Richii"];
     for (var i=0;i<arr.length;i++){
         if (who.indexOf(arr[i])!==-1){
             if (document.querySelector(stick[i]).style.visibility===''){
                 document.querySelector(stick[i]).style.visibility='visible';
-                if (score>=10)
+                if (score>=10){
                     document.querySelector(who).innerText=score-10;
+                    document.querySelector('#richii_count').innerText=count+1;
+                }
                 else
                     alert("점수가 모자라 리치를 걸수 없습니다.");
             }
             else{
                 document.querySelector(stick[i]).style.visibility='';
                 document.querySelector(who).innerText=score+10;
+                document.querySelector('#richii_count').innerText=count-1;
             }
         }
     }
