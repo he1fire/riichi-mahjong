@@ -73,6 +73,4 @@ function richii(who){
             }
         }
     }
-    
-    
 }
