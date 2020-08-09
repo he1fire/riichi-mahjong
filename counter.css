@@ -9,7 +9,7 @@
   bottom: 0;
   right: 50%;
   margin: 0 -140px 0 0;
-  transform: translate(0px,-10px);
+  transform: translate(0px,-5px);
 }
 #RightPerson{
   position: fixed;
@@ -20,7 +20,7 @@
   margin: -60px 0 0 0;
   -ms-transform: rotate(270deg);
   -webkit-transform: rotate(270deg);
-  transform: rotate(270deg) translate(0,73px);
+  transform: rotate(270deg) translate(0,78px);
 }
 #UpPerson{
   position: fixed;
@@ -31,7 +31,7 @@
   margin: 0 -140px 0 0;
   -ms-transform: rotate(180deg);
   -webkit-transform: rotate(180deg);
-  transform: rotate(180deg) translate(0px,-10px);;
+  transform: rotate(180deg) translate(0px,-5px);;
 }
 #LeftPerson{
   position: fixed;
@@ -42,7 +42,15 @@
   margin: -60px 0 0 0;
   -ms-transform: rotate(90deg);
   -webkit-transform: rotate(90deg);
-  transform: rotate(90deg) translate(0,73px);
+  transform: rotate(90deg) translate(0,78px);
+}
+#Mid{
+  position: fixed;
+  text-align: center;
+  vertical-align: bottom;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
 }
 .circle{
   background-color:red;
@@ -51,24 +59,51 @@
   border-radius:50%;
   margin: 3px auto 3px auto;
 }
+.blackcircle{
+  display: inline-block;
+  background-color:black;
+  width:3px;
+  height:3px;
+  border-radius:50%;
+  margin: 3px 0px auto 0px;
+}
 .container{
   display: grid;
-  grid-template-rows: repeat(3, auto);
-  grid-template-columns: repeat(3, auto);
+  grid-template-rows: repeat(2, auto);
+  grid-template-columns: repeat(2, auto);
   grid-template-areas: 
     "richii richii"
     "wind score";
   vertical-align: middle;
   text-align: center;
 }
-.richii{
+.container_mid{
+  display: grid;
+  grid-template-rows: repeat(3, 25px);
+  grid-template-columns: repeat(3, auto);
+  grid-template-areas: 
+    "now now ron"
+    "now now tsumo"
+    "richii renjang ryuukyoku";
+  vertical-align: middle;
+  text-align: center;
+}
+.richii_stick{
   visibility: hidden;
-  border: 2px solid black;
+  border: 1px solid black;
   grid-column-start: 1; 
   grid-column-end: 3; 
   grid-row-start: 1;
   grid-row-end: 1;
+  transform: translate(0,20px);
 }
+.richii_stick_mini{
+  border: 1px solid black;
+  width: 30px;
+  height: 10px;
+  transform: rotate(-50deg) translate(-32px,-10px);
+}
+
 .wind{
   grid-column-start: 1; 
   grid-column-end: 2; 
@@ -84,6 +119,55 @@
   grid-row-end: 3;
   width: 200px;
   margin: auto;
+}
+.now{
+  grid-column-start: 1;
+  grid-column-end: 3;
+  grid-row-start: 1;
+  grid-row-end: 3;
+  font-size: 40px;
+}
+.richii{
+  grid-column-start: 1;
+  grid-column-end: 2;
+  grid-row-start: 3;
+  grid-row-end: 4;
+  margin: 0 auto 0 auto;
+  font-size: 20px;
+  transform: translate(20px,-10px);
+}
+.renjang{
+  grid-column-start: 2;
+  grid-column-end: 3;
+  grid-row-start: 3;
+  grid-row-end: 4;
+  margin: auto;
+  font-size: 0px;
+  transform: translate(0,-10px);
+}
+.ron{
+  grid-column-start: 3;
+  grid-column-end: 4;
+  grid-row-start: 1;
+  grid-row-end: 2;
+  margin: auto;
+  font-size: 20px;
+}
+.tsumo{
+  grid-column-start: 3;
+  grid-column-end: 4;
+  grid-row-start: 2;
+  grid-row-end: 3;
+  margin: auto;
+  font-size: 20px;
+}
+.ryuukyoku{
+  grid-column-start: 3;
+  grid-column-end: 4;
+  grid-row-start: 3;
+  grid-row-end: 4;
+  margin: auto;
+  font-size: 20px;
 }
 .no_drag{
   -ms-user-select: none; 
