@@ -79,7 +79,7 @@
 }
 .container_mid{
   display: grid;
-  grid-template-rows: repeat(3, 25px);
+  grid-template-rows: repeat(3, auto);
   grid-template-columns: repeat(3, auto);
   grid-template-areas: 
     "now now ron"
@@ -99,9 +99,9 @@
 }
 .richii_stick_mini{
   border: 1px solid black;
-  width: 30px;
+  width: 50px;
   height: 10px;
-  transform: rotate(-50deg) translate(-32px,-10px);
+  transform: rotate(-50deg) translate(-52px,-10px);
 }
 
 .wind{
@@ -125,8 +125,7 @@
   grid-column-end: 3;
   grid-row-start: 1;
   grid-row-end: 3;
-  font-size: 40px;
-  transform: translate(-5px,-5px);
+  font-size: 70px;
 }
 .richii{
   grid-column-start: 1;
@@ -134,7 +133,7 @@
   grid-row-start: 3;
   grid-row-end: 4;
   margin: 0 auto 0 auto;
-  font-size: 20px;
+  font-size: 0px;
   transform: translate(20px,-10px);
 }
 .renjang{
@@ -151,24 +150,24 @@
   grid-column-end: 4;
   grid-row-start: 1;
   grid-row-end: 2;
-  margin: auto;
-  font-size: 20px;
+  margin: 0;
+  font-size: 40px;
 }
 .tsumo{
   grid-column-start: 3;
   grid-column-end: 4;
   grid-row-start: 2;
   grid-row-end: 3;
-  margin: auto;
-  font-size: 20px;
+  margin: 0;
+  font-size: 40px;
 }
 .ryuukyoku{
   grid-column-start: 3;
   grid-column-end: 4;
   grid-row-start: 3;
   grid-row-end: 4;
-  margin: auto;
-  font-size: 20px;
+  margin: 0;
+  font-size: 40px;
 }
 .popup{
   background-color: rgba( 0, 0, 0, 0.3 );
@@ -192,4 +191,15 @@ html, body{
   height: 100%;
   width: 100%;
   font-family: 'Noto Serif KR', serif;
+}
+@media (orientation: portrait) {
+	html {
+		transform: rotate(-90deg);
+		transform-origin: top left;
+		position: absolute;
+		top: 100%;
+		left: 0;
+		width: 100vh;
+		height: 100vw;
+	}
 }

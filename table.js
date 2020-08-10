@@ -40,15 +40,15 @@ function f(Y, X, who, how){
 }
 
 function openFullScreenMode() {
-    var docV = document.documentElement;
-    if (docV.requestFullscreen)
-        docV.requestFullscreen();
-    else if (docV.webkitRequestFullscreen)
-        docV.webkitRequestFullscreen();
-    else if (docV.mozRequestFullScreen)
-        docV.mozRequestFullScreen();
-    else if (docV.msRequestFullscreen)
-        docV.msRequestFullscreen();
+        var docV = document.documentElement;
+        if (docV.requestFullscreen)
+            docV.requestFullscreen();
+        else if (docV.webkitRequestFullscreen)
+            docV.webkitRequestFullscreen();
+        else if (docV.mozRequestFullScreen)
+            docV.mozRequestFullScreen();
+        else if (docV.msRequestFullscreen)
+            docV.msRequestFullscreen();
     
     // document.querySelector('body').onclick='null';
 }
