@@ -80,7 +80,7 @@
 .container_mid{
   display: grid;
   grid-template-rows: repeat(3, auto);
-  grid-template-columns: repeat(3, auto);
+  grid-template-columns: 190px 190px auto;
   grid-template-areas: 
     "now now ron"
     "now now tsumo"
