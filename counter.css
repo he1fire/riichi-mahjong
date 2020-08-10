@@ -80,7 +80,7 @@
 .container_mid{
   display: grid;
   grid-template-rows: repeat(3, auto);
-  grid-template-columns: 190px 190px 100px;
+  grid-template-columns: 190px 190px 140px;
   grid-template-areas: 
     "now now ron"
     "now now tsumo"
@@ -150,7 +150,6 @@
   grid-column-end: 4;
   grid-row-start: 1;
   grid-row-end: 2;
-  margin: 0;
   font-size: 40px;
 }
 .tsumo{
@@ -158,7 +157,6 @@
   grid-column-end: 4;
   grid-row-start: 2;
   grid-row-end: 3;
-  margin: 0;
   font-size: 40px;
 }
 .ryuukyoku{
@@ -166,7 +164,6 @@
   grid-column-end: 4;
   grid-row-start: 3;
   grid-row-end: 4;
-  margin: 0;
   font-size: 40px;
 }
 .popup{
