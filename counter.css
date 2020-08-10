@@ -52,6 +52,7 @@
   left: 50%;
   transform: translate(-50%, -50%);
 }
+
 .circle{
   background-color:red;
   width:15px;
@@ -67,12 +68,26 @@
   border-radius:50%;
   margin: 3px 0px auto 0px;
 }
+
+.richii_stick{
+  visibility: hidden;
+  border: 1px solid black;
+  grid-area: stick;
+  transform: translate(0,20px);
+}
+.richii_stick_mini{
+  border: 1px solid black;
+  width: 50px;
+  height: 10px;
+  transform: rotate(-50deg) translate(-52px,-10px);
+}
+
 .container{
   display: grid;
   grid-template-rows: repeat(2, auto);
   grid-template-columns: repeat(2, auto);
   grid-template-areas: 
-    "richii richii"
+    "stick stick"
     "wind score";
   vertical-align: middle;
   text-align: center;
@@ -88,92 +103,113 @@
   vertical-align: middle;
   text-align: center;
 }
-.richii_stick{
-  visibility: hidden;
-  border: 1px solid black;
-  grid-column-start: 1; 
-  grid-column-end: 3; 
-  grid-row-start: 1;
-  grid-row-end: 1;
-  transform: translate(0,20px);
-}
-.richii_stick_mini{
-  border: 1px solid black;
-  width: 50px;
-  height: 10px;
-  transform: rotate(-50deg) translate(-52px,-10px);
+.container_choose{
+  display: grid;
+  grid-template-rows: repeat(4, auto);
+  grid-template-columns: repeat(4, auto);
+  grid-template-areas: 
+    "explain explain explain"
+    ". upcheck ."
+    "leftcheck . rightcheck"
+    ". downcheck ."
+    "ok ok ok";
+  vertical-align: middle;
+  text-align: center;
 }
 
 .wind{
-  grid-column-start: 1; 
-  grid-column-end: 2; 
-  grid-row-start: 2; 
-  grid-row-end: 3;
+  grid-area: wind;
   margin: auto;
   font-size: 80px;
 }
 .score{
-  grid-column-start: 2;
-  grid-column-end: 3;
-  grid-row-start: 2;
-  grid-row-end: 3;
+  grid-area: score;
   width: 200px;
   margin: auto;
 }
 .now{
-  grid-column-start: 1;
-  grid-column-end: 3;
-  grid-row-start: 1;
-  grid-row-end: 3;
+  grid-area: now;
   font-size: 70px;
 }
 .richii{
-  grid-column-start: 1;
-  grid-column-end: 2;
-  grid-row-start: 3;
-  grid-row-end: 4;
+  grid-area: richii;
   margin: 0 auto 0 auto;
   font-size: 0px;
   transform: translate(20px,-10px);
 }
 .renjang{
-  grid-column-start: 2;
-  grid-column-end: 3;
-  grid-row-start: 3;
-  grid-row-end: 4;
+  grid-area: renjang;
   margin: auto;
   font-size: 0px;
   transform: translate(20px,-10px);
 }
 .ron{
-  grid-column-start: 3;
-  grid-column-end: 4;
-  grid-row-start: 1;
-  grid-row-end: 2;
+  grid-area: ron;
   font-size: 40px;
 }
 .tsumo{
-  grid-column-start: 3;
-  grid-column-end: 4;
-  grid-row-start: 2;
-  grid-row-end: 3;
+  grid-area: tsumo;
   font-size: 40px;
 }
 .ryuukyoku{
-  grid-column-start: 3;
-  grid-column-end: 4;
-  grid-row-start: 3;
-  grid-row-end: 4;
+  grid-area: ryuukyoku;
   font-size: 40px;
 }
-.popup{
-  background-color: rgba( 0, 0, 0, 0.3 );
+
+.explain{
+  grid-area: explain;
+  font-size: 20px;
+}
+.downcheck{
+  grid-area: downcheck;
+  font-size: 70px;
+  color: black;
+}
+.rightcheck{
+  grid-area: rightcheck;
+  font-size: 70px;
+  color: black;
+}
+.upcheck{
+  grid-area: upcheck;
+  font-size: 70px;
+  color: black;
+}
+.leftcheck{
+  grid-area: leftcheck;
+  font-size: 70px;
+  color: black;
+}
+.ok{
+  grid-area: ok;
+  font-size: 20px;
+}
+
+.modal {
+  display: none;
+  position: fixed;
+  z-index: 2;
+  left: 0;
+  top: 0;
   width: 100%;
   height: 100%;
-  position: fixed;
-  display: none;
-  z-index: 1;
+  overflow: auto;
+  background-color: rgba(0,0,0,0.4);
 }
+.modal_content {
+  background-color: #ffffff;
+  position: fixed;
+  text-align: center;
+  vertical-align: bottom;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: auto;
+  height: auto;
+  padding: 5px;
+  z-index: 2;
+}
+
 .no_drag{
   -ms-user-select: none; 
   -moz-user-select: -moz-none;
@@ -181,7 +217,6 @@
   -webkit-user-select: none;
   user-select: none;
 }
-
 html, body{
   overflow: hidden;
   position: relative;
@@ -199,30 +234,4 @@ html, body{
 		width: 100vh;
 		height: 100vw;
 	}
-}
-
-.modal {
-  display: none;
-  position: fixed;
-  z-index: 2;
-  left: 0;
-  top: 0;
-  width: 100%;
-  height: 100%;
-  overflow: auto;
-  background-color: rgba(0,0,0,0.4);
-}
-
-.modal-content {
-  background-color: #ffffff;
-  position: fixed;
-  text-align: center;
-  vertical-align: bottom;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  width: 50%;
-  height: 50%;
-  padding: 5px;
-  z-index: 2;
 }

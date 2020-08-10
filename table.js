@@ -52,20 +52,41 @@ function openFullScreenMode() {
     
     // document.querySelector('body').onclick='null';
 }
+function ChangeSeat(){
+    var winds=['#DownPerson_Wind', '#RightPerson_Wind', '#UpPerson_Wind', '#LeftPerson_Wind'];
+    var tmp=document.querySelector(winds[3]).innerText;
+    for (var i=3;i>0;i--){
+        document.querySelector(winds[i]).innerText=document.querySelector(winds[i-1]).innerText;
+    }
+    document.querySelector(winds[0]).innerText=tmp;
+    for (var i=0;i<winds.length;i++){
+        if (document.querySelector(winds[i]).innerText==='東')
+            document.querySelector(winds[i]).style.color='red';
+        else
+            document.querySelector(winds[i]).style.color='';
+    }
+}
+
+function makechk(self){
+    if (self.style.color==='')
+        self.style.color='red';
+    else
+        self.style.color='';
+}
 
 function richii(who){
     var Allstick=document.querySelector('#richii_count');
-    var stick=document.querySelector(who+'_Richii');
-    var score=document.querySelector(who+'_Score');
+    var stick=document.querySelector('#'+who+'_Richii');
+    var score=document.querySelector('#'+who+'_Score');
     if (stick.style.visibility===''){
-        stick.style.visibility='visible';
         if (score.innerText>=10){
+            stick.style.visibility='visible';
             score.innerText=Number(score.innerText)-10;;
             Allstick.innerText++;
         }
         else
-            alert("점수가 모자라 리치를 걸수 없습니다.");
-    }
+            document.querySelector('#Modal_richii').style.display='inline';
+    } 
     else{
         stick.style.visibility='';
         score.innerText=Number(score.innerText)+10;
@@ -73,17 +94,61 @@ function richii(who){
     }
 }
 
-function ryuukyoku(){
-    var modal = document.querySelector('#Modal_ryuukyoku');
-    modal.style.display = 'inline';
+function ryuukyoku1(){
+    var ryuukyoku1=document.querySelector('#Modal_ryuukyoku1');
+    ryuukyoku1.style.display='inline';
+}
+function ryuukyoku2(){
+    var ryuukyoku1=document.querySelector('#Modal_ryuukyoku1');
+    var ryuukyoku2=document.querySelector('#Modal_ryuukyoku2');
+    ryuukyoku1.style.display='';
+    ryuukyoku2.style.display='inline';
 }
 
-function ryuukyoku_2(){
-    var modal = document.querySelector('#Modal_ryuukyoku');
-    var Allrenjang = document.querySelector('#renjang_count');
+function ryuukyoku_General(){
+    var ryuukyoku2=document.querySelector('#Modal_ryuukyoku2');
+    var winds=['#DownPerson_Wind', '#RightPerson_Wind', '#UpPerson_Wind', '#LeftPerson_Wind'];
+    var checks=['#downcheck_ryuukyoku','#rightcheck_ryuukyoku','#upcheck_ryuukyoku','#leftcheck_ryuukyoku']
+    var scores=['#DownPerson_Score','#RightPerson_Score','#UpPerson_Score','#LeftPerson_Score']
+    var tenpai=[0,0,0,0];
+    var Alltenpai=0;
+    var renjang=document.querySelector('#renjang_count');
     var sticks=['#DownPerson_Richii', '#RightPerson_Richii', '#UpPerson_Richii', '#LeftPerson_Richii'];
-    modal.style.display='';
-    Allrenjang.innerText++;
+    ryuukyoku2.style.display='';
+    renjang.innerText++;
+    for (var i=0;i<sticks.length;i++){
+        document.querySelector(sticks[i]).style.visibility='';
+    }
+    
+    for (var i=0;i<4;i++){
+        if (document.querySelector(winds[i]).innerHTML==='東' && document.querySelector(checks[i]).style.color===''){
+            ChangeSeat();
+            break;
+        }
+            
+    }
+    for (var i=0;i<4;i++){
+        if (document.querySelector(checks[i]).style.color==='red'){
+            document.querySelector(checks[i]).style.color='';
+            Alltenpai++;
+            tenpai[i]=1;
+        }
+    }
+    if (Alltenpai>0 && Alltenpai<4){
+        for (var i=0;i<4;i++){
+            if (tenpai[i]===1)
+                document.querySelector(scores[i]).innerText=Number(document.querySelector(scores[i]).innerText)+(30/Alltenpai);
+            else
+                document.querySelector(scores[i]).innerText=Number(document.querySelector(scores[i]).innerText)-(30/(4-Alltenpai));
+        }
+    }
+}
+function ryuukyoku_Special(){
+    var ryuukyoku1=document.querySelector('#Modal_ryuukyoku1');
+    var renjang=document.querySelector('#renjang_count');
+    var sticks=['#DownPerson_Richii', '#RightPerson_Richii', '#UpPerson_Richii', '#LeftPerson_Richii'];
+    ryuukyoku1.style.display='';
+    renjang.innerText++;
     for (var i=0;i<sticks.length;i++){
         document.querySelector(sticks[i]).style.visibility='';
     }

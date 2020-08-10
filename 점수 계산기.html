@@ -16,10 +16,10 @@
     <div class="richii_stick" id="DownPerson_Richii">
       <div class="circle"></div>
     </div>
-    <div class="wind no_drag" onclick="richii('#DownPerson');">
-      東
+    <div class="wind no_drag" onclick="richii('DownPerson');">
+      <span style="color: red;" id="DownPerson_Wind">東</span>
     </div>
-    <div class="score no_drag" onclick="richii('#DownPerson');">
+    <div class="score no_drag" onclick="richii('DownPerson');">
       <span id="DownPerson_Score" style="font-size: 80px;">250</span><span style="font-size: 50px;">00</span>
     </div>
   </div>
@@ -28,10 +28,10 @@
     <div class="richii_stick" id="RightPerson_Richii">
       <div class="circle"></div>
     </div>
-    <div class="wind no_drag" onclick="richii('#RightPerson');">
-      南
+    <div class="wind no_drag" onclick="richii('RightPerson');">
+      <span id="RightPerson_Wind">南</span>
     </div>
-    <div class="score no_drag" onclick="richii('#RightPerson');">
+    <div class="score no_drag" onclick="richii('RightPerson');">
       <span id="RightPerson_Score" style="font-size: 80px;">250</span><span style="font-size: 50px;">00</span>
     </div>
   </div>
@@ -40,10 +40,10 @@
     <div class="richii_stick" id="UpPerson_Richii">
       <div class="circle"></div>
     </div>
-    <div class="wind no_drag" onclick="richii('#UpPerson');">
-      西
+    <div class="wind no_drag" onclick="richii('UpPerson');">
+      <span id="UpPerson_Wind">西</span>
     </div>
-    <div class="score no_drag" onclick="richii('#UpPerson');">
+    <div class="score no_drag" onclick="richii('UpPerson');">
       <span id="UpPerson_Score" style="font-size: 80px;">250</span><span style="font-size: 50px;">00</span>
     </div>
   </div>
@@ -52,10 +52,10 @@
     <div class="richii_stick" id="LeftPerson_Richii">
       <div class="circle"></div>
     </div>
-    <div class="wind no_drag" onclick="richii('#LeftPerson');">
-      北
+    <div class="wind no_drag" onclick="richii('LeftPerson');">
+      <span id="LeftPerson_Wind">北</span>
     </div>
-    <div class="score no_drag" onclick="richii('#LeftPerson');">
+    <div class="score no_drag" onclick="richii('LeftPerson');">
       <span id="LeftPerson_Score" style="font-size: 80px;">250</span><span style="font-size: 50px;">00</span>
     </div>
   </div>
@@ -96,24 +96,62 @@
     <div class="tsumo no_drag">
       쯔모
     </div>
-    <div class="ryuukyoku no_drag" onclick="ryuukyoku();">
+    <div class="ryuukyoku no_drag" onclick="ryuukyoku1();">
       유국
     </div>
   </div>
 
-  <div class="modal" id="Modal_ryuukyoku" onclick="
-  if (event.target == this)
-    this.style.display = '';
+  <div class="modal" id="Modal_ryuukyoku1" onclick="
+  if (event.target==this)
+    this.style.display='';
   ">
-    <div class="modal-content">
-      <div style="font-size: 40px; margin: auto;">
+    <div class="modal_content">
+      <div style="font-size: 40px; margin: 20px;" onclick="ryuukyoku2();">
         일반유국
       </div>
-      <div class="no_drag" style="font-size: 40px; margin: auto;" onclick="ryuukyoku_2();">
+      <div class="no_drag" style="font-size: 40px; margin: 20px;" onclick="ryuukyoku_Special();">
         특수유국
       </div>
     </div>
+  </div>
 
+  <div class="modal" id="Modal_ryuukyoku2" onclick="
+  if (event.target==this)
+    this.style.display='';
+  ">
+    <div class="modal_content">
+      <div class="container_choose">
+        <div class="explain no_drag">
+          텐파이인 사람을 선택해주세요.
+        </div>
+        <div class="downcheck no_drag" id="downcheck_ryuukyoku" onclick="makechk(this);">
+          ▼
+        </div>
+        <div class="rightcheck no_drag" id="rightcheck_ryuukyoku" onclick="makechk(this);">
+          ▶
+        </div>
+        <div class="upcheck no_drag" id="upcheck_ryuukyoku" onclick="makechk(this);">
+          ▲
+        </div>
+        <div class="leftcheck no_drag" id="leftcheck_ryuukyoku" onclick="makechk(this);">
+          ◀
+        </div>
+        <div class="ok no_drag"  onclick="ryuukyoku_General();">
+          ok
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="modal" id="Modal_richii" onclick="
+  if (event.target==this)
+    this.style.display='';
+  ">
+    <div class="modal_content">
+      <div style="font-size: 20px; margin: 20px;">
+        점수가 모자라 리치를 걸수 없습니다.
+      </div>
+    </div>
   </div>
   
 </body>
