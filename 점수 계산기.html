@@ -8,23 +8,19 @@
   <script src="table.js"></script>
   <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+KR:wght@500&display=swap" rel="stylesheet">
   <link rel="icon" href="vo/richii.ico" type="image/x-icon">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0">
 </head>
 
 <body onclick="openFullScreenMode();">
-  <div class="container" id="DownPerson">
+  <div class="container" id="DownPerson"> 
     <div class="richii_stick" id="DownPerson_Richii">
       <div class="circle"></div>
     </div>
-    <div class="wind no_drag">
-      <label>
-        東<input type="button" onclick="richii('#DownPerson_Score');" style="display: none;">
-      </label>
+    <div class="wind no_drag" onclick="richii('#DownPerson');">
+      東
     </div>
-    <div class="score no_drag">
-      <label>
-        <input type="button" onclick="richii('#DownPerson_Score');" style="display: none;">
-        <span id="DownPerson_Score" style="font-size: 80px;">250</span><span style="font-size: 50px;">00</span>
-      </label>
+    <div class="score no_drag" onclick="richii('#DownPerson');">
+      <span id="DownPerson_Score" style="font-size: 80px;">250</span><span style="font-size: 50px;">00</span>
     </div>
   </div>
 
@@ -32,16 +28,11 @@
     <div class="richii_stick" id="RightPerson_Richii">
       <div class="circle"></div>
     </div>
-    <div class="wind no_drag">
-      <label>
-        南<input type="button" onclick="richii('#RightPerson_Score');" style="display: none;">
-      </label>
+    <div class="wind no_drag" onclick="richii('#RightPerson');">
+      南
     </div>
-    <div class="score no_drag">
-      <label>
-        <input type="button" onclick="richii('#RightPerson_Score');" style="display: none;">
-        <span id="RightPerson_Score" style="font-size: 80px;">250</span><span style="font-size: 50px;">00</span>
-      </label>
+    <div class="score no_drag" onclick="richii('#RightPerson');">
+      <span id="RightPerson_Score" style="font-size: 80px;">250</span><span style="font-size: 50px;">00</span>
     </div>
   </div>
 
@@ -49,16 +40,11 @@
     <div class="richii_stick" id="UpPerson_Richii">
       <div class="circle"></div>
     </div>
-    <div class="wind no_drag">
-      <label>
-        西<input type="button" onclick="richii('#UpPerson_Score');" style="display: none;">
-      </label>
+    <div class="wind no_drag" onclick="richii('#UpPerson');">
+      西
     </div>
-    <div class="score no_drag">
-      <label>
-        <input type="button" onclick="richii('#UpPerson_Score');" style="display: none;">
-        <span id="UpPerson_Score" style="font-size: 80px;">250</span><span style="font-size: 50px;">00</span>
-      </label>
+    <div class="score no_drag" onclick="richii('#UpPerson');">
+      <span id="UpPerson_Score" style="font-size: 80px;">250</span><span style="font-size: 50px;">00</span>
     </div>
   </div>
 
@@ -66,16 +52,11 @@
     <div class="richii_stick" id="LeftPerson_Richii">
       <div class="circle"></div>
     </div>
-    <div class="wind no_drag">
-      <label>
-        北<input type="button" onclick="richii('#LeftPerson_Score');" style="display: none;">
-      </label>
+    <div class="wind no_drag" onclick="richii('#LeftPerson');">
+      北
     </div>
-    <div class="score no_drag">
-      <label>
-        <input type="button" onclick="richii('#LeftPerson_Score');" style="display: none;">
-        <span id="LeftPerson_Score" style="font-size: 80px;">250</span><span style="font-size: 50px;">00</span>
-      </label>
+    <div class="score no_drag" onclick="richii('#LeftPerson');">
+      <span id="LeftPerson_Score" style="font-size: 80px;">250</span><span style="font-size: 50px;">00</span>
     </div>
   </div>
 
@@ -106,7 +87,7 @@
         <div class="blackcircle" style="margin: 5px 0px auto 0px; visibility: hidden;"></div>
       </div>
       <div style="font-size: 40px;">
-        x 2
+        x <span id="renjang_count">0</span>
       </div>
     </div>
     <div class="ron no_drag">
@@ -115,12 +96,31 @@
     <div class="tsumo no_drag">
       쯔모
     </div>
-    <div class="ryuukyoku no_drag">
-      <label>
-        유국<input type="button" onclick="" style="display: none;">
-      </label>
+    <div class="ryuukyoku no_drag" onclick="ryuukyoku();">
+      유국
     </div>
   </div>
+
+  <div class="modal" id="Modal_ryuukyoku" onclick="
+  if (event.target == this)
+    this.style.display = '';
+  ">
+    <div class="modal-content">
+      <div style="font-size: 40px; margin: auto;">
+        일반유국
+      </div>
+      <div class="no_drag" style="font-size: 40px; margin: auto;" onclick="ryuukyoku_1();">
+        특수유국
+      </div>
+    </div>
+
+  </div>
+
+
+
+
+
+
 </body>
 
 </html>
