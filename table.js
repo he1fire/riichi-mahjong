@@ -78,9 +78,13 @@ function ryuukyoku(){
     modal.style.display = 'inline';
 }
 
-function ryuukyoku_1(){
+function ryuukyoku_2(){
     var modal = document.querySelector('#Modal_ryuukyoku');
     var Allrenjang = document.querySelector('#renjang_count');
-    modal.style.display = '';
+    var sticks=['#DownPerson_Richii', '#RightPerson_Richii', '#UpPerson_Richii', '#LeftPerson_Richii'];
+    modal.style.display='';
     Allrenjang.innerText++;
+    for (var i=0;i<sticks.length;i++){
+        document.querySelector(sticks[i]).style.visibility='';
+    }
 }
