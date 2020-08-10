@@ -108,8 +108,8 @@ function ryuukyoku2(){
 function ryuukyoku_General(){
     var ryuukyoku2=document.querySelector('#Modal_ryuukyoku2');
     var winds=['#DownPerson_Wind', '#RightPerson_Wind', '#UpPerson_Wind', '#LeftPerson_Wind'];
-    var checks=['#downcheck_ryuukyoku','#rightcheck_ryuukyoku','#upcheck_ryuukyoku','#leftcheck_ryuukyoku']
-    var scores=['#DownPerson_Score','#RightPerson_Score','#UpPerson_Score','#LeftPerson_Score']
+    var checks=['#downcheck_ryuukyoku','#rightcheck_ryuukyoku','#upcheck_ryuukyoku','#leftcheck_ryuukyoku'];
+    var scores=['#DownPerson_Score','#RightPerson_Score','#UpPerson_Score','#LeftPerson_Score'];
     var tenpai=[0,0,0,0];
     var Alltenpai=0;
     var renjang=document.querySelector('#renjang_count');

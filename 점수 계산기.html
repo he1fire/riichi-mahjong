@@ -116,8 +116,15 @@
   </div>
 
   <div class="modal" id="Modal_ryuukyoku2" onclick="
-  if (event.target==this)
-    this.style.display='';
+    if (event.target==this){
+      this.style.display='';
+      var checks=['#downcheck_ryuukyoku','#rightcheck_ryuukyoku','#upcheck_ryuukyoku','#leftcheck_ryuukyoku'];
+      for (var i=0;i<4;i++){
+          if (document.querySelector(checks[i]).style.color==='red'){
+              document.querySelector(checks[i]).style.color='';
+          }
+      }
+    }
   ">
     <div class="modal_content">
       <div class="container_choose">
