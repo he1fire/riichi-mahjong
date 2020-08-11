@@ -81,7 +81,7 @@ function ChangeSeat(){
     }
 }
 
-function ChangeScore(Y, X, who1, who2, how, plus){
+function ChangeScore(Y, X, win, lose, how, plus){
     var Allstick=document.querySelector('#richii_count');
     var renjang=document.querySelector('#renjang_count');
     var ret=0, ron=0, tsumo1=0, tsumo2=0;
@@ -92,7 +92,7 @@ function ChangeScore(Y, X, who1, who2, how, plus){
     else
         ron=tsumo1=tsumo2=X*Math.pow(2,Y+2);
     if (how==='ron'){
-        if (who1==='東')
+        if (win==='東')
             ron*=6;
         else
             ron*=4;
@@ -103,7 +103,7 @@ function ChangeScore(Y, X, who1, who2, how, plus){
         tsumo1*=2;
         tsumo1=Math.ceil(tsumo1/100)*100;
         tsumo2=Math.ceil(tsumo2/100)*100;
-        if (who1==='東'){
+        if (win==='東'){
             if (plus===1)
                 ret=tsumo1*3;
             else
@@ -112,7 +112,7 @@ function ChangeScore(Y, X, who1, who2, how, plus){
         else{
             if (plus===1)
                 ret=tsumo1+tsumo2*2;
-            else if (who2==='東')
+            else if (lose==='東')
                 ret=tsumo1;
             else
                 ret=tsumo2;
@@ -167,12 +167,27 @@ function richii(who){
     }
 }
 
+function ron1(){
+    var ron1=document.querySelector('#Modal_ron1');
+    ron1.style.display='inline';
+}
+function ron2(){
+    var ron1=document.querySelector('#Modal_ron1');
+    var ron2=document.querySelector('#Modal_ron2');
+    ron1.style.display='';
+    ron2.style.display='inline';
+}
+function ron3(){
+    var ron2=document.querySelector('#Modal_ron2');
+    var ron3=document.querySelector('#Modal_ron3');
+    ron2.style.display='';
+    ron3.style.display='inline';
+}
 
 function tsumo1(){
     var tsumo1=document.querySelector('#Modal_tsumo1');
     tsumo1.style.display='inline';
 }
-
 function tsumo2(){
     var tsumo1=document.querySelector('#Modal_tsumo1');
     var tsumo2=document.querySelector('#Modal_tsumo2');
@@ -202,6 +217,61 @@ function ryuukyoku2(){
     ryuukyoku2.style.display='inline';
 }
 
+function ron_General(fan, bu){
+    fan=Number(fan);
+    bu=Number(bu);
+    var ron3=document.querySelector('#Modal_ron3');
+    var winds=['#DownPerson_Wind', '#RightPerson_Wind', '#UpPerson_Wind', '#LeftPerson_Wind'];
+    var checks1=['#downcheck_ron1','#rightcheck_ron1','#upcheck_ron1','#leftcheck_ron1'];
+    var checks2=['#downcheck_ron2','#rightcheck_ron2','#upcheck_ron2','#leftcheck_ron2'];
+    var scores=['#DownPerson_Score','#RightPerson_Score','#UpPerson_Score','#LeftPerson_Score'];
+    var whowin=-1, wholose=-1;
+    var renjang=document.querySelector('#renjang_count');
+    var sticks=['#DownPerson_Richii', '#RightPerson_Richii', '#UpPerson_Richii', '#LeftPerson_Richii'];
+    ron3.style.display='';
+    document.querySelector('#fan_ron').selectedIndex=0;
+    document.querySelector('#bu_ron').selectedIndex=0;
+    if (fan===1 && bu<=25){ //불가능한 점수
+        for (var i=0;i<4;i++){ 
+            if (document.querySelector(checks1[i]).style.color==='red')
+                document.querySelector(checks1[i]).style.color='';
+            if (document.querySelector(checks2[i]).style.color==='red')
+                document.querySelector(checks2[i]).style.color='';
+        }
+        document.querySelector('#Modal_alertText').innerText='불가능한 점수입니다.';
+        document.querySelector('#Modal_alert').style.display='inline';
+    }
+    else{
+        for (var i=0;i<sticks.length;i++){ //리치봉 수거
+            document.querySelector(sticks[i]).style.visibility='';
+        }
+        for (var i=0;i<4;i++){ //화료체크
+            if (document.querySelector(checks1[i]).style.color==='red'){
+                document.querySelector(checks1[i]).style.color='';
+                whowin=i;
+            }
+            if (document.querySelector(checks2[i]).style.color==='red'){
+                document.querySelector(checks2[i]).style.color='';
+                wholose=i;
+            }
+        }
+        for (var i=0;i<4;i++){ //점수계산
+            if (i===whowin){
+                document.querySelector(scores[i]).innerText=Number(document.querySelector(scores[i]).innerText)+ChangeScore(fan, bu, document.querySelector(winds[whowin]).innerText, document.querySelector(winds[wholose]).innerText, 'ron', 1);
+            }
+            if (i===wholose){
+                document.querySelector(scores[i]).innerText=Number(document.querySelector(scores[i]).innerText)-ChangeScore(fan, bu, document.querySelector(winds[whowin]).innerText, document.querySelector(winds[wholose]).innerText, 'ron', 0);
+            }
+        }
+        if (document.querySelector(winds[whowin]).innerText!=='東'){ // 친 체크후 바람바꾸기
+            renjang.innerText=0;
+            ChangeSeat();
+        } 
+        else
+            renjang.innerText++; //연장봉 증가
+    }
+}
+
 
 function tsumo_General(fan, bu){
     fan=Number(fan);
@@ -210,7 +280,7 @@ function tsumo_General(fan, bu){
     var winds=['#DownPerson_Wind', '#RightPerson_Wind', '#UpPerson_Wind', '#LeftPerson_Wind'];
     var checks=['#downcheck_tsumo','#rightcheck_tsumo','#upcheck_tsumo','#leftcheck_tsumo'];
     var scores=['#DownPerson_Score','#RightPerson_Score','#UpPerson_Score','#LeftPerson_Score'];
-    var tenpai=-1;
+    var whowin=-1;
     var renjang=document.querySelector('#renjang_count');
     var sticks=['#DownPerson_Richii', '#RightPerson_Richii', '#UpPerson_Richii', '#LeftPerson_Richii'];
     tsumo2.style.display='';
@@ -231,18 +301,18 @@ function tsumo_General(fan, bu){
         for (var i=0;i<4;i++){ //화료체크
             if (document.querySelector(checks[i]).style.color==='red'){
                 document.querySelector(checks[i]).style.color='';
-                tenpai=i;
+                whowin=i;
             }
         }
         for (var i=0;i<4;i++){ //점수계산
-            if (i===tenpai){
-                document.querySelector(scores[i]).innerText=Number(document.querySelector(scores[i]).innerText)+ChangeScore(fan, bu, document.querySelector(winds[tenpai]).innerText, document.querySelector(winds[i]).innerText, 'tsumo', 1);
+            if (i===whowin){
+                document.querySelector(scores[i]).innerText=Number(document.querySelector(scores[i]).innerText)+ChangeScore(fan, bu, document.querySelector(winds[whowin]).innerText, document.querySelector(winds[i]).innerText, 'tsumo', 1);
             }
             else{
-                document.querySelector(scores[i]).innerText=Number(document.querySelector(scores[i]).innerText)-ChangeScore(fan, bu, document.querySelector(winds[tenpai]).innerText, document.querySelector(winds[i]).innerText, 'tsumo', 0);
+                document.querySelector(scores[i]).innerText=Number(document.querySelector(scores[i]).innerText)-ChangeScore(fan, bu, document.querySelector(winds[whowin]).innerText, document.querySelector(winds[i]).innerText, 'tsumo', 0);
             }
         }
-        if (document.querySelector(winds[tenpai]).innerText!=='東'){ // 친 체크후 바람바꾸기
+        if (document.querySelector(winds[whowin]).innerText!=='東'){ // 친 체크후 바람바꾸기
             renjang.innerText=0;
             ChangeSeat();
         } 

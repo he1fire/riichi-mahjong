@@ -105,8 +105,8 @@
 }
 .container_choose{
   display: grid;
-  grid-template-rows: repeat(4, auto);
-  grid-template-columns: repeat(4, auto);
+  grid-template-rows: repeat(5, auto);
+  grid-template-columns: repeat(3, 100px);
   grid-template-areas: 
     "explain explain explain"
     ". upcheck ."

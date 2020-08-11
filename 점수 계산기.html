@@ -62,7 +62,7 @@
 
   <div class="container_mid" id='Mid'>
     <div class="now">
-      <span id="nowwind">東</span> <span id="nowcnt">1</span> 局
+      <span id="nowwind">東</span> <span id=nowcnt>1</span> 局
     </div>
     <div class="richii">
       <div class="richii_stick_mini">
@@ -90,7 +90,7 @@
         x <span id="renjang_count">0</span>
       </div>
     </div>
-    <div class="ron">
+    <div class="ron" onclick="ron1();">
       론
     </div>
     <div class="tsumo" onclick="tsumo1();">
@@ -101,48 +101,108 @@
     </div>
   </div>
 
-  <div class="modal" id="Modal_ryuukyoku1" onclick="
-    if (event.target==this)
-      this.style.display='';
-  ">
-    <div class="modal_content">
-      <div style="font-size: 40px; margin: 20px;" onclick="ryuukyoku2();">
-        일반유국
-      </div>
-      <div style="font-size: 40px; margin: 20px;" onclick="ryuukyoku_Special();">
-        특수유국
-      </div>
-    </div>
-  </div>
-  <div class="modal" id="Modal_ryuukyoku2" onclick="
+  <div class="modal" id="Modal_ron1" onclick="
     if (event.target==this){
       this.style.display='';
-      makeunchk(['down', 'right', 'up', 'left'],'check_ryuukyoku');
+      makeunchk(['down', 'right', 'up', 'left'],'check_ron1');
     }
   ">
     <div class="modal_content">
       <div class="container_choose">
         <div class="explain">
-          텐파이인 사람을 선택해주세요.
+          론한 사람을 선택해주세요.
         </div>
-        <div class="downcheck" id="downcheck_ryuukyoku" onclick="makechk(this);">
+        <div class="downcheck" id="downcheck_ron1" onclick="makechk(this); 
+        makeunchk(['right', 'up', 'left'],'check_ron1');">
           ▼
         </div>
-        <div class="rightcheck" id="rightcheck_ryuukyoku" onclick="makechk(this);">
+        <div class="rightcheck" id="rightcheck_ron1" onclick="makechk(this); makeunchk(['up', 'left', 'down'], 'check_ron1');">
           ▶
         </div>
-        <div class="upcheck" id="upcheck_ryuukyoku" onclick="makechk(this);">
+        <div class="upcheck" id="upcheck_ron1" onclick="makechk(this); makeunchk(['left', 'down', 'right'], 'check_ron1');">
           ▲
         </div>
-        <div class="leftcheck" id="leftcheck_ryuukyoku" onclick="makechk(this);">
+        <div class="leftcheck" id="leftcheck_ron1" onclick="makechk(this); makeunchk(['down', 'right', 'up'],'check_ron1');">
           ◀
         </div>
-        <div class="ok"  onclick="ryuukyoku_General();">
-          ok
+        <div class="ok"  onclick="ron2();">
+          OK
         </div>
       </div>
     </div>
   </div>
+  <div class="modal" id="Modal_ron2" onclick="
+    if (event.target==this){
+      this.style.display='';
+      makeunchk(['down', 'right', 'up', 'left'],'check_ron1');
+      makeunchk(['down', 'right', 'up', 'left'],'check_ron2');
+    }
+  ">
+    <div class="modal_content">
+      <div class="container_choose">
+        <div class="explain">
+          방총당한 사람을 선택해주세요.
+        </div>
+        <div class="downcheck" id="downcheck_ron2" onclick="makechk(this); 
+        makeunchk(['right', 'up', 'left'],'check_ron2');">
+          ▼
+        </div>
+        <div class="rightcheck" id="rightcheck_ron2" onclick="makechk(this); makeunchk(['up', 'left', 'down'], 'check_ron2');">
+          ▶
+        </div>
+        <div class="upcheck" id="upcheck_ron2" onclick="makechk(this); makeunchk(['left', 'down', 'right'], 'check_ron2');">
+          ▲
+        </div>
+        <div class="leftcheck" id="leftcheck_ron2" onclick="makechk(this); makeunchk(['down', 'right', 'up'],'check_ron2');">
+          ◀
+        </div>
+        <div class="ok"  onclick="ron3();">
+          OK
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="modal" id="Modal_ron3" onclick="
+    if (event.target==this){
+      this.style.display='';
+      makeunchk(['down', 'right', 'up', 'left'],'check_ron1');
+      makeunchk(['down', 'right', 'up', 'left'],'check_ron2');
+      document.querySelector('#fan_ron').selectedIndex=0;
+      document.querySelector('#bu_ron').selectedIndex=0;
+    }
+  ">
+    <div class="modal_content">
+      <div style="font-size: 40px; margin: 20px;">
+        판:
+        <select id="fan_ron">
+          <script>
+            for (var i=1;i<=13;i++)
+              document.querySelector('#fan_ron').innerHTML+='<option>'+i+'</option>';
+          </script>
+        </select>
+      </div>
+      <div style="font-size: 40px; margin: 20px;">
+        부: 
+        <select id="bu_ron" onchange="select(this);">
+          <script>
+            var arr=[20, 25, 30, 40, 50, 60, 70, 80, 90, 100, 110];
+            for (var i=0;i<arr.length;i++)
+              document.querySelector('#bu_ron').innerHTML+='<option>'+arr[i]+'</option>';
+          </script>
+        </select>
+      </div>
+      <div style="font-size: 20px;" onclick="
+      var fan=document.querySelector('#fan_ron').options[document.querySelector('#fan_ron').selectedIndex].text;
+      var bu=document.querySelector('#bu_ron').options[document.querySelector('#bu_ron').selectedIndex].text;
+      ron_General(fan, bu);
+      ">
+        OK
+      </div>
+    </div>
+  </div>
+
+
+
 
   <div class="modal" id="Modal_tsumo1" onclick="
     if (event.target==this){
@@ -153,7 +213,7 @@
     <div class="modal_content">
       <div class="container_choose">
         <div class="explain">
-          화료한 사람을 선택해주세요.
+          쯔모한 사람을 선택해주세요.
         </div>
         <div class="downcheck" id="downcheck_tsumo" onclick="makechk(this); 
         makeunchk(['right', 'up', 'left'],'check_tsumo');">
@@ -212,29 +272,48 @@
     </div>
   </div>
 
-
-  <!-- <div onclick="document.querySelector('#Modal_1').style.display='inline';">
-    dsfsdfsdfsd
-  </div>
-  <div class="modal" id="Modal_1" onclick="
+  <div class="modal" id="Modal_ryuukyoku1" onclick="
     if (event.target==this)
       this.style.display='';
   ">
     <div class="modal_content">
-      <div style="font-size: 40px; margin: 20px;">
-        판: ----<br>부: ----<br>판: ----<br>부: ----<br>판: ----<br>부: ----<br>판: ----<br>부: ----<br>판: ----<br>부: ----<br>
+      <div style="font-size: 40px; margin: 20px;" onclick="ryuukyoku2();">
+        일반유국
+      </div>
+      <div style="font-size: 40px; margin: 20px;" onclick="ryuukyoku_Special();">
+        특수유국
       </div>
     </div>
-  </div> -->
-
-
-
-
-
-
-
-
-
+  </div>
+  <div class="modal" id="Modal_ryuukyoku2" onclick="
+    if (event.target==this){
+      this.style.display='';
+      makeunchk(['down', 'right', 'up', 'left'],'check_ryuukyoku');
+    }
+  ">
+    <div class="modal_content">
+      <div class="container_choose">
+        <div class="explain">
+          텐파이인 사람을 선택해주세요.
+        </div>
+        <div class="downcheck" id="downcheck_ryuukyoku" onclick="makechk(this);">
+          ▼
+        </div>
+        <div class="rightcheck" id="rightcheck_ryuukyoku" onclick="makechk(this);">
+          ▶
+        </div>
+        <div class="upcheck" id="upcheck_ryuukyoku" onclick="makechk(this);">
+          ▲
+        </div>
+        <div class="leftcheck" id="leftcheck_ryuukyoku" onclick="makechk(this);">
+          ◀
+        </div>
+        <div class="ok"  onclick="ryuukyoku_General();">
+          ok
+        </div>
+      </div>
+    </div>
+  </div>
 
   <div class="modal" id="Modal_alert" onclick="
   if (event.target==this)
