@@ -178,6 +178,8 @@
     if (event.target==this){
       this.style.display='';
       makeunchk(['down', 'right', 'up', 'left'],'check_tsumo');
+      document.querySelector('#fan_tsumo').selectedIndex=0;
+      document.querySelector('#bu_tsumo').selectedIndex=0;
     }
   ">
     <div class="modal_content">
@@ -192,7 +194,7 @@
       </div>
       <div style="font-size: 40px; margin: 20px;">
         부: 
-        <select id="bu_tsumo">
+        <select id="bu_tsumo" onchange="select(this);">
           <script>
             var arr=[20, 25, 30, 40, 50, 60, 70, 80, 90, 100, 110];
             for (var i=0;i<arr.length;i++)
@@ -201,8 +203,8 @@
         </select>
       </div>
       <div style="font-size: 20px;" onclick="
-      var fan=0;
-      var bu=0;
+      var fan=document.querySelector('#fan_tsumo').options[document.querySelector('#fan_tsumo').selectedIndex].text;
+      var bu=document.querySelector('#bu_tsumo').options[document.querySelector('#bu_tsumo').selectedIndex].text;
       tsumo_General(fan, bu);
       ">
         OK

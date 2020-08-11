@@ -65,8 +65,55 @@ function ChangeSeat(){
             document.querySelector(winds[i]).style.color='';
     }
 }
-function ChangeScore(Y, X, who, how){
-
+function ChangeScore(Y, X, who1, who2, how, plus){
+    var Allstick=document.querySelector('#richii_count');
+    var renjang=document.querySelector('#renjang_count');
+    var ret=0, ron=0, tsumo1=0, tsumo2=0;
+    var arr=[2000,3000,3000,4000,4000,4000,6000,6000,8000];
+    if (5<=Y){
+        ron=tsumo1=tsumo2=arr[Y-5];
+    }
+    else
+        ron=tsumo1=tsumo2=X*Math.pow(2,Y+2);
+    if (how==='ron'){
+        if (who1==='東')
+            ron*=6;
+        else
+            ron*=4;
+        ron=Math.ceil(ron/100)*100;
+        ret=ron;
+    }
+    else{
+        tsumo1*=2;
+        tsumo1=Math.ceil(tsumo1/100)*100;
+        tsumo2=Math.ceil(tsumo2/100)*100;
+        if (who1==='東'){
+            if (plus===1)
+                ret=tsumo1*3;
+            else
+                ret=tsumo1;
+        }
+        else{
+            if (plus===1)
+                ret=tsumo1+tsumo2*2;
+            else if (who2==='東')
+                ret=tsumo1;
+            else
+                ret=tsumo2;
+        }
+    }
+    if (plus===1){
+        ret+=Allstick.innerText*1000;
+        ret+=renjang.innerText*300;
+        Allstick.innerText=0;
+    }
+    else{
+        if (how==='ron')
+            ret+=renjang.innerText*300;
+        else
+            ret+=renjang.innerText*100;
+    }
+    return ret/100;
 }
 
 function makechk(self){
@@ -140,7 +187,9 @@ function ryuukyoku2(){
 }
 
 
-function tsumo_General(Y, X){
+function tsumo_General(fan, bu){
+    fan=Number(fan);
+    bu=Number(bu);
     var tsumo2=document.querySelector('#Modal_tsumo2');
     var winds=['#DownPerson_Wind', '#RightPerson_Wind', '#UpPerson_Wind', '#LeftPerson_Wind'];
     var checks=['#downcheck_tsumo','#rightcheck_tsumo','#upcheck_tsumo','#leftcheck_tsumo'];
@@ -149,21 +198,42 @@ function tsumo_General(Y, X){
     var renjang=document.querySelector('#renjang_count');
     var sticks=['#DownPerson_Richii', '#RightPerson_Richii', '#UpPerson_Richii', '#LeftPerson_Richii'];
     tsumo2.style.display='';
-    for (var i=0;i<sticks.length;i++){ //리치봉 수거
-        document.querySelector(sticks[i]).style.visibility='';
-    }
-    for (var i=0;i<4;i++){ //화료체크 및 점수계산
-        if (document.querySelector(checks[i]).style.color==='red'){
-            document.querySelector(checks[i]).style.color='';
-            tenpai=i;
-            ChangeScore(1, 2, 3, 4);
+    document.querySelector('#fan_tsumo').selectedIndex=0;
+    document.querySelector('#bu_tsumo').selectedIndex=0;
+    if (fan===1 && bu<=25){ //불가능한 점수
+        for (var i=0;i<4;i++){ 
+            if (document.querySelector(checks[i]).style.color==='red')
+                document.querySelector(checks[i]).style.color='';
         }
+        document.querySelector('#Modal_alertText').innerText='불가능한 점수입니다.';
+        document.querySelector('#Modal_alert').style.display='inline';
     }
-
-    if (document.querySelector(winds[tenpai]).innerHTML!=='東') // 친 체크후 바람바꾸기
-        ChangeSeat();
-    else
-        renjang.innerText++; //연장봉 증가
+    else{
+        for (var i=0;i<sticks.length;i++){ //리치봉 수거
+            document.querySelector(sticks[i]).style.visibility='';
+        }
+        for (var i=0;i<4;i++){ //화료체크
+            if (document.querySelector(checks[i]).style.color==='red'){
+                document.querySelector(checks[i]).style.color='';
+                tenpai=i;
+            }
+        }
+        for (var i=0;i<4;i++){ //점수계산
+            if (i===tenpai){
+                document.querySelector(scores[i]).innerText=Number(document.querySelector(scores[i]).innerText)+ChangeScore(fan, bu, document.querySelector(winds[tenpai]).innerText, document.querySelector(winds[i]).innerText, 'tsumo', 1);
+            }
+            else{
+                document.querySelector(scores[i]).innerText=Number(document.querySelector(scores[i]).innerText)-ChangeScore(fan, bu, document.querySelector(winds[tenpai]).innerText, document.querySelector(winds[i]).innerText, 'tsumo', 0);
+            }
+        }
+        if (document.querySelector(winds[tenpai]).innerText!=='東'){ // 친 체크후 바람바꾸기
+            renjang.innerText=0;
+            ChangeSeat();
+        } 
+            
+        else
+            renjang.innerText++; //연장봉 증가
+    }
 }
 function ryuukyoku_General(){
     var ryuukyoku2=document.querySelector('#Modal_ryuukyoku2');
@@ -195,7 +265,7 @@ function ryuukyoku_General(){
         }
     }
     for (var i=0;i<4;i++){ //친 체크후 바람바꾸기
-        if (document.querySelector(winds[i]).innerHTML==='東' && tenpai[i]!==1){
+        if (document.querySelector(winds[i]).innerText==='東' && tenpai[i]!==1){
             ChangeSeat();
             break;
         } 
