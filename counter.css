@@ -210,19 +210,28 @@
   z-index: 2;
 }
 
-.no_drag{
-  -ms-user-select: none; 
-  -moz-user-select: -moz-none;
-  -khtml-user-select: none;
-  -webkit-user-select: none;
-  user-select: none;
-}
 html, body{
   overflow: hidden;
   position: relative;
   height: 100%;
   width: 100%;
   font-family: 'Noto Serif KR', serif;
+  /* 드래그방지 */
+  -ms-user-select: none; 
+  -moz-user-select: -moz-none;
+  -khtml-user-select: none;
+  -webkit-user-select: none;
+  user-select: none;
+}
+select {
+  font-size: 40px;
+  border: 0px solid black;
+  border-radius: 0px;
+}
+option{
+  font-size: 20px;
+  border: 0px solid black;
+  border-radius: 0px;
 }
 @media (orientation: portrait) {
 	html {
@@ -232,6 +241,6 @@ html, body{
 		top: 100%;
 		left: 0;
 		width: 100vh;
-		height: 100vw;
+    height: 100vw;
 	}
 }

@@ -1,10 +1,9 @@
 function f(Y, X, who, how){
-    var arr=new Array();
     var ans="", ron=0, tsumo1=0, tsumo2=0;
     var arr=[2000,3000,3000,4000,4000,4000,6000,6000,8000];
     Y=Number(Y);
     X=Number(X);
-    if (X!=25 && X%10!=0){
+    if (X!==25 && X%10!==0){
         X-=X%10;
         X+=10;
     }
@@ -66,12 +65,21 @@ function ChangeSeat(){
             document.querySelector(winds[i]).style.color='';
     }
 }
+function ChangeScore(Y, X, who, how){
+
+}
 
 function makechk(self){
     if (self.style.color==='')
         self.style.color='red';
     else
         self.style.color='';
+}
+function makeunchk(who, type){
+    for (var i=0;i<who.length;i++){
+        if (document.querySelector('#'+who[i]+type).style.color==='red')
+            document.querySelector('#'+who[i]+type).style.color='';
+    }
 }
 
 function richii(who){
@@ -84,13 +92,39 @@ function richii(who){
             score.innerText=Number(score.innerText)-10;;
             Allstick.innerText++;
         }
-        else
-            document.querySelector('#Modal_richii').style.display='inline';
+        else{
+            document.querySelector('#Modal_alertText').innerText='점수가 모자라 리치를 걸수 없습니다.';
+            document.querySelector('#Modal_alert').style.display='inline';
+        }
     } 
     else{
         stick.style.visibility='';
         score.innerText=Number(score.innerText)+10;
         Allstick.innerText--;
+    }
+}
+
+
+function tsumo1(){
+    var tsumo1=document.querySelector('#Modal_tsumo1');
+    tsumo1.style.display='inline';
+}
+
+function tsumo2(){
+    var tsumo1=document.querySelector('#Modal_tsumo1');
+    var tsumo2=document.querySelector('#Modal_tsumo2');
+    var checks=['#downcheck_tsumo','#rightcheck_tsumo','#upcheck_tsumo','#leftcheck_tsumo'];
+    var chktenpai=0;
+    for (var i=0;i<4;i++){
+        if (document.querySelector(checks[i]).style.color==='red')
+            chktenpai=1;
+    }
+    tsumo1.style.display='';
+    if (chktenpai===1)
+        tsumo2.style.display='inline';
+    else{
+        document.querySelector('#Modal_alertText').innerText='화료한 사람이 선택되지 않았습니다.';
+        document.querySelector('#Modal_alert').style.display='inline';
     }
 }
 
@@ -105,6 +139,32 @@ function ryuukyoku2(){
     ryuukyoku2.style.display='inline';
 }
 
+
+function tsumo_General(Y, X){
+    var tsumo2=document.querySelector('#Modal_tsumo2');
+    var winds=['#DownPerson_Wind', '#RightPerson_Wind', '#UpPerson_Wind', '#LeftPerson_Wind'];
+    var checks=['#downcheck_tsumo','#rightcheck_tsumo','#upcheck_tsumo','#leftcheck_tsumo'];
+    var scores=['#DownPerson_Score','#RightPerson_Score','#UpPerson_Score','#LeftPerson_Score'];
+    var tenpai=-1;
+    var renjang=document.querySelector('#renjang_count');
+    var sticks=['#DownPerson_Richii', '#RightPerson_Richii', '#UpPerson_Richii', '#LeftPerson_Richii'];
+    tsumo2.style.display='';
+    for (var i=0;i<sticks.length;i++){ //리치봉 수거
+        document.querySelector(sticks[i]).style.visibility='';
+    }
+    for (var i=0;i<4;i++){ //화료체크 및 점수계산
+        if (document.querySelector(checks[i]).style.color==='red'){
+            document.querySelector(checks[i]).style.color='';
+            tenpai=i;
+            ChangeScore(1, 2, 3, 4);
+        }
+    }
+
+    if (document.querySelector(winds[tenpai]).innerHTML!=='東') // 친 체크후 바람바꾸기
+        ChangeSeat();
+    else
+        renjang.innerText++; //연장봉 증가
+}
 function ryuukyoku_General(){
     var ryuukyoku2=document.querySelector('#Modal_ryuukyoku2');
     var winds=['#DownPerson_Wind', '#RightPerson_Wind', '#UpPerson_Wind', '#LeftPerson_Wind'];
@@ -115,26 +175,18 @@ function ryuukyoku_General(){
     var renjang=document.querySelector('#renjang_count');
     var sticks=['#DownPerson_Richii', '#RightPerson_Richii', '#UpPerson_Richii', '#LeftPerson_Richii'];
     ryuukyoku2.style.display='';
-    renjang.innerText++;
-    for (var i=0;i<sticks.length;i++){
+    for (var i=0;i<sticks.length;i++){ //리치봉 수거
         document.querySelector(sticks[i]).style.visibility='';
     }
     
-    for (var i=0;i<4;i++){
-        if (document.querySelector(winds[i]).innerHTML==='東' && document.querySelector(checks[i]).style.color===''){
-            ChangeSeat();
-            break;
-        }
-            
-    }
-    for (var i=0;i<4;i++){
+    for (var i=0;i<4;i++){ //텐파이 체크
         if (document.querySelector(checks[i]).style.color==='red'){
             document.querySelector(checks[i]).style.color='';
             Alltenpai++;
             tenpai[i]=1;
         }
     }
-    if (Alltenpai>0 && Alltenpai<4){
+    if (Alltenpai>0 && Alltenpai<4){ //실 점수계산
         for (var i=0;i<4;i++){
             if (tenpai[i]===1)
                 document.querySelector(scores[i]).innerText=Number(document.querySelector(scores[i]).innerText)+(30/Alltenpai);
@@ -142,6 +194,13 @@ function ryuukyoku_General(){
                 document.querySelector(scores[i]).innerText=Number(document.querySelector(scores[i]).innerText)-(30/(4-Alltenpai));
         }
     }
+    for (var i=0;i<4;i++){ //친 체크후 바람바꾸기
+        if (document.querySelector(winds[i]).innerHTML==='東' && tenpai[i]!==1){
+            ChangeSeat();
+            break;
+        } 
+    }
+    renjang.innerText++; //연장봉 증가
 }
 function ryuukyoku_Special(){
     var ryuukyoku1=document.querySelector('#Modal_ryuukyoku1');

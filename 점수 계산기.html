@@ -16,10 +16,10 @@
     <div class="richii_stick" id="DownPerson_Richii">
       <div class="circle"></div>
     </div>
-    <div class="wind no_drag" onclick="richii('DownPerson');">
+    <div class="wind" onclick="richii('DownPerson');">
       <span style="color: red;" id="DownPerson_Wind">東</span>
     </div>
-    <div class="score no_drag" onclick="richii('DownPerson');">
+    <div class="score" onclick="richii('DownPerson');">
       <span id="DownPerson_Score" style="font-size: 80px;">250</span><span style="font-size: 50px;">00</span>
     </div>
   </div>
@@ -28,10 +28,10 @@
     <div class="richii_stick" id="RightPerson_Richii">
       <div class="circle"></div>
     </div>
-    <div class="wind no_drag" onclick="richii('RightPerson');">
+    <div class="wind" onclick="richii('RightPerson');">
       <span id="RightPerson_Wind">南</span>
     </div>
-    <div class="score no_drag" onclick="richii('RightPerson');">
+    <div class="score" onclick="richii('RightPerson');">
       <span id="RightPerson_Score" style="font-size: 80px;">250</span><span style="font-size: 50px;">00</span>
     </div>
   </div>
@@ -40,10 +40,10 @@
     <div class="richii_stick" id="UpPerson_Richii">
       <div class="circle"></div>
     </div>
-    <div class="wind no_drag" onclick="richii('UpPerson');">
+    <div class="wind" onclick="richii('UpPerson');">
       <span id="UpPerson_Wind">西</span>
     </div>
-    <div class="score no_drag" onclick="richii('UpPerson');">
+    <div class="score" onclick="richii('UpPerson');">
       <span id="UpPerson_Score" style="font-size: 80px;">250</span><span style="font-size: 50px;">00</span>
     </div>
   </div>
@@ -52,19 +52,19 @@
     <div class="richii_stick" id="LeftPerson_Richii">
       <div class="circle"></div>
     </div>
-    <div class="wind no_drag" onclick="richii('LeftPerson');">
+    <div class="wind" onclick="richii('LeftPerson');">
       <span id="LeftPerson_Wind">北</span>
     </div>
-    <div class="score no_drag" onclick="richii('LeftPerson');">
+    <div class="score" onclick="richii('LeftPerson');">
       <span id="LeftPerson_Score" style="font-size: 80px;">250</span><span style="font-size: 50px;">00</span>
     </div>
   </div>
 
   <div class="container_mid" id='Mid'>
-    <div class="now no_drag">
+    <div class="now">
       東<span>1</span>局 <span>0</span>本場 
     </div>
-    <div class="richii no_drag">
+    <div class="richii">
       <div class="richii_stick_mini">
         <div class="circle" style="width:5px;
         height:5px;"></div>
@@ -73,7 +73,7 @@
         x <span id="richii_count">0</span>
       </div>
     </div>
-    <div class="renjang no_drag">
+    <div class="renjang">
       <div class="richii_stick_mini">
         <div class="blackcircle" style="margin: auto 0px 5px 0px;visibility: hidden;"></div>
         <div class="blackcircle"></div>
@@ -90,73 +90,157 @@
         x <span id="renjang_count">0</span>
       </div>
     </div>
-    <div class="ron no_drag">
+    <div class="ron">
       론
     </div>
-    <div class="tsumo no_drag">
+    <div class="tsumo" onclick="tsumo1();">
       쯔모
     </div>
-    <div class="ryuukyoku no_drag" onclick="ryuukyoku1();">
+    <div class="ryuukyoku" onclick="ryuukyoku1();">
       유국
     </div>
   </div>
 
   <div class="modal" id="Modal_ryuukyoku1" onclick="
-  if (event.target==this)
-    this.style.display='';
+    if (event.target==this)
+      this.style.display='';
   ">
     <div class="modal_content">
       <div style="font-size: 40px; margin: 20px;" onclick="ryuukyoku2();">
         일반유국
       </div>
-      <div class="no_drag" style="font-size: 40px; margin: 20px;" onclick="ryuukyoku_Special();">
+      <div style="font-size: 40px; margin: 20px;" onclick="ryuukyoku_Special();">
         특수유국
       </div>
     </div>
   </div>
-
   <div class="modal" id="Modal_ryuukyoku2" onclick="
     if (event.target==this){
       this.style.display='';
-      var checks=['#downcheck_ryuukyoku','#rightcheck_ryuukyoku','#upcheck_ryuukyoku','#leftcheck_ryuukyoku'];
-      for (var i=0;i<4;i++){
-          if (document.querySelector(checks[i]).style.color==='red'){
-              document.querySelector(checks[i]).style.color='';
-          }
-      }
+      makeunchk(['down', 'right', 'up', 'left'],'check_ryuukyoku');
     }
   ">
     <div class="modal_content">
       <div class="container_choose">
-        <div class="explain no_drag">
+        <div class="explain">
           텐파이인 사람을 선택해주세요.
         </div>
-        <div class="downcheck no_drag" id="downcheck_ryuukyoku" onclick="makechk(this);">
+        <div class="downcheck" id="downcheck_ryuukyoku" onclick="makechk(this);">
           ▼
         </div>
-        <div class="rightcheck no_drag" id="rightcheck_ryuukyoku" onclick="makechk(this);">
+        <div class="rightcheck" id="rightcheck_ryuukyoku" onclick="makechk(this);">
           ▶
         </div>
-        <div class="upcheck no_drag" id="upcheck_ryuukyoku" onclick="makechk(this);">
+        <div class="upcheck" id="upcheck_ryuukyoku" onclick="makechk(this);">
           ▲
         </div>
-        <div class="leftcheck no_drag" id="leftcheck_ryuukyoku" onclick="makechk(this);">
+        <div class="leftcheck" id="leftcheck_ryuukyoku" onclick="makechk(this);">
           ◀
         </div>
-        <div class="ok no_drag"  onclick="ryuukyoku_General();">
+        <div class="ok"  onclick="ryuukyoku_General();">
           ok
         </div>
       </div>
     </div>
   </div>
 
-  <div class="modal" id="Modal_richii" onclick="
+  <div class="modal" id="Modal_tsumo1" onclick="
+    if (event.target==this){
+      this.style.display='';
+      makeunchk(['down', 'right', 'up', 'left'],'check_tsumo');
+    }
+  ">
+    <div class="modal_content">
+      <div class="container_choose">
+        <div class="explain">
+          화료한 사람을 선택해주세요.
+        </div>
+        <div class="downcheck" id="downcheck_tsumo" onclick="makechk(this); 
+        makeunchk(['right', 'up', 'left'],'check_tsumo');">
+          ▼
+        </div>
+        <div class="rightcheck" id="rightcheck_tsumo" onclick="makechk(this); makeunchk(['up', 'left', 'down'], 'check_tsumo');">
+          ▶
+        </div>
+        <div class="upcheck" id="upcheck_tsumo" onclick="makechk(this); makeunchk(['left', 'down', 'right'], 'check_tsumo');">
+          ▲
+        </div>
+        <div class="leftcheck" id="leftcheck_tsumo" onclick="makechk(this); makeunchk(['down', 'right', 'up'],'check_tsumo');">
+          ◀
+        </div>
+        <div class="ok"  onclick="tsumo2();">
+          OK
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="modal" id="Modal_tsumo2" onclick="
+    if (event.target==this){
+      this.style.display='';
+      makeunchk(['down', 'right', 'up', 'left'],'check_tsumo');
+    }
+  ">
+    <div class="modal_content">
+      <div style="font-size: 40px; margin: 20px;">
+        판:
+        <select id="fan_tsumo">
+          <script>
+            for (var i=1;i<=13;i++)
+              document.querySelector('#fan_tsumo').innerHTML+='<option>'+i+'</option>';
+          </script>
+        </select>
+      </div>
+      <div style="font-size: 40px; margin: 20px;">
+        부: 
+        <select id="bu_tsumo">
+          <script>
+            var arr=[20, 25, 30, 40, 50, 60, 70, 80, 90, 100, 110];
+            for (var i=0;i<arr.length;i++)
+              document.querySelector('#bu_tsumo').innerHTML+='<option>'+arr[i]+'</option>';
+          </script>
+        </select>
+      </div>
+      <div style="font-size: 20px;" onclick="
+      var fan=0;
+      var bu=0;
+      tsumo_General(fan, bu);
+      ">
+        OK
+      </div>
+    </div>
+  </div>
+
+
+  <!-- <div onclick="document.querySelector('#Modal_1').style.display='inline';">
+    dsfsdfsdfsd
+  </div>
+  <div class="modal" id="Modal_1" onclick="
+    if (event.target==this)
+      this.style.display='';
+  ">
+    <div class="modal_content">
+      <div style="font-size: 40px; margin: 20px;">
+        판: ----<br>부: ----<br>판: ----<br>부: ----<br>판: ----<br>부: ----<br>판: ----<br>부: ----<br>판: ----<br>부: ----<br>
+      </div>
+    </div>
+  </div> -->
+
+
+
+
+
+
+
+
+
+
+  <div class="modal" id="Modal_alert" onclick="
   if (event.target==this)
     this.style.display='';
   ">
     <div class="modal_content">
-      <div style="font-size: 20px; margin: 20px;">
-        점수가 모자라 리치를 걸수 없습니다.
+      <div style="font-size: 20px; margin: 20px;" id="Modal_alertText">
+        .
       </div>
     </div>
   </div>
