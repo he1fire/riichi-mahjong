@@ -1,0 +1,48 @@
+<head>
+  <title>점수계산기</title>
+  <meta charset="utf-8">
+  <link rel="stylesheet" href="counter.css">
+  <script src="table.js"></script>
+  <style>
+  .container_dice{
+    display: grid;
+    width:350px;
+    height:350px;
+    grid-template-rows: repeat(7, 50px);
+    grid-template-columns: repeat(7, 50px);
+    grid-template-areas: 
+    ". . . . . . ."
+    ". _1 . . . _2 ."
+    ". . . . . . ."
+    ". _3 . _4 . _5 ."
+    ". . . . . . ."
+    ". _6 . . . _7 ."
+    ". . . . . . ."
+    ;
+    vertical-align: middle;
+    text-align: center;
+    border: 5px solid black ;
+    border-radius:50px;
+    /* transform: scale(0.1); */
+  }
+  .circle_dice{
+    background-color:black;
+    width:50px;
+    height:50px;
+    border-radius:50%;
+  }
+  </style>
+</head>
+<!-- <body onclick="openFullScreenMode();">
+  <div class="container_dice">
+    <div style="grid-area: _1;">
+      <div class="circle_dice"></div>
+    </div>
+    <div style="grid-area: _7;">
+      <div class="circle_dice"></div>
+    </div>
+  </div> -->
+  <div class="container_dice" id="asd">
+    <script>makedice('#asd', 1);</script>
+  </div>
+</body>

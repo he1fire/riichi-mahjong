@@ -101,6 +101,12 @@
     </div>
   </div>
 
+  <div id="Roll_Dice" onclick="dice();">
+    <div class="container_dice" id="opendice">
+      <script>document.querySelector('#opendice').innerHTML=makedice(1);</script>
+    </div>
+  </div>
+
   <div class="modal" id="Modal_ron1" onclick="
     if (event.target==this){
       this.style.display='';
@@ -200,9 +206,6 @@
       </div>
     </div>
   </div>
-
-
-
 
   <div class="modal" id="Modal_tsumo1" onclick="
     if (event.target==this){
@@ -322,6 +325,34 @@
     <div class="modal_content">
       <div style="font-size: 20px; margin: 20px;" id="Modal_alertText">
         .
+      </div>
+    </div>
+  </div>
+
+  <div class="modal" id="Modal_dice" onclick="
+  if (event.target==this)
+    this.style.display='';
+  ">
+    <div class="modal_content">
+      <div class="container_roll">
+        <div class="dice_1 container_dice" style="transform: scale(2);" id="dice1" >
+
+        </div>
+        <div class="dice_2 container_dice" style="transform: scale(2);" id="dice2">
+
+        </div>
+        <div class="plus">
+          +
+        </div>
+        <div class="equal">
+          =
+        </div>
+        <div class="sum" id="dicesum">
+          ?
+        </div>
+        <div class="roll" onclick="roll();">
+          굴리기
+        </div>
       </div>
     </div>
   </div>

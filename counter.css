@@ -52,6 +52,13 @@
   left: 50%;
   transform: translate(-50%, -50%);
 }
+#Roll_Dice{
+  position: fixed;
+  text-align: center;
+  vertical-align: bottom;
+  bottom: 0;
+  right: 0;
+}
 
 .circle{
   background-color:red;
@@ -68,7 +75,12 @@
   border-radius:50%;
   margin: 3px 0px auto 0px;
 }
-
+.circle_dice{
+  background-color:black;
+  width:5px;
+  height:5px;
+  border-radius:50%;
+}
 .richii_stick{
   visibility: hidden;
   border: 1px solid black;
@@ -115,6 +127,39 @@
     "ok ok ok";
   vertical-align: middle;
   text-align: center;
+}
+
+.container_roll{
+  display: grid;
+  grid-template-rows: repeat(2, auto);
+  grid-template-columns: repeat(5, 100px);
+  grid-template-areas:
+    "dice_1 plus dice_2 equal sum"
+    "roll roll roll roll roll";
+  vertical-align: middle;
+  text-align: center;
+  margin: 20px;
+}
+.container_dice{
+  display: grid;
+  width:35px;
+  height:35px;
+  grid-template-rows: repeat(7, 5px);
+  grid-template-columns: repeat(7, 5px);
+  grid-template-areas: 
+  ". . . . . . ."
+  ". _1 . . . _2 ."
+  ". . . . . . ."
+  ". _3 . _4 . _5 ."
+  ". . . . . . ."
+  ". _6 . . . _7 ."
+  ". . . . . . ."
+  ;
+  vertical-align: middle;
+  text-align: center;
+  border: 3px solid black ;
+  border-radius:5px;
+  margin: auto;
 }
 
 .wind{
@@ -184,6 +229,30 @@
   grid-area: ok;
   font-size: 20px;
 }
+
+.dice_1{
+  grid-area: dice_1;
+}
+.dice_2{
+  grid-area: dice_2;
+}
+.plus{
+  grid-area: plus;
+  font-size: 80px;
+}
+.equal{
+  grid-area: equal;
+  font-size: 80px;
+}
+.sum{
+  grid-area: sum;
+  font-size: 80px;
+}
+.roll{
+  grid-area: roll;
+  font-size: 40px;
+}
+
 
 .modal {
   display: none;

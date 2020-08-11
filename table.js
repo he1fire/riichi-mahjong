@@ -145,6 +145,43 @@ function makeunchk(who, type){
     }
 }
 
+function dice(){
+    var dice=document.querySelector('#Modal_dice');
+    dice.style.display='inline';
+}
+function roll(){
+    var dice1=document.querySelector('#dice1');
+    var dice2=document.querySelector('#dice2');
+    var dicesum=document.querySelector('#dicesum');
+    var ran1=Math.floor(Math.random()*6)+1, ran2=Math.floor(Math.random()*6)+1;
+    dice1.innerHTML=makedice(ran1);
+    dice2.innerHTML=makedice(ran2);
+    dicesum.innerText=ran1+ran2;
+}
+
+function makedice(num){
+    num=Number(num);
+    var dice_value=['_1', '_2', '_3', '_4', '_5', '_6', '_7'];
+    var ans=' ';
+    for (var i=0;i<7;i++){
+      if (i===0 && (num===2 || num===3 || num===4 || num===5 || num===6))
+        ans+=`<div style="grid-area: `+dice_value[i]+`;"><div class="circle_dice"></div></div>`;
+      if (i===1 && (num===4 || num===5 || num===6))
+        ans+=`<div style="grid-area: `+dice_value[i]+`;"><div class="circle_dice"></div></div>`;
+      if (i===2 && (num===6))
+        ans+=`<div style="grid-area: `+dice_value[i]+`;"><div class="circle_dice"></div></div>`;
+      if (i===3 && (num===1 || num===3 || num===5))
+        ans+=`<div style="grid-area: `+dice_value[i]+`;"><div class="circle_dice"></div></div>`;
+      if (i===4 && (num===6))
+        ans+=`<div style="grid-area: `+dice_value[i]+`;"><div class="circle_dice"></div></div>`;
+      if (i===5 && (num===4 || num===5 || num===6))
+        ans+=`<div style="grid-area: `+dice_value[i]+`;"><div class="circle_dice"></div></div>`;
+      if (i===6 && (num===2 || num===3 || num===4 || num===5 || num===6))
+        ans+=`<div style="grid-area: `+dice_value[i]+`;"><div class="circle_dice"></div></div>`;
+    }
+    return ans;
+  }
+
 function richii(who){
     var Allstick=document.querySelector('#richii_count');
     var stick=document.querySelector('#'+who+'_Richii');
