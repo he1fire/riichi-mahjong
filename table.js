@@ -64,7 +64,23 @@ function ChangeSeat(){
         else
             document.querySelector(winds[i]).style.color='';
     }
+
+    if (document.querySelector("#nowcnt").innerText!=='4'){
+        document.querySelector("#nowcnt").innerText++;
+    }
+    else{
+        document.querySelector("#nowcnt").innerText=1;
+        if (document.querySelector("#nowwind").innerText==='東')
+            document.querySelector("#nowwind").innerText='南';
+        else if (document.querySelector("#nowwind").innerText==='南')
+            document.querySelector("#nowwind").innerText='西';
+        else if (document.querySelector("#nowwind").innerText==='西')
+            document.querySelector("#nowwind").innerText='北';
+        else
+            document.querySelector("#nowwind").innerText='東';
+    }
 }
+
 function ChangeScore(Y, X, who1, who2, how, plus){
     var Allstick=document.querySelector('#richii_count');
     var renjang=document.querySelector('#renjang_count');
@@ -230,7 +246,6 @@ function tsumo_General(fan, bu){
             renjang.innerText=0;
             ChangeSeat();
         } 
-            
         else
             renjang.innerText++; //연장봉 증가
     }
