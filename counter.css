@@ -81,13 +81,13 @@
   height:5px;
   border-radius:50%;
 }
-.richii_stick{
+.riichi_stick{
   visibility: hidden;
   border: 1px solid black;
   grid-area: stick;
   transform: translate(0,20px);
 }
-.richii_stick_mini{
+.riichi_stick_mini{
   border: 1px solid black;
   width: 50px;
   height: 10px;
@@ -111,7 +111,7 @@
   grid-template-areas: 
     "now now ron"
     "now now tsumo"
-    "richii renjang ryuukyoku";
+    "riichi renjang ryuukyoku";
   vertical-align: middle;
   text-align: center;
 }
@@ -176,8 +176,8 @@
   grid-area: now;
   font-size: 70px;
 }
-.richii{
-  grid-area: richii;
+.riichi{
+  grid-area: riichi;
   margin: 0 auto 0 auto;
   font-size: 0px;
   transform: translate(20px,-10px);

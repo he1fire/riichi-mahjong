@@ -81,8 +81,8 @@ function ChangeSeat(){
     }
 }
 
-function ChangeScore(Y, X, win, lose, how, plus){
-    var Allstick=document.querySelector('#richii_count');
+function CalculateScore(Y, X, win, lose, how, plus){
+    var Allstick=document.querySelector('#riichi_count');
     var renjang=document.querySelector('#renjang_count');
     var ret=0, ron=0, tsumo1=0, tsumo2=0;
     var arr=[2000,3000,3000,4000,4000,4000,6000,6000,8000];
@@ -166,11 +166,11 @@ function roll(){
         dice1.innerHTML=makedice(ran1);
         dice2.innerHTML=makedice(ran2);
         timecnt++;
-        if (timecnt>=20){
+        if (timecnt>=50){
             clearInterval(repeat);
             dicesum.innerText=ran1+ran2;
         }
-    }, 50);
+    }, 10);
 }
 
 function makedice(num){
@@ -178,27 +178,25 @@ function makedice(num){
     var dice_value=['_1', '_2', '_3', '_4', '_5', '_6', '_7'];
     var ans=' ';
     for (var i=0;i<7;i++){
-      if (i===0 && (num===2 || num===3 || num===4 || num===5 || num===6))
+    if (num===1 && (i===3))
+        ans+=`<div style="grid-area: `+dice_value[i]+`;"><div class="circle_dice" style="background-color: red;"></div></div>`;
+    if (num===2 && (i===0 || i===6))
         ans+=`<div style="grid-area: `+dice_value[i]+`;"><div class="circle_dice"></div></div>`;
-      if (i===1 && (num===4 || num===5 || num===6))
+    if (num===3 && (i===0 || i===3 || i===6))
         ans+=`<div style="grid-area: `+dice_value[i]+`;"><div class="circle_dice"></div></div>`;
-      if (i===2 && (num===6))
+    if (num===4 && (i===0 || i===1 || i===5 || i===6))
         ans+=`<div style="grid-area: `+dice_value[i]+`;"><div class="circle_dice"></div></div>`;
-      if (i===3 && (num===1 || num===3 || num===5))
+    if (num===5 && (i===0 || i===1 || i===3 || i===5 || i===6))
         ans+=`<div style="grid-area: `+dice_value[i]+`;"><div class="circle_dice"></div></div>`;
-      if (i===4 && (num===6))
-        ans+=`<div style="grid-area: `+dice_value[i]+`;"><div class="circle_dice"></div></div>`;
-      if (i===5 && (num===4 || num===5 || num===6))
-        ans+=`<div style="grid-area: `+dice_value[i]+`;"><div class="circle_dice"></div></div>`;
-      if (i===6 && (num===2 || num===3 || num===4 || num===5 || num===6))
+    if (num===6 && (i===0 || i===1 || i===2 || i===4 || i===5 || i===6))
         ans+=`<div style="grid-area: `+dice_value[i]+`;"><div class="circle_dice"></div></div>`;
     }
     return ans;
   }
 
-function richii(who){
-    var Allstick=document.querySelector('#richii_count');
-    var stick=document.querySelector('#'+who+'_Richii');
+function riichi(who){
+    var Allstick=document.querySelector('#riichi_count');
+    var stick=document.querySelector('#'+who+'_Riichi');
     var score=document.querySelector('#'+who+'_Score');
     if (stick.style.visibility===''){
         if (score.innerText>=10){
@@ -278,7 +276,7 @@ function ron_General(fan, bu){
     var scores=['#DownPerson_Score','#RightPerson_Score','#UpPerson_Score','#LeftPerson_Score'];
     var whowin=-1, wholose=-1;
     var renjang=document.querySelector('#renjang_count');
-    var sticks=['#DownPerson_Richii', '#RightPerson_Richii', '#UpPerson_Richii', '#LeftPerson_Richii'];
+    var sticks=['#DownPerson_Riichi', '#RightPerson_Riichi', '#UpPerson_Riichi', '#LeftPerson_Riichi'];
     ron3.style.display='';
     document.querySelector('#fan_ron').selectedIndex=0;
     document.querySelector('#bu_ron').selectedIndex=0;
@@ -308,10 +306,10 @@ function ron_General(fan, bu){
         }
         for (var i=0;i<4;i++){ //점수계산
             if (i===whowin){
-                document.querySelector(scores[i]).innerText=Number(document.querySelector(scores[i]).innerText)+ChangeScore(fan, bu, document.querySelector(winds[whowin]).innerText, document.querySelector(winds[wholose]).innerText, 'ron', 1);
+                document.querySelector(scores[i]).innerText=Number(document.querySelector(scores[i]).innerText)+CalculateScore(fan, bu, document.querySelector(winds[whowin]).innerText, document.querySelector(winds[wholose]).innerText, 'ron', 1);
             }
             if (i===wholose){
-                document.querySelector(scores[i]).innerText=Number(document.querySelector(scores[i]).innerText)-ChangeScore(fan, bu, document.querySelector(winds[whowin]).innerText, document.querySelector(winds[wholose]).innerText, 'ron', 0);
+                document.querySelector(scores[i]).innerText=Number(document.querySelector(scores[i]).innerText)-CalculateScore(fan, bu, document.querySelector(winds[whowin]).innerText, document.querySelector(winds[wholose]).innerText, 'ron', 0);
             }
         }
         if (document.querySelector(winds[whowin]).innerText!=='東'){ // 친 체크후 바람바꾸기
@@ -333,7 +331,7 @@ function tsumo_General(fan, bu){
     var scores=['#DownPerson_Score','#RightPerson_Score','#UpPerson_Score','#LeftPerson_Score'];
     var whowin=-1;
     var renjang=document.querySelector('#renjang_count');
-    var sticks=['#DownPerson_Richii', '#RightPerson_Richii', '#UpPerson_Richii', '#LeftPerson_Richii'];
+    var sticks=['#DownPerson_Riichi', '#RightPerson_Riichi', '#UpPerson_Riichi', '#LeftPerson_Riichi'];
     tsumo2.style.display='';
     document.querySelector('#fan_tsumo').selectedIndex=0;
     document.querySelector('#bu_tsumo').selectedIndex=0;
@@ -357,10 +355,10 @@ function tsumo_General(fan, bu){
         }
         for (var i=0;i<4;i++){ //점수계산
             if (i===whowin){
-                document.querySelector(scores[i]).innerText=Number(document.querySelector(scores[i]).innerText)+ChangeScore(fan, bu, document.querySelector(winds[whowin]).innerText, document.querySelector(winds[i]).innerText, 'tsumo', 1);
+                document.querySelector(scores[i]).innerText=Number(document.querySelector(scores[i]).innerText)+CalculateScore(fan, bu, document.querySelector(winds[whowin]).innerText, document.querySelector(winds[i]).innerText, 'tsumo', 1);
             }
             else{
-                document.querySelector(scores[i]).innerText=Number(document.querySelector(scores[i]).innerText)-ChangeScore(fan, bu, document.querySelector(winds[whowin]).innerText, document.querySelector(winds[i]).innerText, 'tsumo', 0);
+                document.querySelector(scores[i]).innerText=Number(document.querySelector(scores[i]).innerText)-CalculateScore(fan, bu, document.querySelector(winds[whowin]).innerText, document.querySelector(winds[i]).innerText, 'tsumo', 0);
             }
         }
         if (document.querySelector(winds[whowin]).innerText!=='東'){ // 친 체크후 바람바꾸기
@@ -379,7 +377,7 @@ function ryuukyoku_General(){
     var tenpai=[0,0,0,0];
     var Alltenpai=0;
     var renjang=document.querySelector('#renjang_count');
-    var sticks=['#DownPerson_Richii', '#RightPerson_Richii', '#UpPerson_Richii', '#LeftPerson_Richii'];
+    var sticks=['#DownPerson_Riichi', '#RightPerson_Riichi', '#UpPerson_Riichi', '#LeftPerson_Riichi'];
     ryuukyoku2.style.display='';
     for (var i=0;i<sticks.length;i++){ //리치봉 수거
         document.querySelector(sticks[i]).style.visibility='';
@@ -411,7 +409,7 @@ function ryuukyoku_General(){
 function ryuukyoku_Special(){
     var ryuukyoku1=document.querySelector('#Modal_ryuukyoku1');
     var renjang=document.querySelector('#renjang_count');
-    var sticks=['#DownPerson_Richii', '#RightPerson_Richii', '#UpPerson_Richii', '#LeftPerson_Richii'];
+    var sticks=['#DownPerson_Riichi', '#RightPerson_Riichi', '#UpPerson_Riichi', '#LeftPerson_Riichi'];
     ryuukyoku1.style.display='';
     renjang.innerText++;
     for (var i=0;i<sticks.length;i++){
