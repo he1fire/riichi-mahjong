@@ -131,6 +131,29 @@ function CalculateScore(Y, X, win, lose, how, plus){
     }
     return ret/100;
 }
+function ChangeScore(who, much){
+    var score=document.querySelector(who);
+    var score_00=document.querySelector(who+'00');
+    var arr=[];
+    var startscore=Number(document.querySelector(who).innerText);
+    for (var i=0;i<20;i++){
+        arr[i]=startscore*100+((much*100)/20)*(i+1);
+    }
+    var timecnt=0;
+    var repeat=setInterval(function() {
+        score.innerText=Math.floor(arr[timecnt]/100);
+        if (arr[timecnt]%100!=0)
+            score_00.innerText=arr[timecnt]%100;
+        else
+            score_00.innerText='00';
+        timecnt++;
+        if (timecnt>=20){
+            clearInterval(repeat);
+            score.innerText=startscore+much;
+            score_00.innerText='00';
+        }
+    }, 25);
+}
 
 function makechk(self){
     if (self.style.color==='')
@@ -223,14 +246,54 @@ function ron1(){
 function ron2(){
     var ron1=document.querySelector('#Modal_ron1');
     var ron2=document.querySelector('#Modal_ron2');
+    var checks=['#downcheck_ron1','#rightcheck_ron1','#upcheck_ron1','#leftcheck_ron1'];
+    var whowin=-1;
+    for (var i=0;i<4;i++){
+        if (document.querySelector(checks[i]).style.color==='red')
+            whowin=1;
+    }
     ron1.style.display='';
-    ron2.style.display='inline';
+    if (whowin===1)
+        ron2.style.display='inline';
+    else{
+        document.querySelector('#Modal_alertText').innerText='론한 사람이 선택되지 않았습니다.';
+        document.querySelector('#Modal_alert').style.display='inline';
+    }
 }
 function ron3(){
     var ron2=document.querySelector('#Modal_ron2');
     var ron3=document.querySelector('#Modal_ron3');
+    var checks1=['#downcheck_ron1','#rightcheck_ron1','#upcheck_ron1','#leftcheck_ron1'];
+    var checks2=['#downcheck_ron2','#rightcheck_ron2','#upcheck_ron2','#leftcheck_ron2'];
+    var whowin=-1, wholose=-1;
+    for (var i=0;i<4;i++){ //화료체크
+        if (document.querySelector(checks1[i]).style.color==='red')
+            whowin=i;
+        if (document.querySelector(checks2[i]).style.color==='red')
+            wholose=i;
+    }
     ron2.style.display='';
-    ron3.style.display='inline';
+    if (wholose===-1){
+        for (var i=0;i<4;i++){ 
+            if (document.querySelector(checks1[i]).style.color==='red')
+                document.querySelector(checks1[i]).style.color='';
+        }
+        document.querySelector('#Modal_alertText').innerText='방총당한 사람이 선택되지 않았습니다.';
+        document.querySelector('#Modal_alert').style.display='inline';
+    }
+    else if (whowin===wholose){
+        for (var i=0;i<4;i++){ 
+            if (document.querySelector(checks1[i]).style.color==='red')
+                document.querySelector(checks1[i]).style.color='';
+            if (document.querySelector(checks2[i]).style.color==='red')
+                document.querySelector(checks2[i]).style.color='';
+        }
+        document.querySelector('#Modal_alertText').innerText='론한 사람과 방총당한 사람이 같습니다.';
+        document.querySelector('#Modal_alert').style.display='inline';
+    }
+    else{
+        ron3.style.display='inline';
+    }
 }
 
 function tsumo1(){
@@ -241,16 +304,16 @@ function tsumo2(){
     var tsumo1=document.querySelector('#Modal_tsumo1');
     var tsumo2=document.querySelector('#Modal_tsumo2');
     var checks=['#downcheck_tsumo','#rightcheck_tsumo','#upcheck_tsumo','#leftcheck_tsumo'];
-    var chktenpai=0;
+    var whowin=-1;
     for (var i=0;i<4;i++){
         if (document.querySelector(checks[i]).style.color==='red')
-            chktenpai=1;
+            whowin=1;
     }
     tsumo1.style.display='';
-    if (chktenpai===1)
+    if (whowin===1)
         tsumo2.style.display='inline';
     else{
-        document.querySelector('#Modal_alertText').innerText='화료한 사람이 선택되지 않았습니다.';
+        document.querySelector('#Modal_alertText').innerText='쯔모한 사람이 선택되지 않았습니다.';
         document.querySelector('#Modal_alert').style.display='inline';
     }
 }
@@ -306,10 +369,10 @@ function ron_General(fan, bu){
         }
         for (var i=0;i<4;i++){ //점수계산
             if (i===whowin){
-                document.querySelector(scores[i]).innerText=Number(document.querySelector(scores[i]).innerText)+CalculateScore(fan, bu, document.querySelector(winds[whowin]).innerText, document.querySelector(winds[wholose]).innerText, 'ron', 1);
+                ChangeScore(scores[i],CalculateScore(fan, bu, document.querySelector(winds[whowin]).innerText, document.querySelector(winds[wholose]).innerText, 'ron', 1));
             }
             if (i===wholose){
-                document.querySelector(scores[i]).innerText=Number(document.querySelector(scores[i]).innerText)-CalculateScore(fan, bu, document.querySelector(winds[whowin]).innerText, document.querySelector(winds[wholose]).innerText, 'ron', 0);
+                ChangeScore(scores[i],-CalculateScore(fan, bu, document.querySelector(winds[whowin]).innerText, document.querySelector(winds[wholose]).innerText, 'ron', 0));
             }
         }
         if (document.querySelector(winds[whowin]).innerText!=='東'){ // 친 체크후 바람바꾸기
@@ -355,10 +418,10 @@ function tsumo_General(fan, bu){
         }
         for (var i=0;i<4;i++){ //점수계산
             if (i===whowin){
-                document.querySelector(scores[i]).innerText=Number(document.querySelector(scores[i]).innerText)+CalculateScore(fan, bu, document.querySelector(winds[whowin]).innerText, document.querySelector(winds[i]).innerText, 'tsumo', 1);
+                ChangeScore(scores[i],CalculateScore(fan, bu, document.querySelector(winds[i]).innerText, document.querySelector(winds[i]).innerText, 'tsumo', 1));
             }
             else{
-                document.querySelector(scores[i]).innerText=Number(document.querySelector(scores[i]).innerText)-CalculateScore(fan, bu, document.querySelector(winds[whowin]).innerText, document.querySelector(winds[i]).innerText, 'tsumo', 0);
+                ChangeScore(scores[i],-CalculateScore(fan, bu, document.querySelector(winds[whowin]).innerText, document.querySelector(winds[i]).innerText, 'tsumo', 0));
             }
         }
         if (document.querySelector(winds[whowin]).innerText!=='東'){ // 친 체크후 바람바꾸기
