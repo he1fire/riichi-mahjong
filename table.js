@@ -166,11 +166,11 @@ function roll(){
         dice1.innerHTML=makedice(ran1);
         dice2.innerHTML=makedice(ran2);
         timecnt++;
-        if (timecnt>=50){
+        if (timecnt>=10){
             clearInterval(repeat);
             dicesum.innerText=ran1+ran2;
         }
-    }, 10);
+    }, 50);
 }
 
 function makedice(num){
