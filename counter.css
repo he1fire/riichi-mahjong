@@ -56,8 +56,8 @@
   position: fixed;
   text-align: center;
   vertical-align: bottom;
-  bottom: 0;
-  right: 0;
+  bottom: 5px;
+  right: 5px;
 }
 
 .circle{

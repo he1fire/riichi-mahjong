@@ -149,14 +149,28 @@ function dice(){
     var dice=document.querySelector('#Modal_dice');
     dice.style.display='inline';
 }
+function sleep (delay) {
+    var start = new Date().getTime();
+    while (new Date().getTime() < start + delay);
+ }
 function roll(){
     var dice1=document.querySelector('#dice1');
     var dice2=document.querySelector('#dice2');
     var dicesum=document.querySelector('#dicesum');
-    var ran1=Math.floor(Math.random()*6)+1, ran2=Math.floor(Math.random()*6)+1;
-    dice1.innerHTML=makedice(ran1);
-    dice2.innerHTML=makedice(ran2);
-    dicesum.innerText=ran1+ran2;
+    var ran1=0, ran2=0;
+    var timecnt=0;
+    dicesum.innerText='?';
+    var repeat=setInterval(function() {
+        ran1=Math.floor(Math.random()*6)+1;
+        ran2=Math.floor(Math.random()*6)+1;
+        dice1.innerHTML=makedice(ran1);
+        dice2.innerHTML=makedice(ran2);
+        timecnt++;
+        if (timecnt>=20){
+            clearInterval(repeat);
+            dicesum.innerText=ran1+ran2;
+        }
+    }, 50);
 }
 
 function makedice(num){
