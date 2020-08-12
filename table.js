@@ -456,9 +456,9 @@ function ryuukyoku_General(){
     if (Alltenpai>0 && Alltenpai<4){ //실 점수계산
         for (var i=0;i<4;i++){
             if (tenpai[i]===1)
-                document.querySelector(scores[i]).innerText=Number(document.querySelector(scores[i]).innerText)+(30/Alltenpai);
+                ChangeScore(scores[i],30/Alltenpai);
             else
-                document.querySelector(scores[i]).innerText=Number(document.querySelector(scores[i]).innerText)-(30/(4-Alltenpai));
+                ChangeScore(scores[i],-30/(4-Alltenpai));
         }
     }
     for (var i=0;i<4;i++){ //친 체크후 바람바꾸기
