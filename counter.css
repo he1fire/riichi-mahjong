@@ -59,7 +59,13 @@
   bottom: 5px;
   right: 5px;
 }
-
+#Show_Record{
+  position: fixed;
+  text-align: center;
+  vertical-align: bottom;
+  top: 5px;
+  left: 5px;
+}
 .circle{
   background-color:red;
   width:15px;
@@ -80,6 +86,11 @@
   width:5px;
   height:5px;
   border-radius:50%;
+}
+.circle_button{
+  background-color:black;
+  width:25px;
+  height:5px;
 }
 .riichi_stick{
   visibility: hidden;
@@ -162,6 +173,38 @@
   margin: auto;
 }
 
+.container_record{
+  display: grid;
+  width:35px;
+  height:35px;
+  grid-template-rows: repeat(7, 5px);
+  grid-template-columns: 5px 25px 5px;
+  grid-template-areas: 
+  ". . ."
+  ". _1 ."
+  ". . ."
+  ". _2 ."
+  ". . ."
+  ". _3 ."
+  ". . ."
+  ;
+  vertical-align: middle;
+  text-align: center;
+  border: 3px solid black ;
+  border-radius:5px;
+  margin: auto;
+}
+.container_table{
+  display: grid;
+  grid-template-rows: 50px 200px;
+  grid-template-columns: 120px repeat(4, 100px);
+  grid-template-areas: 
+  ". downname rightname upname leftname"
+  "when downrecord rightrecord uprecord leftrecord";
+  vertical-align: middle;
+  text-align: center;
+}
+
 .wind{
   grid-area: wind;
   margin: auto;
@@ -238,13 +281,6 @@
   grid-area: ok;
   font-size: 20px;
 }
-
-.dice_1{
-  grid-area: dice_1;
-}
-.dice_2{
-  grid-area: dice_2;
-}
 .plus{
   grid-area: plus;
   font-size: 80px;
@@ -261,7 +297,6 @@
   grid-area: roll;
   font-size: 40px;
 }
-
 
 .modal {
   display: none;

@@ -12,7 +12,8 @@
 </head>
 
 <body onclick="openFullScreenMode();">
-  <div class="container" id="DownPerson"> 
+  <!-- 아래쪽 -->
+  <div class="container" id="DownPerson"> <!-- 아래 -->
     <div class="riichi_stick" id="DownPerson_Riichi">
       <div class="circle"></div>
     </div>
@@ -26,7 +27,7 @@
       0
     </div>
   </div>
-
+  <!-- 오른쪽 -->
   <div class="container" id="RightPerson">
     <div class="riichi_stick" id="RightPerson_Riichi">
       <div class="circle"></div>
@@ -41,7 +42,7 @@
       0
     </div>
   </div>
-
+  <!-- 위쪽 -->
   <div class="container" id="UpPerson">
     <div class="riichi_stick" id="UpPerson_Riichi">
       <div class="circle"></div>
@@ -56,7 +57,7 @@
       0
     </div>
   </div>
-
+  <!-- 왼쪽 -->
   <div class="container" id="LeftPerson">
     <div class="riichi_stick" id="LeftPerson_Riichi">
       <div class="circle"></div>
@@ -72,7 +73,7 @@
       0
     </div>
   </div>
-
+  <!-- 가운데 -->
   <div class="container_mid" id='Mid'>
     <div class="now">
       <span id="nowwind">東</span> <span id=nowcnt>1</span> 局
@@ -113,13 +114,23 @@
       유국
     </div>
   </div>
-
+  <!-- 주사위버튼 -->
   <div id="Roll_Dice" onclick="dice();">
     <div class="container_dice" id="opendice">
       <script>document.querySelector('#opendice').innerHTML=makedice(5);</script>
     </div>
   </div>
+  <!-- 기록버튼 -->
+  <div id="Show_Record" onclick="record();">
+    <div class="container_record" id="openrecord">
+      <div class="circle_button" style="grid-area: _1;"></div>
+      <div class="circle_button" style="grid-area: _2;"></div>
+      <div class="circle_button" style="grid-area: _3;"></div>
+    </div>
+  </div>
 
+
+  <!-- 론1 -->
   <div class="modal" id="Modal_ron1" onclick="
     if (event.target==this){
       this.style.display='';
@@ -150,6 +161,7 @@
       </div>
     </div>
   </div>
+  <!-- 론2 -->
   <div class="modal" id="Modal_ron2" onclick="
     if (event.target==this){
       this.style.display='';
@@ -181,6 +193,7 @@
       </div>
     </div>
   </div>
+  <!-- 론3 -->
   <div class="modal" id="Modal_ron3" onclick="
     if (event.target==this){
       this.style.display='';
@@ -219,7 +232,7 @@
       </div>
     </div>
   </div>
-
+  <!-- 쯔모1 -->
   <div class="modal" id="Modal_tsumo1" onclick="
     if (event.target==this){
       this.style.display='';
@@ -250,6 +263,7 @@
       </div>
     </div>
   </div>
+  <!-- 쯔모2 -->
   <div class="modal" id="Modal_tsumo2" onclick="
     if (event.target==this){
       this.style.display='';
@@ -287,7 +301,7 @@
       </div>
     </div>
   </div>
-
+  <!-- 유국1 -->
   <div class="modal" id="Modal_ryuukyoku1" onclick="
     if (event.target==this)
       this.style.display='';
@@ -301,6 +315,7 @@
       </div>
     </div>
   </div>
+  <!-- 유국2 -->
   <div class="modal" id="Modal_ryuukyoku2" onclick="
     if (event.target==this){
       this.style.display='';
@@ -330,18 +345,7 @@
       </div>
     </div>
   </div>
-
-  <div class="modal" id="Modal_alert" onclick="
-  if (event.target==this)
-    this.style.display='';
-  ">
-    <div class="modal_content">
-      <div style="font-size: 20px; margin: 20px;" id="Modal_alertText">
-        .
-      </div>
-    </div>
-  </div>
-
+  <!-- 주사위 -->
   <div class="modal" id="Modal_dice" onclick="
   if (event.target==this){
     this.style.display='';
@@ -352,11 +356,9 @@
   ">
     <div class="modal_content">
       <div class="container_roll">
-        <div class="dice_1 container_dice" style="transform: scale(2);" id="dice1" >
-
+        <div class="container_dice" style="grid-area: dice_1; transform: scale(2);" id="dice1" >
         </div>
-        <div class="dice_2 container_dice" style="transform: scale(2);" id="dice2">
-
+        <div class="container_dice" style="grid-area: dice_2; transform: scale(2);" id="dice2">
         </div>
         <div class="plus">
           +
@@ -373,7 +375,57 @@
       </div>
     </div>
   </div>
+
+  <div class="modal" id="Modal_record" onclick="
+  if (event.target==this){
+    this.style.display='';
+  }
+  ">
+    <div class="modal_content">
+      <div class="container_table" style="overflow: auto;">
+        <div style="grid-area: downname; font-size: 30px;">
+          ▼
+        </div>
+        <div style="grid-area: rightname; font-size: 30px;">
+          ▶
+        </div>
+        <div style="grid-area: upname; font-size: 30px;">
+          ▲
+        </div>
+        <div style="grid-area: leftname; font-size: 30px;">
+          ◀
+        </div>
+        <div style="grid-area: when; font-size: 20px;" id="when">
+          시작점수
+        </div>
+        <div style="grid-area: downrecord; font-size: 20px;" id="DownPerson_Scorerecord">
+          25000
+        </div>
+        <div style="grid-area: rightrecord; font-size: 20px;" id="RightPerson_Scorerecord">
+          25000
+        </div>
+        <div style="grid-area: uprecord; font-size: 20px;" id="UpPerson_Scorerecord">
+          25000
+        </div>
+        <div style="grid-area: leftrecord; font-size: 20px;" id="LeftPerson_Scorerecord">
+          25000
+        </div>
+      </div>
+    </div>
+  </div>
   
+  <!-- 경고창 -->
+  <div class="modal" id="Modal_alert" onclick="
+  if (event.target==this)
+    this.style.display='';
+  ">
+    <div class="modal_content">
+      <div style="font-size: 20px; margin: 20px;" id="Modal_alertText">
+        .
+      </div>
+    </div>
+  </div>
+
 </body>
 
 </html>

@@ -109,7 +109,6 @@ function ChangeScore(who, much){
         score_change.innerText=much+'00';
     }
     score_change.style.visibility='visible';
-
     var timecnt=0;
     var repeat=setInterval(function() {
         score.innerText=Math.floor(arr[timecnt]/100);
@@ -125,6 +124,27 @@ function ChangeScore(who, much){
             score_change.style.visibility='hidden';
         }
     }, 20);
+}
+
+function RecordScore(who, much, now){
+    var score_record=document.querySelector(who+'record');
+    if (much>0){
+        score_record.innerHTML+=`<div style="color: lawngreen">+`+much+`00</div>`+now;
+    }
+    else if (much===0){
+        score_record.innerHTML+=`<br><br>`+now;
+    }
+    else{
+        score_record.innerHTML+=`<div style="color: red">`+much+`00</div>`+now;
+    }
+}
+function RecordTime(){
+    var when_record=document.querySelector("#when");
+    var renjang=document.querySelector('#renjang_count').innerText;
+    var wind=document.querySelector("#nowwind").innerText;
+    var cnt=document.querySelector("#nowcnt").innerText;
+    when_record.innerHTML+=`<br>`+wind+cnt+`局 `+renjang+`本場<br>`;
+
 }
 
 function makechk(self){
@@ -144,10 +164,12 @@ function dice(){
     var dice=document.querySelector('#Modal_dice');
     dice.style.display='inline';
 }
-function sleep (delay) {
-    var start = new Date().getTime();
-    while (new Date().getTime() < start + delay);
- }
+
+function record(){
+    var record=document.querySelector('#Modal_record');
+    record.style.display='inline';
+}
+
 function roll(){
     var dice1=document.querySelector('#dice1');
     var dice2=document.querySelector('#dice2');
@@ -341,16 +363,24 @@ function ron_General(fan, bu){
         }
         for (var i=0;i<4;i++){ //점수계산
             if (i===whowin){
-                ChangeScore(scores[i],CalculateScore(fan, bu, document.querySelector(winds[whowin]).innerText, document.querySelector(winds[wholose]).innerText, 'ron', 1));
+                var tmp=CalculateScore(fan, bu, document.querySelector(winds[whowin]).innerText, document.querySelector(winds[wholose]).innerText, 'ron', 1);
+                ChangeScore(scores[i], tmp);
+                RecordScore(scores[i], tmp, document.querySelector(scores[i]).innerText*100+tmp*100);
             }
-            if (i===wholose){
-                ChangeScore(scores[i],-CalculateScore(fan, bu, document.querySelector(winds[whowin]).innerText, document.querySelector(winds[wholose]).innerText, 'ron', 0));
+            else if (i===wholose){
+                var tmp=-CalculateScore(fan, bu, document.querySelector(winds[whowin]).innerText, document.querySelector(winds[wholose]).innerText, 'ron', 0);
+                ChangeScore(scores[i], tmp);
+                RecordScore(scores[i], tmp, document.querySelector(scores[i]).innerText*100+tmp*100);
+            }
+            else{
+                RecordScore(scores[i], 0, document.querySelector(scores[i]).innerText*100);
             }
         }
+        RecordTime();
         if (document.querySelector(winds[whowin]).innerText!=='東'){ // 친 체크후 바람바꾸기
             renjang.innerText=0;
             ChangeSeat();
-        } 
+        }
         else
             renjang.innerText++; //연장봉 증가
     }
@@ -390,12 +420,17 @@ function tsumo_General(fan, bu){
         }
         for (var i=0;i<4;i++){ //점수계산
             if (i===whowin){
-                ChangeScore(scores[i],CalculateScore(fan, bu, document.querySelector(winds[i]).innerText, document.querySelector(winds[i]).innerText, 'tsumo', 1));
+                var tmp=CalculateScore(fan, bu, document.querySelector(winds[i]).innerText, document.querySelector(winds[i]).innerText, 'tsumo', 1);
+                ChangeScore(scores[i], tmp);
+                RecordScore(scores[i], tmp, document.querySelector(scores[i]).innerText*100+tmp*100);
             }
             else{
-                ChangeScore(scores[i],-CalculateScore(fan, bu, document.querySelector(winds[whowin]).innerText, document.querySelector(winds[i]).innerText, 'tsumo', 0));
+                var tmp=-CalculateScore(fan, bu, document.querySelector(winds[whowin]).innerText, document.querySelector(winds[i]).innerText, 'tsumo', 0);
+                ChangeScore(scores[i], tmp);
+                RecordScore(scores[i], tmp, document.querySelector(scores[i]).innerText*100+tmp*100);
             }
         }
+        RecordTime();
         if (document.querySelector(winds[whowin]).innerText!=='東'){ // 친 체크후 바람바꾸기
             renjang.innerText=0;
             ChangeSeat();
@@ -427,12 +462,25 @@ function ryuukyoku_General(){
     }
     if (Alltenpai>0 && Alltenpai<4){ //실 점수계산
         for (var i=0;i<4;i++){
-            if (tenpai[i]===1)
-                ChangeScore(scores[i],30/Alltenpai);
-            else
-                ChangeScore(scores[i],-30/(4-Alltenpai));
+            if (tenpai[i]===1){
+                var tmp=30/Alltenpai;
+                ChangeScore(scores[i], tmp);
+                RecordScore(scores[i], tmp, document.querySelector(scores[i]).innerText*100+tmp*100);
+            }
+                
+            else{
+                var tmp=-30/(4-Alltenpai);
+                ChangeScore(scores[i], tmp);
+                RecordScore(scores[i], tmp, document.querySelector(scores[i]).innerText*100+tmp*100);
+            }
         }
     }
+    else{
+        for (var i=0;i<4;i++){
+            RecordScore(scores[i], 0, document.querySelector(scores[i]).innerText*100);
+        }
+    }
+    RecordTime();
     for (var i=0;i<4;i++){ //친 체크후 바람바꾸기
         if (document.querySelector(winds[i]).innerText==='東' && tenpai[i]!==1){
             ChangeSeat();
@@ -445,9 +493,14 @@ function ryuukyoku_Special(){
     var ryuukyoku1=document.querySelector('#Modal_ryuukyoku1');
     var renjang=document.querySelector('#renjang_count');
     var sticks=['#DownPerson_Riichi', '#RightPerson_Riichi', '#UpPerson_Riichi', '#LeftPerson_Riichi'];
+    var scores=['#DownPerson_Score','#RightPerson_Score','#UpPerson_Score','#LeftPerson_Score'];
     ryuukyoku1.style.display='';
     renjang.innerText++;
     for (var i=0;i<sticks.length;i++){
         document.querySelector(sticks[i]).style.visibility='';
     }
+    for (var i=0;i<4;i++){
+        RecordScore(scores[i], 0, document.querySelector(scores[i]).innerText*100);
+    }
+    RecordTime();
 }
