@@ -94,11 +94,22 @@ function CalculateScore(Y, X, win, lose, how, plus){
 function ChangeScore(who, much){
     var score=document.querySelector(who);
     var score_00=document.querySelector(who+'00');
+    var score_change=document.querySelector(who+'change');
     var arr=[];
     var startscore=Number(document.querySelector(who).innerText);
     for (var i=0;i<20;i++){
         arr[i]=startscore*100+((much*100)/20)*(i+1);
     }
+    if (much>0){
+        score_change.style.color='lawngreen';
+        score_change.innerText='+'+much+'00';
+    }
+    else{
+        score_change.style.color='red';
+        score_change.innerText=much+'00';
+    }
+    score_change.style.visibility='visible';
+    
     var timecnt=0;
     var repeat=setInterval(function() {
         score.innerText=Math.floor(arr[timecnt]/100);
@@ -111,6 +122,7 @@ function ChangeScore(who, much){
             clearInterval(repeat);
             score.innerText=startscore+much;
             score_00.innerText='00';
+            score_change.style.visibility='hidden';
         }
     }, 25);
 }

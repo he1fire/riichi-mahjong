@@ -17,7 +17,7 @@
   vertical-align: bottom;
   top: 50%;
   right: 0;
-  margin: -60px 0 0 0;
+  margin: -70px 0 0 0;
   -ms-transform: rotate(270deg);
   -webkit-transform: rotate(270deg);
   transform: rotate(270deg) translate(0,78px);
@@ -39,7 +39,7 @@
   vertical-align: bottom;
   top: 50%;
   left: 0;
-  margin: -60px 0 0 0;
+  margin: -70px 0 0 0;
   -ms-transform: rotate(90deg);
   -webkit-transform: rotate(90deg);
   transform: rotate(90deg) translate(0,78px);
@@ -96,11 +96,11 @@
 
 .container{
   display: grid;
-  grid-template-rows: repeat(2, auto);
-  grid-template-columns: repeat(2, auto);
+  grid-template-rows: repeat(3, auto);
+  grid-template-columns: repeat(3, auto);
   grid-template-areas: 
-    "stick stick"
-    "wind score";
+    "stick stick ."
+    "wind score change";
   vertical-align: middle;
   text-align: center;
 }
@@ -171,6 +171,15 @@
   grid-area: score;
   width: 200px;
   margin: auto;
+}
+.change{
+  grid-area: change;
+  width: 0px;
+  visibility: hidden;
+  font-size: 30px;
+  padding-top: 30px;
+  text-align: left;
+  transform: translate(-30px,-15px);
 }
 .now{
   grid-area: now;
