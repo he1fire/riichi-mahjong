@@ -113,10 +113,10 @@ function ChangeScore(who, much){
     var timecnt=0;
     var repeat=setInterval(function() {
         score.innerText=Math.floor(arr[timecnt]/100);
-        if (arr[timecnt]%100!=0)
+        if (arr[timecnt]%100>=10)
             score_00.innerText=arr[timecnt]%100;
         else
-            score_00.innerText='00';
+            score_00.innerText='0'+arr[timecnt]%100;
         timecnt++;
         if (timecnt>=50){
             clearInterval(repeat);
