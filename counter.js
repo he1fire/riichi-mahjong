@@ -174,9 +174,19 @@ function roll(){
     var dice1=document.querySelector('#dice1');
     var dice2=document.querySelector('#dice2');
     var dicesum=document.querySelector('#dicesum');
+    var light=['#leftlight', '#downlight', '#rightlight', '#uplight'];
+    var winds=['#DownPerson_Wind', '#RightPerson_Wind', '#UpPerson_Wind', '#LeftPerson_Wind'];
     var ran1=0, ran2=0;
     var timecnt=0;
+    var seatwind=0;
     dicesum.innerText='?';
+    for (var i=0;i<4;i++){
+        document.querySelector(light[i]).style.visibility='';
+    }
+    for (var i=0;i<4;i++){
+        if (document.querySelector(winds[i]).innerText==='東')
+            seatwind=i;
+    }
     var repeat=setInterval(function() {
         ran1=Math.floor(Math.random()*6)+1;
         ran2=Math.floor(Math.random()*6)+1;
@@ -186,8 +196,15 @@ function roll(){
         if (timecnt>=10){
             clearInterval(repeat);
             dicesum.innerText=ran1+ran2;
+            for (var i=0;i<4;i++){
+                if (i===(ran1+ran2+seatwind)%4)
+                    document.querySelector(light[i]).style.visibility='visible';
+                else
+                    document.querySelector(light[i]).style.visibility='';
+            }
         }
     }, 50);
+    
 }
 
 function makedice(num){

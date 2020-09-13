@@ -142,11 +142,13 @@
 
 .container_roll{
   display: grid;
-  grid-template-rows: repeat(2, auto);
-  grid-template-columns: repeat(5, 100px);
+  grid-template-rows: 15px 82px 15px auto;
+  grid-template-columns: repeat(4, 82px) 15px 82px 15px;
   grid-template-areas:
-    "dice_1 plus dice_2 equal sum"
-    "roll roll roll roll roll";
+    "dice_1 plus dice_2 equal . updice ."
+    "dice_1 plus dice_2 equal leftdice sum rightdice"
+    "dice_1 plus dice_2 equal . downdice ."
+    "roll roll roll roll roll roll roll";
   vertical-align: middle;
   text-align: center;
   margin: 20px;
@@ -283,15 +285,53 @@
 }
 .plus{
   grid-area: plus;
-  font-size: 80px;
+  font-size: 50px;
+  line-height: 112px;
+  vertical-align: middle;
 }
 .equal{
   grid-area: equal;
-  font-size: 80px;
+  font-size: 50px;
+  line-height: 112px;
+  vertical-align: middle;
 }
 .sum{
   grid-area: sum;
-  font-size: 80px;
+  font-size: 50px;
+  line-height: 82px;
+  vertical-align: middle;
+}
+.downdice{
+  grid-area: downdice;
+  visibility: hidden;
+  font-size: 15px;
+  line-height: 15px;
+  vertical-align: middle;
+  color: red;
+}
+.rightdice{
+  grid-area: rightdice;
+  visibility: hidden;
+  font-size: 15px;
+  line-height: 82px;
+  vertical-align: middle;
+  color: red;
+}
+.updice{
+  grid-area: updice;
+  visibility: hidden;
+  font-size: 15px;
+  line-height: 15px;
+  vertical-align: middle;
+  color: red;
+}
+.leftdice{
+  grid-area: leftdice;
+  visibility: hidden;
+  font-size: 15px;
+  line-height: 82px;
+  vertical-align: middle;
+  color: red;
 }
 .roll{
   grid-area: roll;

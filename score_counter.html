@@ -352,6 +352,10 @@
     document.querySelector('#dice1').innerHTML='';
     document.querySelector('#dice2').innerHTML='';
     document.querySelector('#dicesum').innerText='?';
+    var light=['#leftlight','#downlight','#rightlight','#uplight'];
+    for (var i=0;i<4;i++){
+        document.querySelector(light[i]).style.visibility='';
+    }
   }
   ">
     <div class="modal_content">
@@ -371,6 +375,18 @@
         </div>
         <div class="roll" onclick="roll();">
           굴리기
+        </div>
+        <div class="downdice" id="downlight">
+          ▼
+        </div>
+        <div class="rightdice" id="rightlight">
+          ▶
+        </div>
+        <div class="updice" id="uplight">
+          ▲
+        </div>
+        <div class="leftdice" id="leftlight">
+          ◀
         </div>
       </div>
     </div>
