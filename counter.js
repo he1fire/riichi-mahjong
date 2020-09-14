@@ -411,7 +411,7 @@ function ron_General(fan, bu){
         }
         for (var i=0;i<4;i++){ //점수계산
             if (i===whowin){
-                document.querySelector(scorestmp[i]).innerText=CalculateScore(fan, bu, document.querySelector(winds[whowin]).innerText, document.querySelector(winds[wholose]).innerText, 'ron', 1);
+                document.querySelector(scorestmp[i]).innerText='+'+CalculateScore(fan, bu, document.querySelector(winds[whowin]).innerText, document.querySelector(winds[wholose]).innerText, 'ron', 1);
                 document.querySelector(scorestmp[i]).style.color='lawngreen';
             }
             else if (i===wholose){
@@ -456,7 +456,7 @@ function tsumo_General(fan, bu){
         }
         for (var i=0;i<4;i++){ //점수계산
             if (i===whowin){
-                document.querySelector(scorestmp[i]).innerText=CalculateScore(fan, bu, document.querySelector(winds[i]).innerText, document.querySelector(winds[i]).innerText, 'tsumo', 1);
+                document.querySelector(scorestmp[i]).innerText='+'+CalculateScore(fan, bu, document.querySelector(winds[i]).innerText, document.querySelector(winds[i]).innerText, 'tsumo', 1);
                 document.querySelector(scorestmp[i]).style.color='lawngreen';
             }
             else{
@@ -486,7 +486,7 @@ function ryuukyoku_General(){
     if (Alltenpai>0 && Alltenpai<4){ //실 점수계산
         for (var i=0;i<4;i++){
             if (tenpai[i]===1){
-                document.querySelector(scorestmp[i]).innerText=3000/Alltenpai;
+                document.querySelector(scorestmp[i]).innerText='+'+3000/Alltenpai;
                 document.querySelector(scorestmp[i]).style.color='lawngreen';
             }
             else{
