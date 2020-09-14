@@ -2,7 +2,7 @@
 <html>
 
 <head>
-  <title>점수계산기</title>
+  <title>점수 계산기</title>
   <meta charset="utf-8">
   <link rel="stylesheet" href="counter.css">
   <script src="counter.js"></script>
@@ -118,11 +118,11 @@
   <div id="Roll_Dice" onclick="dice();">
     <div class="container_dice" id="opendice">
       <script>document.querySelector('#opendice').innerHTML=makedice(5);</script>
-    </div>
+    </div> 
   </div>
-  <!-- 기록버튼 -->
-  <div id="Show_Record" onclick="record();">
-    <div class="container_record" id="openrecord">
+  <!-- 옵션버튼 -->
+  <div id="Show_Option" onclick="option();">
+    <div class="container_option" id="openoption">
       <div class="circle_button" style="grid-area: _1;"></div>
       <div class="circle_button" style="grid-area: _2;"></div>
       <div class="circle_button" style="grid-area: _3;"></div>
@@ -208,9 +208,16 @@
         판:
         <select id="fan_ron">
           <script>
-            for (var i=1;i<=13;i++)
+            for (var i=1;i<=12;i++)
               document.querySelector('#fan_ron').innerHTML+='<option>'+i+'</option>';
           </script>
+          <option>13+</option>
+          <option>역만</option>
+          <option>2배역만</option>
+          <option>3배역만</option>
+          <option>4배역만</option>
+          <option>5배역만</option>
+          <option>6배역만</option>
         </select>
       </div>
       <div style="font-size: 40px; margin: 20px;">
@@ -224,8 +231,9 @@
         </select>
       </div>
       <div style="font-size: 20px;" onclick="
-      var fan=document.querySelector('#fan_ron').options[document.querySelector('#fan_ron').selectedIndex].text;
-      var bu=document.querySelector('#bu_ron').options[document.querySelector('#bu_ron').selectedIndex].text;
+      var arr=[20, 25, 30, 40, 50, 60, 70, 80, 90, 100, 110];
+      var fan=document.querySelector('#fan_ron').options[document.querySelector('#fan_ron').selectedIndex].index+1;
+      var bu=arr[document.querySelector('#bu_ron').options[document.querySelector('#bu_ron').selectedIndex].index];
       ron_General(fan, bu);
       ">
         OK
@@ -268,7 +276,7 @@
     if (event.target==this){
       this.style.display='';
       makeunchk(['down', 'right', 'up', 'left'],'check_tsumo');
-      document.querySelector('#fan_tsumo').selectedIndex=0;
+      document.querySelector('#fan_tsumo').selectedIndex=0; 
       document.querySelector('#bu_tsumo').selectedIndex=0;
     }
   ">
@@ -277,9 +285,16 @@
         판:
         <select id="fan_tsumo">
           <script>
-            for (var i=1;i<=13;i++)
+            for (var i=1;i<=12;i++)
               document.querySelector('#fan_tsumo').innerHTML+='<option>'+i+'</option>';
           </script>
+          <option>13+</option>
+          <option>역만</option>
+          <option>2배역만</option>
+          <option>3배역만</option>
+          <option>4배역만</option>
+          <option>5배역만</option>
+          <option>6배역만</option>
         </select>
       </div>
       <div style="font-size: 40px; margin: 20px;">
@@ -293,8 +308,9 @@
         </select>
       </div>
       <div style="font-size: 20px;" onclick="
-      var fan=document.querySelector('#fan_tsumo').options[document.querySelector('#fan_tsumo').selectedIndex].text;
-      var bu=document.querySelector('#bu_tsumo').options[document.querySelector('#bu_tsumo').selectedIndex].text;
+       var arr=[20, 25, 30, 40, 50, 60, 70, 80, 90, 100, 110];
+      var fan=document.querySelector('#fan_tsumo').options[document.querySelector('#fan_tsumo').selectedIndex].index+1;
+      var bu=arr[document.querySelector('#bu_tsumo').options[document.querySelector('#bu_tsumo').selectedIndex].index];
       tsumo_General(fan, bu);
       ">
         OK
@@ -392,6 +408,21 @@
     </div>
   </div>
 
+  <!-- 옵션 -->
+  <div class="modal" id="Modal_option" onclick="
+    if (event.target==this)
+      this.style.display='';
+  ">
+    <div class="modal_content">
+      <div style="font-size: 40px; margin: 20px;" onclick="modify();">
+        점수 수정
+      </div>
+      <div style="font-size: 40px; margin: 20px;" onclick="record();">
+        점수 기록
+      </div>
+    </div>
+  </div>
+  <!-- 점수 기록 -->
   <div class="modal" id="Modal_record" onclick="
   if (event.target==this){
     this.style.display='';

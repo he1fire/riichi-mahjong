@@ -59,7 +59,7 @@
   bottom: 5px;
   right: 5px;
 }
-#Show_Record{
+#Show_Option{
   position: fixed;
   text-align: center;
   vertical-align: bottom;
@@ -151,7 +151,7 @@
     "roll roll roll roll roll roll roll";
   vertical-align: middle;
   text-align: center;
-  margin: 20px;
+  margin: 5px;
 }
 .container_dice{
   display: grid;
@@ -175,7 +175,7 @@
   margin: auto;
 }
 
-.container_record{
+.container_option{
   display: grid;
   width:35px;
   height:35px;
@@ -381,11 +381,14 @@ select {
   font-size: 40px;
   border: 0px solid black;
   border-radius: 0px;
+  width: 160px;
+  font-family: 'Noto Serif KR', serif;
 }
 option{
   font-size: 20px;
   border: 0px solid black;
   border-radius: 0px;
+  font-family: 'Noto Serif KR', serif;
 }
 @media (orientation: portrait) {
 	html {

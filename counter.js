@@ -45,7 +45,7 @@ function CalculateScore(Y, X, win, lose, how, plus){
     var Allstick=document.querySelector('#riichi_count');
     var renjang=document.querySelector('#renjang_count');
     var ret=0, ron=0, tsumo1=0, tsumo2=0;
-    var arr=[2000,3000,3000,4000,4000,4000,6000,6000,8000];
+    var arr=[2000,3000,3000,4000,4000,4000,6000,6000,8000,8000,16000,24000,32000,40000,48000];
     if (5<=Y){
         ron=tsumo1=tsumo2=arr[Y-5];
     }
@@ -165,8 +165,15 @@ function dice(){
     dice.style.display='inline';
 }
 
+function option(){
+    var option=document.querySelector('#Modal_option');
+    option.style.display='inline';
+}
+
 function record(){
+    var option=document.querySelector('#Modal_option');
     var record=document.querySelector('#Modal_record');
+    option.style.display='';
     record.style.display='inline';
 }
 
