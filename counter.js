@@ -169,7 +169,7 @@ function modify(){
     for (var i=0;i<4;i++){
         var tmp1='#name'+String(i);
         var tmp2='#score'+String(i);
-        document.querySelector(tmp1).value=(document.querySelector(names[i]).innerText).replace(/ /g,"");
+        document.querySelector(tmp1).value=document.querySelector(names[i]).innerText;
         document.querySelector(tmp2).value=(document.querySelector(scores[i]).innerText)*100;
     }
 }
@@ -306,6 +306,7 @@ function ron3(){
     var ron3=document.querySelector('#Modal_ron3');
     var checks1=['#downcheck_ron1','#rightcheck_ron1','#upcheck_ron1','#leftcheck_ron1'];
     var checks2=['#downcheck_ron2','#rightcheck_ron2','#upcheck_ron2','#leftcheck_ron2'];
+    var names=['#DownPerson_Name', '#RightPerson_Name', '#UpPerson_Name', '#LeftPerson_Name'];
     var whowin=[0,0,0,0], wholose=-1;
     for (var i=0;i<4;i++){ //화료체크
         if (document.querySelector(checks1[i]).style.color==='red')
@@ -328,7 +329,7 @@ function ron3(){
     else{
         for (var i=wholose+1;i<wholose+4;i++){
             if (whowin[i%4]===1){
-                document.querySelector('#name_ron').innerText=i%4;
+                document.querySelector('#name_ron').innerText=document.querySelector(names[i%4]).innerText+'의 점수를 입력해주세요.';
                 document.querySelector('#who_ron').innerText=i%4;
                 break;
             }
@@ -340,6 +341,7 @@ function ron4(){
     var arr=[20, 25, 30, 40, 50, 60, 70, 80, 90, 100, 110];
     var checks1=['#downcheck_ron1','#rightcheck_ron1','#upcheck_ron1','#leftcheck_ron1'];
     var checks2=['#downcheck_ron2','#rightcheck_ron2','#upcheck_ron2','#leftcheck_ron2'];
+    var names=['#DownPerson_Name', '#RightPerson_Name', '#UpPerson_Name', '#LeftPerson_Name'];
     var fan=document.querySelector('#fancnt_ron').innerText.split(',');
     var bu=document.querySelector('#bucnt_ron').innerText.split(',');
     var now=Number(document.querySelector('#who_ron').innerText);
@@ -349,18 +351,18 @@ function ron4(){
     }
     fan[now]=document.querySelector('#fan_ron').options[document.querySelector('#fan_ron').selectedIndex].index+1;
     bu[now]=arr[document.querySelector('#bu_ron').options[document.querySelector('#bu_ron').selectedIndex].index];
+    document.querySelector('#fancnt_ron').innerText='';
+    document.querySelector('#bucnt_ron').innerText='';
+    for (var j=0;j<4;j++){
+        document.querySelector('#fancnt_ron').innerText+=String(fan[j])+',';
+        document.querySelector('#bucnt_ron').innerText+=String(bu[j])+',';
+    }
     for (var i=now+1;i<now+4;i++){
         if (document.querySelector(checks1[i%4]).style.color==='red'){
-            document.querySelector('#name_ron').innerText=i%4;
+            document.querySelector('#name_ron').innerText=document.querySelector(names[i%4]).innerText+'의 점수를 입력해주세요.';
             document.querySelector('#who_ron').innerText=i%4;
             document.querySelector('#fan_ron').selectedIndex=0;
             document.querySelector('#bu_ron').selectedIndex=0;
-            document.querySelector('#fancnt_ron').innerText='';
-            document.querySelector('#bucnt_ron').innerText='';
-            for (var j=0;j<4;j++){
-                document.querySelector('#fancnt_ron').innerText+=String(fan[j])+',';
-                document.querySelector('#bucnt_ron').innerText+=String(bu[j])+',';
-            }
             break;
         }
         else if (document.querySelector(checks2[i%4]).style.color==='red'){
@@ -377,14 +379,17 @@ function tsumo2(){
     var tsumo1=document.querySelector('#Modal_tsumo1');
     var tsumo2=document.querySelector('#Modal_tsumo2');
     var checks=['#downcheck_tsumo','#rightcheck_tsumo','#upcheck_tsumo','#leftcheck_tsumo'];
+    var names=['#DownPerson_Name', '#RightPerson_Name', '#UpPerson_Name', '#LeftPerson_Name'];
     var whowin=-1;
     for (var i=0;i<4;i++){
         if (document.querySelector(checks[i]).style.color==='red')
-            whowin=1;
+            whowin=i;
     }
     tsumo1.style.display='';
-    if (whowin===1)
+    if (whowin!==-1){
+        document.querySelector('#name_tsumo').innerText=document.querySelector(names[whowin]).innerText+'의 점수를 입력해주세요.';
         tsumo2.style.display='inline';
+    }
     else{
         document.querySelector('#Modal_alertText').innerText='쯔모한 사람이 선택되지 않았습니다.';
         document.querySelector('#Modal_alert').style.display='inline';
@@ -434,7 +439,7 @@ function ron_General(fan, bu){
         for (var i=wholose;i<wholose+4;i++){
             if (document.querySelector(checks1[i%4]).style.color==='red'){
                 document.querySelector(checks1[i%4]).style.color='';
-                whowin[i]=1;
+                whowin[i%4]=1;
                 Allwin++;
                 if (firstwin===-1)
                     firstwin=i%4;
