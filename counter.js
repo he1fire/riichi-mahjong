@@ -472,6 +472,7 @@ function ryuukyoku_General(){
     var ryuukyoku2=document.querySelector('#Modal_ryuukyoku2');
     var checks=['#downcheck_ryuukyoku','#rightcheck_ryuukyoku','#upcheck_ryuukyoku','#leftcheck_ryuukyoku'];
     var scorestmp=['#DownPerson_ScoreTmp','#RightPerson_ScoreTmp','#UpPerson_ScoreTmp','#LeftPerson_ScoreTmp'];
+    var winds=['#DownPerson_Wind', '#RightPerson_Wind', '#UpPerson_Wind', '#LeftPerson_Wind'];
     var tenpai=[0,0,0,0];
     var Alltenpai=0;
     ryuukyoku2.style.display='';
@@ -500,7 +501,10 @@ function ryuukyoku_General(){
             document.querySelector(scorestmp[i]).style.color='black';
         }
     }
-    document.querySelector('#what').innerText='ryuukyoku_General';
+    if (Alltenpai===0)
+        document.querySelector('#what').innerText='ryuukyoku_NoTenpai';
+    else
+        document.querySelector('#what').innerText='ryuukyoku_Tenpai';
     document.querySelector('#Modal_showscore').style.display='inline';
 }
 function ryuukyoku_Special(){
@@ -548,13 +552,17 @@ function ok_score(changed){
             renjang.innerText=0;
         Allstick.innerText=0;
     }
-    else if (what.innerText==='ryuukyoku_General'){
+    else if (what.innerText==='ryuukyoku_Tenpai'){
         for (var i=0;i<4;i++){ //친 체크후 바람바꾸기
             if (document.querySelector(winds[i]).innerText==='東' && changed[i]<0){
                 ChangeSeat();
                 break;
             } 
         }
+        renjang.innerText++;
+    }
+    else if (what.innerText==='ryuukyoku_NoTenpai'){
+        ChangeSeat();
         renjang.innerText++;
     }
     else if (what.innerText==='ryuukyoku_Special'){
