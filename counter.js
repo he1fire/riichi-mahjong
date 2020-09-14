@@ -185,7 +185,7 @@ function save(){
         var tmp1='#name'+String(i);
         var tmp2='#score'+String(i);
         document.querySelector(names[i]).innerText=document.querySelector(tmp1).value;
-        if (document.querySelector(scores[i]).innerText!==parseInt(document.querySelector(tmp2).value/100)){
+        if (Number(document.querySelector(scores[i]).innerText)!==parseInt(document.querySelector(tmp2).value/100)){
             document.querySelector(scores[i]).innerText=parseInt(document.querySelector(tmp2).value/100);
             chkscore=1;
         }
