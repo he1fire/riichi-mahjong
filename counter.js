@@ -42,8 +42,6 @@ function ChangeSeat(){
 }
 
 function CalculateScore(Y, X, win, lose, how, plus){
-    var Allstick=document.querySelector('#riichi_count');
-    var renjang=document.querySelector('#renjang_count');
     var ret=0, ron=0, tsumo1=0, tsumo2=0;
     var arr=[2000,3000,3000,4000,4000,4000,6000,6000,8000,8000,16000,24000,32000,40000,48000];
     if ((Y===3 && X>=70) || (Y===4 && X>=40))
@@ -79,16 +77,6 @@ function CalculateScore(Y, X, win, lose, how, plus){
             else
                 ret=tsumo2;
         }
-    }
-    if (plus===1){
-        ret+=Allstick.innerText*1000;
-        ret+=renjang.innerText*300;
-    }
-    else{
-        if (how==='ron')
-            ret+=renjang.innerText*300;
-        else
-            ret+=renjang.innerText*100;
     }
     return ret;
 }
@@ -294,17 +282,23 @@ function ron2(){
     var ron1=document.querySelector('#Modal_ron1');
     var ron2=document.querySelector('#Modal_ron2');
     var checks=['#downcheck_ron1','#rightcheck_ron1','#upcheck_ron1','#leftcheck_ron1'];
-    var whowin=-1;
+    var whowin=0;
     for (var i=0;i<4;i++){
         if (document.querySelector(checks[i]).style.color==='red')
-            whowin=1;
+            whowin++;
     }
     ron1.style.display='';
-    if (whowin===1)
-        ron2.style.display='inline';
-    else{
+    if (whowin===0){
         document.querySelector('#Modal_alertText').innerText='론한 사람이 선택되지 않았습니다.';
         document.querySelector('#Modal_alert').style.display='inline';
+    }
+    else if (whowin===4){
+        makeunchk(['down', 'right', 'up', 'left'],'check_ron1');
+        document.querySelector('#Modal_alertText').innerText='론한 사람이 4명일 수 없습니다.';
+        document.querySelector('#Modal_alert').style.display='inline';
+    }
+    else{
+        ron2.style.display='inline';
     }
 }
 function ron3(){
@@ -312,37 +306,69 @@ function ron3(){
     var ron3=document.querySelector('#Modal_ron3');
     var checks1=['#downcheck_ron1','#rightcheck_ron1','#upcheck_ron1','#leftcheck_ron1'];
     var checks2=['#downcheck_ron2','#rightcheck_ron2','#upcheck_ron2','#leftcheck_ron2'];
-    var whowin=-1, wholose=-1;
+    var whowin=[0,0,0,0], wholose=-1;
     for (var i=0;i<4;i++){ //화료체크
         if (document.querySelector(checks1[i]).style.color==='red')
-            whowin=i;
+            whowin[i]=1;
         if (document.querySelector(checks2[i]).style.color==='red')
             wholose=i;
     }
     ron2.style.display='';
     if (wholose===-1){
-        for (var i=0;i<4;i++){ 
-            if (document.querySelector(checks1[i]).style.color==='red')
-                document.querySelector(checks1[i]).style.color='';
-        }
+        makeunchk(['down', 'right', 'up', 'left'],'check_ron1');
         document.querySelector('#Modal_alertText').innerText='방총당한 사람이 선택되지 않았습니다.';
         document.querySelector('#Modal_alert').style.display='inline';
     }
-    else if (whowin===wholose){
-        for (var i=0;i<4;i++){ 
-            if (document.querySelector(checks1[i]).style.color==='red')
-                document.querySelector(checks1[i]).style.color='';
-            if (document.querySelector(checks2[i]).style.color==='red')
-                document.querySelector(checks2[i]).style.color='';
-        }
+    else if (whowin[wholose]===1){
+        makeunchk(['down', 'right', 'up', 'left'],'check_ron1');
+        makeunchk(['down', 'right', 'up', 'left'],'check_ron2');
         document.querySelector('#Modal_alertText').innerText='론한 사람과 방총당한 사람이 같습니다.';
         document.querySelector('#Modal_alert').style.display='inline';
     }
     else{
+        for (var i=wholose+1;i<wholose+4;i++){
+            if (whowin[i%4]===1){
+                document.querySelector('#name_ron').innerText=i%4;
+                document.querySelector('#who_ron').innerText=i%4;
+                break;
+            }
+        }
         ron3.style.display='inline';
     }
 }
-
+function ron4(){
+    var arr=[20, 25, 30, 40, 50, 60, 70, 80, 90, 100, 110];
+    var checks1=['#downcheck_ron1','#rightcheck_ron1','#upcheck_ron1','#leftcheck_ron1'];
+    var checks2=['#downcheck_ron2','#rightcheck_ron2','#upcheck_ron2','#leftcheck_ron2'];
+    var fan=document.querySelector('#fancnt_ron').innerText.split(',');
+    var bu=document.querySelector('#bucnt_ron').innerText.split(',');
+    var now=Number(document.querySelector('#who_ron').innerText);
+    for (var i=0;i<4;i++){
+        fan[i]=Number(fan[i]);
+        bu[i]=Number(bu[i]);
+    }
+    fan[now]=document.querySelector('#fan_ron').options[document.querySelector('#fan_ron').selectedIndex].index+1;
+    bu[now]=arr[document.querySelector('#bu_ron').options[document.querySelector('#bu_ron').selectedIndex].index];
+    for (var i=now+1;i<now+4;i++){
+        if (document.querySelector(checks1[i%4]).style.color==='red'){
+            document.querySelector('#name_ron').innerText=i%4;
+            document.querySelector('#who_ron').innerText=i%4;
+            document.querySelector('#fan_ron').selectedIndex=0;
+            document.querySelector('#bu_ron').selectedIndex=0;
+            document.querySelector('#fancnt_ron').innerText='';
+            document.querySelector('#bucnt_ron').innerText='';
+            for (var j=0;j<4;j++){
+                document.querySelector('#fancnt_ron').innerText+=String(fan[j])+',';
+                document.querySelector('#bucnt_ron').innerText+=String(bu[j])+',';
+            }
+            break;
+        }
+        else if (document.querySelector(checks2[i%4]).style.color==='red'){
+            ron_General(fan, bu);
+            break;
+        }
+    }
+}
 function tsumo1(){
     var tsumo1=document.querySelector('#Modal_tsumo1');
     tsumo1.style.display='inline';
@@ -377,48 +403,59 @@ function ryuukyoku2(){
 }
 
 function ron_General(fan, bu){
-    fan=Number(fan);
-    bu=Number(bu);
     var ron3=document.querySelector('#Modal_ron3');
     var winds=['#DownPerson_Wind', '#RightPerson_Wind', '#UpPerson_Wind', '#LeftPerson_Wind'];
     var checks1=['#downcheck_ron1','#rightcheck_ron1','#upcheck_ron1','#leftcheck_ron1'];
     var checks2=['#downcheck_ron2','#rightcheck_ron2','#upcheck_ron2','#leftcheck_ron2'];
     var scorestmp=['#DownPerson_ScoreTmp','#RightPerson_ScoreTmp','#UpPerson_ScoreTmp','#LeftPerson_ScoreTmp'];
-    var whowin=-1, wholose=-1;
+    var Allstick=document.querySelector('#riichi_count');
+    var renjang=document.querySelector('#renjang_count');
+    var Allwin=0, whowin=[0,0,0,0], firstwin=-1, wholose=-1, losepoint=0, impossible=1;
     ron3.style.display='';
     document.querySelector('#fan_ron').selectedIndex=0;
     document.querySelector('#bu_ron').selectedIndex=0;
-    if (fan===1 && bu<=25){ //불가능한 점수
-        for (var i=0;i<4;i++){ 
-            if (document.querySelector(checks1[i]).style.color==='red')
-                document.querySelector(checks1[i]).style.color='';
-            if (document.querySelector(checks2[i]).style.color==='red')
-                document.querySelector(checks2[i]).style.color='';
+    for (var i=0;i<4;i++){
+        if (fan[i]===1 && bu[i]<=25){ //불가능한 점수
+            makeunchk(['down', 'right', 'up', 'left'],'check_ron1');
+            makeunchk(['down', 'right', 'up', 'left'],'check_ron2');
+            document.querySelector('#Modal_alertText').innerText='불가능한 점수입니다.';
+            document.querySelector('#Modal_alert').style.display='inline';
+            impossible=0;
+            break;
         }
-        document.querySelector('#Modal_alertText').innerText='불가능한 점수입니다.';
-        document.querySelector('#Modal_alert').style.display='inline';
     }
-    else{
+    if (impossible===1){
         for (var i=0;i<4;i++){ //화료체크
-            if (document.querySelector(checks1[i]).style.color==='red'){
-                document.querySelector(checks1[i]).style.color='';
-                whowin=i;
-            }
             if (document.querySelector(checks2[i]).style.color==='red'){
                 document.querySelector(checks2[i]).style.color='';
                 wholose=i;
             }
         }
+        for (var i=wholose;i<wholose+4;i++){
+            if (document.querySelector(checks1[i%4]).style.color==='red'){
+                document.querySelector(checks1[i%4]).style.color='';
+                whowin[i]=1;
+                Allwin++;
+                if (firstwin===-1)
+                    firstwin=i%4;
+            }
+        }
         for (var i=0;i<4;i++){ //점수계산
-            if (i===whowin){
-                document.querySelector(scorestmp[i]).innerText='+'+CalculateScore(fan, bu, document.querySelector(winds[whowin]).innerText, document.querySelector(winds[wholose]).innerText, 'ron', 1);
+            if (whowin[i]===1){
+                if (firstwin===i)
+                    document.querySelector(scorestmp[i]).innerText='+'+(CalculateScore(fan[i], bu[i], document.querySelector(winds[i]).innerText, document.querySelector(winds[wholose]).innerText, 'ron', 1)+Number(Allstick.innerText)*1000+Number(renjang.innerText)*300);
+                else
+                    document.querySelector(scorestmp[i]).innerText='+'+(CalculateScore(fan[i], bu[i], document.querySelector(winds[i]).innerText, document.querySelector(winds[wholose]).innerText, 'ron', 1)+Number(renjang.innerText)*300);
+                losepoint-=CalculateScore(fan[i], bu[i], document.querySelector(winds[i]).innerText, document.querySelector(winds[wholose]).innerText, 'ron', 1);
                 document.querySelector(scorestmp[i]).style.color='lawngreen';
             }
-            else if (i===wholose){
-                document.querySelector(scorestmp[i]).innerText=-CalculateScore(fan, bu, document.querySelector(winds[whowin]).innerText, document.querySelector(winds[wholose]).innerText, 'ron', 0);
+        }
+        for (var i=0;i<4;i++){
+            if (i===wholose){
+                document.querySelector(scorestmp[i]).innerText=losepoint-Number(renjang.innerText)*Allwin*300;
                 document.querySelector(scorestmp[i]).style.color='red';
             }
-            else{
+            else if (whowin[i]===0){
                 document.querySelector(scorestmp[i]).innerText=0;
                 document.querySelector(scorestmp[i]).style.color='black';
             }
@@ -435,15 +472,14 @@ function tsumo_General(fan, bu){
     var winds=['#DownPerson_Wind', '#RightPerson_Wind', '#UpPerson_Wind', '#LeftPerson_Wind'];
     var checks=['#downcheck_tsumo','#rightcheck_tsumo','#upcheck_tsumo','#leftcheck_tsumo'];
     var scorestmp=['#DownPerson_ScoreTmp','#RightPerson_ScoreTmp','#UpPerson_ScoreTmp','#LeftPerson_ScoreTmp'];
+    var Allstick=document.querySelector('#riichi_count');
+    var renjang=document.querySelector('#renjang_count');
     var whowin=-1;
     tsumo2.style.display='';
     document.querySelector('#fan_tsumo').selectedIndex=0;
     document.querySelector('#bu_tsumo').selectedIndex=0;
     if (fan===1 && bu<=25){ //불가능한 점수
-        for (var i=0;i<4;i++){ 
-            if (document.querySelector(checks[i]).style.color==='red')
-                document.querySelector(checks[i]).style.color='';
-        }
+        makeunchk(['down', 'right', 'up', 'left'],'check_tsumo');
         document.querySelector('#Modal_alertText').innerText='불가능한 점수입니다.';
         document.querySelector('#Modal_alert').style.display='inline';
     }
@@ -456,11 +492,11 @@ function tsumo_General(fan, bu){
         }
         for (var i=0;i<4;i++){ //점수계산
             if (i===whowin){
-                document.querySelector(scorestmp[i]).innerText='+'+CalculateScore(fan, bu, document.querySelector(winds[i]).innerText, document.querySelector(winds[i]).innerText, 'tsumo', 1);
+                document.querySelector(scorestmp[i]).innerText='+'+(CalculateScore(fan, bu, document.querySelector(winds[i]).innerText, document.querySelector(winds[i]).innerText, 'tsumo', 1)+Number(Allstick.innerText)*1000+Number(renjang.innerText)*300);
                 document.querySelector(scorestmp[i]).style.color='lawngreen';
             }
             else{
-                document.querySelector(scorestmp[i]).innerText=-CalculateScore(fan, bu, document.querySelector(winds[whowin]).innerText, document.querySelector(winds[i]).innerText, 'tsumo', 0);
+                document.querySelector(scorestmp[i]).innerText=-CalculateScore(fan, bu, document.querySelector(winds[whowin]).innerText, document.querySelector(winds[i]).innerText, 'tsumo', 0)-Number(renjang.innerText)*100;
                 document.querySelector(scorestmp[i]).style.color='red';
             }
         }
@@ -472,7 +508,6 @@ function ryuukyoku_General(){
     var ryuukyoku2=document.querySelector('#Modal_ryuukyoku2');
     var checks=['#downcheck_ryuukyoku','#rightcheck_ryuukyoku','#upcheck_ryuukyoku','#leftcheck_ryuukyoku'];
     var scorestmp=['#DownPerson_ScoreTmp','#RightPerson_ScoreTmp','#UpPerson_ScoreTmp','#LeftPerson_ScoreTmp'];
-    var winds=['#DownPerson_Wind', '#RightPerson_Wind', '#UpPerson_Wind', '#LeftPerson_Wind'];
     var tenpai=[0,0,0,0];
     var Alltenpai=0;
     ryuukyoku2.style.display='';

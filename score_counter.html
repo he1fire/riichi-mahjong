@@ -142,17 +142,16 @@
         <div class="explain">
           론한 사람을 선택해주세요.
         </div>
-        <div class="downcheck" id="downcheck_ron1" onclick="makechk(this); 
-        makeunchk(['right', 'up', 'left'],'check_ron1');">
+        <div class="downcheck" id="downcheck_ron1" onclick="makechk(this);">
           ▼
         </div>
-        <div class="rightcheck" id="rightcheck_ron1" onclick="makechk(this); makeunchk(['up', 'left', 'down'], 'check_ron1');">
+        <div class="rightcheck" id="rightcheck_ron1" onclick="makechk(this);">
           ▶
         </div>
-        <div class="upcheck" id="upcheck_ron1" onclick="makechk(this); makeunchk(['left', 'down', 'right'], 'check_ron1');">
+        <div class="upcheck" id="upcheck_ron1" onclick="makechk(this);">
           ▲
         </div>
-        <div class="leftcheck" id="leftcheck_ron1" onclick="makechk(this); makeunchk(['down', 'right', 'up'],'check_ron1');">
+        <div class="leftcheck" id="leftcheck_ron1" onclick="makechk(this);">
           ◀
         </div>
         <div class="ok"  onclick="ron2();">
@@ -204,6 +203,9 @@
     }
   ">
     <div class="modal_content">
+      <div id='name_ron'>
+        -1
+      </div>
       <div style="font-size: 40px; margin: 20px;">
         판:
         <select id="fan_ron">
@@ -230,13 +232,17 @@
           </script>
         </select>
       </div>
-      <div style="font-size: 20px;" onclick="
-      var arr=[20, 25, 30, 40, 50, 60, 70, 80, 90, 100, 110];
-      var fan=document.querySelector('#fan_ron').options[document.querySelector('#fan_ron').selectedIndex].index+1;
-      var bu=arr[document.querySelector('#bu_ron').options[document.querySelector('#bu_ron').selectedIndex].index];
-      ron_General(fan, bu);
-      ">
+      <div style="font-size: 20px;" onclick="ron4();">
         OK
+      </div>
+      <div id='who_ron' style="display: none;">
+        0
+      </div>
+      <div id='fancnt_ron' style="display: none;">
+        0,0,0,0,
+      </div>
+      <div id='bucnt_ron' style="display: none;">
+        0,0,0,0,
       </div>
     </div>
   </div>
