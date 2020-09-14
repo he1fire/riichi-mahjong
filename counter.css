@@ -196,13 +196,28 @@
   border-radius:5px;
   margin: auto;
 }
-.container_table{
+
+.container_record{
   display: grid;
-  grid-template-rows: 50px 200px;
+  grid-template-rows: 35px 200px;
   grid-template-columns: 120px repeat(4, 100px);
   grid-template-areas: 
   ". downname rightname upname leftname"
   "when downrecord rightrecord uprecord leftrecord";
+  vertical-align: middle;
+  text-align: center;
+}
+
+.container_modify{
+  display: grid;
+  grid-template-rows: repeat(5, auto);
+  grid-template-columns: repeat(4, auto);
+  grid-template-areas:
+  "name name name name"
+  "name0 name1 name2 name3"
+  "score score score score"
+  "score0 score1 score2 score3"
+  "ok ok ok ok";
   vertical-align: middle;
   text-align: center;
 }
@@ -389,6 +404,12 @@ option{
   border: 0px solid black;
   border-radius: 0px;
   font-family: 'Noto Serif KR', serif;
+}
+input[type='text'], input[type='number']{
+  font-size: 15px;
+  width: 100px;
+  font-family: 'Noto Serif KR', serif;
+  text-align: center;
 }
 @media (orientation: portrait) {
 	html {

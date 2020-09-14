@@ -13,7 +13,7 @@
 
 <body onclick="openFullScreenMode();">
   <!-- 아래쪽 -->
-  <div class="container" id="DownPerson"> <!-- 아래 -->
+  <div class="container" id="DownPerson">
     <div class="riichi_stick" id="DownPerson_Riichi">
       <div class="circle"></div>
     </div>
@@ -422,6 +422,50 @@
       </div>
     </div>
   </div>
+  <!-- 점수 수정 -->
+  <div class="modal" id="Modal_modify" onclick="
+  if (event.target==this){
+    this.style.display='';
+  }
+  ">
+    <div class="modal_content" style="font-size: 20px;">
+      <div class="container_modify">
+        <div style="grid-area: name;">
+          이름
+        </div>
+        <div style="grid-area: name0;">
+          ▼ <input type="text" id="name0">
+        </div>
+        <div style="grid-area: name1;">
+          ▶ <input type="text" id="name1">
+        </div>
+        <div style="grid-area: name2;">
+          ▲ <input type="text" id="name2">
+        </div>
+        <div style="grid-area: name3;">
+          ◀ <input type="text" id="name3">
+        </div>
+        <div style="grid-area: score;">
+          점수
+        </div>
+        <div style="grid-area: score0;">
+          ▼ <input type="number" id="score0">
+        </div>
+        <div style="grid-area: score1;">
+          ▶ <input type="number" id="score1">
+        </div>
+        <div style="grid-area: score2;">
+          ▲ <input type="number" id="score2">
+        </div>
+        <div style="grid-area: score3;">
+          ◀ <input type="number" id="score3">
+        </div>
+        <div style="grid-area: ok;" onclick="save();">
+          ok
+        </div>
+      </div>
+    </div>
+  </div>
   <!-- 점수 기록 -->
   <div class="modal" id="Modal_record" onclick="
   if (event.target==this){
@@ -429,17 +473,17 @@
   }
   ">
     <div class="modal_content">
-      <div class="container_table" style="overflow: auto;">
-        <div style="grid-area: downname; font-size: 30px;">
+      <div class="container_record" style="overflow: auto;">
+        <div style="grid-area: downname; font-size: 25px;" id="DownPerson_Name">
           ▼
         </div>
-        <div style="grid-area: rightname; font-size: 30px;">
+        <div style="grid-area: rightname; font-size: 25px;" id="RightPerson_Name">
           ▶
         </div>
-        <div style="grid-area: upname; font-size: 30px;">
+        <div style="grid-area: upname; font-size: 25px;" id="UpPerson_Name">
           ▲
         </div>
-        <div style="grid-area: leftname; font-size: 30px;">
+        <div style="grid-area: leftname; font-size: 25px;" id="LeftPerson_Name">
           ◀
         </div>
         <div style="grid-area: when; font-size: 20px;" id="when">
