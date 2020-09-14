@@ -361,6 +361,43 @@
       </div>
     </div>
   </div>
+
+  <div class="modal" id="Modal_showscore" onclick="
+    if (event.target==this){
+      this.style.display='';
+    }
+  ">
+    <div class="modal_content">
+      <div class="container_showscore">
+        <div class="downscore" id="DownPerson_ScoreTmp">
+          0
+        </div>
+        <div class="rightscore" id="RightPerson_ScoreTmp">
+          0
+        </div>
+        <div class="upscore" id="UpPerson_ScoreTmp">
+          0
+        </div>
+        <div class="leftscore" id="LeftPerson_ScoreTmp">
+          0
+        </div>
+        <div id="what" style="display: none;">
+          0
+        </div>
+        <div style="grid-area: ok; font-size: 30px; line-height: 100px;" onclick="
+        var scorestmp=['#DownPerson_ScoreTmp','#RightPerson_ScoreTmp','#UpPerson_ScoreTmp','#LeftPerson_ScoreTmp'];
+        var changed=[0,0,0,0];
+        for (var i=0;i<4;i++){
+          changed[i]=document.querySelector(scorestmp[i]).innerText/100;
+        }
+        ok_score(changed);
+        ">
+          ok
+        </div>
+      </div>
+    </div>
+  </div>
+
   <!-- 주사위 -->
   <div class="modal" id="Modal_dice" onclick="
   if (event.target==this){
@@ -434,31 +471,31 @@
           이름
         </div>
         <div style="grid-area: name0;">
-          ▼ <input type="text" id="name0">
+          ▼<br><input type="text" maxlength="4" id="name0">
         </div>
         <div style="grid-area: name1;">
-          ▶ <input type="text" id="name1">
+          ▶<br><input type="text" maxlength="4" id="name1">
         </div>
         <div style="grid-area: name2;">
-          ▲ <input type="text" id="name2">
+          ▲<br><input type="text" maxlength="4" id="name2">
         </div>
         <div style="grid-area: name3;">
-          ◀ <input type="text" id="name3">
+          ◀<br><input type="text" maxlength="4" id="name3">
         </div>
         <div style="grid-area: score;">
           점수
         </div>
         <div style="grid-area: score0;">
-          ▼ <input type="number" id="score0">
+          ▼<br><input type="number" id="score0">
         </div>
         <div style="grid-area: score1;">
-          ▶ <input type="number" id="score1">
+          ▶<br><input type="number" id="score1">
         </div>
         <div style="grid-area: score2;">
-          ▲ <input type="number" id="score2">
+          ▲<br><input type="number" id="score2">
         </div>
         <div style="grid-area: score3;">
-          ◀ <input type="number" id="score3">
+          ◀<br><input type="number" id="score3">
         </div>
         <div style="grid-area: ok;" onclick="save();">
           ok
