@@ -178,12 +178,26 @@ function save(){
     var modify=document.querySelector('#Modal_modify');
     var names=['#DownPerson_Name', '#RightPerson_Name', '#UpPerson_Name', '#LeftPerson_Name'];
     var scores=['#DownPerson_Score','#RightPerson_Score','#UpPerson_Score','#LeftPerson_Score'];
+    var when_record=document.querySelector("#when");
+    var chkscore=0;
     modify.style.display='';
     for (var i=0;i<4;i++){
         var tmp1='#name'+String(i);
         var tmp2='#score'+String(i);
         document.querySelector(names[i]).innerText=document.querySelector(tmp1).value;
-        document.querySelector(scores[i]).innerText=parseInt(document.querySelector(tmp2).value/100);
+        if (document.querySelector(scores[i]).innerText!==parseInt(document.querySelector(tmp2).value/100)){
+            document.querySelector(scores[i]).innerText=parseInt(document.querySelector(tmp2).value/100);
+            chkscore=1;
+        }
+    }
+    if (chkscore){
+        for (var i=0;i<4;i++){
+            var score_record=document.querySelector(scores[i]+'record');
+            var tmp='#score'+String(i);
+            score_record.innerHTML+=`<br>`+document.querySelector(tmp).value;
+        }
+        
+        when_record.innerHTML+=`<br>점수 수정`;
     }
 }
 
