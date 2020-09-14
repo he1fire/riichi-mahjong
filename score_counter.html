@@ -361,7 +361,7 @@
       </div>
     </div>
   </div>
-
+  <!-- 점수 보여주기-->
   <div class="modal" id="Modal_showscore" onclick="
     if (event.target==this){
       this.style.display='';
@@ -384,7 +384,7 @@
         <div id="what" style="display: none;">
           0
         </div>
-        <div style="grid-area: ok; font-size: 30px; line-height: 100px;" onclick="
+        <div class="ok" onclick="
         var scorestmp=['#DownPerson_ScoreTmp','#RightPerson_ScoreTmp','#UpPerson_ScoreTmp','#LeftPerson_ScoreTmp'];
         var changed=[0,0,0,0];
         for (var i=0;i<4;i++){
