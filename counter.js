@@ -208,6 +208,29 @@ function record(){
     record.style.display='inline';
 }
 
+function showgap(who){
+    var scores=['#DownPerson_Score','#RightPerson_Score','#UpPerson_Score','#LeftPerson_Score'];
+    var chk=document.querySelector('#Gap_mode');
+    for (var i=0;i<4;i++){
+        document.querySelector(scores[i]+'gap').innerText=document.querySelector(scores[i]).innerText;
+    }
+    var comparescore=document.querySelector('#'+who+'_Scoregap').innerText;
+    for (var i=0;i<4;i++){
+        document.querySelector(scores[i]).innerText-=comparescore;
+    }
+    chk.innerText=1;
+}
+function hidegap(){
+    var scores=['#DownPerson_Score','#RightPerson_Score','#UpPerson_Score','#LeftPerson_Score'];
+    var chk=document.querySelector('#Gap_mode');
+    if (chk.innerText==1){
+        for (var i=0;i<4;i++){
+            document.querySelector(scores[i]).innerText=document.querySelector(scores[i]+'gap').innerText;
+        }
+        chk.innerText=0;
+    }
+}
+
 function roll(){
     var dice1=document.querySelector('#dice1');
     var dice2=document.querySelector('#dice2');

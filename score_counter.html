@@ -11,14 +11,17 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0">
 </head>
 
-<body onclick="openFullScreenMode();">
+<body onclick="openFullScreenMode();" onmouseup="hidegap();" touchend="idegap();">
+  <div id="Gap_mode" style="display: none;">0</div>
   <!-- 아래쪽 -->
   <div class="container" id="DownPerson">
     <div class="riichi_stick" id="DownPerson_Riichi">
       <div class="circle"></div>
     </div>
-    <div class="wind" onclick="riichi('DownPerson');">
-      <span style="color: red;" id="DownPerson_Wind">東</span>
+    <div class="wind" onmousedown="showgap('DownPerson');">
+      <span style="color: red;" id="DownPerson_Wind">
+        東
+      </span>
     </div>
     <div class="score" onclick="riichi('DownPerson');">
       <span id="DownPerson_Score" style="font-size: 80px;">250</span><span id="DownPerson_Score00" style="font-size: 50px;">00</span>
@@ -26,13 +29,14 @@
     <div id="DownPerson_Scorechange" class="change">
       0
     </div>
+    <div id="DownPerson_Scoregap" style="display: none;">0</div>
   </div>
   <!-- 오른쪽 -->
   <div class="container" id="RightPerson">
     <div class="riichi_stick" id="RightPerson_Riichi">
       <div class="circle"></div>
     </div>
-    <div class="wind" onclick="riichi('RightPerson');">
+    <div class="wind" onmousedown="showgap('RightPerson');">
       <span id="RightPerson_Wind">南</span>
     </div>
     <div class="score" onclick="riichi('RightPerson');">
@@ -41,13 +45,14 @@
     <div id="RightPerson_Scorechange" class="change">
       0
     </div>
+    <div id="RightPerson_Scoregap" style="display: none;">0</div>
   </div>
   <!-- 위쪽 -->
   <div class="container" id="UpPerson">
     <div class="riichi_stick" id="UpPerson_Riichi">
       <div class="circle"></div>
     </div>
-    <div class="wind" onclick="riichi('UpPerson');">
+    <div class="wind" onmousedown="showgap('UpPerson');">
       <span id="UpPerson_Wind">西</span>
     </div>
     <div class="score" onclick="riichi('UpPerson');">
@@ -56,13 +61,14 @@
     <div id="UpPerson_Scorechange" class="change">
       0
     </div>
+    <div id="UpPerson_Scoregap" style="display: none;">0</div>
   </div>
   <!-- 왼쪽 -->
   <div class="container" id="LeftPerson">
     <div class="riichi_stick" id="LeftPerson_Riichi">
       <div class="circle"></div>
     </div>
-    <div class="wind" onclick="riichi('LeftPerson');">
+    <div class="wind" onmousedown="showgap('LeftPerson');">
       <span id="LeftPerson_Wind">北</span>
     </div>
     <div class="score" onclick="riichi('LeftPerson');">
@@ -72,6 +78,7 @@
     class="change">
       0
     </div>
+    <div id="LeftPerson_Scoregap" style="display: none;">0</div>
   </div>
   <!-- 가운데 -->
   <div class="container_mid" id='Mid'>
