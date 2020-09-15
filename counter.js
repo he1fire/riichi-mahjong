@@ -216,7 +216,23 @@ function showgap(who){
     }
     var comparescore=document.querySelector('#'+who+'_Scoregap').innerText;
     for (var i=0;i<4;i++){
-        document.querySelector(scores[i]).innerText-=comparescore;
+        var tmp=document.querySelector(scores[i]).innerText-comparescore;
+        if (tmp>0){
+            document.querySelector(scores[i]).style.color='lawngreen';
+            document.querySelector(scores[i]+'00').style.color='lawngreen';
+            document.querySelector(scores[i]).innerText='+'+tmp;
+        }
+        else if (tmp<0){
+            document.querySelector(scores[i]).style.color='red';
+            document.querySelector(scores[i]+'00').style.color='red';
+            document.querySelector(scores[i]).innerText=tmp;
+        }
+        else{
+            document.querySelector(scores[i]).style.color='black';
+            document.querySelector(scores[i]+'00').style.color='black';
+            document.querySelector(scores[i]).innerText=tmp;
+        }
+        
     }
     chk.innerText=1;
 }
@@ -225,6 +241,8 @@ function hidegap(){
     var chk=document.querySelector('#Gap_mode');
     if (chk.innerText==1){
         for (var i=0;i<4;i++){
+            document.querySelector(scores[i]).style.color='black';
+            document.querySelector(scores[i]+'00').style.color='black';
             document.querySelector(scores[i]).innerText=document.querySelector(scores[i]+'gap').innerText;
         }
         chk.innerText=0;

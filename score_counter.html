@@ -11,7 +11,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0">
 </head>
 
-<body onclick="openFullScreenMode();" onmouseup="hidegap();" touchend="idegap();">
+<body onclick="openFullScreenMode();" onmouseup="hidegap();">
   <div id="Gap_mode" style="display: none;">0</div>
   <!-- 아래쪽 -->
   <div class="container" id="DownPerson">
@@ -20,6 +20,15 @@
     </div>
     <div class="wind" onmousedown="showgap('DownPerson');">
       <span style="color: red;" id="DownPerson_Wind">
+        <script>
+          var M=document.querySelector('#DownPerson_Wind');
+          M.addEventListener('touchstart',function(){
+            showgap('DownPerson');
+          });
+          M.addEventListener('touchend',function(){
+            hidegap();
+          });
+        </script>
         東
       </span>
     </div>
@@ -37,7 +46,18 @@
       <div class="circle"></div>
     </div>
     <div class="wind" onmousedown="showgap('RightPerson');">
-      <span id="RightPerson_Wind">南</span>
+      <span id="RightPerson_Wind">
+        <script>
+          var M=document.querySelector('#RightPerson_Wind');
+          M.addEventListener('touchstart',function(){
+            showgap('RightPerson');
+          });
+          M.addEventListener('touchend',function(){
+            hidegap();
+          });
+        </script>
+        南
+      </span>
     </div>
     <div class="score" onclick="riichi('RightPerson');">
       <span id="RightPerson_Score" style="font-size: 80px;">250</span><span id="RightPerson_Score00" style="font-size: 50px;">00</span>
@@ -53,7 +73,18 @@
       <div class="circle"></div>
     </div>
     <div class="wind" onmousedown="showgap('UpPerson');">
-      <span id="UpPerson_Wind">西</span>
+      <span id="UpPerson_Wind">
+        <script>
+          var M=document.querySelector('#UpPerson_Wind');
+          M.addEventListener('touchstart',function(){
+            showgap('UpPerson');
+          });
+          M.addEventListener('touchend',function(){
+            hidegap();
+          });
+        </script>
+        西
+      </span>
     </div>
     <div class="score" onclick="riichi('UpPerson');">
       <span id="UpPerson_Score" style="font-size: 80px;">250</span><span id="UpPerson_Score00" style="font-size: 50px;">00</span>
@@ -69,7 +100,18 @@
       <div class="circle"></div>
     </div>
     <div class="wind" onmousedown="showgap('LeftPerson');">
-      <span id="LeftPerson_Wind">北</span>
+      <span id="LeftPerson_Wind">
+        <script>
+          var M=document.querySelector('#LeftPerson_Wind');
+          M.addEventListener('touchstart',function(){
+            showgap('LeftPerson');
+          });
+          M.addEventListener('touchend',function(){
+            hidegap();
+          });
+        </script>
+        北
+      </span>
     </div>
     <div class="score" onclick="riichi('LeftPerson');">
       <span id="LeftPerson_Score" style="font-size: 80px;">250</span><span id="LeftPerson_Score00" style="font-size: 50px;">00</span>
@@ -561,7 +603,7 @@
       </div>
     </div>
   </div>
-
+  
 </body>
 
 </html>
