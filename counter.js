@@ -1,3 +1,7 @@
+window.onload=function(){
+    randomseat();
+}
+
 function openFullScreenMode() {
         var docV = document.documentElement;
         if (docV.requestFullscreen)
@@ -11,6 +15,7 @@ function openFullScreenMode() {
     
     // document.querySelector('body').onclick='null';
 }
+
 function ChangeSeat(){
     var winds=['#DownPerson_Wind', '#RightPerson_Wind', '#UpPerson_Wind', '#LeftPerson_Wind'];
     var tmp=document.querySelector(winds[3]).innerText;
@@ -111,6 +116,7 @@ function ChangeScore(who, much){
             score.innerText=startscore+much;
             score_00.innerText='00';
             score_change.style.visibility='hidden';
+            dice();
         }
     }, 20);
 }

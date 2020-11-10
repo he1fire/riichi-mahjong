@@ -485,7 +485,7 @@
   }
   ">
     <div class="modal_content">
-      <div class="container_roll">
+      <div class="container_roll" onclick="roll();">
         <div class="container_dice" style="grid-area: dice_1; transform: scale(2);" id="dice1" >
         </div>
         <div class="container_dice" style="grid-area: dice_2; transform: scale(2);" id="dice2">
@@ -498,9 +498,6 @@
         </div>
         <div class="sum" id="dicesum">
           ?
-        </div>
-        <div class="roll" onclick="roll();">
-          굴리기
         </div>
         <div class="downdice" id="downlight">
           ▼
@@ -517,9 +514,8 @@
       </div>
     </div>
   </div>
-
   <!-- 자리 뽑기-->
-  <div class="modal" id="Modal_seat" onclick="
+  <div class="modal" style="display: inline;" id="Modal_seat" onclick="
   if (event.target==this){
     this.style.display='';
   }

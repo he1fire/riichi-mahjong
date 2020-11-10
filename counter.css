@@ -152,13 +152,12 @@
 
 .container_roll{
   display: grid;
-  grid-template-rows: 15px 82px 15px auto;
+  grid-template-rows: 15px 82px 15px;
   grid-template-columns: repeat(4, 82px) 15px 82px 15px;
   grid-template-areas:
     "dice_1 plus dice_2 equal . updice ."
     "dice_1 plus dice_2 equal leftdice sum rightdice"
-    "dice_1 plus dice_2 equal . downdice ."
-    "roll roll roll roll roll roll roll";
+    "dice_1 plus dice_2 equal . downdice .";
   vertical-align: middle;
   text-align: center;
   margin: 5px;
@@ -370,10 +369,6 @@
   line-height: 82px;
   vertical-align: middle;
   color: red;
-}
-.roll{
-  grid-area: roll;
-  font-size: 40px;
 }
 
 .downscore{
