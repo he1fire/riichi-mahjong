@@ -163,6 +163,18 @@
   text-align: center;
   margin: 5px;
 }
+.container_tile{
+  display: grid;
+  grid-template-rows: auto;
+  grid-template-columns: repeat(3, 86px 15px) 86px;
+  grid-template-areas:
+    "tile_1 . tile_2 . tile_3 . tile_4";
+  vertical-align: middle;
+  text-align: center;
+  font-size: 80px;
+  margin: 15px;
+}
+
 .container_dice{
   display: grid;
   width:35px;
@@ -180,7 +192,7 @@
   ;
   vertical-align: middle;
   text-align: center;
-  border: 3px solid black ;
+  border: 3px solid black;
   border-radius:5px;
   margin: auto;
 }

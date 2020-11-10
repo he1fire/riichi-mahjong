@@ -164,7 +164,7 @@
     </div>
   </div>
   <!-- 주사위버튼 -->
-  <div id="Roll_Dice" onclick="dice();">
+  <div id="Roll_Dice" onclick="draw();">
     <div class="container_dice" id="opendice">
       <script>document.querySelector('#opendice').innerHTML=makedice(5);</script>
     </div> 
@@ -456,6 +456,21 @@
     </div>
   </div>
 
+  <!-- 뽑기 -->
+  <div class="modal" id="Modal_draw" onclick="
+    if (event.target==this)
+      this.style.display='';
+  ">
+    <div class="modal_content">
+      <div style="font-size: 40px; margin: 20px;" onclick="dice();">
+        주사위
+      </div>
+      <div style="font-size: 40px; margin: 20px;" onclick="randomseat();">
+        자리 뽑기
+      </div>
+    </div>
+  </div>
+
   <!-- 주사위 -->
   <div class="modal" id="Modal_dice" onclick="
   if (event.target==this){
@@ -503,6 +518,29 @@
     </div>
   </div>
 
+  <!-- 자리 뽑기-->
+  <div class="modal" id="Modal_seat" onclick="
+  if (event.target==this){
+    this.style.display='';
+  }
+  ">
+    <div class="modal_content">
+      <div class="container_tile">
+        <div id="tile1" style="grid-area: tile_1;" onclick="reverse(this);">
+          東
+        </div>
+        <div id="tile2" style="grid-area: tile_2;" onclick="reverse(this);">
+          南
+        </div>
+        <div id="tile3" style="grid-area: tile_3;" onclick="reverse(this);">
+          西
+        </div>
+        <div id="tile4" style="grid-area: tile_4;" onclick="reverse(this);">
+          北
+        </div>
+      </div>
+    </div>
+  </div>
   <!-- 옵션 -->
   <div class="modal" id="Modal_option" onclick="
     if (event.target==this)

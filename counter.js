@@ -148,10 +148,51 @@ function makeunchk(who, type){
             document.querySelector('#'+who[i]+type).style.color='';
     }
 }
+function draw(){
+    var draw=document.querySelector('#Modal_draw');
+    draw.style.display='inline';
+}
 
 function dice(){
+    var draw=document.querySelector('#Modal_draw');
     var dice=document.querySelector('#Modal_dice');
+    draw.style.display='';
     dice.style.display='inline';
+}
+
+function randomseat(){
+    var draw=document.querySelector('#Modal_draw');
+    var seat=document.querySelector('#Modal_seat');
+    var tiles=['#tile1', '#tile2', '#tile3', '#tile4'];
+    var winds=['東', '南', '西', '北'];
+    var ran=0;
+    draw.style.display='';
+    seat.style.display='inline';
+    for (var i=0;i<4;i++){
+        for (var j=i+1;j<4;j++){
+            ran=Math.floor(Math.random()*2);
+            if (ran===1){
+                var tmp=winds[i];
+                winds[i]=winds[j];
+                winds[j]=tmp;
+            }
+        }
+    }
+    for (var i=0;i<4;i++){
+        document.querySelector(tiles[i]).style.border='3px solid black';
+        document.querySelector(tiles[i]).style.borderRadius='5px';
+        document.querySelector(tiles[i]).style.backgroundColor='orange';
+        document.querySelector(tiles[i]).style.color='orange';
+        document.querySelector(tiles[i]).innerText=winds[i];
+    }
+}
+
+function reverse(self){
+    if (self.innerText==='東')
+        self.style.color='red';
+    else
+        self.style.color='black';
+    self.style.backgroundColor='white';
 }
 
 function option(){
@@ -314,7 +355,7 @@ function riichi(who){
     if (stick.style.visibility===''){
         if (score.innerText>=10){
             stick.style.visibility='visible';
-            score.innerText=Number(score.innerText)-10;;
+            score.innerText=Number(score.innerText)-10;
             Allstick.innerText++;
         }
         else{
