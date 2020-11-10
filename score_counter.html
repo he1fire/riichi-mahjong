@@ -474,13 +474,15 @@
   <!-- 주사위 -->
   <div class="modal" id="Modal_dice" onclick="
   if (event.target==this){
-    this.style.display='';
-    document.querySelector('#dice1').innerHTML='';
-    document.querySelector('#dice2').innerHTML='';
-    document.querySelector('#dicesum').innerText='?';
-    var light=['#leftlight','#downlight','#rightlight','#uplight'];
-    for (var i=0;i<4;i++){
-        document.querySelector(light[i]).style.visibility='';
+    if (document.querySelector('#dicesum').innerText!='?'){
+      this.style.display='';
+      document.querySelector('#dice1').innerHTML='';
+      document.querySelector('#dice2').innerHTML='';
+      document.querySelector('#dicesum').innerText='?';
+      var light=['#leftlight','#downlight','#rightlight','#uplight'];
+      for (var i=0;i<4;i++){
+          document.querySelector(light[i]).style.visibility='';
+      }
     }
   }
   ">
@@ -511,7 +513,14 @@
   <!-- 자리 뽑기-->
   <div class="modal" style="display: inline;" id="Modal_seat" onclick="
   if (event.target==this){
-    this.style.display='';
+    var tiles=['#tile1', '#tile2', '#tile3', '#tile4'];
+    var cnt=0;
+    for (var i=0;i<4;i++){
+      if (document.querySelector(tiles[i]).style.backgroundColor=='white')
+        cnt++;
+    }
+    if (cnt===4)
+      this.style.display='';
   }
   ">
     <div class="modal_content">
