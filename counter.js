@@ -1,5 +1,6 @@
 window.onload=function(){
     randomseat();
+    openFullScreenMode();
 }
 
 function openFullScreenMode() {
@@ -12,7 +13,6 @@ function openFullScreenMode() {
             docV.mozRequestFullScreen();
         else if (docV.msRequestFullscreen)
             docV.msRequestFullscreen();
-    
     // document.querySelector('body').onclick='null';
 }
 
@@ -116,7 +116,6 @@ function ChangeScore(who, much){
             score.innerText=startscore+much;
             score_00.innerText='00';
             score_change.style.visibility='hidden';
-            dice();
         }
     }, 20);
 }
@@ -139,7 +138,6 @@ function RecordTime(){
     var wind=document.querySelector("#nowwind").innerText;
     var cnt=document.querySelector("#nowcnt").innerText;
     when_record.innerHTML+=`<br>`+wind+cnt+`局 `+renjang+`本場<br>`;
-
 }
 
 function makechk(self){
@@ -703,4 +701,12 @@ function ok_score(changed){
     else if (what.innerText==='ryuukyoku_Special'){
         renjang.innerText++;
     }
+    var timecnt=0;
+    var repeat=setInterval(function() {
+        timecnt++;
+        if (timecnt>=100){
+            clearInterval(repeat);
+            dice();
+        }
+    }, 20);
 }
