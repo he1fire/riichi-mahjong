@@ -165,18 +165,11 @@ function randomseat(){
     var seat=document.querySelector('#Modal_seat');
     var tiles=['#tile1', '#tile2', '#tile3', '#tile4'];
     var winds=['東', '南', '西', '北'];
-    var ran=0;
     draw.style.display='';
     seat.style.display='inline';
-    for (var i=0;i<4;i++){
-        for (var j=i+1;j<4;j++){
-            ran=Math.floor(Math.random()*2);
-            if (ran===1){
-                var tmp=winds[i];
-                winds[i]=winds[j];
-                winds[j]=tmp;
-            }
-        }
+    for (var i=3;i>0;i--){
+        var j = Math.floor(Math.random()*(i+1));
+        [winds[i], winds[j]]=[winds[j], winds[i]];
     }
     for (var i=0;i<4;i++){
         document.querySelector(tiles[i]).style.border='3px solid black';
