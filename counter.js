@@ -1,4 +1,6 @@
 window.onload=function(){
+    document.querySelector("#Modal_seat").style.backgroundColor='rgba(0,0,0,0)';
+    dice();
     randomseat();
     openFullScreenMode();
 }
