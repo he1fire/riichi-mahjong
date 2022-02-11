@@ -162,6 +162,12 @@ function draw(){
 function dice(){
     var draw=document.querySelector('#Modal_draw');
     var dice=document.querySelector('#Modal_dice');
+    var winds=['#DownPerson_Wind', '#RightPerson_Wind', '#UpPerson_Wind', '#LeftPerson_Wind'];
+    for (var i=0;i<4;i++){
+    if (document.querySelector(winds[i]).innerText==='東')
+        seatwind=i;
+    }
+    document.querySelector('#dicesum').style.transform='rotate('+String(360-seatwind*90)+'deg)';
     draw.style.display='';
     dice.style.display='inline';
 }
@@ -315,6 +321,7 @@ function roll(){
         if (timecnt>=10){
             clearInterval(repeat);
             dicesum.innerText=ran1+ran2;
+            
             for (var i=0;i<4;i++){
                 if (i===(ran1+ran2+seatwind)%4)
                     document.querySelector(light[i]).style.visibility='visible';
