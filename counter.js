@@ -710,12 +710,4 @@ function ok_score(changed){
     else if (what.innerText==='ryuukyoku_Special'){
         renjang.innerText++;
     }
-    var timecnt=0;
-    var repeat=setInterval(function() {
-        timecnt++;
-        if (timecnt>=100){
-            clearInterval(repeat);
-            dice();
-        }
-    }, 20);
 }
