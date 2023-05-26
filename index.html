@@ -2,51 +2,644 @@
 <html>
 
 <head>
-  <title>마작</title>
+  <title>점수 계산기</title>
   <meta charset="utf-8">
-  <link rel="stylesheet" href="style.css">
+  <link rel="stylesheet" href="counter.css">
+  <script src="counter.js"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+KR:wght@500&display=swap" rel="stylesheet">
   <link rel="icon" href="vo/riichi.ico" type="image/x-icon">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0">
 </head>
 
-<body>
-  <h1>마작</h1>
-  <div id="목차">
-    <h4>목차</h4>
-    <div class="tab2">
-      <p><a href="#1">1. </a>마작의 룰</p>
-      <p><a href="#2">2. </a>마작의 역</p>
-      <p><a href="#3">3. </a>마작 용어 정리</p>
-      <p><a href="#4">4. </a>마작 점수 계산기</p>
+<body onclick="openFullScreenMode();" onmouseup="hidegap();">
+  <div id="Gap_mode" style="display: none;">0</div>
+  <!-- 아래쪽 -->
+  <div class="container" id="DownPerson">
+    <div class="riichi_stick" id="DownPerson_Riichi">
+      <div class="circle"></div>
+    </div>
+    <div class="wind" onmousedown="showgap('DownPerson');">
+      <span style="color: red;" id="DownPerson_Wind">
+        <script>
+          var M=document.querySelector('#DownPerson_Wind');
+          M.addEventListener('touchstart',function(){
+            showgap('DownPerson');
+          });
+          M.addEventListener('touchend',function(){
+            hidegap();
+          });
+        </script>
+        東
+      </span>
+    </div>
+    <div class="score" onclick="riichi('DownPerson');">
+      <span id="DownPerson_Score" style="font-size: 80px;">250</span><span id="DownPerson_Score00" style="font-size: 50px;">00</span>
+    </div>
+    <div id="DownPerson_Scorechange" class="change">
+      0
+    </div>
+    <div id="DownPerson_Scoregap" style="display: none;">0</div>
+  </div>
+  <!-- 오른쪽 -->
+  <div class="container" id="RightPerson">
+    <div class="riichi_stick" id="RightPerson_Riichi">
+      <div class="circle"></div>
+    </div>
+    <div class="wind" onmousedown="showgap('RightPerson');">
+      <span id="RightPerson_Wind">
+        <script>
+          var M=document.querySelector('#RightPerson_Wind');
+          M.addEventListener('touchstart',function(){
+            showgap('RightPerson');
+          });
+          M.addEventListener('touchend',function(){
+            hidegap();
+          });
+        </script>
+        南
+      </span>
+    </div>
+    <div class="score" onclick="riichi('RightPerson');">
+      <span id="RightPerson_Score" style="font-size: 80px;">250</span><span id="RightPerson_Score00" style="font-size: 50px;">00</span>
+    </div>
+    <div id="RightPerson_Scorechange" class="change">
+      0
+    </div>
+    <div id="RightPerson_Scoregap" style="display: none;">0</div>
+  </div>
+  <!-- 위쪽 -->
+  <div class="container" id="UpPerson">
+    <div class="riichi_stick" id="UpPerson_Riichi">
+      <div class="circle"></div>
+    </div>
+    <div class="wind" onmousedown="showgap('UpPerson');">
+      <span id="UpPerson_Wind">
+        <script>
+          var M=document.querySelector('#UpPerson_Wind');
+          M.addEventListener('touchstart',function(){
+            showgap('UpPerson');
+          });
+          M.addEventListener('touchend',function(){
+            hidegap();
+          });
+        </script>
+        西
+      </span>
+    </div>
+    <div class="score" onclick="riichi('UpPerson');">
+      <span id="UpPerson_Score" style="font-size: 80px;">250</span><span id="UpPerson_Score00" style="font-size: 50px;">00</span>
+    </div>
+    <div id="UpPerson_Scorechange" class="change">
+      0
+    </div>
+    <div id="UpPerson_Scoregap" style="display: none;">0</div>
+  </div>
+  <!-- 왼쪽 -->
+  <div class="container" id="LeftPerson">
+    <div class="riichi_stick" id="LeftPerson_Riichi">
+      <div class="circle"></div>
+    </div>
+    <div class="wind" onmousedown="showgap('LeftPerson');">
+      <span id="LeftPerson_Wind">
+        <script>
+          var M=document.querySelector('#LeftPerson_Wind');
+          M.addEventListener('touchstart',function(){
+            showgap('LeftPerson');
+          });
+          M.addEventListener('touchend',function(){
+            hidegap();
+          });
+        </script>
+        北
+      </span>
+    </div>
+    <div class="score" onclick="riichi('LeftPerson');">
+      <span id="LeftPerson_Score" style="font-size: 80px;">250</span><span id="LeftPerson_Score00" style="font-size: 50px;">00</span>
+    </div>
+    <div id="LeftPerson_Scorechange"
+    class="change">
+      0
+    </div>
+    <div id="LeftPerson_Scoregap" style="display: none;">0</div>
+  </div>
+  <!-- 가운데 -->
+  <div class="container_mid" id='Mid'>
+    <div class="now">
+      <span id="nowwind">東</span> <span id=nowcnt>1</span> 局
+    </div>
+    <div class="riichi">
+      <div class="riichi_stick_mini">
+        <div class="circle" style="width:5px;
+        height:5px;"></div>
+      </div>  
+      <div style="font-size: 40px;">
+        x <span id="riichi_count">0</span>
+      </div>
+    </div>
+    <div class="renjang">
+      <div class="riichi_stick_mini">
+        <div class="blackcircle" style="margin: auto 0px 5px 0px;visibility: hidden;"></div>
+        <div class="blackcircle"></div>
+        <div class="blackcircle" style="margin: auto 0px 3px 0px;"></div>
+        <div class="blackcircle"></div>
+        <div class="blackcircle" style="margin: auto 0px 3px 0px;"></div>
+        <div class="blackcircle"></div>
+        <div class="blackcircle" style="margin: auto 0px 3px 0px;"></div>
+        <div class="blackcircle"></div>
+        <div class="blackcircle" style="margin: auto 0px 3px 0px;"></div>
+        <div class="blackcircle" style="margin: 5px 0px auto 0px; visibility: hidden;"></div>
+      </div>
+      <div style="font-size: 40px;">
+        x <span id="renjang_count">0</span>
+      </div>
+    </div>
+    <div class="ron" onclick="ron1();">
+      론
+    </div>
+    <div class="tsumo" onclick="tsumo1();">
+      쯔모
+    </div>
+    <div class="ryuukyoku" onclick="ryuukyoku1();">
+      유국
+    </div>
+  </div>
+  <!-- 주사위버튼 -->
+  <div id="Roll_Dice" onclick="dice(); roll();">
+    <div class="container_dice" id="opendice">
+      <script>document.querySelector('#opendice').innerHTML=makedice(5);</script>
+    </div> 
+  </div>
+  <!-- 옵션버튼 -->
+  <div id="Show_Option" onclick="option();">
+    <div class="container_option" id="openoption">
+      <div class="circle_button" style="grid-area: _1;"></div>
+      <div class="circle_button" style="grid-area: _2;"></div>
+      <div class="circle_button" style="grid-area: _3;"></div>
     </div>
   </div>
 
-  <h3><a id="1" href="#목차">1. </a>마작의 룰</h3>
 
-  <h3><a id="2" href="#목차">2. </a>마작의 역</h3>
-  <table id="마작의역">
-    <th colspan="6">
-      <b>마작의 역</b>
-    </th>
-    <tr>
-      <td><a href="1fan_yaku.html">1판역</a></td>
-      <td><a href="2fan_yaku.html">2판역</a></td>
-      <td><a href="3fan_yaku.html">3판역</a></td>
-      <td><a href="5fan_yaku.html">만관역</a></td>
-      <td><a href="6fan_yaku.html">6판역</a></td>
-      <td><a href="13fan_yaku.html">역만</a></td>
-    </tr>
-    <tr>
-      <td colspan="3"><a href="bufan_calculate.html">부·판 계산</td>
-      <td colspan="3"><a href="fan_summary.html">요약</td>
-    </tr>
-    <tr>
-      <td colspan="6" style="font-size: 14px;">※ 리치마작의 역을 설명하고 있으며, 일본마작연맹 공식룰을 기준으로 설명합니다.</td>
-    </tr>
-  </table>
-  <h3><a id="3" href="#목차">3. </a>마작 용어 정리</h3>
+  <!-- 론1 -->
+  <div class="modal" id="Modal_ron1" onclick="
+    if (event.target==this){
+      this.style.display='';
+      makeunchk(['down', 'right', 'up', 'left'],'check_ron1');
+    }
+  ">
+    <div class="modal_content">
+      <div class="container_choose">
+        <div class="explain">
+          론한 사람을 선택해주세요.
+        </div>
+        <div class="downcheck" id="downcheck_ron1" onclick="makechk(this);">
+          ▼
+        </div>
+        <div class="rightcheck" id="rightcheck_ron1" onclick="makechk(this);">
+          ▶
+        </div>
+        <div class="upcheck" id="upcheck_ron1" onclick="makechk(this);">
+          ▲
+        </div>
+        <div class="leftcheck" id="leftcheck_ron1" onclick="makechk(this);">
+          ◀
+        </div>
+        <div class="ok"  onclick="ron2();">
+          OK
+        </div>
+      </div>
+    </div>
+  </div>
+  <!-- 론2 -->
+  <div class="modal" id="Modal_ron2" onclick="
+    if (event.target==this){
+      this.style.display='';
+      makeunchk(['down', 'right', 'up', 'left'],'check_ron1');
+      makeunchk(['down', 'right', 'up', 'left'],'check_ron2');
+    }
+  ">
+    <div class="modal_content">
+      <div class="container_choose">
+        <div class="explain">
+          방총당한 사람을 선택해주세요.
+        </div>
+        <div class="downcheck" id="downcheck_ron2" onclick="makechk(this); 
+        makeunchk(['right', 'up', 'left'],'check_ron2');">
+          ▼
+        </div>
+        <div class="rightcheck" id="rightcheck_ron2" onclick="makechk(this); makeunchk(['up', 'left', 'down'], 'check_ron2');">
+          ▶
+        </div>
+        <div class="upcheck" id="upcheck_ron2" onclick="makechk(this); makeunchk(['left', 'down', 'right'], 'check_ron2');">
+          ▲
+        </div>
+        <div class="leftcheck" id="leftcheck_ron2" onclick="makechk(this); makeunchk(['down', 'right', 'up'],'check_ron2');">
+          ◀
+        </div>
+        <div class="ok"  onclick="ron3();">
+          OK
+        </div>
+      </div>
+    </div>
+  </div>
+  <!-- 론3 -->
+  <div class="modal" id="Modal_ron3" onclick="
+    if (event.target==this){
+      this.style.display='';
+      makeunchk(['down', 'right', 'up', 'left'],'check_ron1');
+      makeunchk(['down', 'right', 'up', 'left'],'check_ron2');
+      document.querySelector('#fan_ron').selectedIndex=0;
+      document.querySelector('#bu_ron').selectedIndex=0;
+    }
+  ">
+    <div class="modal_content">
+      <div style="font-size: 20px;" id="name_ron">
+        -1
+      </div>
+      <div style="font-size: 40px; margin: 20px;">
+        판:
+        <select id="fan_ron">
+          <script>
+            for (var i=1;i<=12;i++)
+              document.querySelector('#fan_ron').innerHTML+='<option>'+i+'</option>';
+          </script>
+          <option>13+</option>
+          <option>역만</option>
+          <option>2배역만</option>
+          <option>3배역만</option>
+          <option>4배역만</option>
+          <option>5배역만</option>
+          <option>6배역만</option>
+        </select>
+      </div>
+      <div style="font-size: 40px; margin: 20px;">
+        부: 
+        <select id="bu_ron" onchange="select(this);">
+          <script>
+            var arr=[20, 25, 30, 40, 50, 60, 70, 80, 90, 100, 110];
+            for (var i=0;i<arr.length;i++)
+              document.querySelector('#bu_ron').innerHTML+='<option>'+arr[i]+'</option>';
+          </script>
+        </select>
+      </div>
+      <div style="font-size: 20px;" onclick="ron4();">
+        OK
+      </div>
+      <div id="who_ron" style="display: none;">
+        0
+      </div>
+      <div id="fancnt_ron" style="display: none;">
+        0,0,0,0,
+      </div>
+      <div id="bucnt_ron" style="display: none;">
+        0,0,0,0,
+      </div>
+    </div>
+  </div>
+  <!-- 쯔모1 -->
+  <div class="modal" id="Modal_tsumo1" onclick="
+    if (event.target==this){
+      this.style.display='';
+      makeunchk(['down', 'right', 'up', 'left'],'check_tsumo');
+    }
+  ">
+    <div class="modal_content">
+      <div class="container_choose">
+        <div class="explain">
+          쯔모한 사람을 선택해주세요.
+        </div>
+        <div class="downcheck" id="downcheck_tsumo" onclick="makechk(this); 
+        makeunchk(['right', 'up', 'left'],'check_tsumo');">
+          ▼
+        </div>
+        <div class="rightcheck" id="rightcheck_tsumo" onclick="makechk(this); makeunchk(['up', 'left', 'down'], 'check_tsumo');">
+          ▶
+        </div>
+        <div class="upcheck" id="upcheck_tsumo" onclick="makechk(this); makeunchk(['left', 'down', 'right'], 'check_tsumo');">
+          ▲
+        </div>
+        <div class="leftcheck" id="leftcheck_tsumo" onclick="makechk(this); makeunchk(['down', 'right', 'up'],'check_tsumo');">
+          ◀
+        </div>
+        <div class="ok"  onclick="tsumo2();">
+          OK
+        </div>
+      </div>
+    </div>
+  </div>
+  <!-- 쯔모2 -->
+  <div class="modal" id="Modal_tsumo2" onclick="
+    if (event.target==this){
+      this.style.display='';
+      makeunchk(['down', 'right', 'up', 'left'],'check_tsumo');
+      document.querySelector('#fan_tsumo').selectedIndex=0; 
+      document.querySelector('#bu_tsumo').selectedIndex=0;
+    }
+  ">
+    <div class="modal_content">
+      <div style="font-size: 20px;" id="name_tsumo">
+        -1
+      </div>
+      <div style="font-size: 40px; margin: 20px;">
+        판:
+        <select id="fan_tsumo">
+          <script>
+            for (var i=1;i<=12;i++)
+              document.querySelector('#fan_tsumo').innerHTML+='<option>'+i+'</option>';
+          </script>
+          <option>13+</option>
+          <option>역만</option>
+          <option>2배역만</option>
+          <option>3배역만</option>
+          <option>4배역만</option>
+          <option>5배역만</option>
+          <option>6배역만</option>
+        </select>
+      </div>
+      <div style="font-size: 40px; margin: 20px;">
+        부: 
+        <select id="bu_tsumo" onchange="select(this);">
+          <script>
+            var arr=[20, 25, 30, 40, 50, 60, 70, 80, 90, 100, 110];
+            for (var i=0;i<arr.length;i++)
+              document.querySelector('#bu_tsumo').innerHTML+='<option>'+arr[i]+'</option>';
+          </script>
+        </select>
+      </div>
+      <div style="font-size: 20px;" onclick="
+       var arr=[20, 25, 30, 40, 50, 60, 70, 80, 90, 100, 110];
+      var fan=document.querySelector('#fan_tsumo').options[document.querySelector('#fan_tsumo').selectedIndex].index+1;
+      var bu=arr[document.querySelector('#bu_tsumo').options[document.querySelector('#bu_tsumo').selectedIndex].index];
+      tsumo_General(fan, bu);
+      ">
+        OK
+      </div>
+    </div>
+  </div>
+  <!-- 유국1 -->
+  <div class="modal" id="Modal_ryuukyoku1" onclick="
+    if (event.target==this)
+      this.style.display='';
+  ">
+    <div class="modal_content">
+      <div style="font-size: 40px; margin: 20px;" onclick="ryuukyoku2();">
+        일반유국
+      </div>
+      <div style="font-size: 40px; margin: 20px;" onclick="ryuukyoku_Special();">
+        특수유국
+      </div>
+    </div>
+  </div>
+  <!-- 유국2 -->
+  <div class="modal" id="Modal_ryuukyoku2" onclick="
+    if (event.target==this){
+      this.style.display='';
+      makeunchk(['down', 'right', 'up', 'left'],'check_ryuukyoku');
+    }
+  ">
+    <div class="modal_content">
+      <div class="container_choose">
+        <div class="explain">
+          텐파이인 사람을 선택해주세요.
+        </div>
+        <div class="downcheck" id="downcheck_ryuukyoku" onclick="makechk(this);">
+          ▼
+        </div>
+        <div class="rightcheck" id="rightcheck_ryuukyoku" onclick="makechk(this);">
+          ▶
+        </div>
+        <div class="upcheck" id="upcheck_ryuukyoku" onclick="makechk(this);">
+          ▲
+        </div>
+        <div class="leftcheck" id="leftcheck_ryuukyoku" onclick="makechk(this);">
+          ◀
+        </div>
+        <div class="ok"  onclick="ryuukyoku_General();">
+          OK
+        </div>
+      </div>
+    </div>
+  </div>
+  <!-- 점수 보여주기-->
+  <div class="modal" id="Modal_showscore" onclick="
+    if (event.target==this){
+      this.style.display='';
+    }
+  ">
+    <div class="modal_content" style="border-radius:50%;">
+      <div class="container_showscore">
+        <div class="downscore" id="DownPerson_ScoreTmp">
+          0
+        </div>
+        <div class="rightscore" id="RightPerson_ScoreTmp">
+          0
+        </div>
+        <div class="upscore" id="UpPerson_ScoreTmp">
+          0
+        </div>
+        <div class="leftscore" id="LeftPerson_ScoreTmp">
+          0
+        </div>
+        <div id="what" style="display: none;">
+          0
+        </div>
+        <div class="ok" onclick="
+        var scorestmp=['#DownPerson_ScoreTmp','#RightPerson_ScoreTmp','#UpPerson_ScoreTmp','#LeftPerson_ScoreTmp'];
+        var changed=[0,0,0,0];
+        for (var i=0;i<4;i++){
+          changed[i]=document.querySelector(scorestmp[i]).innerText/100;
+        }
+        ok_score(changed);
+        ">
+          OK
+        </div>
+      </div>
+    </div>
+  </div>
 
-  <h3><a id="4" href="#목차">4. </a>마작 점수 계산기</h3>
-  <a href="score_counter.html"><img src="vo/calculater.png" style="display: block; margin: auto;"></a>
+  <!-- 뽑기 -->
+  <div class="modal" id="Modal_draw" onclick="
+    if (event.target==this)
+      this.style.display='';
+  ">
+    <div class="modal_content">
+      <div style="font-size: 40px; margin: 20px;" onclick="dice();">
+        주사위
+      </div>
+      <div style="font-size: 40px; margin: 20px;" onclick="randomseat();">
+        자리 뽑기
+      </div>
+    </div>
+  </div>
+
+  <!-- 주사위 -->
+  <div class="modal" id="Modal_dice" onclick="
+  if (event.target==this){
+    if (document.querySelector('#dicesum').innerText!='?'){
+      this.style.display='';
+      document.querySelector('#dice1').innerHTML='';
+      document.querySelector('#dice2').innerHTML='';
+      document.querySelector('#dicesum').innerText='?';
+      var light=['#leftlight','#downlight','#rightlight','#uplight'];
+      for (var i=0;i<4;i++){
+          document.querySelector(light[i]).style.visibility='';
+      }
+    }
+  }
+  ">
+    <div class="modal_content">
+      <div class="container_roll" onclick="roll();">
+        <div class="container_dice" style="grid-area: dice_1; transform: scale(2);" id="dice1" >
+        </div>
+        <div class="container_dice" style="grid-area: dice_2; transform: scale(2);" id="dice2">
+        </div>
+        <div class="sum" id="dicesum">
+          ?
+        </div>
+        <div class="downdice" id="downlight">
+          ▼
+        </div>
+        <div class="rightdice" id="rightlight">
+          ▶
+        </div>
+        <div class="updice" id="uplight">
+          ▲
+        </div>
+        <div class="leftdice" id="leftlight">
+          ◀
+        </div>
+      </div>
+    </div>
+  </div>
+  <!-- 자리 뽑기-->
+  <div class="modal" style="display: inline;" id="Modal_seat" onclick="
+  if (event.target==this){
+    var tiles=['#tile1', '#tile2', '#tile3', '#tile4'];
+    var cnt=0;
+    for (var i=0;i<4;i++){
+      if (document.querySelector(tiles[i]).style.backgroundColor=='white')
+        cnt++;
+    }
+    if (cnt===4){
+      this.style.display='';
+      this.style.backgroundColor='rgba(0,0,0,0.4)';
+      roll();
+    }
+  }
+  ">
+    <div class="modal_content">
+      <div class="container_tile">
+        <div id="tile1" style="grid-area: tile_1;" onclick="reverse(this);">
+        </div>
+        <div id="tile2" style="grid-area: tile_2;" onclick="reverse(this);">
+        </div>
+        <div id="tile3" style="grid-area: tile_3;" onclick="reverse(this);">
+        </div>
+        <div id="tile4" style="grid-area: tile_4;" onclick="reverse(this);">
+        </div>
+      </div>
+    </div>
+  </div>
+  <!-- 옵션 -->
+  <div class="modal" id="Modal_option" onclick="
+    if (event.target==this)
+      this.style.display='';
+  ">
+    <div class="modal_content">
+      <div style="font-size: 40px; margin: 20px;" onclick="modify();">
+        점수 수정
+      </div>
+      <div style="font-size: 40px; margin: 20px;" onclick="record();">
+        점수 기록
+      </div>
+    </div>
+  </div>
+  <!-- 점수 수정 -->
+  <div class="modal" id="Modal_modify" onclick="
+  if (event.target==this){
+    this.style.display='';
+  }
+  ">
+    <div class="modal_content" style="font-size: 20px;">
+      <div class="container_modify">
+          <div style="grid-area: name; font-size: 30px;">
+            이름
+          </div>
+          <div style="grid-area: name0; margin: 5px;">
+            ▼<br><input type="text" maxlength="4" id="name0">
+          </div>
+          <div style="grid-area: name1; margin: 5px;">
+            ▶<br><input type="text" maxlength="4" id="name1">
+          </div>
+          <div style="grid-area: name2; margin: 5px;">
+            ▲<br><input type="text" maxlength="4" id="name2">
+          </div>
+          <div style="grid-area: name3; margin: 5px;">
+            ◀<br><input type="text" maxlength="4" id="name3">
+          </div>
+        <div style="grid-area: score; font-size: 30px;">
+          점수
+        </div>
+        <div style="grid-area: score0; margin: 5px;">
+          ▼<br><input type="number" id="score0">
+        </div>
+        <div style="grid-area: score1; margin: 5px;">
+          ▶<br><input type="number" id="score1">
+        </div>
+        <div style="grid-area: score2; margin: 5px;">
+          ▲<br><input type="number" id="score2">
+        </div>
+        <div style="grid-area: score3; margin: 5px;">
+          ◀<br><input type="number" id="score3">
+        </div>
+        <div style="grid-area: ok; font-size: 30px;" onclick="save();">
+          OK
+        </div>
+      </div>
+    </div>
+  </div>
+  <!-- 점수 기록 -->
+  <div class="modal" id="Modal_record" onclick="
+  if (event.target==this){
+    this.style.display='';
+  }
+  ">
+    <div class="modal_content">
+      <div class="container_record" style="overflow: auto;">
+        <div style="grid-area: downname; font-size: 25px;" id="DownPerson_Name">▼</div>
+        <div style="grid-area: rightname; font-size: 25px;" id="RightPerson_Name">▶</div>
+        <div style="grid-area: upname; font-size: 25px;" id="UpPerson_Name">▲</div>
+        <div style="grid-area: leftname; font-size: 25px;" id="LeftPerson_Name">◀</div>
+        <div style="grid-area: when; font-size: 20px;" id="when">
+          시작점수
+        </div>
+        <div style="grid-area: downrecord; font-size: 20px;" id="DownPerson_Scorerecord">
+          25000
+        </div>
+        <div style="grid-area: rightrecord; font-size: 20px;" id="RightPerson_Scorerecord">
+          25000
+        </div>
+        <div style="grid-area: uprecord; font-size: 20px;" id="UpPerson_Scorerecord">
+          25000
+        </div>
+        <div style="grid-area: leftrecord; font-size: 20px;" id="LeftPerson_Scorerecord">
+          25000
+        </div>
+      </div>
+    </div>
+  </div>
+  
+  <!-- 경고창 -->
+  <div class="modal" id="Modal_alert" onclick="
+  if (event.target==this)
+    this.style.display='';
+  ">
+    <div class="modal_content">
+      <div style="font-size: 20px; margin: 20px;" id="Modal_alertText">
+        .
+      </div>
+    </div>
+  </div>
+  
 </body>
 
 </html>
