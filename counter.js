@@ -673,6 +673,40 @@ function ok_score(changed){
     for (var i=0;i<sticks.length;i++){ //리치봉 수거
         document.querySelector(sticks[i]).style.visibility='';
     }
+    if (what.innerText==='rollback'){
+        var arrw=document.querySelector("#when").innerHTML.split('<div');
+        document.querySelector("#when").innerHTML='';
+        for (var i=0;i<arrw.length-2;i++){ // 점수기록 지우기
+            document.querySelector("#when").innerHTML+=`<div`+arrw[i];
+        }
+        var when=(`<div`+arrw[arrw.length-1]).replace(/<[^>]*>?/g, '');
+        document.querySelector("#nowwind").innerText=when[0]; // 시간 되돌리기
+        document.querySelector("#nowcnt").innerText=when[1];
+        document.querySelector('#renjang_count').innerText=when[4];
+        var windrecover=['南','西','北','東']
+        for (var i=0;i<4;i++){ // 위치 되돌리기
+            document.querySelector(winds[i]).innerText=windrecover[(4+i-Number(when[1]))%4];
+        }
+        for (var i=0;i<winds.length;i++){
+            if (document.querySelector(winds[i]).innerText==='東')
+                document.querySelector(winds[i]).style.color='red';
+            else
+                document.querySelector(winds[i]).style.color='';
+        }
+        var cntscore=0;
+        for (var i=0;i<4;i++){ // 점수 기록 지우기 && 점수 되돌리기
+            var arrs=document.querySelector(scores[i]+'record').innerHTML.split('<div');
+            document.querySelector(scores[i]+'record').innerHTML='';
+            for (var j=0;j<arrs.length-2;j++){
+                document.querySelector(scores[i]+'record').innerHTML+=`<div`+arrs[j];
+            }
+            cntscore+=Number(document.querySelector(scores[i]).innerText)+Number(changed[i]);
+            if (changed[i])
+                ChangeScore(scores[i], changed[i]);
+        }
+        document.querySelector('#riichi_count').innerText=(1000-cntscore)/10; // 점수 수정기능과 겹치면 음수나 소수점 발생가능 -> 언젠가 고치겠지
+        return;
+    }
     for (var i=0;i<4;i++){ // 점수 배분및 기록
         if (changed[i])
             ChangeScore(scores[i], changed[i]);
@@ -713,13 +747,11 @@ function ok_score(changed){
 }
 
 function rollback(){
-    var showscore=document.querySelector('#Modal_showscore');
+    var record=document.querySelector('#Modal_record');
     var scores=['#DownPerson_Score','#RightPerson_Score','#UpPerson_Score','#LeftPerson_Score'];
-    var winds=['#DownPerson_Wind', '#RightPerson_Wind', '#UpPerson_Wind', '#LeftPerson_Wind'];
-    var sticks=['#DownPerson_Riichi', '#RightPerson_Riichi', '#UpPerson_Riichi', '#LeftPerson_Riichi'];
-    var what=document.querySelector('#what');
+    var scorestmp=['#DownPerson_ScoreTmp','#RightPerson_ScoreTmp','#UpPerson_ScoreTmp','#LeftPerson_ScoreTmp'];
     
-    showscore.style.display='';
+    record.style.display='';
     
     var when_record=document.querySelector("#when").innerHTML;
     var arrw=when_record.split('<div');
@@ -729,40 +761,23 @@ function rollback(){
         document.querySelector('#Modal_alert').style.display='inline';
         return;
     }
-    for (var i=0;i<sticks.length;i++){ //리치봉 수거 -> 나중엔 실제 실행할때만 해야함
-        document.querySelector(sticks[i]).style.visibility='';
-    }
-    document.querySelector("#when").innerHTML='';
-    for (var i=0;i<arrw.length-2;i++){ // 점수기록 지우기
-        document.querySelector("#when").innerHTML+=`<div`+arrw[i];
-    }
-    document.querySelector("#nowwind").innerText=when[0]; // 시간 되돌리기
-    document.querySelector("#nowcnt").innerText=when[1];
-    document.querySelector('#renjang_count').innerText=when[4];
-    var windrecover=['南','西','北','東']
-    for (var i=0;i<4;i++){ // 위치 되돌리기
-        document.querySelector(winds[i]).innerText=windrecover[(4+i-Number(when[1]))%4];
-    }
-    for (var i=0;i<winds.length;i++){
-        if (document.querySelector(winds[i]).innerText==='東')
-            document.querySelector(winds[i]).style.color='red';
-        else
-            document.querySelector(winds[i]).style.color='';
-    }
-    var cntscore=0;
-    for (var i=0;i<4;i++){ // 점수 기록 지우기 && 점수 되돌리기
+    for (var i=0;i<4;i++){
         var score_record=document.querySelector(scores[i]+'record').innerHTML;
         var arrs=score_record.split('<div');
-        document.querySelector(scores[i]+'record').innerHTML='';
-        for (var j=0;j<arrs.length-2;j++){
-            document.querySelector(scores[i]+'record').innerHTML+=`<div`+arrs[j];
+        var much=((`<div`+arrs[arrs.length-3]).replace(/<[^>]*>?/g, ''))/100-document.querySelector(scores[i]).innerText;
+        document.querySelector(scorestmp[i]).innerText=much*100;
+        if (much>0){
+            document.querySelector(scorestmp[i]).style.color='lawngreen';
         }
-        var much=((`<div`+arrs[arrs.length-3]).replace(/<[^>]*>?/g, ''))/100;
-        cntscore+=much;
-        if (much-document.querySelector(scores[i]).innerText!=0){
-            ChangeScore(scores[i], much-document.querySelector(scores[i]).innerText);
+        else if(much<0){
+            document.querySelector(scorestmp[i]).style.color='red';
+        }
+        else{
+            document.querySelector(scorestmp[i]).style.color='black';
         }
     }
-    document.querySelector('#riichi_count').innerText=(1000-cntscore)/10; // 점수 수정기능과 겹치면 음수나 소수점 발생가능 -> 언젠가 고치겠지
+
+    document.querySelector('#what').innerText='rollback';
+    document.querySelector('#Modal_showscore').style.display='inline';
     
 }
