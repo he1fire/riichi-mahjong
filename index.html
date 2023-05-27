@@ -7,7 +7,7 @@
   <link rel="stylesheet" href="counter.css">
   <script src="counter.js"></script>
   <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+KR:wght@500&display=swap" rel="stylesheet">
-  <link rel="icon" href="vo/riichi.ico" type="image/x-icon">
+  <link rel="icon" href="riichi.ico" type="image/x-icon">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0">
 </head>
 
@@ -366,7 +366,7 @@
         </select>
       </div>
       <div style="font-size: 20px;" onclick="
-       var arr=[20, 25, 30, 40, 50, 60, 70, 80, 90, 100, 110];
+      var arr=[20, 25, 30, 40, 50, 60, 70, 80, 90, 100, 110];
       var fan=document.querySelector('#fan_tsumo').options[document.querySelector('#fan_tsumo').selectedIndex].index+1;
       var bu=arr[document.querySelector('#bu_tsumo').options[document.querySelector('#bu_tsumo').selectedIndex].index];
       tsumo_General(fan, bu);
@@ -609,20 +609,33 @@
         <div style="grid-area: rightname; font-size: 25px;" id="RightPerson_Name">▶</div>
         <div style="grid-area: upname; font-size: 25px;" id="UpPerson_Name">▲</div>
         <div style="grid-area: leftname; font-size: 25px;" id="LeftPerson_Name">◀</div>
+        <div style="color: red; grid-area: rollback; font-size: 20px;" id="rollback" onclick="rollback();">
+          되돌리기
+        </div>
         <div style="grid-area: when; font-size: 20px;" id="when">
-          시작점수
+          <div>
+            시작점수
+          </div>
         </div>
         <div style="grid-area: downrecord; font-size: 20px;" id="DownPerson_Scorerecord">
+          <div>
           25000
+          </div>
         </div>
         <div style="grid-area: rightrecord; font-size: 20px;" id="RightPerson_Scorerecord">
-          25000
+          <div>
+            25000
+          </div>
         </div>
         <div style="grid-area: uprecord; font-size: 20px;" id="UpPerson_Scorerecord">
-          25000
+          <div>
+            25000
+          </div>
         </div>
         <div style="grid-area: leftrecord; font-size: 20px;" id="LeftPerson_Scorerecord">
-          25000
+          <div>
+            25000
+          </div>
         </div>
       </div>
     </div>

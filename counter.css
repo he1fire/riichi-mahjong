@@ -222,7 +222,7 @@
   grid-template-rows: 35px 200px;
   grid-template-columns: 120px repeat(4, 100px);
   grid-template-areas: 
-  ". downname rightname upname leftname"
+  "rollback downname rightname upname leftname"
   "when downrecord rightrecord uprecord leftrecord";
   vertical-align: middle;
   text-align: center;

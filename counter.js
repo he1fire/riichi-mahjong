@@ -125,13 +125,13 @@ function ChangeScore(who, much){
 function RecordScore(who, much, now){
     var score_record=document.querySelector(who+'record');
     if (much>0){
-        score_record.innerHTML+=`<div style="color: lawngreen">+`+much+`00</div>`+now;
+        score_record.innerHTML+=`<div style="color: lawngreen">+`+much+`00</div><div>`+now+`</div>`;
     }
     else if (much===0){
-        score_record.innerHTML+=`<br><br>`+now;
+        score_record.innerHTML+=`<div style="color: white">+`+much+`00</div><div>`+now+`</div>`;
     }
     else{
-        score_record.innerHTML+=`<div style="color: red">`+much+`00</div>`+now;
+        score_record.innerHTML+=`<div style="color: red">`+much+`00</div><div>`+now+`</div>`;
     }
 }
 function RecordTime(){
@@ -139,7 +139,7 @@ function RecordTime(){
     var renjang=document.querySelector('#renjang_count').innerText;
     var wind=document.querySelector("#nowwind").innerText;
     var cnt=document.querySelector("#nowcnt").innerText;
-    when_record.innerHTML+=`<br>`+wind+cnt+`局 `+renjang+`本場<br>`;
+    when_record.innerHTML+=`<div><br></div><div>`+wind+cnt+`局 `+renjang+`本場</div>`;
 }
 
 function makechk(self){
@@ -710,4 +710,59 @@ function ok_score(changed){
     else if (what.innerText==='ryuukyoku_Special'){
         renjang.innerText++;
     }
+}
+
+function rollback(){
+    var showscore=document.querySelector('#Modal_showscore');
+    var scores=['#DownPerson_Score','#RightPerson_Score','#UpPerson_Score','#LeftPerson_Score'];
+    var winds=['#DownPerson_Wind', '#RightPerson_Wind', '#UpPerson_Wind', '#LeftPerson_Wind'];
+    var sticks=['#DownPerson_Riichi', '#RightPerson_Riichi', '#UpPerson_Riichi', '#LeftPerson_Riichi'];
+    var what=document.querySelector('#what');
+    
+    showscore.style.display='';
+    
+    var when_record=document.querySelector("#when").innerHTML;
+    var arrw=when_record.split('<div');
+    if (arrw.length==2){ // 기록이 없을때
+        document.querySelector('#Modal_alertText').innerText='더이상 되돌릴수 없습니다.';
+        document.querySelector('#Modal_alert').style.display='inline';
+        return;
+    }
+    for (var i=0;i<sticks.length;i++){ //리치봉 수거
+        document.querySelector(sticks[i]).style.visibility='';
+    }
+    document.querySelector("#when").innerHTML='';
+    for (var i=0;i<arrw.length-2;i++){ // 점수기록 지우기
+        document.querySelector("#when").innerHTML+=`<div`+arrw[i];
+    }
+    var when=(`<div`+arrw[arrw.length-1]).replace(/<[^>]*>?/g, ''); // 태그 제거
+    document.querySelector("#nowwind").innerText=when[0]; // 시간 되돌리기
+    document.querySelector("#nowcnt").innerText=when[1];
+    document.querySelector('#renjang_count').innerText=when[4];
+    var windrecover=['南','東','北','西']
+    for (var i=0;i<4;i++){ // 위치 되돌리기
+        document.querySelector(winds[i]).innerText=windrecover[(i+Number(when[1]))%4];
+    }
+    for (var i=0;i<winds.length;i++){
+        if (document.querySelector(winds[i]).innerText==='東')
+            document.querySelector(winds[i]).style.color='red';
+        else
+            document.querySelector(winds[i]).style.color='';
+    }
+    var cntscore=0;
+    for (var i=0;i<4;i++){ // 점수 기록 지우기 && 점수 되돌리기
+        var score_record=document.querySelector(scores[i]+'record').innerHTML;
+        var arrs=score_record.split('<div');
+        document.querySelector(scores[i]+'record').innerHTML='';
+        for (var j=0;j<arrs.length-2;j++){
+            document.querySelector(scores[i]+'record').innerHTML+=`<div`+arrs[j];
+        }
+        var much=((`<div`+arrs[arrs.length-3]).replace(/<[^>]*>?/g, ''))/100;
+        cntscore+=much;
+        if (much-document.querySelector(scores[i]).innerText!=0){
+            ChangeScore(scores[i], much-document.querySelector(scores[i]).innerText);
+        }
+    }
+    document.querySelector('#riichi_count').innerText=(1000-cntscore)/10;
+    
 }
