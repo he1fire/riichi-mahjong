@@ -240,10 +240,10 @@ function save(){
         for (var i=0;i<4;i++){
             var score_record=document.querySelector(scores[i]+'record');
             var tmp='#score'+String(i);
-            score_record.innerHTML+=`<br>`+document.querySelector(tmp).value;
+            score_record.innerHTML+=`<div><br></div><div>`+document.querySelector(tmp).value+`</div>`;
         }
         
-        when_record.innerHTML+=`<br>점수 수정`;
+        when_record.innerHTML+=`<div><br>점수 수정</div>`;
     }
 }
 
@@ -723,25 +723,25 @@ function rollback(){
     
     var when_record=document.querySelector("#when").innerHTML;
     var arrw=when_record.split('<div');
-    if (arrw.length==2){ // 기록이 없을때
+    var when=(`<div`+arrw[arrw.length-1]).replace(/<[^>]*>?/g, ''); // 태그 제거
+    if (when[0]!='東' && when[0]!='南' && when[0]!='西' && when[0]!='北'){ // 기록이 없거나 강제수정한 경우
         document.querySelector('#Modal_alertText').innerText='더이상 되돌릴수 없습니다.';
         document.querySelector('#Modal_alert').style.display='inline';
         return;
     }
-    for (var i=0;i<sticks.length;i++){ //리치봉 수거
+    for (var i=0;i<sticks.length;i++){ //리치봉 수거 -> 나중엔 실제 실행할때만 해야함
         document.querySelector(sticks[i]).style.visibility='';
     }
     document.querySelector("#when").innerHTML='';
     for (var i=0;i<arrw.length-2;i++){ // 점수기록 지우기
         document.querySelector("#when").innerHTML+=`<div`+arrw[i];
     }
-    var when=(`<div`+arrw[arrw.length-1]).replace(/<[^>]*>?/g, ''); // 태그 제거
     document.querySelector("#nowwind").innerText=when[0]; // 시간 되돌리기
     document.querySelector("#nowcnt").innerText=when[1];
     document.querySelector('#renjang_count').innerText=when[4];
-    var windrecover=['南','東','北','西']
+    var windrecover=['南','西','北','東']
     for (var i=0;i<4;i++){ // 위치 되돌리기
-        document.querySelector(winds[i]).innerText=windrecover[(i+Number(when[1]))%4];
+        document.querySelector(winds[i]).innerText=windrecover[(4+i-Number(when[1]))%4];
     }
     for (var i=0;i<winds.length;i++){
         if (document.querySelector(winds[i]).innerText==='東')
@@ -763,6 +763,6 @@ function rollback(){
             ChangeScore(scores[i], much-document.querySelector(scores[i]).innerText);
         }
     }
-    document.querySelector('#riichi_count').innerText=(1000-cntscore)/10;
+    document.querySelector('#riichi_count').innerText=(1000-cntscore)/10; // 점수 수정기능과 겹치면 음수나 소수점 발생가능 -> 언젠가 고치겠지
     
 }
