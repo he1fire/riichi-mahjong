@@ -324,6 +324,7 @@
   font-size: 50px;
   line-height: 82px;
   vertical-align: middle;
+  text-underline-position: under;
 }
 .downdice{
   grid-area: downdice;

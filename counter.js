@@ -305,6 +305,7 @@ function roll(){
     var timecnt=0;
     var seatwind=0;
     dicesum.innerText='?';
+    dicesum.style.textDecoration='none';
     for (var i=0;i<4;i++){
         document.querySelector(light[i]).style.visibility='';
     }
@@ -321,7 +322,7 @@ function roll(){
         if (timecnt>=10){
             clearInterval(repeat);
             dicesum.innerText=ran1+ran2;
-            
+            dicesum.style.textDecoration='underline red 3px';
             for (var i=0;i<4;i++){
                 if (i===(ran1+ran2+seatwind)%4)
                     document.querySelector(light[i]).style.visibility='visible';
@@ -330,7 +331,6 @@ function roll(){
             }
         }
     }, 50);
-    
 }
 
 function makedice(num){
