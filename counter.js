@@ -216,7 +216,7 @@ function modify(){
         var tmp1='#name'+String(i);
         var tmp2='#score'+String(i);
         document.querySelector(tmp1).value=document.querySelector(names[i]).innerText;
-        document.querySelector(tmp2).value=(document.querySelector(scores[i]).innerText)*100;
+        document.querySelector(tmp2).value=document.querySelector(scores[i]).innerText;
     }
 }
 
@@ -226,23 +226,30 @@ function save(){
     var scores=['#DownPerson_Score','#RightPerson_Score','#UpPerson_Score','#LeftPerson_Score'];
     var when_record=document.querySelector("#when");
     var chkscore=0;
+    var cntscore=0;
     modify.style.display='';
     for (var i=0;i<4;i++){
-        var tmp1='#name'+String(i);
-        var tmp2='#score'+String(i);
-        document.querySelector(names[i]).innerText=document.querySelector(tmp1).value;
-        if (Number(document.querySelector(scores[i]).innerText)!==parseInt(document.querySelector(tmp2).value/100)){
-            document.querySelector(scores[i]).innerText=parseInt(document.querySelector(tmp2).value/100);
+        var tmp='#score'+String(i);
+        cntscore+=parseInt(document.querySelector(tmp).value);
+        if (Number(document.querySelector(scores[i]).innerText)!==parseInt(document.querySelector(tmp).value))
             chkscore=1;
-        }
+    }
+    if (cntscore!=1000){
+        document.querySelector('#Modal_alertText').innerText='점수 총합이 10만점이 아닙니다.';
+        document.querySelector('#Modal_alert').style.display='inline';
+        return;
+    }
+    for (var i=0;i<4;i++){
+        var tmp='#name'+String(i);
+        document.querySelector(names[i]).innerText=document.querySelector(tmp).value;
     }
     if (chkscore){
         for (var i=0;i<4;i++){
             var score_record=document.querySelector(scores[i]+'record');
             var tmp='#score'+String(i);
-            score_record.innerHTML+=`<div><br></div><div>`+document.querySelector(tmp).value+`</div>`;
+            document.querySelector(scores[i]).innerText=parseInt(document.querySelector(tmp).value)
+            score_record.innerHTML+=`<div><br></div><div>`+document.querySelector(tmp).value+`00</div>`;
         }
-        
         when_record.innerHTML+=`<div><br>점수 수정</div>`;
     }
 }
