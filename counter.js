@@ -788,3 +788,31 @@ function rollback(){
     document.querySelector('#Modal_showscore').style.display='inline';
     
 }
+
+function copyrecord(){
+
+    var record=document.querySelector('#Modal_record');
+    var names=['#DownPerson_Name', '#RightPerson_Name', '#UpPerson_Name', '#LeftPerson_Name'];
+    var scores=['#DownPerson_Score','#RightPerson_Score','#UpPerson_Score','#LeftPerson_Score'];
+    var copytxt='\t';
+    record.style.display='';
+
+    for (var i=0;i<4;i++){
+        copytxt+=document.querySelector(names[i]).innerText+'\t';
+    }
+    copytxt+='\n\t25000\t25000\t25000\t25000\t\n';
+    var arrw=document.querySelector("#when").innerHTML.split('<div');
+    for (var i=2;i<arrw.length;i++){
+        copytxt+=(`<div`+arrw[i]).replace(/<[^>]*>?/g, '')+'\t';
+        for (var j=0;j<4;j++){
+            var arrs=document.querySelector(scores[j]+'record').innerHTML.split('<div');
+            var much=Number((`<div`+arrs[i]).replace(/<[^>]*>?/g, ''));
+            copytxt+=much.toString()+'\t';
+        }
+        copytxt+='\n';
+    }
+    window.navigator.clipboard.writeText(copytxt);
+    console.log(copytxt);
+    document.querySelector('#Modal_alertText').innerText='점수 기록을 복사했습니다.';
+    document.querySelector('#Modal_alert').style.display='inline';
+}
