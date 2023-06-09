@@ -139,7 +139,7 @@ function RecordTime(){
     var renjang=document.querySelector('#renjang_count').innerText;
     var wind=document.querySelector("#nowwind").innerText;
     var cnt=document.querySelector("#nowcnt").innerText;
-    when_record.innerHTML+=`<div><br></div><div>`+wind+cnt+`局 `+renjang+`本場</div>`;
+    when_record.innerHTML+=`<div>`+wind+cnt+`局 `+renjang+`本場</div><div><br></div>`;
 }
 
 function makechk(self){
@@ -250,7 +250,7 @@ function save(){
             document.querySelector(scores[i]).innerText=parseInt(document.querySelector(tmp).value)
             score_record.innerHTML+=`<div><br></div><div>`+document.querySelector(tmp).value+`00</div>`;
         }
-        when_record.innerHTML+=`<div><br>점수 수정</div>`;
+        when_record.innerHTML+=`<div>점수 수정<div><br></div></div>`;
     }
 }
 
@@ -686,7 +686,7 @@ function ok_score(changed){
         for (var i=0;i<arrw.length-2;i++){ // 점수기록 지우기
             document.querySelector("#when").innerHTML+=`<div`+arrw[i];
         }
-        var when=(`<div`+arrw[arrw.length-1]).replace(/<[^>]*>?/g, '');
+        var when=(`<div`+arrw[arrw.length-2]).replace(/<[^>]*>?/g, '');
         document.querySelector("#nowwind").innerText=when[0]; // 시간 되돌리기
         document.querySelector("#nowcnt").innerText=when[1];
         document.querySelector('#renjang_count').innerText=when[4];
@@ -762,7 +762,7 @@ function rollback(){
     
     var when_record=document.querySelector("#when").innerHTML;
     var arrw=when_record.split('<div');
-    var when=(`<div`+arrw[arrw.length-1]).replace(/<[^>]*>?/g, ''); // 태그 제거
+    var when=(`<div`+arrw[arrw.length-2]).replace(/<[^>]*>?/g, ''); // 태그 제거
     if (when[0]!='東' && when[0]!='南' && when[0]!='西' && when[0]!='北'){ // 기록이 없거나 강제수정한 경우
         document.querySelector('#Modal_alertText').innerText='더이상 되돌릴수 없습니다.';
         document.querySelector('#Modal_alert').style.display='inline';
