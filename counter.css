@@ -230,8 +230,8 @@
 
 .container_recordscroll{
   display: grid;
-  grid-template-rows: 200px;
-  grid-template-columns: 120px repeat(4, 100px);
+  grid-template-rows: auto;
+  grid-template-columns: 120px auto;
   grid-template-areas: 
   "when downrecord rightrecord uprecord leftrecord";
   vertical-align: middle;
