@@ -253,7 +253,8 @@
         document.querySelector('input[type=radio][name=bu_ron]:checked').checked=false;
       makeundisable('ron');
       document.getElementsByName('fan_ron')[0].checked=true;
-      document.getElementsByName('bu_ron')[2].checked=true;
+      document.getElementsByName('bu_ron')[0].disabled=true;
+      document.getElementsByName('bu_ron')[1].disabled=true;
     }
   ">
     <div class="modal_content">
@@ -265,7 +266,9 @@
           판:
         </div>
         <div style="grid-area: fancnt;">
-          <label><input type="radio" name="fan_ron" value="1" onclick="makeundisable('ron');" checked><span>1</span></label>
+          <label><input type="radio" name="fan_ron" value="1" onclick="makeundisable('ron');
+          document.getElementsByName('bu_ron')[0].checked=false; document.getElementsByName('bu_ron')[1].checked=false;
+          document.getElementsByName('bu_ron')[0].disabled=true; document.getElementsByName('bu_ron')[1].disabled=true;" checked><span>1</span></label>
           <label><input type="radio" name="fan_ron" value="2" onclick="makeundisable('ron');"><span>2</span></label>
           <label><input type="radio" name="fan_ron" value="3" onclick="makeundisable('ron');"><span>3</span></label>
           <label><input type="radio" name="fan_ron" value="4" onclick="makeundisable('ron');"><span>4</span></label>
@@ -278,8 +281,8 @@
           부:
         </div>
         <div style="grid-area: bucnt;">
-          <label><input type="radio" name="bu_ron" value="20"><span>20</span></label>
-          <label><input type="radio" name="bu_ron" value="25"><span>25</span></label>
+          <label><input type="radio" name="bu_ron" value="20" disabled><span>20</span></label>
+          <label><input type="radio" name="bu_ron" value="25" disabled><span>25</span></label>
           <label><input type="radio" name="bu_ron" value="30" checked><span>30</span></label>
           <label><input type="radio" name="bu_ron" value="40"><span>40</span></label>
           <label><input type="radio" name="bu_ron" value="50"><span>50</span></label>
@@ -359,7 +362,8 @@
         document.querySelector('input[type=radio][name=bu_tsumo]:checked').checked=false;
       makeundisable('tsumo');
       document.getElementsByName('fan_tsumo')[0].checked=true;
-      document.getElementsByName('bu_tsumo')[2].checked=true;
+      document.getElementsByName('bu_tsumo')[0].disabled=true;
+      document.getElementsByName('bu_tsumo')[1].disabled=true;
     }
   ">
     <div class="modal_content">
@@ -371,7 +375,9 @@
           판:
         </div>
         <div style="grid-area: fancnt;">
-          <label><input type="radio" name="fan_tsumo" value="1" onclick="makeundisable('tsumo');" checked><span>1</span></label>
+          <label><input type="radio" name="fan_tsumo" value="1" onclick="makeundisable('tsumo');
+          document.getElementsByName('bu_tsumo')[0].checked=false; document.getElementsByName('bu_tsumo')[1].checked=false;
+          document.getElementsByName('bu_tsumo')[0].disabled=true; document.getElementsByName('bu_tsumo')[1].disabled=true;" checked><span>1</span></label>
           <label><input type="radio" name="fan_tsumo" value="2" onclick="makeundisable('tsumo');"><span>2</span></label>
           <label><input type="radio" name="fan_tsumo" value="3" onclick="makeundisable('tsumo');"><span>3</span></label>
           <label><input type="radio" name="fan_tsumo" value="4" onclick="makeundisable('tsumo');"><span>4</span></label>
@@ -384,8 +390,8 @@
           부:
         </div>
         <div style="grid-area: bucnt;">
-          <label><input type="radio" name="bu_tsumo" value="20"><span>20</span></label>
-          <label><input type="radio" name="bu_tsumo" value="25"><span>25</span></label>
+          <label><input type="radio" name="bu_tsumo" value="20" disabled><span>20</span></label>
+          <label><input type="radio" name="bu_tsumo" value="25" disabled><span>25</span></label>
           <label><input type="radio" name="bu_tsumo" value="30" checked><span>30</span></label>
           <label><input type="radio" name="bu_tsumo" value="40"><span>40</span></label>
           <label><input type="radio" name="bu_tsumo" value="50"><span>50</span></label>
