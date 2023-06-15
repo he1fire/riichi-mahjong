@@ -247,39 +247,61 @@
       this.style.display='';
       makeunchk(['down', 'right', 'up', 'left'],'check_ron1');
       makeunchk(['down', 'right', 'up', 'left'],'check_ron2');
-      document.querySelector('#fan_ron').selectedIndex=0;
-      document.querySelector('#bu_ron').selectedIndex=0;
+      if (document.querySelector('input[type=radio][name=fan_ron]:checked')!=null)
+        document.querySelector('input[type=radio][name=fan_ron]:checked').checked=false;
+      if (document.querySelector('input[type=radio][name=bu_ron]:checked')!=null)
+        document.querySelector('input[type=radio][name=bu_ron]:checked').checked=false;
+      makeundisable('ron');
+      document.getElementsByName('fan_ron')[0].checked=true;
+      document.getElementsByName('bu_ron')[2].checked=true;
     }
   ">
     <div class="modal_content">
       <div style="font-size: 20px;" id="name_ron">
         -1
       </div>
-      <div style="font-size: 40px; margin: 20px;">
-        판:
-        <select id="fan_ron">
-          <script>
-            for (var i=1;i<=12;i++)
-              document.querySelector('#fan_ron').innerHTML+='<option>'+i+'</option>';
-          </script>
-          <option>13+</option>
-          <option>역만</option>
-          <option>2배역만</option>
-          <option>3배역만</option>
-          <option>4배역만</option>
-          <option>5배역만</option>
-          <option>6배역만</option>
-        </select>
-      </div>
-      <div style="font-size: 40px; margin: 20px;">
-        부: 
-        <select id="bu_ron" onchange="select(this);">
-          <script>
-            var arr=[20, 25, 30, 40, 50, 60, 70, 80, 90, 100, 110];
-            for (var i=0;i<arr.length;i++)
-              document.querySelector('#bu_ron').innerHTML+='<option>'+arr[i]+'</option>';
-          </script>
-        </select>
+      <div class="container_inputscore" style="font-size: 30px;">
+        <div style="grid-area: fan;">
+          판:
+        </div>
+        <div style="grid-area: fancnt;">
+          <label><input type="radio" name="fan_ron" value="1" onclick="makeundisable('ron');" checked><span>1</span></label>
+          <label><input type="radio" name="fan_ron" value="2" onclick="makeundisable('ron');"><span>2</span></label>
+          <label><input type="radio" name="fan_ron" value="3" onclick="makeundisable('ron');"><span>3</span></label>
+          <label><input type="radio" name="fan_ron" value="4" onclick="makeundisable('ron');"><span>4</span></label>
+          <label><input type="radio" name="fan_ron" value="5" onclick="makedisable('ron');"><span>5</span></label>
+          <label><input type="radio" name="fan_ron" value="6" onclick="makedisable('ron');"><span>6+</span></label>
+          <label><input type="radio" name="fan_ron" value="8" onclick="makedisable('ron');"><span>8+</span></label>
+          <label><input type="radio" name="fan_ron" value="13" onclick="makedisable('ron');"><span>13+</span></label>
+        </div>
+        <div style="grid-area: bu;">
+          부:
+        </div>
+        <div style="grid-area: bucnt;">
+          <label><input type="radio" name="bu_ron" value="20"><span>20</span></label>
+          <label><input type="radio" name="bu_ron" value="25"><span>25</span></label>
+          <label><input type="radio" name="bu_ron" value="30" checked><span>30</span></label>
+          <label><input type="radio" name="bu_ron" value="40"><span>40</span></label>
+          <label><input type="radio" name="bu_ron" value="50"><span>50</span></label>
+          <label><input type="radio" name="bu_ron" value="60"><span>60</span></label>
+          <div></div>
+          <label><input type="radio" name="bu_ron" value="70"><span>70</span></label>
+          <label><input type="radio" name="bu_ron" value="80"><span>80</span></label>
+          <label><input type="radio" name="bu_ron" value="90"><span>90</span></label>
+          <label><input type="radio" name="bu_ron" value="100"><span>100</span></label>
+          <label><input type="radio" name="bu_ron" value="110"><span>110</span></label>
+        </div>
+        <div style="grid-area: yakuman;">
+          역만:
+        </div>
+        <div style="grid-area: yakumancnt;">
+          <label><input type="radio" name="fan_ron" value="14" onclick="makedisable('ron');"><span>1</span></label>
+          <label><input type="radio" name="fan_ron" value="15" onclick="makedisable('ron');"><span>2</span></label>
+          <label><input type="radio" name="fan_ron" value="16" onclick="makedisable('ron');"><span>3</span></label>
+          <label><input type="radio" name="fan_ron" value="17" onclick="makedisable('ron');"><span>4</span></label>
+          <label><input type="radio" name="fan_ron" value="18" onclick="makedisable('ron');"><span>5</span></label>
+          <label><input type="radio" name="fan_ron" value="19" onclick="makedisable('ron');"><span>6</span></label>
+        </div>
       </div>
       <div style="font-size: 20px;" onclick="ron4();">
         OK
@@ -331,45 +353,70 @@
     if (event.target==this){
       this.style.display='';
       makeunchk(['down', 'right', 'up', 'left'],'check_tsumo');
-      document.querySelector('#fan_tsumo').selectedIndex=0; 
-      document.querySelector('#bu_tsumo').selectedIndex=0;
+      if (document.querySelector('input[type=radio][name=fan_tsumo]:checked')!=null)
+        document.querySelector('input[type=radio][name=fan_tsumo]:checked').checked=false;
+      if (document.querySelector('input[type=radio][name=bu_tsumo]:checked')!=null)
+        document.querySelector('input[type=radio][name=bu_tsumo]:checked').checked=false;
+      makeundisable('tsumo');
+      document.getElementsByName('fan_tsumo')[0].checked=true;
+      document.getElementsByName('bu_tsumo')[2].checked=true;
     }
   ">
     <div class="modal_content">
       <div style="font-size: 20px;" id="name_tsumo">
         -1
       </div>
-      <div style="font-size: 40px; margin: 20px;">
-        판:
-        <select id="fan_tsumo">
-          <script>
-            for (var i=1;i<=12;i++)
-              document.querySelector('#fan_tsumo').innerHTML+='<option>'+i+'</option>';
-          </script>
-          <option>13+</option>
-          <option>역만</option>
-          <option>2배역만</option>
-          <option>3배역만</option>
-          <option>4배역만</option>
-          <option>5배역만</option>
-          <option>6배역만</option>
-        </select>
-      </div>
-      <div style="font-size: 40px; margin: 20px;">
-        부: 
-        <select id="bu_tsumo" onchange="select(this);">
-          <script>
-            var arr=[20, 25, 30, 40, 50, 60, 70, 80, 90, 100, 110];
-            for (var i=0;i<arr.length;i++)
-              document.querySelector('#bu_tsumo').innerHTML+='<option>'+arr[i]+'</option>';
-          </script>
-        </select>
+      <div class="container_inputscore" style="font-size: 30px;">
+        <div style="grid-area: fan;">
+          판:
+        </div>
+        <div style="grid-area: fancnt;">
+          <label><input type="radio" name="fan_tsumo" value="1" onclick="makeundisable('tsumo');" checked><span>1</span></label>
+          <label><input type="radio" name="fan_tsumo" value="2" onclick="makeundisable('tsumo');"><span>2</span></label>
+          <label><input type="radio" name="fan_tsumo" value="3" onclick="makeundisable('tsumo');"><span>3</span></label>
+          <label><input type="radio" name="fan_tsumo" value="4" onclick="makeundisable('tsumo');"><span>4</span></label>
+          <label><input type="radio" name="fan_tsumo" value="5" onclick="makedisable('tsumo');"><span>5</span></label>
+          <label><input type="radio" name="fan_tsumo" value="6" onclick="makedisable('tsumo');"><span>6+</span></label>
+          <label><input type="radio" name="fan_tsumo" value="8" onclick="makedisable('tsumo');"><span>8+</span></label>
+          <label><input type="radio" name="fan_tsumo" value="13" onclick="makedisable('tsumo');"><span>13+</span></label>
+        </div>
+        <div style="grid-area: bu;">
+          부:
+        </div>
+        <div style="grid-area: bucnt;">
+          <label><input type="radio" name="bu_tsumo" value="20"><span>20</span></label>
+          <label><input type="radio" name="bu_tsumo" value="25"><span>25</span></label>
+          <label><input type="radio" name="bu_tsumo" value="30" checked><span>30</span></label>
+          <label><input type="radio" name="bu_tsumo" value="40"><span>40</span></label>
+          <label><input type="radio" name="bu_tsumo" value="50"><span>50</span></label>
+          <label><input type="radio" name="bu_tsumo" value="60"><span>60</span></label>
+          <div></div>
+          <label><input type="radio" name="bu_tsumo" value="70"><span>70</span></label>
+          <label><input type="radio" name="bu_tsumo" value="80"><span>80</span></label>
+          <label><input type="radio" name="bu_tsumo" value="90"><span>90</span></label>
+          <label><input type="radio" name="bu_tsumo" value="100"><span>100</span></label>
+          <label><input type="radio" name="bu_tsumo" value="110"><span>110</span></label>
+        </div>
+        <div style="grid-area: yakuman;">
+          역만:
+        </div>
+        <div style="grid-area: yakumancnt;">
+          <label><input type="radio" name="fan_tsumo" value="14" onclick="makedisable('tsumo');"><span>1</span></label>
+          <label><input type="radio" name="fan_tsumo" value="15" onclick="makedisable('tsumo');"><span>2</span></label>
+          <label><input type="radio" name="fan_tsumo" value="16" onclick="makedisable('tsumo');"><span>3</span></label>
+          <label><input type="radio" name="fan_tsumo" value="17" onclick="makedisable('tsumo');"><span>4</span></label>
+          <label><input type="radio" name="fan_tsumo" value="18" onclick="makedisable('tsumo');"><span>5</span></label>
+          <label><input type="radio" name="fan_tsumo" value="19" onclick="makedisable('tsumo');"><span>6</span></label>
+        </div>
       </div>
       <div style="font-size: 20px;" onclick="
-      var arr=[20, 25, 30, 40, 50, 60, 70, 80, 90, 100, 110];
-      var fan=document.querySelector('#fan_tsumo').options[document.querySelector('#fan_tsumo').selectedIndex].index+1;
-      var bu=arr[document.querySelector('#bu_tsumo').options[document.querySelector('#bu_tsumo').selectedIndex].index];
-      tsumo_General(fan, bu);
+      var fan=document.querySelector('input[type=radio][name=fan_tsumo]:checked').value;
+      if (fan>4)
+        tsumo_General(fan, 0);
+      else{
+        var bu=document.querySelector('input[type=radio][name=bu_tsumo]:checked').value;
+        tsumo_General(fan, bu);
+      }
       ">
         OK
       </div>

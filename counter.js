@@ -53,11 +53,10 @@ function CalculateScore(Y, X, win, lose, how, plus){
     var arr=[2000,3000,3000,4000,4000,4000,6000,6000,8000,8000,16000,24000,32000,40000,48000];
     if ((Y===3 && X>=70) || (Y===4 && X>=40))
         Y=5;
-    if (5<=Y){
+    if (5<=Y)
         ron=tsumo1=tsumo2=arr[Y-5];
-    }
     else
-        ron=tsumo1=tsumo2=X*Math.pow(2,Y+2);
+        ron=tsumo1=tsumo2=Number(X)*Math.pow(2,Number(Y)+2);
     if (how==='ron'){
         if (win==='東')
             ron*=6;
@@ -154,6 +153,23 @@ function makeunchk(who, type){
             document.querySelector('#'+who[i]+type).style.color='';
     }
 }
+function makedisable(type){
+    if (document.querySelector('input[type=radio][name=bu_tsumo]:checked')!=null)
+        document.querySelector('input[type=radio][name=bu_tsumo]:checked').checked=false;
+    if (document.querySelector('input[type=radio][name=bu_ron]:checked')!=null)
+        document.querySelector('input[type=radio][name=bu_ron]:checked').checked=false;
+    var bu=document.getElementsByName('bu_'+type);
+    for (var i=0;i<bu.length;i++) {
+        bu[i].disabled = true;
+    }
+}
+function makeundisable(type){
+    var bu=document.getElementsByName('bu_'+type);
+    for (var i=0;i<bu.length;i++) {
+        bu[i].disabled = false;
+    }
+}
+
 function draw(){
     var draw=document.querySelector('#Modal_draw');
     draw.style.display='inline';
@@ -447,7 +463,6 @@ function ron3(){
     }
 }
 function ron4(){
-    var arr=[20, 25, 30, 40, 50, 60, 70, 80, 90, 100, 110];
     var checks1=['#downcheck_ron1','#rightcheck_ron1','#upcheck_ron1','#leftcheck_ron1'];
     var checks2=['#downcheck_ron2','#rightcheck_ron2','#upcheck_ron2','#leftcheck_ron2'];
     var names=['#DownPerson_Name', '#RightPerson_Name', '#UpPerson_Name', '#LeftPerson_Name'];
@@ -458,8 +473,11 @@ function ron4(){
         fan[i]=Number(fan[i]);
         bu[i]=Number(bu[i]);
     }
-    fan[now]=document.querySelector('#fan_ron').options[document.querySelector('#fan_ron').selectedIndex].index+1;
-    bu[now]=arr[document.querySelector('#bu_ron').options[document.querySelector('#bu_ron').selectedIndex].index];
+    fan[now]=document.querySelector('input[type=radio][name=fan_ron]:checked').value;
+    if (fan[now]>4)
+        bu[now]=0;
+    else
+        bu[now]=document.querySelector('input[type=radio][name=bu_ron]:checked').value;
     document.querySelector('#fancnt_ron').innerText='';
     document.querySelector('#bucnt_ron').innerText='';
     for (var j=0;j<4;j++){
@@ -470,12 +488,18 @@ function ron4(){
         if (document.querySelector(checks1[i%4]).style.color==='red'){
             document.querySelector('#name_ron').innerText=document.querySelector(names[i%4]).innerText+'의 점수를 입력해주세요.';
             document.querySelector('#who_ron').innerText=i%4;
-            document.querySelector('#fan_ron').selectedIndex=0;
-            document.querySelector('#bu_ron').selectedIndex=0;
+            if (document.querySelector('input[type=radio][name=fan_ron]:checked')!=null)
+                document.querySelector('input[type=radio][name=fan_ron]:checked').checked=false;
+            if (document.querySelector('input[type=radio][name=bu_ron]:checked')!=null)
+                document.querySelector('input[type=radio][name=bu_ron]:checked').checked=false;
+            makeundisable('ron');
+            document.getElementsByName('fan_ron')[0].checked=true;
+            document.getElementsByName('bu_ron')[2].checked=true;
             break;
         }
         else if (document.querySelector(checks2[i%4]).style.color==='red'){
             ron_General(fan, bu);
+            console.log(fan, bu);
             break;
         }
     }
@@ -526,8 +550,13 @@ function ron_General(fan, bu){
     var renjang=document.querySelector('#renjang_count');
     var Allwin=0, whowin=[0,0,0,0], firstwin=-1, wholose=-1, losepoint=0, impossible=1;
     ron3.style.display='';
-    document.querySelector('#fan_ron').selectedIndex=0;
-    document.querySelector('#bu_ron').selectedIndex=0;
+    if (document.querySelector('input[type=radio][name=fan_ron]:checked')!=null)
+        document.querySelector('input[type=radio][name=fan_ron]:checked').checked=false;
+    if (document.querySelector('input[type=radio][name=bu_ron]:checked')!=null)
+        document.querySelector('input[type=radio][name=bu_ron]:checked').checked=false;
+    makeundisable('ron');
+    document.getElementsByName('fan_ron')[0].checked=true;
+    document.getElementsByName('bu_ron')[2].checked=true;
     for (var i=0;i<4;i++){
         if (fan[i]===1 && bu[i]<=25){ //불가능한 점수
             makeunchk(['down', 'right', 'up', 'left'],'check_ron1');
@@ -590,8 +619,14 @@ function tsumo_General(fan, bu){
     var renjang=document.querySelector('#renjang_count');
     var whowin=-1;
     tsumo2.style.display='';
-    document.querySelector('#fan_tsumo').selectedIndex=0;
-    document.querySelector('#bu_tsumo').selectedIndex=0;
+    
+    if (document.querySelector('input[type=radio][name=fan_tsumo]:checked')!=null)
+        document.querySelector('input[type=radio][name=fan_tsumo]:checked').checked=false;
+    if (document.querySelector('input[type=radio][name=bu_tsumo]:checked')!=null)
+        document.querySelector('input[type=radio][name=bu_tsumo]:checked').checked=false;
+    makeundisable('tsumo');
+    document.getElementsByName('fan_tsumo')[0].checked=true;
+    document.getElementsByName('bu_tsumo')[2].checked=true;
     if (fan===1 && bu<=25){ //불가능한 점수
         makeunchk(['down', 'right', 'up', 'left'],'check_tsumo');
         document.querySelector('#Modal_alertText').innerText='불가능한 점수입니다.';
@@ -790,7 +825,6 @@ function rollback(){
 }
 
 function copyrecord(){
-
     var record=document.querySelector('#Modal_record');
     var names=['#DownPerson_Name', '#RightPerson_Name', '#UpPerson_Name', '#LeftPerson_Name'];
     var scores=['#DownPerson_Score','#RightPerson_Score','#UpPerson_Score','#LeftPerson_Score'];
@@ -812,7 +846,6 @@ function copyrecord(){
         copytxt+='\n';
     }
     window.navigator.clipboard.writeText(copytxt);
-    console.log(copytxt);
     document.querySelector('#Modal_alertText').innerText='점수 기록을 복사했습니다.';
     document.querySelector('#Modal_alert').style.display='inline';
 }

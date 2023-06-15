@@ -242,6 +242,18 @@
   text-align: center;
 }
 
+.container_inputscore{
+  display: grid;
+  grid-template-rows: repeat(3, auto);
+  grid-template-columns: repeat(2, auto);
+  grid-template-areas:
+  "fan fancnt"
+  "bu bucnt"
+  "yakuman yakumancnt";
+  vertical-align: middle;
+  text-align: center;
+}
+
 .wind{
   grid-area: wind;
   margin: auto;
@@ -456,6 +468,15 @@ input[type="number"]::-webkit-outer-spin-button,
 input[type="number"]::-webkit-inner-spin-button {
     -webkit-appearance: none;
     margin: 0;
+}
+input[type="radio"]{
+  appearance: none;
+}
+input[type="radio"]:checked + span{
+  color: red;
+}
+input[type="radio"]:disabled + span{
+  color: gray;
 }
 @media (orientation: portrait) {
 	html {
