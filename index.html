@@ -261,7 +261,7 @@
       <div style="font-size: 20px;" id="name_ron">
         -1
       </div>
-      <div class="container_inputscore" style="font-size: 30px;">
+      <div class="container_inputscore" style="font-size: 30px; white-space: nowrap;">
         <div style="grid-area: fan;">
           판:
         </div>
@@ -371,7 +371,7 @@
       <div style="font-size: 20px;" id="name_tsumo">
         -1
       </div>
-      <div class="container_inputscore" style="font-size: 30px;">
+      <div class="container_inputscore" style="font-size: 30px; white-space: nowrap;">
         <div style="grid-area: fan;">
           판:
         </div>
@@ -659,7 +659,7 @@
   }
   ">
     <div class="modal_content">
-      <div class="container_record" style="overflow: auto;">
+      <div class="container_record">
         <div style="grid-area: downname; font-size: 25px;" id="DownPerson_Name">▼</div>
         <div style="grid-area: rightname; font-size: 25px;" id="RightPerson_Name">▶</div>
         <div style="grid-area: upname; font-size: 25px;" id="UpPerson_Name">▲</div>
@@ -669,6 +669,7 @@
             되돌리기
           </div>
         </div>
+        <div class="container_recordscroll" style="grid-area: scroll; overflow: auto;">
         <div style="grid-area: when; font-size: 20px;" id="when" onclick="copyrecord();">
           <div>
             <br>
@@ -693,6 +694,7 @@
           <div>
             25000
           </div>
+        </div>
         </div>
       </div>
     </div>

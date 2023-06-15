@@ -223,6 +223,16 @@
   grid-template-columns: 120px repeat(4, 100px);
   grid-template-areas: 
   "rollback downname rightname upname leftname"
+  "scroll scroll scroll scroll scroll";
+  vertical-align: middle;
+  text-align: center;
+}
+
+.container_recordscroll{
+  display: grid;
+  grid-template-rows: 200px;
+  grid-template-columns: 120px repeat(4, 100px);
+  grid-template-areas: 
   "when downrecord rightrecord uprecord leftrecord";
   vertical-align: middle;
   text-align: center;
