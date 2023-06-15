@@ -51,12 +51,14 @@ function ChangeSeat(){
 function CalculateScore(Y, X, win, lose, how, plus){
     var ret=0, ron=0, tsumo1=0, tsumo2=0;
     var arr=[2000,3000,3000,4000,4000,4000,6000,6000,8000,8000,16000,24000,32000,40000,48000];
+    X=Number(X);
+    Y=Number(Y);
     if ((Y===3 && X>=70) || (Y===4 && X>=40))
         Y=5;
     if (5<=Y)
         ron=tsumo1=tsumo2=arr[Y-5];
     else
-        ron=tsumo1=tsumo2=Number(X)*Math.pow(2,Number(Y)+2);
+        ron=tsumo1=tsumo2=X*Math.pow(2,Y+2);
     if (how==='ron'){
         if (win==='東')
             ron*=6;
@@ -171,6 +173,21 @@ function makeundisable(type){
     bu[2].checked=true;
     if (type=='ron')
         bu[0].disabled = true;
+}
+function yakumancnt(type, how){
+    var yakuman=document.getElementsByName('fan_'+type)[9];
+    if (how){
+        if (yakuman.value<19)
+            yakuman.value++;
+        else
+            yakuman.value=14;
+        yakuman.nextSibling.innerText=(yakuman.value-13)+'배역만';
+    }
+    else{
+        yakuman.value=13;
+        yakuman.nextSibling.innerText='1배역만';
+    }
+    
 }
 
 function draw(){
@@ -499,6 +516,7 @@ function ron4(){
             document.getElementsByName('fan_ron')[0].checked=true;
             document.getElementsByName('bu_ron')[0].disabled=true;
             document.getElementsByName('bu_ron')[1].disabled=true;
+            yakumancnt('ron',0);
             break;
         }
         else if (document.querySelector(checks2[i%4]).style.color==='red'){
@@ -565,6 +583,7 @@ function ron_General(fan, bu){
     document.getElementsByName('fan_ron')[0].checked=true;
     document.getElementsByName('bu_ron')[0].disabled=true;
     document.getElementsByName('bu_ron')[1].disabled=true;
+    yakumancnt('ron',0);
     for (var i=0;i<4;i++){ //화료체크
         if (document.querySelector(checks2[i]).style.color==='red'){
             document.querySelector(checks2[i]).style.color='';
@@ -624,6 +643,7 @@ function tsumo_General(fan, bu){
     document.getElementsByName('fan_tsumo')[0].checked=true;
     document.getElementsByName('bu_tsumo')[0].disabled=true;
     document.getElementsByName('bu_tsumo')[1].disabled=true;
+    yakumancnt('tsumo',0);
     for (var i=0;i<4;i++){ //화료체크
         if (document.querySelector(checks[i]).style.color==='red'){
             document.querySelector(checks[i]).style.color='';

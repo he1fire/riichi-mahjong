@@ -255,6 +255,7 @@
       document.getElementsByName('fan_ron')[0].checked=true;
       document.getElementsByName('bu_ron')[0].disabled=true;
       document.getElementsByName('bu_ron')[1].disabled=true;
+      yakumancnt('ron',0);
     }
   ">
     <div class="modal_content">
@@ -266,17 +267,19 @@
           판:
         </div>
         <div style="grid-area: fancnt;">
-          <label><input type="radio" name="fan_ron" value="1" onclick="makeundisable('ron');
+          <label><input type="radio" name="fan_ron" value="1" onclick="makeundisable('ron'); yakumancnt('ron',0);
           document.getElementsByName('bu_ron')[0].checked=false; document.getElementsByName('bu_ron')[1].checked=false;
           document.getElementsByName('bu_ron')[0].disabled=true; document.getElementsByName('bu_ron')[1].disabled=true;" checked><span>1</span></label>
-          <label><input type="radio" name="fan_ron" value="2" onclick="makeundisable('ron');"><span>2</span></label>
-          <label><input type="radio" name="fan_ron" value="3" onclick="makeundisable('ron');"><span>3</span></label>
-          <label><input type="radio" name="fan_ron" value="4" onclick="makeundisable('ron');"><span>4</span></label>
-          <label><input type="radio" name="fan_ron" value="5" onclick="makedisable('ron');"><span>5</span></label>
-          <label><input type="radio" name="fan_ron" value="6" onclick="makedisable('ron');"><span>6+</span></label>
-          <label><input type="radio" name="fan_ron" value="8" onclick="makedisable('ron');"><span>8+</span></label>
-          <label><input type="radio" name="fan_ron" value="11" onclick="makedisable('ron');"><span>11+</span></label>
-          <label><input type="radio" name="fan_ron" value="13" onclick="makedisable('ron');"><span>13+</span></label>
+          <label><input type="radio" name="fan_ron" value="2" onclick="makeundisable('ron'); yakumancnt('ron',0);"><span>2</span></label>
+          <label><input type="radio" name="fan_ron" value="3" onclick="makeundisable('ron'); yakumancnt('ron',0);"><span>3</span></label>
+          <label><input type="radio" name="fan_ron" value="4" onclick="makeundisable('ron'); yakumancnt('ron',0);"><span>4</span></label>
+          <label><input type="radio" name="fan_ron" value="5" onclick="makedisable('ron'); yakumancnt('ron',0);"><span>5</span></label>
+          <label><input type="radio" name="fan_ron" value="6" onclick="makedisable('ron'); yakumancnt('ron',0);"><span>6+</span></label>
+          <label><input type="radio" name="fan_ron" value="8" onclick="makedisable('ron'); yakumancnt('ron',0);"><span>8+</span></label>
+          <label><input type="radio" name="fan_ron" value="11" onclick="makedisable('ron'); yakumancnt('ron',0);"><span>11+</span></label>
+          <label><input type="radio" name="fan_ron" value="13" onclick="makedisable('ron'); yakumancnt('ron',0);"><span>13+</span></label>
+          <div></div>
+          <label><input type="radio" name="fan_ron" value="13" onclick="makedisable('ron'); yakumancnt('ron',1);"><span>1배역만</span></label>
         </div>
         <div style="grid-area: bu;">
           부:
@@ -294,17 +297,6 @@
           <label><input type="radio" name="bu_ron" value="90"><span>90</span></label>
           <label><input type="radio" name="bu_ron" value="100"><span>100</span></label>
           <label><input type="radio" name="bu_ron" value="110"><span>110</span></label>
-        </div>
-        <div style="grid-area: yakuman;">
-          역만:
-        </div>
-        <div style="grid-area: yakumancnt;">
-          <label><input type="radio" name="fan_ron" value="14" onclick="makedisable('ron');"><span>x1</span></label>
-          <label><input type="radio" name="fan_ron" value="15" onclick="makedisable('ron');"><span>x2</span></label>
-          <label><input type="radio" name="fan_ron" value="16" onclick="makedisable('ron');"><span>x3</span></label>
-          <label><input type="radio" name="fan_ron" value="17" onclick="makedisable('ron');"><span>x4</span></label>
-          <label><input type="radio" name="fan_ron" value="18" onclick="makedisable('ron');"><span>x5</span></label>
-          <label><input type="radio" name="fan_ron" value="19" onclick="makedisable('ron');"><span>x6</span></label>
         </div>
       </div>
       <div style="font-size: 20px;" onclick="ron4();">
@@ -365,6 +357,7 @@
       document.getElementsByName('fan_tsumo')[0].checked=true;
       document.getElementsByName('bu_tsumo')[0].disabled=true;
       document.getElementsByName('bu_tsumo')[1].disabled=true;
+      yakumancnt('tsumo',0);
     }
   ">
     <div class="modal_content">
@@ -376,17 +369,19 @@
           판:
         </div>
         <div style="grid-area: fancnt;">
-          <label><input type="radio" name="fan_tsumo" value="1" onclick="makeundisable('tsumo');
+          <label><input type="radio" name="fan_tsumo" value="1" onclick="makeundisable('tsumo'); yakumancnt('tsumo',0);
           document.getElementsByName('bu_tsumo')[0].checked=false; document.getElementsByName('bu_tsumo')[1].checked=false;
           document.getElementsByName('bu_tsumo')[0].disabled=true; document.getElementsByName('bu_tsumo')[1].disabled=true;" checked><span>1</span></label>
-          <label><input type="radio" name="fan_tsumo" value="2" onclick="makeundisable('tsumo');"><span>2</span></label>
-          <label><input type="radio" name="fan_tsumo" value="3" onclick="makeundisable('tsumo');"><span>3</span></label>
-          <label><input type="radio" name="fan_tsumo" value="4" onclick="makeundisable('tsumo');"><span>4</span></label>
-          <label><input type="radio" name="fan_tsumo" value="5" onclick="makedisable('tsumo');"><span>5</span></label>
-          <label><input type="radio" name="fan_tsumo" value="6" onclick="makedisable('tsumo');"><span>6+</span></label>
-          <label><input type="radio" name="fan_tsumo" value="8" onclick="makedisable('tsumo');"><span>8+</span></label>
-          <label><input type="radio" name="fan_tsumo" value="11" onclick="makedisable('tsumo');"><span>11+</span></label>
-          <label><input type="radio" name="fan_tsumo" value="13" onclick="makedisable('tsumo');"><span>13+</span></label>
+          <label><input type="radio" name="fan_tsumo" value="2" onclick="makeundisable('tsumo'); yakumancnt('tsumo',0);"><span>2</span></label>
+          <label><input type="radio" name="fan_tsumo" value="3" onclick="makeundisable('tsumo'); yakumancnt('tsumo',0);"><span>3</span></label>
+          <label><input type="radio" name="fan_tsumo" value="4" onclick="makeundisable('tsumo'); yakumancnt('tsumo',0);"><span>4</span></label>
+          <label><input type="radio" name="fan_tsumo" value="5" onclick="makedisable('tsumo'); yakumancnt('tsumo',0);"><span>5</span></label>
+          <label><input type="radio" name="fan_tsumo" value="6" onclick="makedisable('tsumo'); yakumancnt('tsumo',0);"><span>6+</span></label>
+          <label><input type="radio" name="fan_tsumo" value="8" onclick="makedisable('tsumo'); yakumancnt('tsumo',0);"><span>8+</span></label>
+          <label><input type="radio" name="fan_tsumo" value="11" onclick="makedisable('tsumo'); yakumancnt('tsumo',0);"><span>11+</span></label>
+          <label><input type="radio" name="fan_tsumo" value="13" onclick="makedisable('tsumo'); yakumancnt('tsumo',0);"><span>13+</span></label>
+          <div></div>
+          <label><input type="radio" name="fan_tsumo" value="13" onclick="makedisable('tsumo'); yakumancnt('tsumo',1);"><span>1배역만</span></label>
         </div>
         <div style="grid-area: bu;">
           부:
@@ -404,17 +399,6 @@
           <label><input type="radio" name="bu_tsumo" value="90"><span>90</span></label>
           <label><input type="radio" name="bu_tsumo" value="100"><span>100</span></label>
           <label><input type="radio" name="bu_tsumo" value="110"><span>110</span></label>
-        </div>
-        <div style="grid-area: yakuman;">
-          역만:
-        </div>
-        <div style="grid-area: yakumancnt;">
-          <label><input type="radio" name="fan_tsumo" value="14" onclick="makedisable('tsumo');"><span>x1</span></label>
-          <label><input type="radio" name="fan_tsumo" value="15" onclick="makedisable('tsumo');"><span>x2</span></label>
-          <label><input type="radio" name="fan_tsumo" value="16" onclick="makedisable('tsumo');"><span>x3</span></label>
-          <label><input type="radio" name="fan_tsumo" value="17" onclick="makedisable('tsumo');"><span>x4</span></label>
-          <label><input type="radio" name="fan_tsumo" value="18" onclick="makedisable('tsumo');"><span>x5</span></label>
-          <label><input type="radio" name="fan_tsumo" value="19" onclick="makedisable('tsumo');"><span>x6</span></label>
         </div>
       </div>
       <div style="font-size: 20px;" onclick="

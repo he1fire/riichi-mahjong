@@ -254,12 +254,11 @@
 
 .container_inputscore{
   display: grid;
-  grid-template-rows: repeat(3, auto);
-  grid-template-columns: repeat(2, auto);
+  grid-template-rows: repeat(2, auto);
+  grid-template-columns: 60px auto;
   grid-template-areas:
   "fan fancnt"
-  "bu bucnt"
-  "yakuman yakumancnt";
+  "bu bucnt";
   vertical-align: middle;
   text-align: center;
 }
