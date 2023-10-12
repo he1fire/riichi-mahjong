@@ -272,6 +272,7 @@
   grid-area: score;
   width: 200px;
   margin: auto;
+  white-space: nowrap;
 }
 .change{
   grid-area: change;

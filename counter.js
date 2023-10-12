@@ -300,13 +300,32 @@ function record(){
 function showgap(who){
     var scores=['#DownPerson_Score','#RightPerson_Score','#UpPerson_Score','#LeftPerson_Score'];
     var chk=document.querySelector('#Gap_mode');
+    var rank=[1,1,1,1];
     for (var i=0;i<4;i++){
         document.querySelector(scores[i]+'gap').innerText=document.querySelector(scores[i]).innerText;
     }
     var comparescore=document.querySelector('#'+who+'_Scoregap').innerText;
     for (var i=0;i<4;i++){
         var tmp=document.querySelector(scores[i]).innerText-comparescore;
-        if (tmp>0){
+        if (scores[i]=='#'+who+'_Score'){
+            for (var j=0;j<4;j++){
+                for (var k=0;k<4;k++){
+                    if (document.querySelector(scores[(i+j)%4]+'gap').innerText<document.querySelector(scores[(i+k)%4]+'gap').innerText){
+                        rank[j]++;
+                    }
+                }
+            }
+            var ranktmp='';
+            for (var j=0;j<4;j++){
+                ranktmp+=String(rank[j]);
+                if (j!=3)
+                    ranktmp+='-';
+            }
+            document.querySelector(scores[i]).style.fontSize='60px';
+            document.querySelector(scores[i]+'00').style.color='white';
+            document.querySelector(scores[i]).innerText=ranktmp;
+        }
+        else if (tmp>0){
             document.querySelector(scores[i]).style.color='lawngreen';
             document.querySelector(scores[i]+'00').style.color='lawngreen';
             document.querySelector(scores[i]).innerText='+'+tmp;
@@ -318,7 +337,7 @@ function showgap(who){
         }
         else{
             document.querySelector(scores[i]).style.color='black';
-            document.querySelector(scores[i]+'00').style.color='black';
+            document.querySelector(scores[i]+'00').style.color='white';
             document.querySelector(scores[i]).innerText=tmp;
         }
         
@@ -330,6 +349,7 @@ function hidegap(){
     var chk=document.querySelector('#Gap_mode');
     if (chk.innerText==1){
         for (var i=0;i<4;i++){
+            document.querySelector(scores[i]).style.fontSize='80px';
             document.querySelector(scores[i]).style.color='black';
             document.querySelector(scores[i]+'00').style.color='black';
             document.querySelector(scores[i]).innerText=document.querySelector(scores[i]+'gap').innerText;
