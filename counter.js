@@ -51,9 +51,12 @@ function ChangeSeat(){
 function CalculateScore(Y, X, win, lose, how, plus){
     var ret=0, ron=0, tsumo1=0, tsumo2=0;
     var arr=[2000,3000,3000,4000,4000,4000,6000,6000,8000,8000,16000,24000,32000,40000,48000];
+    var option=document.querySelector('#roundmangan').checked;
     X=Number(X);
     Y=Number(Y);
     if ((Y===3 && X>=70) || (Y===4 && X>=40))
+        Y=5;
+    if ((Y===3 && X>=60) || (Y===4 && X>=30) && option)
         Y=5;
     if (5<=Y)
         ron=tsumo1=tsumo2=arr[Y-5];
