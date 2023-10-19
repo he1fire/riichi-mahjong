@@ -487,6 +487,9 @@ input[type="radio"]:checked + span{
 input[type="radio"]:disabled + span{
   color: gray;
 }
+input[type="checkbox"]{
+  appearance: none;
+}
 @media (orientation: portrait) {
 	html {
 		transform: rotate(-90deg);

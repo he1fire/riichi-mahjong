@@ -155,6 +155,17 @@ function makeunchk(who, type){
             document.querySelector('#'+who[i]+type).style.color='';
     }
 }
+function OXbutton(self){
+    if (self.innerText=='O'){
+        self.innerText='X';
+        self.style.color='red';
+    }
+        
+    else{
+        self.innerText='O';
+        self.style.color='blue';
+    }
+}
 function makedisable(type){
     if (document.querySelector('input[type=radio][name=bu_tsumo]:checked')!=null)
         document.querySelector('input[type=radio][name=bu_tsumo]:checked').checked=false;
@@ -246,6 +257,7 @@ function modify(){
     var modify=document.querySelector('#Modal_modify');
     var names=['#DownPerson_Name', '#RightPerson_Name', '#UpPerson_Name', '#LeftPerson_Name'];
     var scores=['#DownPerson_Score','#RightPerson_Score','#UpPerson_Score','#LeftPerson_Score'];
+    var options=['#roundmangan', '#minusriichi', '#manyron'];
     option.style.display='';
     modify.style.display='inline';
     var cnt=0;
@@ -258,12 +270,24 @@ function modify(){
     }
     cnt+=Number(document.querySelector('#riichi_count').innerText)*10;
     document.querySelector('#startscore').value=cnt/4;
+    
+    for (var i=0;i<3;i++){
+        if (document.querySelector(options[i]).checked){
+            document.querySelector(options[i]).nextSibling.innerText='O';
+            document.querySelector(options[i]).nextSibling.style.color='blue';
+        }
+        else{
+            document.querySelector(options[i]).nextSibling.innerText='X';
+            document.querySelector(options[i]).nextSibling.style.color='red';
+        }
+    }
 }
 
 function save(){
     var modify=document.querySelector('#Modal_modify');
     var names=['#DownPerson_Name', '#RightPerson_Name', '#UpPerson_Name', '#LeftPerson_Name'];
     var scores=['#DownPerson_Score','#RightPerson_Score','#UpPerson_Score','#LeftPerson_Score'];
+    var options=['#roundmangan', '#minusriichi', '#manyron'];
     var when_record=document.querySelector("#when");
     var chkscore=0;
     var cntscore=[0,0];
@@ -276,6 +300,7 @@ function save(){
         if (Number(document.querySelector(scores[i]).innerText)!==parseInt(document.querySelector(tmp).value))
             chkscore=1;
     }
+    cntscore[0]+=Number(document.querySelector('#riichi_count').innerText)*10
     if (chkscore && cntscore[0]!=startscore*4){
         document.querySelector('#Modal_alertText').innerText='점수와 시작 점수를 동시에 변경할 수 없습니다.';
         document.querySelector('#Modal_alert').style.display='inline';
@@ -299,13 +324,20 @@ function save(){
         }
         when_record.innerHTML+=`<div>점수 수정<div><br></div></div>`;
     }
-    else if (cntscore!=startscore*4){
+    else if (cntscore[0]!=startscore*4){
         for (var i=0;i<4;i++){
             var score_record=document.querySelector(scores[i]+'record');
             document.querySelector(scores[i]).innerText=startscore
             score_record.innerHTML=`<div>`+String(startscore)*100+`</div>`;
         }
         when_record.innerHTML=``;
+    }
+
+    for (var i=0;i<3;i++){
+        if (document.querySelector(options[i]).nextSibling.innerText=='O')
+            document.querySelector(options[i]).checked=true;
+        else
+            document.querySelector(options[i]).checked=false;
     }
 }
 
@@ -440,8 +472,9 @@ function riichi(who){
     var Allstick=document.querySelector('#riichi_count');
     var stick=document.querySelector('#'+who+'_Riichi');
     var score=document.querySelector('#'+who+'_Score');
+    var option=document.querySelector('#minusriichi').checked;
     if (stick.style.visibility===''){
-        if (score.innerText>=10){
+        if (score.innerText>=10 || option){
             stick.style.visibility='visible';
             score.innerText=Number(score.innerText)-10;
             Allstick.innerText++;
