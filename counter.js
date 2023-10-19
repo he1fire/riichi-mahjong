@@ -260,7 +260,7 @@ function modify(){
     var modify=document.querySelector('#Modal_modify');
     var names=['#DownPerson_Name', '#RightPerson_Name', '#UpPerson_Name', '#LeftPerson_Name'];
     var scores=['#DownPerson_Score','#RightPerson_Score','#UpPerson_Score','#LeftPerson_Score'];
-    var options=['#roundmangan', '#minusriichi', '#manyron'];
+    var options=['#roundmangan', '#minusriichi'];
     option.style.display='';
     modify.style.display='inline';
     var cnt=0;
@@ -274,7 +274,7 @@ function modify(){
     cnt+=Number(document.querySelector('#riichi_count').innerText)*10;
     document.querySelector('#startscore').value=cnt/4;
     
-    for (var i=0;i<3;i++){
+    for (var i=0;i<2;i++){
         if (document.querySelector(options[i]).checked){
             document.querySelector(options[i]).nextSibling.innerText='O';
             document.querySelector(options[i]).nextSibling.style.color='blue';
@@ -290,7 +290,7 @@ function save(){
     var modify=document.querySelector('#Modal_modify');
     var names=['#DownPerson_Name', '#RightPerson_Name', '#UpPerson_Name', '#LeftPerson_Name'];
     var scores=['#DownPerson_Score','#RightPerson_Score','#UpPerson_Score','#LeftPerson_Score'];
-    var options=['#roundmangan', '#minusriichi', '#manyron'];
+    var options=['#roundmangan', '#minusriichi'];
     var when_record=document.querySelector("#when");
     var chkscore=0;
     var cntscore=[0,0];
@@ -336,7 +336,7 @@ function save(){
         when_record.innerHTML=``;
     }
 
-    for (var i=0;i<3;i++){
+    for (var i=0;i<2;i++){
         if (document.querySelector(options[i]).nextSibling.innerText=='O')
             document.querySelector(options[i]).checked=true;
         else
