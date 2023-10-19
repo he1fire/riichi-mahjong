@@ -240,13 +240,12 @@
 
 .container_modify{
   display: grid;
-  grid-template-rows: repeat(5, auto);
+  grid-template-rows: repeat(3, auto);
   grid-template-columns: repeat(4, auto);
   grid-template-areas:
-  "name name name name"
-  "name0 name1 name2 name3"
-  "score score score score"
-  "score0 score1 score2 score3"
+  "who who who who"
+  "input0 input1 input2 input3"
+  "option0 option1 option2 option3"
   "ok ok ok ok";
   vertical-align: middle;
   text-align: center;

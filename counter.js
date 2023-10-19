@@ -248,12 +248,16 @@ function modify(){
     var scores=['#DownPerson_Score','#RightPerson_Score','#UpPerson_Score','#LeftPerson_Score'];
     option.style.display='';
     modify.style.display='inline';
+    var cnt=0;
     for (var i=0;i<4;i++){
         var tmp1='#name'+String(i);
         var tmp2='#score'+String(i);
         document.querySelector(tmp1).value=document.querySelector(names[i]).innerText;
         document.querySelector(tmp2).value=document.querySelector(scores[i]).innerText;
+        cnt+=Number(document.querySelector(scores[i]).innerText);
     }
+    cnt+=Number(document.querySelector('#riichi_count').innerText)*10;
+    document.querySelector('#startscore').value=cnt/4;
 }
 
 function save(){
@@ -262,16 +266,23 @@ function save(){
     var scores=['#DownPerson_Score','#RightPerson_Score','#UpPerson_Score','#LeftPerson_Score'];
     var when_record=document.querySelector("#when");
     var chkscore=0;
-    var cntscore=0;
+    var cntscore=[0,0];
+    var startscore=Number(document.querySelector("#startscore").value);
     modify.style.display='';
     for (var i=0;i<4;i++){
         var tmp='#score'+String(i);
-        cntscore+=parseInt(document.querySelector(tmp).value);
+        cntscore[0]+=parseInt(document.querySelector(scores[i]).innerText);
+        cntscore[1]+=parseInt(document.querySelector(tmp).value);
         if (Number(document.querySelector(scores[i]).innerText)!==parseInt(document.querySelector(tmp).value))
             chkscore=1;
     }
-    if (cntscore!=1000){
-        document.querySelector('#Modal_alertText').innerText='점수 총합이 10만점이 아닙니다.';
+    if (chkscore && cntscore[0]!=startscore*4){
+        document.querySelector('#Modal_alertText').innerText='점수와 시작 점수를 동시에 변경할 수 없습니다.';
+        document.querySelector('#Modal_alert').style.display='inline';
+        return;
+    }
+    if (chkscore && cntscore[1]!=startscore*4){
+        document.querySelector('#Modal_alertText').innerText='시작 점수와 점수의 총 합이 다릅니다.';
         document.querySelector('#Modal_alert').style.display='inline';
         return;
     }
@@ -287,6 +298,14 @@ function save(){
             score_record.innerHTML+=`<div><br></div><div>`+document.querySelector(tmp).value+`00</div>`;
         }
         when_record.innerHTML+=`<div>점수 수정<div><br></div></div>`;
+    }
+    else if (cntscore!=startscore*4){
+        for (var i=0;i<4;i++){
+            var score_record=document.querySelector(scores[i]+'record');
+            document.querySelector(scores[i]).innerText=startscore
+            score_record.innerHTML=`<div>`+String(startscore)*100+`</div>`;
+        }
+        when_record.innerHTML=``;
     }
 }
 
@@ -415,7 +434,7 @@ function makedice(num){
         ans+=`<div style="grid-area: `+dice_value[i]+`;"><div class="circle_dice"></div></div>`;
     }
     return ans;
-  }
+}
 
 function riichi(who){
     var Allstick=document.querySelector('#riichi_count');
@@ -766,6 +785,7 @@ function ok_score(changed){
                 document.querySelector(winds[i]).style.color='';
         }
         var cntscore=0;
+        var startscore=Number(document.querySelector("#startscore").value);
         for (var i=0;i<4;i++){ // 점수 기록 지우기 && 점수 되돌리기
             var arrs=document.querySelector(scores[i]+'record').innerHTML.split('<div');
             document.querySelector(scores[i]+'record').innerHTML='';
@@ -776,7 +796,7 @@ function ok_score(changed){
             if (changed[i])
                 ChangeScore(scores[i], changed[i]);
         }
-        document.querySelector('#riichi_count').innerText=(1000-cntscore)/10; // 점수 수정기능과 겹치면 음수나 소수점 발생가능 -> 언젠가 고치겠지
+        document.querySelector('#riichi_count').innerText=(startscore*4-cntscore)/10; // 리치봉 개수 조정
         return;
     }
     for (var i=0;i<4;i++){ // 점수 배분및 기록
