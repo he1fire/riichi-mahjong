@@ -274,7 +274,7 @@ function modify(){
     cnt+=Number(document.querySelector('#riichi_count').innerText)*10;
     document.querySelector('#startscore').value=cnt/4;
     
-    for (var i=0;i<2;i++){
+    for (var i=0;i<options.length;i++){
         if (document.querySelector(options[i]).checked){
             document.querySelector(options[i]).nextSibling.innerText='O';
             document.querySelector(options[i]).nextSibling.style.color='blue';
@@ -290,6 +290,8 @@ function save(){
     var modify=document.querySelector('#Modal_modify');
     var names=['#DownPerson_Name', '#RightPerson_Name', '#UpPerson_Name', '#LeftPerson_Name'];
     var scores=['#DownPerson_Score','#RightPerson_Score','#UpPerson_Score','#LeftPerson_Score'];
+    var winds=['#DownPerson_Wind', '#RightPerson_Wind', '#UpPerson_Wind', '#LeftPerson_Wind'];
+    var sticks=['#DownPerson_Riichi', '#RightPerson_Riichi', '#UpPerson_Riichi', '#LeftPerson_Riichi'];
     var options=['#roundmangan', '#minusriichi'];
     var when_record=document.querySelector("#when");
     var chkscore=0;
@@ -328,15 +330,28 @@ function save(){
         when_record.innerHTML+=`<div>점수 수정<div><br></div></div>`;
     }
     else if (cntscore[0]!=startscore*4){
+        document.querySelector("#nowwind").innerText='東'; // 東 1국으로 초기화
+        document.querySelector("#nowcnt").innerText=1;
+        document.querySelector('#riichi_count').innerText=0;
+        document.querySelector('#renjang_count').innerText=0;
+        var windrecover=['東','南','西','北'];
+        for (var i=0;i<winds.length;i++){
+            document.querySelector(winds[i]).innerText=windrecover[i];
+            if (document.querySelector(winds[i]).innerText==='東')
+                document.querySelector(winds[i]).style.color='red';
+            else
+                document.querySelector(winds[i]).style.color='';
+        }
         for (var i=0;i<4;i++){
             var score_record=document.querySelector(scores[i]+'record');
+            document.querySelector(sticks[i]).style.visibility='';
             document.querySelector(scores[i]).innerText=startscore
             score_record.innerHTML=`<div>`+String(startscore)*100+`</div>`;
         }
         when_record.innerHTML=``;
     }
 
-    for (var i=0;i<2;i++){
+    for (var i=0;i<options.length;i++){
         if (document.querySelector(options[i]).nextSibling.innerText=='O')
             document.querySelector(options[i]).checked=true;
         else
