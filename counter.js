@@ -372,7 +372,11 @@ function showgap(who){
     var rank=[1,1,1,1];
     for (var i=0;i<4;i++){
         document.querySelector(scores[i]+'gap').innerText=document.querySelector(scores[i]).innerText;
+        var arrs=document.querySelector(scores[i]+'gap').innerText.split('-');
+        if (arrs.length==4)
+            return;
     }
+    
     var comparescore=document.querySelector('#'+who+'_Scoregap').innerText;
     for (var i=0;i<4;i++){
         var tmp=document.querySelector(scores[i]).innerText-comparescore;
