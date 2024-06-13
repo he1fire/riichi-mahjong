@@ -601,6 +601,7 @@
     <div class="modal_content" style="font-size: 20px;">
       <div class="container_modify" onclick="event.target.select();" onkeydown="
       if (event.keyCode==13){
+        event.preventDefault();
         elements = Array.from(document.querySelectorAll('input'));
         currentIndex = elements.indexOf(event.target);
         elements[currentIndex + 1].select();
