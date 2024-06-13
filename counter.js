@@ -371,10 +371,10 @@ function showgap(who){
     var chk=document.querySelector('#Gap_mode');
     var rank=[1,1,1,1];
     for (var i=0;i<4;i++){
-        document.querySelector(scores[i]+'gap').innerText=document.querySelector(scores[i]).innerText;
-        var arrs=document.querySelector(scores[i]+'gap').innerText.split('-');
+        var arrs=document.querySelector(scores[i]).innerText.split('-');
         if (arrs.length==4)
             return;
+        document.querySelector(scores[i]+'gap').innerText=document.querySelector(scores[i]).innerText;
     }
     
     var comparescore=document.querySelector('#'+who+'_Scoregap').innerText;
