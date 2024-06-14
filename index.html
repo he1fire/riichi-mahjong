@@ -599,8 +599,8 @@
   }
   ">
     <div class="modal_content" style="font-size: 20px;">
-      <div class="container_modify" onclick="event.target.select();" oninput="
-      if (event.inputType=='insertLineBreak'){
+      <div class="container_modify" onclick="event.target.select();" onkeydown="
+      if (event.key=='Enter'){
         event.preventDefault();
         event.stopPropagation();
         elements = Array.from(document.querySelectorAll('.container_modify input'));
@@ -637,7 +637,7 @@
           <input type="number" id="score3">
         </div>
         <div style="grid-area: option0; margin: 5px;">
-          점수 초기화<br><input type="number" id="startscore">
+          점수 리셋<br><input type="number" id="startscore">
         </div>
         <div style="grid-area: option1; margin: 5px;">
           절상만관<br><input type="checkbox" id="roundmangan"><span onclick="OXbutton(this);">X</span>

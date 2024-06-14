@@ -305,14 +305,15 @@ function save(){
         if (Number(document.querySelector(scores[i]).innerText)!==parseInt(document.querySelector(tmp).value))
             chkscore=1;
     }
-    cntscore[0]+=Number(document.querySelector('#riichi_count').innerText)*10
+    cntscore[0]+=Number(document.querySelector('#riichi_count').innerText)*10;
+    cntscore[1]+=Number(document.querySelector('#riichi_count').innerText)*10;
     if (chkscore && cntscore[0]!=startscore*4){
         document.querySelector('#Modal_alertText').innerText='점수와 시작 점수를 동시에 변경할 수 없습니다.';
         document.querySelector('#Modal_alert').style.display='inline';
         return;
     }
     if (chkscore && cntscore[1]!=startscore*4){
-        document.querySelector('#Modal_alertText').innerText='시작 점수와 점수의 총 합이 다릅니다.';
+        document.querySelector('#Modal_alertText').innerText='시작 점수와 현재 점수의 총 합이 다릅니다.';
         document.querySelector('#Modal_alert').style.display='inline';
         return;
     }
