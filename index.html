@@ -599,14 +599,13 @@
   }
   ">
     <div class="modal_content" style="font-size: 20px;">
-      <div class="container_modify" onclick="event.target.select();" onkeydown="
-      document.querySelector('#Modal_alertText').innerText=event.keyCode;
-      document.querySelector('#Modal_alert').style.display='inline';
-      if (event.key=='Enter' || event.key=='Next' || event.key=='Submit'){
+      <div class="container_modify" onclick="event.target.select();" oninput="
+      if (event.inputType=='insertLineBreak'){
         event.preventDefault();
         event.stopPropagation();
-        elements = Array.from(document.querySelectorAll('input'));
+        elements = Array.from(document.querySelectorAll('.container_modify input'));
         currentIndex = elements.indexOf(event.target);
+        elements[currentIndex+1].focus();
         elements[currentIndex+1].select();
       }
       ">
