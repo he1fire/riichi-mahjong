@@ -600,11 +600,12 @@
   ">
     <div class="modal_content" style="font-size: 20px;">
       <div class="container_modify" onclick="event.target.select();" onkeydown="
-      if (event.code=='Enter'){
+      if (event.key=='Enter' || event.key=='Next'){
         event.preventDefault();
+        event.stopPropagation();
         elements = Array.from(document.querySelectorAll('input'));
         currentIndex = elements.indexOf(event.target);
-        elements[currentIndex + 1].select();
+        elements[currentIndex+1].select();
       }
       ">
         <div style="grid-area: who; font-size: 25px;">
