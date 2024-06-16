@@ -862,18 +862,20 @@ function ok_score(changed){
                 document.querySelector(winds[i]).style.color='';
         }
         var cntscore=0;
-        var startscore=Number(document.querySelector("#startscore").value);
+        var startscore=0;
         for (var i=0;i<4;i++){ // 점수 기록 지우기 && 점수 되돌리기
             var arrs=document.querySelector(scores[i]+'record').innerHTML.split('<div');
             document.querySelector(scores[i]+'record').innerHTML='';
             for (var j=0;j<arrs.length-2;j++){
                 document.querySelector(scores[i]+'record').innerHTML+=`<div`+arrs[j];
             }
+            startscore+=Number(document.querySelector(scores[i]).innerText);
             cntscore+=Number(document.querySelector(scores[i]).innerText)+Number(changed[i]);
             if (changed[i])
                 ChangeScore(scores[i], changed[i]);
         }
-        document.querySelector('#riichi_count').innerText=(startscore*4-cntscore)/10; // 리치봉 개수 조정
+        startscore+=Number(document.querySelector('#riichi_count').innerText)*10;
+        document.querySelector('#riichi_count').innerText=(startscore-cntscore)/10; // 리치봉 개수 조정
         return;
     }
     for (var i=0;i<4;i++){ // 점수 배분및 기록

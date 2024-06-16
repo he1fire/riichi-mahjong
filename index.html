@@ -615,16 +615,7 @@
   }
   ">
     <div class="modal_content" style="font-size: 20px;">
-      <div class="container_modify" onclick="event.target.select();" onkeydown="
-      if (event.key=='Enter'){
-        event.preventDefault();
-        event.stopPropagation();
-        elements = Array.from(document.querySelectorAll('.container_modify input'));
-        currentIndex = elements.indexOf(event.target);
-        elements[currentIndex+1].focus();
-        elements[currentIndex+1].select();
-      }
-      ">
+      <div class="container_modify" onclick="event.target.select();">
         <div style="grid-area: who; font-size: 25px;">
           이름 & 점수 수정 (100점 단위)
         </div>
