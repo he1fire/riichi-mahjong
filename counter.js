@@ -267,13 +267,15 @@ function modify(){
     for (var i=0;i<4;i++){
         var tmp1='#name'+String(i);
         var tmp2='#score'+String(i);
-        document.querySelector(tmp1).value=document.querySelector(names[i]).innerText;
-        document.querySelector(tmp2).value=document.querySelector(scores[i]).innerText;
+        document.querySelector(tmp1).value="";
+        document.querySelector(tmp1).placeholder=document.querySelector(names[i]).innerText;
+        document.querySelector(tmp2).value="";
+        document.querySelector(tmp2).placeholder=document.querySelector(scores[i]).innerText;
         cnt+=Number(document.querySelector(scores[i]).innerText);
     }
     cnt+=Number(document.querySelector('#riichi_count').innerText)*10;
-    document.querySelector('#startscore').value=cnt/4;
-    
+    document.querySelector('#startscore').value="";
+    document.querySelector('#startscore').placeholder=cnt/4;
     for (var i=0;i<options.length;i++){
         if (document.querySelector(options[i]).checked){
             document.querySelector(options[i]).nextSibling.innerText='O';
@@ -296,14 +298,23 @@ function save(){
     var when_record=document.querySelector("#when");
     var chkscore=0;
     var cntscore=[0,0];
-    var startscore=Number(document.querySelector("#startscore").value);
+    var startscore=0;
     modify.style.display='';
+
+    if (document.querySelector("#startscore").value!="")
+        startscore=Number(document.querySelector("#startscore").value);
+    else
+        startscore=Number(document.querySelector("#startscore").placeholder);
     for (var i=0;i<4;i++){
         var tmp='#score'+String(i);
         cntscore[0]+=parseInt(document.querySelector(scores[i]).innerText);
-        cntscore[1]+=parseInt(document.querySelector(tmp).value);
-        if (Number(document.querySelector(scores[i]).innerText)!==parseInt(document.querySelector(tmp).value))
-            chkscore=1;
+        if (document.querySelector(tmp).value!=""){
+            cntscore[1]+=parseInt(document.querySelector(tmp).value);
+            if (Number(document.querySelector(scores[i]).innerText)!==parseInt(document.querySelector(tmp).value))
+                chkscore=1;
+        }
+        else
+            cntscore[1]+=parseInt(document.querySelector(tmp).placeholder);
     }
     cntscore[0]+=Number(document.querySelector('#riichi_count').innerText)*10;
     cntscore[1]+=Number(document.querySelector('#riichi_count').innerText)*10;
@@ -319,14 +330,23 @@ function save(){
     }
     for (var i=0;i<4;i++){
         var tmp='#name'+String(i);
-        document.querySelector(names[i]).innerText=document.querySelector(tmp).value;
+        if (document.querySelector(tmp).value!="")
+            document.querySelector(names[i]).innerText=document.querySelector(tmp).value;
+        else
+        document.querySelector(names[i]).innerText=document.querySelector(tmp).placeholder;
     }
     if (chkscore){
         for (var i=0;i<4;i++){
             var score_record=document.querySelector(scores[i]+'record');
             var tmp='#score'+String(i);
-            document.querySelector(scores[i]).innerText=parseInt(document.querySelector(tmp).value)
-            score_record.innerHTML+=`<div><br></div><div>`+document.querySelector(tmp).value+`00</div>`;
+            if (document.querySelector(tmp).value!=""){
+                document.querySelector(scores[i]).innerText=parseInt(document.querySelector(tmp).value)
+                score_record.innerHTML+=`<div><br></div><div>`+document.querySelector(tmp).value+`00</div>`;
+            }
+            else{
+                document.querySelector(scores[i]).innerText=parseInt(document.querySelector(tmp).placeholder)
+                score_record.innerHTML+=`<div><br></div><div>`+document.querySelector(tmp).placeholder+`00</div>`;
+            }
         }
         when_record.innerHTML+=`<div>점수 수정<div><br></div></div>`;
     }
