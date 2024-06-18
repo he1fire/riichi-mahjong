@@ -317,7 +317,8 @@
         </div>
       </div>
       <div style="font-size: 30px;" onclick="
-      if (document.querySelector('#fao_ron').nextSibling.innerText=='O'){
+      var fan=document.querySelector('input[type=radio][name=fan_ron]:checked').value;
+      if (document.querySelector('#fao_ron').nextSibling.innerText=='O' && fan>=13){
         document.querySelector('#fao_ron').checked=true;
         ron4();
       }
@@ -474,7 +475,7 @@
       </div>
       <div style="font-size: 30px;" onclick="
       var fan=document.querySelector('input[type=radio][name=fan_tsumo]:checked').value;
-      if (document.querySelector('#fao_tsumo').nextSibling.innerText=='O'){
+      if (document.querySelector('#fao_tsumo').nextSibling.innerText=='O' && fan>=13){
         document.querySelector('#fao_tsumo').checked=true;
         tsumo3();
       }
