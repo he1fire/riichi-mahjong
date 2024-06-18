@@ -658,7 +658,7 @@ function ron5(){
         document.getElementsByName('bu_ron')[0].disabled=true;
         document.getElementsByName('bu_ron')[1].disabled=true;
         yakumancnt('ron',0);
-        document.querySelector('#Modal_alertText').innerText='론한 사람과 책임지불 할 사람이 같습니다.';
+        document.querySelector('#Modal_alertText').innerText='론한 사람과 책임지불할 사람이 같습니다.';
         document.querySelector('#Modal_alert').style.display='inline';
     }
     else{
