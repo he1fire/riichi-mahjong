@@ -1096,14 +1096,16 @@ function rollback(){
         var score_record=document.querySelector(scores[i]+'record').innerHTML;
         var arrs=score_record.split('<div');
         var much=((`<div`+arrs[arrs.length-3]).replace(/<[^>]*>?/g, ''))/100-document.querySelector(scores[i]).innerText;
-        document.querySelector(scorestmp[i]).innerText=much*100;
         if (much>0){
+            document.querySelector(scorestmp[i]).innerText='+'+(much*100);
             document.querySelector(scorestmp[i]).style.color='lawngreen';
         }
         else if(much<0){
+            document.querySelector(scorestmp[i]).innerText=much*100;
             document.querySelector(scorestmp[i]).style.color='red';
         }
         else{
+            document.querySelector(scorestmp[i]).innerText=0;
             document.querySelector(scorestmp[i]).style.color='black';
         }
     }
