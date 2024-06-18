@@ -296,6 +296,7 @@
           <label><input type="radio" name="fan_ron" value="13" onclick="makedisable('ron'); yakumancnt('ron',0);"><span>13+</span></label>
           <div></div>
           <label><input type="radio" name="fan_ron" value="13" onclick="makedisable('ron'); yakumancnt('ron',1);"><span>1배역만</span></label>
+          <span style="font-size: 20px; white-space: nowrap;">(책임지불 <input type="checkbox" id="fao_ron"><span onclick="OXbutton(this);">X</span>)</span>
         </div>
         <div style="grid-area: bu;">
           부:
@@ -315,7 +316,14 @@
           <label><input type="radio" name="bu_ron" value="110"><span>110</span></label>
         </div>
       </div>
-      <div style="font-size: 30px;" onclick="ron4();">
+      <div style="font-size: 30px;" onclick="
+      if (document.querySelector('#fao_ron').nextSibling.innerText=='O'){
+        document.querySelector('#fao_ron').checked=true;
+        ron4();
+      }
+      else
+        ron6(-1);
+      ">
         OK
       </div>
       <div id="who_ron" style="display: none;">
@@ -327,8 +335,54 @@
       <div id="bucnt_ron" style="display: none;">
         0,0,0,0,
       </div>
+      <div id="faocnt_ron" style="display: none;">
+        0,0,0,0,
+      </div>
     </div>
   </div>
+  <!-- 론4 -->
+  <div class="modal" id="Modal_ron4" onclick="
+    if (event.target==this){
+      this.style.display='';
+      makeunchk(['down', 'right', 'up', 'left'],'check_ron1');
+      makeunchk(['down', 'right', 'up', 'left'],'check_ron2');
+      if (document.querySelector('input[type=radio][name=fan_ron]:checked')!=null)
+        document.querySelector('input[type=radio][name=fan_ron]:checked').checked=false;
+      if (document.querySelector('input[type=radio][name=bu_ron]:checked')!=null)
+        document.querySelector('input[type=radio][name=bu_ron]:checked').checked=false;
+      makeundisable('ron');
+      document.getElementsByName('fan_ron')[0].checked=true;
+      document.getElementsByName('bu_ron')[0].disabled=true;
+      document.getElementsByName('bu_ron')[1].disabled=true;
+      yakumancnt('ron',0);
+      makeunchk(['down', 'right', 'up', 'left'],'fao_ron');
+    }
+  ">
+    <div class="modal_content">
+      <div class="container_choose">
+        <div class="explain">
+          책임지불 할 사람을 선택해주세요.
+        </div>
+        <div class="downcheck" id="downfao_ron" onclick="makechk(this); 
+        makeunchk(['right', 'up', 'left'],'fao_ron');">
+          ▼
+        </div>
+        <div class="rightcheck" id="rightfao_ron" onclick="makechk(this); makeunchk(['up', 'left', 'down'], 'fao_ron');">
+          ▶
+        </div>
+        <div class="upcheck" id="upfao_ron" onclick="makechk(this); makeunchk(['left', 'down', 'right'], 'fao_ron');">
+          ▲
+        </div>
+        <div class="leftcheck" id="leftfao_ron" onclick="makechk(this); makeunchk(['down', 'right', 'up'],'fao_ron');">
+          ◀
+        </div>
+        <div class="ok" onclick="ron5();">
+          OK
+        </div>
+      </div>
+    </div>
+  </div>
+
   <!-- 쯔모1 -->
   <div class="modal" id="Modal_tsumo1" onclick="
     if (event.target==this){
@@ -398,6 +452,7 @@
           <label><input type="radio" name="fan_tsumo" value="13" onclick="makedisable('tsumo'); yakumancnt('tsumo',0);"><span>13+</span></label>
           <div></div>
           <label><input type="radio" name="fan_tsumo" value="13" onclick="makedisable('tsumo'); yakumancnt('tsumo',1);"><span>1배역만</span></label>
+          <span style="font-size: 20px; white-space: nowrap;">(책임지불 <input type="checkbox" id="fao_tsumo"><span onclick="OXbutton(this);">X</span>)</span>
         </div>
         <div style="grid-area: bu;">
           부:
@@ -419,14 +474,59 @@
       </div>
       <div style="font-size: 30px;" onclick="
       var fan=document.querySelector('input[type=radio][name=fan_tsumo]:checked').value;
-      if (fan>4)
-        tsumo_General(fan, 0);
+      if (document.querySelector('#fao_tsumo').nextSibling.innerText=='O'){
+        document.querySelector('#fao_tsumo').checked=true;
+        tsumo3();
+      }
+      else if (fan>4)
+        tsumo_General(fan, 0, -1);
       else{
         var bu=document.querySelector('input[type=radio][name=bu_tsumo]:checked').value;
-        tsumo_General(fan, bu);
+        tsumo_General(fan, bu, -1);
       }
       ">
         OK
+      </div>
+    </div>
+  </div>
+  <!-- 쯔모3 -->
+  <div class="modal" id="Modal_tsumo3" onclick="
+    if (event.target==this){
+      this.style.display='';
+      makeunchk(['down', 'right', 'up', 'left'],'check_tsumo');
+      if (document.querySelector('input[type=radio][name=fan_tsumo]:checked')!=null)
+        document.querySelector('input[type=radio][name=fan_tsumo]:checked').checked=false;
+      if (document.querySelector('input[type=radio][name=bu_tsumo]:checked')!=null)
+        document.querySelector('input[type=radio][name=bu_tsumo]:checked').checked=false;
+      makeundisable('tsumo');
+      document.getElementsByName('fan_tsumo')[0].checked=true;
+      document.getElementsByName('bu_tsumo')[0].disabled=true;
+      document.getElementsByName('bu_tsumo')[1].disabled=true;
+      yakumancnt('tsumo',0);
+      makeunchk(['down', 'right', 'up', 'left'],'fao_tsumo');
+    }
+  ">
+    <div class="modal_content">
+      <div class="container_choose">
+        <div class="explain">
+          책임지불 할 사람을 선택해주세요.
+        </div>
+        <div class="downcheck" id="downfao_tsumo" onclick="makechk(this); 
+        makeunchk(['right', 'up', 'left'],'fao_tsumo');">
+          ▼
+        </div>
+        <div class="rightcheck" id="rightfao_tsumo" onclick="makechk(this); makeunchk(['up', 'left', 'down'], 'fao_tsumo');">
+          ▶
+        </div>
+        <div class="upcheck" id="upfao_tsumo" onclick="makechk(this); makeunchk(['left', 'down', 'right'], 'fao_tsumo');">
+          ▲
+        </div>
+        <div class="leftcheck" id="leftfao_tsumo" onclick="makechk(this); makeunchk(['down', 'right', 'up'],'fao_tsumo');">
+          ◀
+        </div>
+        <div class="ok" onclick="tsumo4();">
+          OK
+        </div>
       </div>
     </div>
   </div>

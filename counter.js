@@ -2,11 +2,13 @@ window.onload=function(){
     document.querySelector("#Modal_seat").style.backgroundColor='rgba(0,0,0,0)';
     dice();
     randomseat();
-    openFullScreenMode();
+    //openFullScreenMode();
 }
 
 function openFullScreenMode() {
     var docV = document.documentElement;
+    if (document.fullscreenElement)
+        return;
     if (docV.requestFullscreen)
         docV.requestFullscreen();
     else if (docV.webkitRequestFullscreen)
@@ -159,6 +161,8 @@ function makeunchk(who, type){
     }
 }
 function OXbutton(self){
+    if (self.previousSibling.disabled == true)
+        return;
     if (self.innerText=='O'){
         self.innerText='X';
         self.style.color='red';
@@ -196,12 +200,19 @@ function yakumancnt(type, how){
         else
             yakuman.value=14;
         yakuman.nextSibling.innerText=(yakuman.value-13)+'배역만';
+        document.querySelector('#fao_'+type).parentNode.style.display='inline';
+        document.querySelector('#fao_'+type).disabled=false;
+        if (document.querySelector('#fao_'+type).nextSibling.innerText=='O')
+            document.querySelector('#fao_'+type).nextSibling.style.color='blue';
+        else
+            document.querySelector('#fao_'+type).nextSibling.style.color='red';
     }
     else{
         yakuman.value=13;
         yakuman.nextSibling.innerText='1배역만';
+        document.querySelector('#fao_'+type).parentNode.style.display='none';
+        document.querySelector('#fao_'+type).disabled=true;
     }
-    
 }
 
 function draw(){
@@ -592,6 +603,10 @@ function ron3(){
             if (whowin[i%4]===1){
                 document.querySelector('#name_ron').innerText=document.querySelector(names[i%4]).innerText+'의 점수를 입력해주세요.';
                 document.querySelector('#who_ron').innerText=i%4;
+                document.querySelector('#fao_ron').parentNode.style.display='none';
+                document.querySelector('#fao_ron').disabled=true;
+                document.querySelector('#fao_ron').checked=false;
+                document.querySelector('#fao_ron').nextSibling.innerText='X';
                 break;
             }
         }
@@ -599,31 +614,93 @@ function ron3(){
     }
 }
 function ron4(){
+    var ron3=document.querySelector('#Modal_ron3');
+    var ron4=document.querySelector('#Modal_ron4');
+    ron3.style.display='';
+    ron4.style.display='inline';
+}
+function ron5(){
+    var faos=['#downfao_ron','#rightfao_ron','#upfao_ron','#leftfao_ron'];
+    var ron3=document.querySelector('#Modal_ron3');
+    var ron4=document.querySelector('#Modal_ron4');
+    var whowin=Number(document.querySelector('#who_ron').innerText), whofao=-1;
+    for (var i=0;i<4;i++){
+        if (document.querySelector(faos[i]).style.color==='red'){
+            whofao=i;
+            document.querySelector(faos[i]).style.color='';
+        }
+    }
+    ron4.style.display='';
+    if (whofao===-1){
+        makeunchk(['down', 'right', 'up', 'left'],'check_ron1');
+        makeunchk(['down', 'right', 'up', 'left'],'check_ron2');
+        if (document.querySelector('input[type=radio][name=fan_ron]:checked')!=null)
+            document.querySelector('input[type=radio][name=fan_ron]:checked').checked=false;
+        if (document.querySelector('input[type=radio][name=bu_ron]:checked')!=null)
+            document.querySelector('input[type=radio][name=bu_ron]:checked').checked=false;
+        makeundisable('ron');
+        document.getElementsByName('fan_ron')[0].checked=true;
+        document.getElementsByName('bu_ron')[0].disabled=true;
+        document.getElementsByName('bu_ron')[1].disabled=true;
+        yakumancnt('ron',0);
+        document.querySelector('#Modal_alertText').innerText='책임지불할 사람이 선택되지 않았습니다.';
+        document.querySelector('#Modal_alert').style.display='inline';
+    }
+    else if (whofao===whowin){
+        makeunchk(['down', 'right', 'up', 'left'],'check_ron1');
+        makeunchk(['down', 'right', 'up', 'left'],'check_ron2');
+        if (document.querySelector('input[type=radio][name=fan_ron]:checked')!=null)
+            document.querySelector('input[type=radio][name=fan_ron]:checked').checked=false;
+        if (document.querySelector('input[type=radio][name=bu_ron]:checked')!=null)
+            document.querySelector('input[type=radio][name=bu_ron]:checked').checked=false;
+        makeundisable('ron');
+        document.getElementsByName('fan_ron')[0].checked=true;
+        document.getElementsByName('bu_ron')[0].disabled=true;
+        document.getElementsByName('bu_ron')[1].disabled=true;
+        yakumancnt('ron',0);
+        document.querySelector('#Modal_alertText').innerText='론한 사람과 책임지불 할 사람이 같습니다.';
+        document.querySelector('#Modal_alert').style.display='inline';
+    }
+    else{
+        ron3.style.display='inline';
+        ron6(whofao);
+    }
+}
+function ron6(whofao){
     var checks1=['#downcheck_ron1','#rightcheck_ron1','#upcheck_ron1','#leftcheck_ron1'];
     var checks2=['#downcheck_ron2','#rightcheck_ron2','#upcheck_ron2','#leftcheck_ron2'];
     var names=['#DownPerson_Name', '#RightPerson_Name', '#UpPerson_Name', '#LeftPerson_Name'];
     var fan=document.querySelector('#fancnt_ron').innerText.split(',');
     var bu=document.querySelector('#bucnt_ron').innerText.split(',');
+    var fao=document.querySelector('#faocnt_ron').innerText.split(',');
     var now=Number(document.querySelector('#who_ron').innerText);
     for (var i=0;i<4;i++){
         fan[i]=Number(fan[i]);
         bu[i]=Number(bu[i]);
+        fao[i]=Number(fao[i]);
     }
     fan[now]=document.querySelector('input[type=radio][name=fan_ron]:checked').value;
     if (fan[now]>4)
         bu[now]=0;
     else
         bu[now]=document.querySelector('input[type=radio][name=bu_ron]:checked').value;
+    fao[now]=whofao;
     document.querySelector('#fancnt_ron').innerText='';
     document.querySelector('#bucnt_ron').innerText='';
+    document.querySelector('#faocnt_ron').innerText='';
     for (var j=0;j<4;j++){
         document.querySelector('#fancnt_ron').innerText+=String(fan[j])+',';
         document.querySelector('#bucnt_ron').innerText+=String(bu[j])+',';
+        document.querySelector('#faocnt_ron').innerText+=String(fao[j])+',';
     }
     for (var i=now+1;i<now+4;i++){
         if (document.querySelector(checks1[i%4]).style.color==='red'){
             document.querySelector('#name_ron').innerText=document.querySelector(names[i%4]).innerText+'의 점수를 입력해주세요.';
             document.querySelector('#who_ron').innerText=i%4;
+            document.querySelector('#fao_ron').parentNode.style.display='none';
+            document.querySelector('#fao_ron').disabled=true;
+            document.querySelector('#fao_ron').checked=false;
+            document.querySelector('#fao_ron').nextSibling.innerText='X';
             if (document.querySelector('input[type=radio][name=fan_ron]:checked')!=null)
                 document.querySelector('input[type=radio][name=fan_ron]:checked').checked=false;
             if (document.querySelector('input[type=radio][name=bu_ron]:checked')!=null)
@@ -636,11 +713,7 @@ function ron4(){
             break;
         }
         else if (document.querySelector(checks2[i%4]).style.color==='red'){
-            for (var j=0;j<4;j++){
-                fan[i]=Number(fan[i]);
-                bu[i]=Number(bu[i]);
-            }
-            ron_General(fan, bu);
+            ron_General(fan, bu, fao);
             break;
         }
     }
@@ -663,11 +736,69 @@ function tsumo2(){
     if (whowin!==-1){
         document.querySelector('#name_tsumo').innerText=document.querySelector(names[whowin]).innerText+'의 점수를 입력해주세요.';
         tsumo2.style.display='inline';
+        document.querySelector('#fao_tsumo').parentNode.style.display='none';
+        document.querySelector('#fao_tsumo').disabled=true;
+        document.querySelector('#fao_tsumo').checked=false;
+        document.querySelector('#fao_tsumo').nextSibling.innerText='X';
     }
     else{
         document.querySelector('#Modal_alertText').innerText='쯔모한 사람이 선택되지 않았습니다.';
         document.querySelector('#Modal_alert').style.display='inline';
     }
+}
+
+function tsumo3(){
+    var tsumo2=document.querySelector('#Modal_tsumo2');
+    var tsumo3=document.querySelector('#Modal_tsumo3');
+    tsumo2.style.display='';
+    tsumo3.style.display='inline';
+}
+
+function tsumo4(){
+    var fan=document.querySelector('input[type=radio][name=fan_tsumo]:checked').value;
+    var checks=['#downcheck_tsumo','#rightcheck_tsumo','#upcheck_tsumo','#leftcheck_tsumo'];
+    var faos=['#downfao_tsumo','#rightfao_tsumo','#upfao_tsumo','#leftfao_tsumo'];
+    var tsumo3=document.querySelector('#Modal_tsumo3');
+    var whowin=-1, whofao=-1;
+    for (var i=0;i<4;i++){ //화료 및 책임지불 체크
+        if (document.querySelector(checks[i]).style.color==='red')
+            whowin=i;
+        if (document.querySelector(faos[i]).style.color==='red'){
+            whofao=i;
+            document.querySelector(faos[i]).style.color='';
+        }
+    }
+    tsumo3.style.display='';
+    if (whofao===-1){
+        makeunchk(['down', 'right', 'up', 'left'],'check_tsumo');
+        if (document.querySelector('input[type=radio][name=fan_tsumo]:checked')!=null)
+            document.querySelector('input[type=radio][name=fan_tsumo]:checked').checked=false;
+        if (document.querySelector('input[type=radio][name=bu_tsumo]:checked')!=null)
+            document.querySelector('input[type=radio][name=bu_tsumo]:checked').checked=false;
+        makeundisable('tsumo');
+        document.getElementsByName('fan_tsumo')[0].checked=true;
+        document.getElementsByName('bu_tsumo')[0].disabled=true;
+        document.getElementsByName('bu_tsumo')[1].disabled=true;
+        yakumancnt('tsumo',0);
+        document.querySelector('#Modal_alertText').innerText='책임지불할 사람이 선택되지 않았습니다.';
+        document.querySelector('#Modal_alert').style.display='inline';
+    }
+    else if (whofao===whowin){
+        makeunchk(['down', 'right', 'up', 'left'],'check_tsumo');
+        if (document.querySelector('input[type=radio][name=fan_tsumo]:checked')!=null)
+            document.querySelector('input[type=radio][name=fan_tsumo]:checked').checked=false;
+        if (document.querySelector('input[type=radio][name=bu_tsumo]:checked')!=null)
+            document.querySelector('input[type=radio][name=bu_tsumo]:checked').checked=false;
+        makeundisable('tsumo');
+        document.getElementsByName('fan_tsumo')[0].checked=true;
+        document.getElementsByName('bu_tsumo')[0].disabled=true;
+        document.getElementsByName('bu_tsumo')[1].disabled=true;
+        yakumancnt('tsumo',0);
+        document.querySelector('#Modal_alertText').innerText='쯔모한 사람과 책임지불 할 사람이 같습니다.';
+        document.querySelector('#Modal_alert').style.display='inline';
+    }
+    else
+        tsumo_General(fan, 0, whofao);
 }
 
 function ryuukyoku1(){
@@ -681,7 +812,7 @@ function ryuukyoku2(){
     ryuukyoku2.style.display='inline';
 }
 
-function ron_General(fan, bu){
+function ron_General(fan, bu, fao){
     var ron3=document.querySelector('#Modal_ron3');
     var winds=['#DownPerson_Wind', '#RightPerson_Wind', '#UpPerson_Wind', '#LeftPerson_Wind'];
     var checks1=['#downcheck_ron1','#rightcheck_ron1','#upcheck_ron1','#leftcheck_ron1'];
@@ -689,8 +820,9 @@ function ron_General(fan, bu){
     var scorestmp=['#DownPerson_ScoreTmp','#RightPerson_ScoreTmp','#UpPerson_ScoreTmp','#LeftPerson_ScoreTmp'];
     var Allstick=document.querySelector('#riichi_count');
     var renjang=document.querySelector('#renjang_count');
-    var Allwin=0, whowin=[0,0,0,0], firstwin=-1, wholose=-1, losepoint=0;
+    var whowin=[0,0,0,0], firstwin=-1, wholose=-1, point=[0,0,0,0];
     ron3.style.display='';
+
     if (document.querySelector('input[type=radio][name=fan_ron]:checked')!=null)
         document.querySelector('input[type=radio][name=fan_ron]:checked').checked=false;
     if (document.querySelector('input[type=radio][name=bu_ron]:checked')!=null)
@@ -710,7 +842,6 @@ function ron_General(fan, bu){
         if (document.querySelector(checks1[i%4]).style.color==='red'){
             document.querySelector(checks1[i%4]).style.color='';
             whowin[i%4]=1;
-            Allwin++;
             if (firstwin===-1)
                 firstwin=i%4;
         }
@@ -718,19 +849,27 @@ function ron_General(fan, bu){
     for (var i=0;i<4;i++){ //점수계산
         if (whowin[i]===1){
             if (firstwin===i)
-                document.querySelector(scorestmp[i]).innerText='+'+(CalculateScore(fan[i], bu[i], document.querySelector(winds[i]).innerText, document.querySelector(winds[wholose]).innerText, 'ron', 1)+Number(Allstick.innerText)*1000+Number(renjang.innerText)*300);
+                point[i]+=CalculateScore(fan[i], bu[i], document.querySelector(winds[i]).innerText, document.querySelector(winds[wholose]).innerText, 'ron', 1)+Number(Allstick.innerText)*1000+Number(renjang.innerText)*300;
             else
-                document.querySelector(scorestmp[i]).innerText='+'+(CalculateScore(fan[i], bu[i], document.querySelector(winds[i]).innerText, document.querySelector(winds[wholose]).innerText, 'ron', 1)+Number(renjang.innerText)*300);
-            losepoint-=CalculateScore(fan[i], bu[i], document.querySelector(winds[i]).innerText, document.querySelector(winds[wholose]).innerText, 'ron', 1);
-            document.querySelector(scorestmp[i]).style.color='lawngreen';
+                point[i]+=CalculateScore(fan[i], bu[i], document.querySelector(winds[i]).innerText, document.querySelector(winds[wholose]).innerText, 'ron', 1)+Number(renjang.innerText)*300;
+            if (fao[i]===-1)
+                point[wholose]-=CalculateScore(fan[i], bu[i], document.querySelector(winds[i]).innerText, document.querySelector(winds[wholose]).innerText, 'ron', 1)+Number(renjang.innerText)*300;
+            else{
+                point[fao[i]]-=CalculateScore(fan[i], bu[i], document.querySelector(winds[i]).innerText, document.querySelector(winds[fao[i]]).innerText, 'ron', 1)/2+Number(renjang.innerText)*300;
+                point[wholose]-=CalculateScore(fan[i], bu[i], document.querySelector(winds[i]).innerText, document.querySelector(winds[wholose]).innerText, 'ron', 1)/2;
+            }
         }
     }
     for (var i=0;i<4;i++){
-        if (i===wholose){
-            document.querySelector(scorestmp[i]).innerText=losepoint-Number(renjang.innerText)*Allwin*300;
+        if (point[i]>0){
+            document.querySelector(scorestmp[i]).innerText='+'+point[i];
+            document.querySelector(scorestmp[i]).style.color='lawngreen';
+        }
+        else if (point[i]<0){
+            document.querySelector(scorestmp[i]).innerText=point[i];
             document.querySelector(scorestmp[i]).style.color='red';
         }
-        else if (whowin[i]===0){
+        else{
             document.querySelector(scorestmp[i]).innerText=0;
             document.querySelector(scorestmp[i]).style.color='black';
         }
@@ -739,10 +878,12 @@ function ron_General(fan, bu){
     document.querySelector('#Modal_showscore').style.display='inline';
 }
 
-function tsumo_General(fan, bu){
+function tsumo_General(fan, bu, fao){
     fan=Number(fan);
     bu=Number(bu);
+    fao=Number(fao);
     var tsumo2=document.querySelector('#Modal_tsumo2');
+    var tsumo3=document.querySelector('#Modal_tsumo3');
     var winds=['#DownPerson_Wind', '#RightPerson_Wind', '#UpPerson_Wind', '#LeftPerson_Wind'];
     var checks=['#downcheck_tsumo','#rightcheck_tsumo','#upcheck_tsumo','#leftcheck_tsumo'];
     var scorestmp=['#DownPerson_ScoreTmp','#RightPerson_ScoreTmp','#UpPerson_ScoreTmp','#LeftPerson_ScoreTmp'];
@@ -750,6 +891,7 @@ function tsumo_General(fan, bu){
     var renjang=document.querySelector('#renjang_count');
     var whowin=-1;
     tsumo2.style.display='';
+    tsumo3.style.display='';
     
     if (document.querySelector('input[type=radio][name=fan_tsumo]:checked')!=null)
         document.querySelector('input[type=radio][name=fan_tsumo]:checked').checked=false;
@@ -766,14 +908,32 @@ function tsumo_General(fan, bu){
             whowin=i;
         }
     }
-    for (var i=0;i<4;i++){ //점수계산
-        if (i===whowin){
-            document.querySelector(scorestmp[i]).innerText='+'+(CalculateScore(fan, bu, document.querySelector(winds[i]).innerText, document.querySelector(winds[i]).innerText, 'tsumo', 1)+Number(Allstick.innerText)*1000+Number(renjang.innerText)*300);
-            document.querySelector(scorestmp[i]).style.color='lawngreen';
+    if (fao===-1){ // 책임지불
+        for (var i=0;i<4;i++){ //점수계산
+            if (i===whowin){
+                document.querySelector(scorestmp[i]).innerText='+'+(CalculateScore(fan, bu, document.querySelector(winds[i]).innerText, document.querySelector(winds[i]).innerText, 'tsumo', 1)+Number(Allstick.innerText)*1000+Number(renjang.innerText)*300);
+                document.querySelector(scorestmp[i]).style.color='lawngreen';
+            }
+            else{
+                document.querySelector(scorestmp[i]).innerText=-CalculateScore(fan, bu, document.querySelector(winds[whowin]).innerText, document.querySelector(winds[i]).innerText, 'tsumo', 0)-Number(renjang.innerText)*100;
+                document.querySelector(scorestmp[i]).style.color='red';
+            }
         }
-        else{
-            document.querySelector(scorestmp[i]).innerText=-CalculateScore(fan, bu, document.querySelector(winds[whowin]).innerText, document.querySelector(winds[i]).innerText, 'tsumo', 0)-Number(renjang.innerText)*100;
-            document.querySelector(scorestmp[i]).style.color='red';
+    }
+    else{
+        for (var i=0;i<4;i++){ //점수계산
+            if (i===whowin){
+                document.querySelector(scorestmp[i]).innerText='+'+(CalculateScore(fan, bu, document.querySelector(winds[i]).innerText, document.querySelector(winds[i]).innerText, 'tsumo', 1)+Number(Allstick.innerText)*1000+Number(renjang.innerText)*300);
+                document.querySelector(scorestmp[i]).style.color='lawngreen';
+            }
+            else if (i===fao){
+                document.querySelector(scorestmp[i]).innerText=-CalculateScore(fan, bu, document.querySelector(winds[whowin]).innerText, document.querySelector(winds[i]).innerText, 'tsumo', 1)-Number(renjang.innerText)*300;
+                document.querySelector(scorestmp[i]).style.color='red';
+            }
+            else{
+                document.querySelector(scorestmp[i]).innerText=0;
+                document.querySelector(scorestmp[i]).style.color='black';
+            }
         }
     }
     document.querySelector('#what').innerText='tsumo';
