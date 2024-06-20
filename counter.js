@@ -3,6 +3,10 @@ var names=['#DownPerson_Name', '#RightPerson_Name', '#UpPerson_Name', '#LeftPers
 var scores=['#DownPerson_Score','#RightPerson_Score','#UpPerson_Score','#LeftPerson_Score'];
 var scorestmp=['#DownPerson_ScoreTmp','#RightPerson_ScoreTmp','#UpPerson_ScoreTmp','#LeftPerson_ScoreTmp'];
 var riichis=['#DownPerson_Riichi', '#RightPerson_Riichi', '#UpPerson_Riichi', '#LeftPerson_Riichi'];
+var checks_ron1=['#downcheck_ron1','#rightcheck_ron1','#upcheck_ron1','#leftcheck_ron1'];
+var checks_ron2=['#downcheck_ron2','#rightcheck_ron2','#upcheck_ron2','#leftcheck_ron2'];
+var checks_tsumo=['#downcheck_tsumo','#rightcheck_tsumo','#upcheck_tsumo','#leftcheck_tsumo'];
+var checks_ryuukyoku=['#downcheck_ryuukyoku','#rightcheck_ryuukyoku','#upcheck_ryuukyoku','#leftcheck_ryuukyoku'];
 var gap_mode=0;
 
 window.onload=function(){ // 웹페이지 시작시 로딩
@@ -546,10 +550,9 @@ function ron1(){
 function ron2(){
     var ron1=document.querySelector('#Modal_ron1');
     var ron2=document.querySelector('#Modal_ron2');
-    var checks=['#downcheck_ron1','#rightcheck_ron1','#upcheck_ron1','#leftcheck_ron1'];
     var whowin=0;
     for (var i=0;i<4;i++){
-        if (document.querySelector(checks[i]).style.color==='red')
+        if (document.querySelector(checks_ron1[i]).style.color==='red')
             whowin++;
     }
     ron1.style.display='';
@@ -569,13 +572,11 @@ function ron2(){
 function ron3(){
     var ron2=document.querySelector('#Modal_ron2');
     var ron3=document.querySelector('#Modal_ron3');
-    var checks1=['#downcheck_ron1','#rightcheck_ron1','#upcheck_ron1','#leftcheck_ron1'];
-    var checks2=['#downcheck_ron2','#rightcheck_ron2','#upcheck_ron2','#leftcheck_ron2'];
     var whowin=[0,0,0,0], wholose=-1;
     for (var i=0;i<4;i++){ //화료체크
-        if (document.querySelector(checks1[i]).style.color==='red')
+        if (document.querySelector(checks_ron1[i]).style.color==='red')
             whowin[i]=1;
-        if (document.querySelector(checks2[i]).style.color==='red')
+        if (document.querySelector(checks_ron2[i]).style.color==='red')
             wholose=i;
     }
     ron2.style.display='';
@@ -659,8 +660,6 @@ function ron5(){
     }
 }
 function ron6(whofao){
-    var checks1=['#downcheck_ron1','#rightcheck_ron1','#upcheck_ron1','#leftcheck_ron1'];
-    var checks2=['#downcheck_ron2','#rightcheck_ron2','#upcheck_ron2','#leftcheck_ron2'];
     var fan=document.querySelector('#fancnt_ron').innerText.split(',');
     var bu=document.querySelector('#bucnt_ron').innerText.split(',');
     var fao=document.querySelector('#faocnt_ron').innerText.split(',');
@@ -685,7 +684,7 @@ function ron6(whofao){
         document.querySelector('#faocnt_ron').innerText+=String(fao[j])+',';
     }
     for (var i=now+1;i<now+4;i++){
-        if (document.querySelector(checks1[i%4]).style.color==='red'){
+        if (document.querySelector(checks_ron1[i%4]).style.color==='red'){
             document.querySelector('#name_ron').innerText=document.querySelector(names[i%4]).innerText+'의 점수를 입력해주세요.';
             document.querySelector('#who_ron').innerText=i%4;
             document.querySelector('#fao_ron').parentNode.style.display='none';
@@ -703,7 +702,7 @@ function ron6(whofao){
             yakumancnt('ron',0);
             break;
         }
-        else if (document.querySelector(checks2[i%4]).style.color==='red'){
+        else if (document.querySelector(checks_ron2[i%4]).style.color==='red'){
             ron_General(fan, bu, fao);
             break;
         }
@@ -716,10 +715,9 @@ function tsumo1(){
 function tsumo2(){
     var tsumo1=document.querySelector('#Modal_tsumo1');
     var tsumo2=document.querySelector('#Modal_tsumo2');
-    var checks=['#downcheck_tsumo','#rightcheck_tsumo','#upcheck_tsumo','#leftcheck_tsumo'];
     var whowin=-1;
     for (var i=0;i<4;i++){
-        if (document.querySelector(checks[i]).style.color==='red')
+        if (document.querySelector(checks_tsumo[i]).style.color==='red')
             whowin=i;
     }
     tsumo1.style.display='';
@@ -746,12 +744,11 @@ function tsumo3(){
 
 function tsumo4(){
     var fan=document.querySelector('input[type=radio][name=fan_tsumo]:checked').value;
-    var checks=['#downcheck_tsumo','#rightcheck_tsumo','#upcheck_tsumo','#leftcheck_tsumo'];
     var faos=['#downfao_tsumo','#rightfao_tsumo','#upfao_tsumo','#leftfao_tsumo'];
     var tsumo3=document.querySelector('#Modal_tsumo3');
     var whowin=-1, whofao=-1;
     for (var i=0;i<4;i++){ //화료 및 책임지불 체크
-        if (document.querySelector(checks[i]).style.color==='red')
+        if (document.querySelector(checks_tsumo[i]).style.color==='red')
             whowin=i;
         if (document.querySelector(faos[i]).style.color==='red'){
             whofao=i;
@@ -804,8 +801,6 @@ function ryuukyoku2(){
 
 function ron_General(fan, bu, fao){
     var ron3=document.querySelector('#Modal_ron3');
-    var checks1=['#downcheck_ron1','#rightcheck_ron1','#upcheck_ron1','#leftcheck_ron1'];
-    var checks2=['#downcheck_ron2','#rightcheck_ron2','#upcheck_ron2','#leftcheck_ron2'];
     var Allstick=document.querySelector('#riichi_count');
     var renjang=document.querySelector('#renjang_count');
     var whowin=[0,0,0,0], firstwin=-1, wholose=-1, point=[0,0,0,0];
@@ -821,14 +816,14 @@ function ron_General(fan, bu, fao){
     document.getElementsByName('bu_ron')[1].disabled=true;
     yakumancnt('ron',0);
     for (var i=0;i<4;i++){ //화료체크
-        if (document.querySelector(checks2[i]).style.color==='red'){
-            document.querySelector(checks2[i]).style.color='';
+        if (document.querySelector(checks_ron2[i]).style.color==='red'){
+            document.querySelector(checks_ron2[i]).style.color='';
             wholose=i;
         }
     }
     for (var i=wholose;i<wholose+4;i++){
-        if (document.querySelector(checks1[i%4]).style.color==='red'){
-            document.querySelector(checks1[i%4]).style.color='';
+        if (document.querySelector(checks_ron1[i%4]).style.color==='red'){
+            document.querySelector(checks_ron1[i%4]).style.color='';
             whowin[i%4]=1;
             if (firstwin===-1)
                 firstwin=i%4;
@@ -872,7 +867,6 @@ function tsumo_General(fan, bu, fao){
     fao=Number(fao);
     var tsumo2=document.querySelector('#Modal_tsumo2');
     var tsumo3=document.querySelector('#Modal_tsumo3');
-    var checks=['#downcheck_tsumo','#rightcheck_tsumo','#upcheck_tsumo','#leftcheck_tsumo'];
     var Allstick=document.querySelector('#riichi_count');
     var renjang=document.querySelector('#renjang_count');
     var whowin=-1;
@@ -889,8 +883,8 @@ function tsumo_General(fan, bu, fao){
     document.getElementsByName('bu_tsumo')[1].disabled=true;
     yakumancnt('tsumo',0);
     for (var i=0;i<4;i++){ //화료체크
-        if (document.querySelector(checks[i]).style.color==='red'){
-            document.querySelector(checks[i]).style.color='';
+        if (document.querySelector(checks_tsumo[i]).style.color==='red'){
+            document.querySelector(checks_tsumo[i]).style.color='';
             whowin=i;
         }
     }
@@ -927,13 +921,12 @@ function tsumo_General(fan, bu, fao){
 }
 function ryuukyoku_General(){
     var ryuukyoku2=document.querySelector('#Modal_ryuukyoku2');
-    var checks=['#downcheck_ryuukyoku','#rightcheck_ryuukyoku','#upcheck_ryuukyoku','#leftcheck_ryuukyoku'];
     var tenpai=[0,0,0,0];
     var Alltenpai=0;
     ryuukyoku2.style.display='';
     for (var i=0;i<4;i++){ //텐파이 체크
-        if (document.querySelector(checks[i]).style.color==='red'){
-            document.querySelector(checks[i]).style.color='';
+        if (document.querySelector(checks_ryuukyoku[i]).style.color==='red'){
+            document.querySelector(checks_ryuukyoku[i]).style.color='';
             Alltenpai++;
             tenpai[i]=1;
         }
