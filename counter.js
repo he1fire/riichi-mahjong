@@ -1,6 +1,7 @@
 var winds=['#DownPerson_Wind', '#RightPerson_Wind', '#UpPerson_Wind', '#LeftPerson_Wind'];
 var names=['#DownPerson_Name', '#RightPerson_Name', '#UpPerson_Name', '#LeftPerson_Name'];
 var scores=['#DownPerson_Score','#RightPerson_Score','#UpPerson_Score','#LeftPerson_Score'];
+var scorestmp=['#DownPerson_ScoreTmp','#RightPerson_ScoreTmp','#UpPerson_ScoreTmp','#LeftPerson_ScoreTmp'];
 var riichis=['#DownPerson_Riichi', '#RightPerson_Riichi', '#UpPerson_Riichi', '#LeftPerson_Riichi'];
 
 window.onload=function(){
@@ -807,7 +808,6 @@ function ron_General(fan, bu, fao){
     var ron3=document.querySelector('#Modal_ron3');
     var checks1=['#downcheck_ron1','#rightcheck_ron1','#upcheck_ron1','#leftcheck_ron1'];
     var checks2=['#downcheck_ron2','#rightcheck_ron2','#upcheck_ron2','#leftcheck_ron2'];
-    var scorestmp=['#DownPerson_ScoreTmp','#RightPerson_ScoreTmp','#UpPerson_ScoreTmp','#LeftPerson_ScoreTmp'];
     var Allstick=document.querySelector('#riichi_count');
     var renjang=document.querySelector('#renjang_count');
     var whowin=[0,0,0,0], firstwin=-1, wholose=-1, point=[0,0,0,0];
@@ -875,7 +875,6 @@ function tsumo_General(fan, bu, fao){
     var tsumo2=document.querySelector('#Modal_tsumo2');
     var tsumo3=document.querySelector('#Modal_tsumo3');
     var checks=['#downcheck_tsumo','#rightcheck_tsumo','#upcheck_tsumo','#leftcheck_tsumo'];
-    var scorestmp=['#DownPerson_ScoreTmp','#RightPerson_ScoreTmp','#UpPerson_ScoreTmp','#LeftPerson_ScoreTmp'];
     var Allstick=document.querySelector('#riichi_count');
     var renjang=document.querySelector('#renjang_count');
     var whowin=-1;
@@ -931,7 +930,6 @@ function tsumo_General(fan, bu, fao){
 function ryuukyoku_General(){
     var ryuukyoku2=document.querySelector('#Modal_ryuukyoku2');
     var checks=['#downcheck_ryuukyoku','#rightcheck_ryuukyoku','#upcheck_ryuukyoku','#leftcheck_ryuukyoku'];
-    var scorestmp=['#DownPerson_ScoreTmp','#RightPerson_ScoreTmp','#UpPerson_ScoreTmp','#LeftPerson_ScoreTmp'];
     var tenpai=[0,0,0,0];
     var Alltenpai=0;
     ryuukyoku2.style.display='';
@@ -968,7 +966,6 @@ function ryuukyoku_General(){
 }
 function ryuukyoku_Special(){
     var ryuukyoku1=document.querySelector('#Modal_ryuukyoku1');
-    var scorestmp=['#DownPerson_ScoreTmp','#RightPerson_ScoreTmp','#UpPerson_ScoreTmp','#LeftPerson_ScoreTmp'];
     ryuukyoku1.style.display='';
     for (var i=0;i<4;i++){
         document.querySelector(scorestmp[i]).innerText=0;
@@ -1065,10 +1062,7 @@ function ok_score(changed){
 
 function rollback(){
     var record=document.querySelector('#Modal_record');
-    var scorestmp=['#DownPerson_ScoreTmp','#RightPerson_ScoreTmp','#UpPerson_ScoreTmp','#LeftPerson_ScoreTmp'];
-    
     record.style.display='';
-    
     var when_record=document.querySelector("#when").innerHTML;
     var arrw=when_record.split('<div');
     var when=(`<div`+arrw[arrw.length-2]).replace(/<[^>]*>?/g, ''); // 태그 제거
