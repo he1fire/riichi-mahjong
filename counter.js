@@ -4,14 +4,14 @@ var scores=['#DownPerson_Score','#RightPerson_Score','#UpPerson_Score','#LeftPer
 var scorestmp=['#DownPerson_ScoreTmp','#RightPerson_ScoreTmp','#UpPerson_ScoreTmp','#LeftPerson_ScoreTmp'];
 var riichis=['#DownPerson_Riichi', '#RightPerson_Riichi', '#UpPerson_Riichi', '#LeftPerson_Riichi'];
 
-window.onload=function(){
+window.onload=function(){ // 웹페이지 시작시 로딩
     document.querySelector("#Modal_seat").style.backgroundColor='rgba(0,0,0,0)';
     dice();
     randomseat();
     //openFullScreenMode();
 }
 
-function openFullScreenMode() {
+function openFullScreenMode() { // 전체화면 활성화
     var docV = document.documentElement;
     if (document.fullscreenElement)
         return;
@@ -26,7 +26,7 @@ function openFullScreenMode() {
     // document.querySelector('body').onclick='null';
 }
 
-function ChangeSeat(){
+function ChangeSeat(){ // 화료/유국시 자리 변경
     var tmp=document.querySelector(winds[3]).innerText;
     for (var i=3;i>0;i--){
         document.querySelector(winds[i]).innerText=document.querySelector(winds[i-1]).innerText;
@@ -55,20 +55,20 @@ function ChangeSeat(){
     }
 }
 
-function CalculateScore(Y, X, win, lose, how, plus){
+function CalculateScore(fan, bu, win, lose, how, plus){ // 점수 계산
     var ret=0, ron=0, tsumo1=0, tsumo2=0;
     var arr=[2000,3000,3000,4000,4000,4000,6000,6000,8000,8000,16000,24000,32000,40000,48000];
     var option=document.querySelector('#roundmangan').checked;
-    X=Number(X);
-    Y=Number(Y);
-    if ((Y===3 && X>=70) || (Y===4 && X>=40))
-        Y=5;
-    if ((Y===3 && X>=60) || (Y===4 && X>=30) && option)
-        Y=5;
-    if (5<=Y)
-        ron=tsumo1=tsumo2=arr[Y-5];
+    bu=Number(bu);
+    fan=Number(fan);
+    if ((fan===3 && bu>=70) || (fan===4 && bu>=40))
+        fan=5;
+    if ((fan===3 && bu>=60) || (fan===4 && bu>=30) && option)
+        fan=5;
+    if (5<=fan)
+        ron=tsumo1=tsumo2=arr[fan-5];
     else
-        ron=tsumo1=tsumo2=X*Math.pow(2,Y+2);
+        ron=tsumo1=tsumo2=bu*Math.pow(2,fan+2);
     if (how==='ron'){
         if (win==='東')
             ron*=6;
@@ -98,7 +98,7 @@ function CalculateScore(Y, X, win, lose, how, plus){
     }
     return ret;
 }
-function ChangeScore(who, much){
+function ChangeScore(who, much){ // 점수 변동 이펙트
     var score=document.querySelector(who);
     var score_00=document.querySelector(who+'00');
     var score_change=document.querySelector(who+'change');
@@ -133,7 +133,7 @@ function ChangeScore(who, much){
     }, 20);
 }
 
-function RecordScore(who, much, now){
+function RecordScore(who, much, now){ // 점수 기록에 점수 기입
     var score_record=document.querySelector(who+'record');
     if (much>0){
         score_record.innerHTML+=`<div style="color: lawngreen">+`+much+`00</div><div>`+now+`</div>`;
@@ -145,7 +145,7 @@ function RecordScore(who, much, now){
         score_record.innerHTML+=`<div style="color: red">`+much+`00</div><div>`+now+`</div>`;
     }
 }
-function RecordTime(){
+function RecordTime(){ // 점수 기록에 본장 기입
     var when_record=document.querySelector("#when");
     var renjang=document.querySelector('#renjang_count').innerText;
     var wind=document.querySelector("#nowwind").innerText;
@@ -153,32 +153,31 @@ function RecordTime(){
     when_record.innerHTML+=`<div>`+wind+cnt+`局 `+renjang+`本場</div><div><br></div>`;
 }
 
-function makechk(self){
+function makechk(self){ // 화살표 창에서 본인 색칠
     if (self.style.color==='')
         self.style.color='red';
     else
         self.style.color='';
 }
-function makeunchk(who, type){
+function makeunchk(who, type){ // 화살표 창에서 본인 제외 색칠 끄기
     for (var i=0;i<who.length;i++){
         if (document.querySelector('#'+who[i]+type).style.color==='red')
             document.querySelector('#'+who[i]+type).style.color='';
     }
 }
-function OXbutton(self){
-    if (self.previousSibling.disabled == true)
+function OXbutton(self){ // 옵션용 OX버튼 색칠
+    if (self.previousSibling.disabled==true)
         return;
     if (self.innerText=='O'){
         self.innerText='X';
         self.style.color='red';
     }
-        
     else{
         self.innerText='O';
         self.style.color='blue';
     }
 }
-function makedisable(type){
+function makedisable(type){ // 5판 이상 부수 선택 불가
     if (document.querySelector('input[type=radio][name=bu_tsumo]:checked')!=null)
         document.querySelector('input[type=radio][name=bu_tsumo]:checked').checked=false;
     if (document.querySelector('input[type=radio][name=bu_ron]:checked')!=null)
@@ -188,7 +187,7 @@ function makedisable(type){
         bu[i].disabled = true;
     }
 }
-function makeundisable(type){
+function makeundisable(type){ // 5판 이상 부수 선택 불가 해제
     var bu=document.getElementsByName('bu_'+type);
     for (var i=0;i<bu.length;i++) {
         bu[i].disabled = false;
@@ -197,7 +196,7 @@ function makeundisable(type){
     if (type=='ron')
         bu[0].disabled = true;
 }
-function yakumancnt(type, how){
+function yakumancnt(type, how){ // 역만 옵션 창 선택 및 책임지불 옵션
     var yakuman=document.getElementsByName('fan_'+type)[9];
     if (how){
         if (yakuman.value<19)
@@ -220,12 +219,12 @@ function yakumancnt(type, how){
     }
 }
 
-function draw(){
+function draw(){ // 주사위/자리 선택 창 키기 (현재 작동 x)
     var draw=document.querySelector('#Modal_draw');
     draw.style.display='inline';
 }
 
-function dice(){
+function dice(){ // 주사위 창 켜기
     var draw=document.querySelector('#Modal_draw');
     var dice=document.querySelector('#Modal_dice');
     for (var i=0;i<4;i++){
@@ -237,7 +236,7 @@ function dice(){
     dice.style.display='inline';
 }
 
-function randomseat(){
+function randomseat(){ // 자리 선택 창 켜기
     var draw=document.querySelector('#Modal_draw');
     var seat=document.querySelector('#Modal_seat');
     var tiles=['#tile1', '#tile2', '#tile3', '#tile4'];
@@ -257,7 +256,7 @@ function randomseat(){
     }
 }
 
-function reverse(self){
+function reverse(self){ // 자리 선택 타일 뒤집기
     if (self.innerText==='東')
         self.style.color='red';
     else
@@ -265,12 +264,12 @@ function reverse(self){
     self.style.backgroundColor='white';
 }
 
-function option(){
+function option(){ // 옵션/점수기록 창 켜기
     var option=document.querySelector('#Modal_option');
     option.style.display='inline';
 }
 
-function modify(){
+function modify(){ // 옵션 창 켜기
     var option=document.querySelector('#Modal_option');
     var modify=document.querySelector('#Modal_modify');
     var options=['#roundmangan', '#minusriichi'];
@@ -301,7 +300,7 @@ function modify(){
     }
 }
 
-function save(){
+function save(){ // 옵션 저장
     var modify=document.querySelector('#Modal_modify');
     var options=['#roundmangan', '#minusriichi'];
     var when_record=document.querySelector("#when");
@@ -389,14 +388,14 @@ function save(){
     }
 }
 
-function record(){
+function record(){ // 점수기록 창 켜기
     var option=document.querySelector('#Modal_option');
     var record=document.querySelector('#Modal_record');
     option.style.display='';
     record.style.display='inline';
 }
 
-function showgap(who){
+function showgap(who){ // 점수 차이 켜기
     var chk=document.querySelector('#Gap_mode');
     var rank=[1,1,1,1];
     for (var i=0;i<4;i++){
@@ -447,7 +446,7 @@ function showgap(who){
     }
     chk.innerText=1;
 }
-function hidegap(){
+function hidegap(){ // 점수 차이 끄기
     var chk=document.querySelector('#Gap_mode');
     if (chk.innerText==1){
         for (var i=0;i<4;i++){
