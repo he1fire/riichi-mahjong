@@ -1,3 +1,5 @@
+var winds=['#DownPerson_Wind', '#RightPerson_Wind', '#UpPerson_Wind', '#LeftPerson_Wind'];
+
 window.onload=function(){
     document.querySelector("#Modal_seat").style.backgroundColor='rgba(0,0,0,0)';
     dice();
@@ -21,7 +23,6 @@ function openFullScreenMode() {
 }
 
 function ChangeSeat(){
-    var winds=['#DownPerson_Wind', '#RightPerson_Wind', '#UpPerson_Wind', '#LeftPerson_Wind'];
     var tmp=document.querySelector(winds[3]).innerText;
     for (var i=3;i>0;i--){
         document.querySelector(winds[i]).innerText=document.querySelector(winds[i-1]).innerText;
@@ -223,7 +224,6 @@ function draw(){
 function dice(){
     var draw=document.querySelector('#Modal_draw');
     var dice=document.querySelector('#Modal_dice');
-    var winds=['#DownPerson_Wind', '#RightPerson_Wind', '#UpPerson_Wind', '#LeftPerson_Wind'];
     for (var i=0;i<4;i++){
     if (document.querySelector(winds[i]).innerText==='東')
         seatwind=i;
@@ -237,19 +237,19 @@ function randomseat(){
     var draw=document.querySelector('#Modal_draw');
     var seat=document.querySelector('#Modal_seat');
     var tiles=['#tile1', '#tile2', '#tile3', '#tile4'];
-    var winds=['東', '南', '西', '北'];
+    var winds_char=['東', '南', '西', '北'];
     draw.style.display='';
     seat.style.display='inline';
     for (var i=3;i>0;i--){
         var j = Math.floor(Math.random()*(i+1));
-        [winds[i], winds[j]]=[winds[j], winds[i]];
+        [winds_char[i], winds_char[j]]=[winds_char[j], winds_char[i]];
     }
     for (var i=0;i<4;i++){
         document.querySelector(tiles[i]).style.border='3px solid black';
         document.querySelector(tiles[i]).style.borderRadius='5px';
         document.querySelector(tiles[i]).style.backgroundColor='orange';
         document.querySelector(tiles[i]).style.color='orange';
-        document.querySelector(tiles[i]).innerText=winds[i];
+        document.querySelector(tiles[i]).innerText=winds_char[i];
     }
 }
 
@@ -303,7 +303,6 @@ function save(){
     var modify=document.querySelector('#Modal_modify');
     var names=['#DownPerson_Name', '#RightPerson_Name', '#UpPerson_Name', '#LeftPerson_Name'];
     var scores=['#DownPerson_Score','#RightPerson_Score','#UpPerson_Score','#LeftPerson_Score'];
-    var winds=['#DownPerson_Wind', '#RightPerson_Wind', '#UpPerson_Wind', '#LeftPerson_Wind'];
     var sticks=['#DownPerson_Riichi', '#RightPerson_Riichi', '#UpPerson_Riichi', '#LeftPerson_Riichi'];
     var options=['#roundmangan', '#minusriichi'];
     var when_record=document.querySelector("#when");
@@ -469,7 +468,6 @@ function roll(){
     var dice2=document.querySelector('#dice2');
     var dicesum=document.querySelector('#dicesum');
     var light=['#leftlight', '#downlight', '#rightlight', '#uplight'];
-    var winds=['#DownPerson_Wind', '#RightPerson_Wind', '#UpPerson_Wind', '#LeftPerson_Wind'];
     var ran1=0, ran2=0;
     var timecnt=0;
     var seatwind=0;
@@ -814,7 +812,6 @@ function ryuukyoku2(){
 
 function ron_General(fan, bu, fao){
     var ron3=document.querySelector('#Modal_ron3');
-    var winds=['#DownPerson_Wind', '#RightPerson_Wind', '#UpPerson_Wind', '#LeftPerson_Wind'];
     var checks1=['#downcheck_ron1','#rightcheck_ron1','#upcheck_ron1','#leftcheck_ron1'];
     var checks2=['#downcheck_ron2','#rightcheck_ron2','#upcheck_ron2','#leftcheck_ron2'];
     var scorestmp=['#DownPerson_ScoreTmp','#RightPerson_ScoreTmp','#UpPerson_ScoreTmp','#LeftPerson_ScoreTmp'];
@@ -884,7 +881,6 @@ function tsumo_General(fan, bu, fao){
     fao=Number(fao);
     var tsumo2=document.querySelector('#Modal_tsumo2');
     var tsumo3=document.querySelector('#Modal_tsumo3');
-    var winds=['#DownPerson_Wind', '#RightPerson_Wind', '#UpPerson_Wind', '#LeftPerson_Wind'];
     var checks=['#downcheck_tsumo','#rightcheck_tsumo','#upcheck_tsumo','#leftcheck_tsumo'];
     var scorestmp=['#DownPerson_ScoreTmp','#RightPerson_ScoreTmp','#UpPerson_ScoreTmp','#LeftPerson_ScoreTmp'];
     var Allstick=document.querySelector('#riichi_count');
@@ -992,7 +988,6 @@ function ryuukyoku_Special(){
 function ok_score(changed){
     var showscore=document.querySelector('#Modal_showscore');
     var scores=['#DownPerson_Score','#RightPerson_Score','#UpPerson_Score','#LeftPerson_Score'];
-    var winds=['#DownPerson_Wind', '#RightPerson_Wind', '#UpPerson_Wind', '#LeftPerson_Wind'];
     var sticks=['#DownPerson_Riichi', '#RightPerson_Riichi', '#UpPerson_Riichi', '#LeftPerson_Riichi'];
     var what=document.querySelector('#what');
     var Allstick=document.querySelector('#riichi_count');
