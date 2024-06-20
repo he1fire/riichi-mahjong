@@ -1,4 +1,5 @@
 var winds=['#DownPerson_Wind', '#RightPerson_Wind', '#UpPerson_Wind', '#LeftPerson_Wind'];
+var names=['#DownPerson_Name', '#RightPerson_Name', '#UpPerson_Name', '#LeftPerson_Name'];
 
 window.onload=function(){
     document.querySelector("#Modal_seat").style.backgroundColor='rgba(0,0,0,0)';
@@ -269,7 +270,6 @@ function option(){
 function modify(){
     var option=document.querySelector('#Modal_option');
     var modify=document.querySelector('#Modal_modify');
-    var names=['#DownPerson_Name', '#RightPerson_Name', '#UpPerson_Name', '#LeftPerson_Name'];
     var scores=['#DownPerson_Score','#RightPerson_Score','#UpPerson_Score','#LeftPerson_Score'];
     var options=['#roundmangan', '#minusriichi'];
     option.style.display='';
@@ -301,7 +301,6 @@ function modify(){
 
 function save(){
     var modify=document.querySelector('#Modal_modify');
-    var names=['#DownPerson_Name', '#RightPerson_Name', '#UpPerson_Name', '#LeftPerson_Name'];
     var scores=['#DownPerson_Score','#RightPerson_Score','#UpPerson_Score','#LeftPerson_Score'];
     var sticks=['#DownPerson_Riichi', '#RightPerson_Riichi', '#UpPerson_Riichi', '#LeftPerson_Riichi'];
     var options=['#roundmangan', '#minusriichi'];
@@ -576,7 +575,6 @@ function ron3(){
     var ron3=document.querySelector('#Modal_ron3');
     var checks1=['#downcheck_ron1','#rightcheck_ron1','#upcheck_ron1','#leftcheck_ron1'];
     var checks2=['#downcheck_ron2','#rightcheck_ron2','#upcheck_ron2','#leftcheck_ron2'];
-    var names=['#DownPerson_Name', '#RightPerson_Name', '#UpPerson_Name', '#LeftPerson_Name'];
     var whowin=[0,0,0,0], wholose=-1;
     for (var i=0;i<4;i++){ //화료체크
         if (document.querySelector(checks1[i]).style.color==='red')
@@ -667,7 +665,6 @@ function ron5(){
 function ron6(whofao){
     var checks1=['#downcheck_ron1','#rightcheck_ron1','#upcheck_ron1','#leftcheck_ron1'];
     var checks2=['#downcheck_ron2','#rightcheck_ron2','#upcheck_ron2','#leftcheck_ron2'];
-    var names=['#DownPerson_Name', '#RightPerson_Name', '#UpPerson_Name', '#LeftPerson_Name'];
     var fan=document.querySelector('#fancnt_ron').innerText.split(',');
     var bu=document.querySelector('#bucnt_ron').innerText.split(',');
     var fao=document.querySelector('#faocnt_ron').innerText.split(',');
@@ -724,7 +721,6 @@ function tsumo2(){
     var tsumo1=document.querySelector('#Modal_tsumo1');
     var tsumo2=document.querySelector('#Modal_tsumo2');
     var checks=['#downcheck_tsumo','#rightcheck_tsumo','#upcheck_tsumo','#leftcheck_tsumo'];
-    var names=['#DownPerson_Name', '#RightPerson_Name', '#UpPerson_Name', '#LeftPerson_Name'];
     var whowin=-1;
     for (var i=0;i<4;i++){
         if (document.querySelector(checks[i]).style.color==='red')
@@ -1112,7 +1108,6 @@ function rollback(){
 
 function copyrecord(){
     var record=document.querySelector('#Modal_record');
-    var names=['#DownPerson_Name', '#RightPerson_Name', '#UpPerson_Name', '#LeftPerson_Name'];
     var scores=['#DownPerson_Score','#RightPerson_Score','#UpPerson_Score','#LeftPerson_Score'];
     var copytxt='\t';
     record.style.display='';
