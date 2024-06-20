@@ -1,5 +1,6 @@
 var winds=['#DownPerson_Wind', '#RightPerson_Wind', '#UpPerson_Wind', '#LeftPerson_Wind'];
 var names=['#DownPerson_Name', '#RightPerson_Name', '#UpPerson_Name', '#LeftPerson_Name'];
+var scores=['#DownPerson_Score','#RightPerson_Score','#UpPerson_Score','#LeftPerson_Score'];
 
 window.onload=function(){
     document.querySelector("#Modal_seat").style.backgroundColor='rgba(0,0,0,0)';
@@ -270,7 +271,6 @@ function option(){
 function modify(){
     var option=document.querySelector('#Modal_option');
     var modify=document.querySelector('#Modal_modify');
-    var scores=['#DownPerson_Score','#RightPerson_Score','#UpPerson_Score','#LeftPerson_Score'];
     var options=['#roundmangan', '#minusriichi'];
     option.style.display='';
     modify.style.display='inline';
@@ -301,7 +301,6 @@ function modify(){
 
 function save(){
     var modify=document.querySelector('#Modal_modify');
-    var scores=['#DownPerson_Score','#RightPerson_Score','#UpPerson_Score','#LeftPerson_Score'];
     var sticks=['#DownPerson_Riichi', '#RightPerson_Riichi', '#UpPerson_Riichi', '#LeftPerson_Riichi'];
     var options=['#roundmangan', '#minusriichi'];
     var when_record=document.querySelector("#when");
@@ -397,7 +396,6 @@ function record(){
 }
 
 function showgap(who){
-    var scores=['#DownPerson_Score','#RightPerson_Score','#UpPerson_Score','#LeftPerson_Score'];
     var chk=document.querySelector('#Gap_mode');
     var rank=[1,1,1,1];
     for (var i=0;i<4;i++){
@@ -449,7 +447,6 @@ function showgap(who){
     chk.innerText=1;
 }
 function hidegap(){
-    var scores=['#DownPerson_Score','#RightPerson_Score','#UpPerson_Score','#LeftPerson_Score'];
     var chk=document.querySelector('#Gap_mode');
     if (chk.innerText==1){
         for (var i=0;i<4;i++){
@@ -983,7 +980,6 @@ function ryuukyoku_Special(){
 
 function ok_score(changed){
     var showscore=document.querySelector('#Modal_showscore');
-    var scores=['#DownPerson_Score','#RightPerson_Score','#UpPerson_Score','#LeftPerson_Score'];
     var sticks=['#DownPerson_Riichi', '#RightPerson_Riichi', '#UpPerson_Riichi', '#LeftPerson_Riichi'];
     var what=document.querySelector('#what');
     var Allstick=document.querySelector('#riichi_count');
@@ -1070,7 +1066,6 @@ function ok_score(changed){
 
 function rollback(){
     var record=document.querySelector('#Modal_record');
-    var scores=['#DownPerson_Score','#RightPerson_Score','#UpPerson_Score','#LeftPerson_Score'];
     var scorestmp=['#DownPerson_ScoreTmp','#RightPerson_ScoreTmp','#UpPerson_ScoreTmp','#LeftPerson_ScoreTmp'];
     
     record.style.display='';
@@ -1108,7 +1103,6 @@ function rollback(){
 
 function copyrecord(){
     var record=document.querySelector('#Modal_record');
-    var scores=['#DownPerson_Score','#RightPerson_Score','#UpPerson_Score','#LeftPerson_Score'];
     var copytxt='\t';
     record.style.display='';
 
