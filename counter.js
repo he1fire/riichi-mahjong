@@ -3,6 +3,7 @@ var names=['#DownPerson_Name', '#RightPerson_Name', '#UpPerson_Name', '#LeftPers
 var scores=['#DownPerson_Score','#RightPerson_Score','#UpPerson_Score','#LeftPerson_Score'];
 var scorestmp=['#DownPerson_ScoreTmp','#RightPerson_ScoreTmp','#UpPerson_ScoreTmp','#LeftPerson_ScoreTmp'];
 var riichis=['#DownPerson_Riichi', '#RightPerson_Riichi', '#UpPerson_Riichi', '#LeftPerson_Riichi'];
+var gap_mode=0;
 
 window.onload=function(){ // 웹페이지 시작시 로딩
     document.querySelector("#Modal_seat").style.backgroundColor='rgba(0,0,0,0)';
@@ -396,7 +397,6 @@ function record(){ // 점수기록 창 켜기
 }
 
 function showgap(who){ // 점수 차이 켜기
-    var chk=document.querySelector('#Gap_mode');
     var rank=[1,1,1,1];
     for (var i=0;i<4;i++){
         var arrs=document.querySelector(scores[i]).innerText.split('-');
@@ -444,18 +444,17 @@ function showgap(who){ // 점수 차이 켜기
         }
         
     }
-    chk.innerText=1;
+    gap_mode=1;
 }
 function hidegap(){ // 점수 차이 끄기
-    var chk=document.querySelector('#Gap_mode');
-    if (chk.innerText==1){
+    if (gap_mode==1){
         for (var i=0;i<4;i++){
             document.querySelector(scores[i]).style.fontSize='80px';
             document.querySelector(scores[i]).style.color='black';
             document.querySelector(scores[i]+'00').style.color='black';
             document.querySelector(scores[i]).innerText=document.querySelector(scores[i]+'gap').innerText;
         }
-        chk.innerText=0;
+        gap_mode=0;
     }
 }
 
