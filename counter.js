@@ -1,6 +1,7 @@
 var winds=['#DownPerson_Wind', '#RightPerson_Wind', '#UpPerson_Wind', '#LeftPerson_Wind'];
 var names=['#DownPerson_Name', '#RightPerson_Name', '#UpPerson_Name', '#LeftPerson_Name'];
 var scores=['#DownPerson_Score','#RightPerson_Score','#UpPerson_Score','#LeftPerson_Score'];
+var riichis=['#DownPerson_Riichi', '#RightPerson_Riichi', '#UpPerson_Riichi', '#LeftPerson_Riichi'];
 
 window.onload=function(){
     document.querySelector("#Modal_seat").style.backgroundColor='rgba(0,0,0,0)';
@@ -301,7 +302,6 @@ function modify(){
 
 function save(){
     var modify=document.querySelector('#Modal_modify');
-    var sticks=['#DownPerson_Riichi', '#RightPerson_Riichi', '#UpPerson_Riichi', '#LeftPerson_Riichi'];
     var options=['#roundmangan', '#minusriichi'];
     var when_record=document.querySelector("#when");
     var chkscore=0;
@@ -373,7 +373,7 @@ function save(){
         }
         for (var i=0;i<4;i++){
             var score_record=document.querySelector(scores[i]+'record');
-            document.querySelector(sticks[i]).style.visibility='';
+            document.querySelector(riichis[i]).style.visibility='';
             document.querySelector(scores[i]).innerText=startscore
             score_record.innerHTML=`<div>`+String(startscore)*100+`</div>`;
         }
@@ -980,13 +980,12 @@ function ryuukyoku_Special(){
 
 function ok_score(changed){
     var showscore=document.querySelector('#Modal_showscore');
-    var sticks=['#DownPerson_Riichi', '#RightPerson_Riichi', '#UpPerson_Riichi', '#LeftPerson_Riichi'];
     var what=document.querySelector('#what');
     var Allstick=document.querySelector('#riichi_count');
     var renjang=document.querySelector('#renjang_count');
     showscore.style.display='';
-    for (var i=0;i<sticks.length;i++){ //리치봉 수거
-        document.querySelector(sticks[i]).style.visibility='';
+    for (var i=0;i<riichis.length;i++){ //리치봉 수거
+        document.querySelector(riichis[i]).style.visibility='';
     }
     if (what.innerText==='rollback'){
         var arrw=document.querySelector("#when").innerHTML.split('<div');
