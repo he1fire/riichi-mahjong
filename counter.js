@@ -1,13 +1,14 @@
-var winds=['#DownPerson_Wind', '#RightPerson_Wind', '#UpPerson_Wind', '#LeftPerson_Wind'];
-var names=['#DownPerson_Name', '#RightPerson_Name', '#UpPerson_Name', '#LeftPerson_Name'];
-var scores=['#DownPerson_Score','#RightPerson_Score','#UpPerson_Score','#LeftPerson_Score'];
-var scorestmp=['#DownPerson_ScoreTmp','#RightPerson_ScoreTmp','#UpPerson_ScoreTmp','#LeftPerson_ScoreTmp'];
-var riichis=['#DownPerson_Riichi', '#RightPerson_Riichi', '#UpPerson_Riichi', '#LeftPerson_Riichi'];
-var checks_ron1=['#downcheck_ron1','#rightcheck_ron1','#upcheck_ron1','#leftcheck_ron1'];
-var checks_ron2=['#downcheck_ron2','#rightcheck_ron2','#upcheck_ron2','#leftcheck_ron2'];
-var checks_tsumo=['#downcheck_tsumo','#rightcheck_tsumo','#upcheck_tsumo','#leftcheck_tsumo'];
-var checks_ryuukyoku=['#downcheck_ryuukyoku','#rightcheck_ryuukyoku','#upcheck_ryuukyoku','#leftcheck_ryuukyoku'];
-var gap_mode=0;
+const winds=['#DownPerson_Wind', '#RightPerson_Wind', '#UpPerson_Wind', '#LeftPerson_Wind'];
+const names=['#DownPerson_Name', '#RightPerson_Name', '#UpPerson_Name', '#LeftPerson_Name'];
+const scores=['#DownPerson_Score','#RightPerson_Score','#UpPerson_Score','#LeftPerson_Score'];
+const scorestmp=['#DownPerson_ScoreTmp','#RightPerson_ScoreTmp','#UpPerson_ScoreTmp','#LeftPerson_ScoreTmp'];
+const riichis=['#DownPerson_Riichi', '#RightPerson_Riichi', '#UpPerson_Riichi', '#LeftPerson_Riichi'];
+const checks_ron1=['#downcheck_ron1','#rightcheck_ron1','#upcheck_ron1','#leftcheck_ron1'];
+const checks_ron2=['#downcheck_ron2','#rightcheck_ron2','#upcheck_ron2','#leftcheck_ron2'];
+const checks_tsumo=['#downcheck_tsumo','#rightcheck_tsumo','#upcheck_tsumo','#leftcheck_tsumo'];
+const checks_ryuukyoku=['#downcheck_ryuukyoku','#rightcheck_ryuukyoku','#upcheck_ryuukyoku','#leftcheck_ryuukyoku'];
+const winds_char=['東', '南', '西', '北'];
+let gap_mode=0;
 
 window.onload=function(){ // 웹페이지 시작시 로딩
     document.querySelector("#Modal_seat").style.backgroundColor='rgba(0,0,0,0)';
@@ -17,7 +18,7 @@ window.onload=function(){ // 웹페이지 시작시 로딩
 }
 
 function openFullScreenMode() { // 전체화면 활성화
-    var docV = document.documentElement;
+    let docV=document.documentElement;
     if (document.fullscreenElement)
         return;
     if (docV.requestFullscreen)
@@ -32,12 +33,12 @@ function openFullScreenMode() { // 전체화면 활성화
 }
 
 function ChangeSeat(){ // 화료/유국시 자리 변경
-    var tmp=document.querySelector(winds[3]).innerText;
-    for (var i=3;i>0;i--){
+    let tmp=document.querySelector(winds[3]).innerText;
+    for (let i=3;i>0;i--){
         document.querySelector(winds[i]).innerText=document.querySelector(winds[i-1]).innerText;
     }
     document.querySelector(winds[0]).innerText=tmp;
-    for (var i=0;i<winds.length;i++){
+    for (let i=0;i<winds.length;i++){
         if (document.querySelector(winds[i]).innerText==='東')
             document.querySelector(winds[i]).style.color='red';
         else
@@ -49,14 +50,7 @@ function ChangeSeat(){ // 화료/유국시 자리 변경
     }
     else{
         document.querySelector("#nowcnt").innerText=1;
-        if (document.querySelector("#nowwind").innerText==='東')
-            document.querySelector("#nowwind").innerText='南';
-        else if (document.querySelector("#nowwind").innerText==='南')
-            document.querySelector("#nowwind").innerText='西';
-        else if (document.querySelector("#nowwind").innerText==='西')
-            document.querySelector("#nowwind").innerText='北';
-        else
-            document.querySelector("#nowwind").innerText='東';
+        document.querySelector("#nowwind").innerText=winds_char[(winds_char.indexOf(document.querySelector("#nowwind").innerText)+1)%4];
     }
 }
 
@@ -245,7 +239,6 @@ function randomseat(){ // 자리 선택 창 켜기
     var draw=document.querySelector('#Modal_draw');
     var seat=document.querySelector('#Modal_seat');
     var tiles=['#tile1', '#tile2', '#tile3', '#tile4'];
-    var winds_char=['東', '南', '西', '北'];
     draw.style.display='';
     seat.style.display='inline';
     for (var i=3;i>0;i--){
@@ -368,9 +361,8 @@ function save(){ // 옵션 저장
         document.querySelector("#nowcnt").innerText=1;
         document.querySelector('#riichi_count').innerText=0;
         document.querySelector('#renjang_count').innerText=0;
-        var windrecover=['東','南','西','北'];
         for (var i=0;i<winds.length;i++){
-            document.querySelector(winds[i]).innerText=windrecover[i];
+            document.querySelector(winds[i]).innerText=winds_char[i];
             if (document.querySelector(winds[i]).innerText==='東')
                 document.querySelector(winds[i]).style.color='red';
             else
@@ -1057,7 +1049,7 @@ function rollback(){
     var when_record=document.querySelector("#when").innerHTML;
     var arrw=when_record.split('<div');
     var when=(`<div`+arrw[arrw.length-2]).replace(/<[^>]*>?/g, ''); // 태그 제거
-    if (when[0]!='東' && when[0]!='南' && when[0]!='西' && when[0]!='北'){ // 기록이 없거나 강제수정한 경우
+    if (winds_char.indexOf(when[0])===-1){ // 기록이 없거나 강제수정한 경우
         document.querySelector('#Modal_alertText').innerText='더이상 되돌릴수 없습니다.';
         document.querySelector('#Modal_alert').style.display='inline';
         return;
