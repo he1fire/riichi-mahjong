@@ -1,14 +1,4 @@
-const winds=['#DownPerson_Wind', '#RightPerson_Wind', '#UpPerson_Wind', '#LeftPerson_Wind'];
-const names=['#DownPerson_Name', '#RightPerson_Name', '#UpPerson_Name', '#LeftPerson_Name'];
-const scores=['#DownPerson_Score','#RightPerson_Score','#UpPerson_Score','#LeftPerson_Score'];
-const scorestmp=['#DownPerson_ScoreTmp','#RightPerson_ScoreTmp','#UpPerson_ScoreTmp','#LeftPerson_ScoreTmp'];
-const riichis=['#DownPerson_Riichi', '#RightPerson_Riichi', '#UpPerson_Riichi', '#LeftPerson_Riichi'];
-const checks_ron1=['#downcheck_ron1','#rightcheck_ron1','#upcheck_ron1','#leftcheck_ron1'];
-const checks_ron2=['#downcheck_ron2','#rightcheck_ron2','#upcheck_ron2','#leftcheck_ron2'];
-const checks_tsumo=['#downcheck_tsumo','#rightcheck_tsumo','#upcheck_tsumo','#leftcheck_tsumo'];
-const checks_ryuukyoku=['#downcheck_ryuukyoku','#rightcheck_ryuukyoku','#upcheck_ryuukyoku','#leftcheck_ryuukyoku'];
-const winds_char=['東', '南', '西', '北'];
-let gap_mode=0;
+document.write("<script src='lib.js'></script>");
 
 window.onload=function(){ // 웹페이지 시작시 로딩
     document.querySelector("#Modal_seat").style.backgroundColor='rgba(0,0,0,0)';
@@ -33,24 +23,34 @@ function openFullScreenMode() { // 전체화면 활성화
 }
 
 function ChangeSeat(){ // 화료/유국시 자리 변경
-    let tmp=document.querySelector(winds[3]).innerText;
+    let tmp=Query_Text(winds[3]);
+
     for (let i=3;i>0;i--){
-        document.querySelector(winds[i]).innerText=document.querySelector(winds[i-1]).innerText;
+        Query_Text(winds[i], Query_Text(winds[i-1]));
     }
-    document.querySelector(winds[0]).innerText=tmp;
+    Query_Text(winds[0], tmp);
+    
     for (let i=0;i<winds.length;i++){
-        if (document.querySelector(winds[i]).innerText==='東')
-            document.querySelector(winds[i]).style.color='red';
+        if (Query_Text(winds[i])==='東')
+            Query_Color(winds[i], 'red');
         else
-            document.querySelector(winds[i]).style.color='';
+            Query_Color(winds[i], '');
     }
 
-    if (document.querySelector("#nowcnt").innerText!=='4'){
-        document.querySelector("#nowcnt").innerText++;
+    if (Query_Text("#nowcnt")!=='4'){
+        Query_Text("#nowcnt", '++');
     }
     else{
-        document.querySelector("#nowcnt").innerText=1;
-        document.querySelector("#nowwind").innerText=winds_char[(winds_char.indexOf(document.querySelector("#nowwind").innerText)+1)%4];
+        Query_Text("#nowcnt",1);
+        if (Query_Text("#nowwind")==='東') // 왜인지 for문이나 indexOf로 돌리면 안됨,, 왜일까???
+            Query_Text("#nowwind", '南');
+        else if (Query_Text("#nowwind")==='南')
+            Query_Text("#nowwind", '西');
+        else if (Query_Text("#nowwind")==='西')
+            Query_Text("#nowwind", '北');
+        else
+            Query_Text("#nowwind", '東');
+        //document.querySelector("#nowwind").innerText=winds_char[(winds_char.indexOf(document.querySelector("#nowwind").innerText)+1)%4];
     }
 }
 
