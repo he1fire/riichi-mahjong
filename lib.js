@@ -25,7 +25,6 @@ function Query_Text(str, ...x){
         else
             document.querySelector(str).innerText=x[0];
     }
-        
     return document.querySelector(str).innerText;
 }
 
@@ -45,4 +44,10 @@ function Query_Color(str, ...x){
     if (x.length===1)
         document.querySelector(str).style.color=x[0];
     return document.querySelector(str).style.color;
+}
+
+function Query_Checked(str, ...x){
+    if (x.length===1)
+        document.querySelector(str).checked=x[0];
+    return document.querySelector(str).checked;
 }

@@ -24,24 +24,23 @@ function openFullScreenMode() { // 전체화면 활성화
 
 function ChangeSeat(){ // 화료/유국시 자리 변경
     let tmp=Query_Text(winds[3]);
-
     for (let i=3;i>0;i--){
-        Query_Text(winds[i], Query_Text(winds[i-1]));
+        Query_Text(winds[i], Query_Text(winds[i-1])); // 바람 시계방향으로 이동
     }
     Query_Text(winds[0], tmp);
     
-    for (let i=0;i<winds.length;i++){
+    for (let i=0;i<winds.length;i++){ // 東 빨갛게 표시
         if (Query_Text(winds[i])==='東')
             Query_Color(winds[i], 'red');
         else
             Query_Color(winds[i], '');
     }
 
-    if (Query_Text("#nowcnt")!=='4'){
+    if (Query_Text("#nowcnt")!=='4'){ // 4국 이전일 경우 국 수치 증가
         Query_Text("#nowcnt", '++');
     }
-    else{
-        Query_Text("#nowcnt",1);
+    else{ // 아니라면 장풍 변경
+        Query_Text("#nowcnt", 1); // 1국으로 초기화
         if (Query_Text("#nowwind")==='東') // 왜인지 for문이나 indexOf로 돌리면 안됨,, 왜일까???
             Query_Text("#nowwind", '南');
         else if (Query_Text("#nowwind")==='南')
@@ -54,45 +53,44 @@ function ChangeSeat(){ // 화료/유국시 자리 변경
     }
 }
 
-function CalculateScore(fan, bu, win, lose, how, plus){ // 점수 계산
-    var ret=0, ron=0, tsumo1=0, tsumo2=0;
-    var arr=[2000,3000,3000,4000,4000,4000,6000,6000,8000,8000,16000,24000,32000,40000,48000];
-    var option=document.querySelector('#roundmangan').checked;
+function CalculateScore(fan, bu, winner_wind, who, how, win){ // 화료시 점수 계산 (판, 부, 승자, 본인, 론/쯔모, 승/패)
+    let ret=0, ron_score=0, tsumo_chin_score=0, tsumo_ja_score=0;
+    let arr_score=[2000,3000,3000,4000,4000,4000,6000,6000,8000,8000,16000,24000,32000,40000,48000];
     bu=Number(bu);
     fan=Number(fan);
-    if ((fan===3 && bu>=70) || (fan===4 && bu>=40))
+    if ((fan===3 && bu>=70) || (fan===4 && bu>=40)) // 3판 70부, 4판 40부 이상이면 만관
         fan=5;
-    if ((fan===3 && bu>=60) || (fan===4 && bu>=30) && option)
+    if ((fan===3 && bu>=60) || (fan===4 && bu>=30) && Query_Checked('#roundmangan')) // 절상만관 적용시 3판 60부, 4핀 30부도 인정
         fan=5;
     if (5<=fan)
-        ron=tsumo1=tsumo2=arr[fan-5];
+        ron_score=tsumo_chin_score=tsumo_ja_score=arr_score[fan-5]; // 만관 이상이면 점수배열에서 가져옴
     else
-        ron=tsumo1=tsumo2=bu*Math.pow(2,fan+2);
-    if (how==='ron'){
-        if (win==='東')
-            ron*=6;
+        ron_score=tsumo_chin_score=tsumo_ja_score=bu*Math.pow(2,fan+2); // 아니라면 점수 계산식으로 점수 계산
+    if (how==='ron'){ // 론일 때
+        if (winner_wind==='東')
+            ron_score*=6;
         else
-            ron*=4;
-        ron=Math.ceil(ron/100)*100;
-        ret=ron;
+            ron_score*=4;
+        ron_score=Math.ceil(ron_score/100)*100;
+        ret=ron_score;
     }
-    else{
-        tsumo1*=2;
-        tsumo1=Math.ceil(tsumo1/100)*100;
-        tsumo2=Math.ceil(tsumo2/100)*100;
-        if (win==='東'){
-            if (plus===1)
-                ret=tsumo1*3;
+    else{ // 쯔모일 때
+        tsumo_chin_score*=2;
+        tsumo_chin_score=Math.ceil(tsumo_chin_score/100)*100;
+        tsumo_ja_score=Math.ceil(tsumo_ja_score/100)*100;
+        if (winner_wind==='東'){
+            if (win===true)
+                ret=tsumo_chin_score*3;
             else
-                ret=tsumo1;
+                ret=tsumo_chin_score;
         }
         else{
-            if (plus===1)
-                ret=tsumo1+tsumo2*2;
-            else if (lose==='東')
-                ret=tsumo1;
+            if (win===true)
+                ret=tsumo_chin_score+tsumo_ja_score*2;
+            else if (who==='東')
+                ret=tsumo_chin_score;
             else
-                ret=tsumo2;
+                ret=tsumo_ja_score;
         }
     }
     return ret;
@@ -824,14 +822,14 @@ function ron_General(fan, bu, fao){
     for (var i=0;i<4;i++){ //점수계산
         if (whowin[i]===1){
             if (firstwin===i)
-                point[i]+=CalculateScore(fan[i], bu[i], document.querySelector(winds[i]).innerText, document.querySelector(winds[wholose]).innerText, 'ron', 1)+Number(Allstick.innerText)*1000+Number(renjang.innerText)*300;
+                point[i]+=CalculateScore(fan[i], bu[i], document.querySelector(winds[i]).innerText, document.querySelector(winds[wholose]).innerText, 'ron', true)+Number(Allstick.innerText)*1000+Number(renjang.innerText)*300;
             else
-                point[i]+=CalculateScore(fan[i], bu[i], document.querySelector(winds[i]).innerText, document.querySelector(winds[wholose]).innerText, 'ron', 1)+Number(renjang.innerText)*300;
+                point[i]+=CalculateScore(fan[i], bu[i], document.querySelector(winds[i]).innerText, document.querySelector(winds[wholose]).innerText, 'ron', true)+Number(renjang.innerText)*300;
             if (fao[i]===-1)
-                point[wholose]-=CalculateScore(fan[i], bu[i], document.querySelector(winds[i]).innerText, document.querySelector(winds[wholose]).innerText, 'ron', 1)+Number(renjang.innerText)*300;
+                point[wholose]-=CalculateScore(fan[i], bu[i], document.querySelector(winds[i]).innerText, document.querySelector(winds[wholose]).innerText, 'ron', false)+Number(renjang.innerText)*300;
             else{
-                point[fao[i]]-=CalculateScore(fan[i], bu[i], document.querySelector(winds[i]).innerText, document.querySelector(winds[fao[i]]).innerText, 'ron', 1)/2+Number(renjang.innerText)*300;
-                point[wholose]-=CalculateScore(fan[i], bu[i], document.querySelector(winds[i]).innerText, document.querySelector(winds[wholose]).innerText, 'ron', 1)/2;
+                point[fao[i]]-=CalculateScore(fan[i], bu[i], document.querySelector(winds[i]).innerText, document.querySelector(winds[fao[i]]).innerText, 'ron', false)/2+Number(renjang.innerText)*300;
+                point[wholose]-=CalculateScore(fan[i], bu[i], document.querySelector(winds[i]).innerText, document.querySelector(winds[wholose]).innerText, 'ron', false)/2;
             }
         }
     }
@@ -883,11 +881,11 @@ function tsumo_General(fan, bu, fao){
     if (fao===-1){ // 책임지불
         for (var i=0;i<4;i++){ //점수계산
             if (i===whowin){
-                document.querySelector(scorestmp[i]).innerText='+'+(CalculateScore(fan, bu, document.querySelector(winds[i]).innerText, document.querySelector(winds[i]).innerText, 'tsumo', 1)+Number(Allstick.innerText)*1000+Number(renjang.innerText)*300);
+                document.querySelector(scorestmp[i]).innerText='+'+(CalculateScore(fan, bu, document.querySelector(winds[i]).innerText, document.querySelector(winds[i]).innerText, 'tsumo', true)+Number(Allstick.innerText)*1000+Number(renjang.innerText)*300);
                 document.querySelector(scorestmp[i]).style.color='lawngreen';
             }
             else{
-                document.querySelector(scorestmp[i]).innerText=-CalculateScore(fan, bu, document.querySelector(winds[whowin]).innerText, document.querySelector(winds[i]).innerText, 'tsumo', 0)-Number(renjang.innerText)*100;
+                document.querySelector(scorestmp[i]).innerText=-CalculateScore(fan, bu, document.querySelector(winds[whowin]).innerText, document.querySelector(winds[i]).innerText, 'tsumo', false)-Number(renjang.innerText)*100;
                 document.querySelector(scorestmp[i]).style.color='red';
             }
         }
@@ -895,11 +893,11 @@ function tsumo_General(fan, bu, fao){
     else{
         for (var i=0;i<4;i++){ //점수계산
             if (i===whowin){
-                document.querySelector(scorestmp[i]).innerText='+'+(CalculateScore(fan, bu, document.querySelector(winds[i]).innerText, document.querySelector(winds[i]).innerText, 'tsumo', 1)+Number(Allstick.innerText)*1000+Number(renjang.innerText)*300);
+                document.querySelector(scorestmp[i]).innerText='+'+(CalculateScore(fan, bu, document.querySelector(winds[i]).innerText, document.querySelector(winds[i]).innerText, 'tsumo', true)+Number(Allstick.innerText)*1000+Number(renjang.innerText)*300);
                 document.querySelector(scorestmp[i]).style.color='lawngreen';
             }
             else if (i===fao){
-                document.querySelector(scorestmp[i]).innerText=-CalculateScore(fan, bu, document.querySelector(winds[whowin]).innerText, document.querySelector(winds[i]).innerText, 'tsumo', 1)-Number(renjang.innerText)*300;
+                document.querySelector(scorestmp[i]).innerText=-CalculateScore(fan, bu, document.querySelector(winds[whowin]).innerText, document.querySelector(winds[i]).innerText, 'tsumo', false)-Number(renjang.innerText)*300;
                 document.querySelector(scorestmp[i]).style.color='red';
             }
             else{
