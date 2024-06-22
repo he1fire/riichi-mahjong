@@ -46,8 +46,34 @@ function Query_Color(str, ...x){
     return document.querySelector(str).style.color;
 }
 
+function Query_Visibility(str, ...x){
+    if (x.length===1)
+        document.querySelector(str).style.visibility=x[0];
+    return document.querySelector(str).style.visibility;
+}
+
 function Query_Checked(str, ...x){
     if (x.length===1)
         document.querySelector(str).checked=x[0];
     return document.querySelector(str).checked;
+}
+
+function Change_Sign(str){
+    if (Number(Query_Text(str))>0)
+        Query_Text(str, '+'+Query_Text(str));
+    else if (Number(Query_Text(str))===0)
+        Query_Text(str, 0);
+}
+
+function Change_Color(str){
+    if (Query_Text(str)==='東')
+        Query_Color(str, 'red');
+    else if (winds_char.indexOf(Query_Text(str))!==-1)
+        Query_Color(str, '');
+    else if (Number(Query_Text(str))>0)
+        Query_Color(str, 'lawngreen');
+    else if (Number(Query_Text(str))<0)
+        Query_Color(str, 'red');
+    else
+        Query_Color(str, '');
 }

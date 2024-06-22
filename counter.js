@@ -30,10 +30,7 @@ function ChangeSeat(){ // 화료/유국시 자리 변경
     Query_Text(winds[0], tmp);
     
     for (let i=0;i<winds.length;i++){ // 東 빨갛게 표시
-        if (Query_Text(winds[i])==='東')
-            Query_Color(winds[i], 'red');
-        else
-            Query_Color(winds[i], '');
+        Change_Color(winds[i]);
     }
 
     if (Query_Text("#nowcnt")!=='4'){ // 4국 이전일 경우 국 수치 증가
@@ -66,28 +63,29 @@ function CalculateScore(fan, bu, winner_wind, who, how, win){ // 화료시 점�
         ron_score=tsumo_chin_score=tsumo_ja_score=arr_score[fan-5]; // 만관 이상이면 점수배열에서 가져옴
     else
         ron_score=tsumo_chin_score=tsumo_ja_score=bu*Math.pow(2,fan+2); // 아니라면 점수 계산식으로 점수 계산
+
     if (how==='ron'){ // 론일 때
-        if (winner_wind==='東')
+        if (winner_wind==='東') // 친이라면 6배
             ron_score*=6;
-        else
+        else // 자라면 4배
             ron_score*=4;
         ron_score=Math.ceil(ron_score/100)*100;
         ret=ron_score;
     }
     else{ // 쯔모일 때
-        tsumo_chin_score*=2;
+        tsumo_chin_score*=2; // 친이라면 2배
         tsumo_chin_score=Math.ceil(tsumo_chin_score/100)*100;
         tsumo_ja_score=Math.ceil(tsumo_ja_score/100)*100;
-        if (winner_wind==='東'){
+        if (winner_wind==='東'){ // 이긴사람이 친이라면
             if (win===true)
-                ret=tsumo_chin_score*3;
+                ret=tsumo_chin_score*3; // 이겼다면 점수의 3배
             else
-                ret=tsumo_chin_score;
+                ret=tsumo_chin_score; // 졌다면 그대로 지불
         }
-        else{
-            if (win===true)
+        else{ // 이긴사람이 자라면
+            if (win===true) // 내가 이겼다면
                 ret=tsumo_chin_score+tsumo_ja_score*2;
-            else if (who==='東')
+            else if (who==='東') // 내가 친이라면 
                 ret=tsumo_chin_score;
             else
                 ret=tsumo_ja_score;
@@ -95,39 +93,36 @@ function CalculateScore(fan, bu, winner_wind, who, how, win){ // 화료시 점�
     }
     return ret;
 }
-function ChangeScore(who, much){ // 점수 변동 이펙트
-    var score=document.querySelector(who);
-    var score_00=document.querySelector(who+'00');
-    var score_change=document.querySelector(who+'change');
-    var arr=[];
-    var startscore=Number(document.querySelector(who).innerText);
-    for (var i=0;i<50;i++){
+function ChangeScore(score, much){ // 점수 변동 이펙트
+    let score_00=score+'00';
+    let score_change=score+'change';
+    let startscore=Number(Query_Text(score)); // 원래 점수
+    let arr=[];
+    for (let i=0;i<50;i++){ // 변경될 점수 사이를 50등분해서 저장
         arr[i]=startscore*100+((much*100)/50)*(i+1);
     }
-    if (much>0){
-        score_change.style.color='lawngreen';
-        score_change.innerText='+'+much+'00';
-    }
-    else{
-        score_change.style.color='red';
-        score_change.innerText=much+'00';
-    }
-    score_change.style.visibility='visible';
-    var timecnt=0;
-    var repeat=setInterval(function() {
-        score.innerText=Math.floor(arr[timecnt]/100);
-        if (Math.abs(arr[timecnt]%100)>=10)
-            score_00.innerText=Math.abs(arr[timecnt]%100);
-        else
-            score_00.innerText='0'+Math.abs(arr[timecnt]%100);
+
+    Query_Visibility(score_change, 'visible'); // 점수 변동 이펙트 켜기
+    Query_Text(score_change, much+'00');
+    Change_Sign(score_change);
+    Change_Color(score_change);
+    
+    let timecnt=0;
+    let repeat=setInterval(function() { // 시간에 따라 반복
+        let x=Math.floor(arr[timecnt]/100), y=Math.abs(arr[timecnt]%100);
+        Query_Text(score, x); // 100의 자리 변경
+        if (y>=10) // 10의자리 변경
+            Query_Text(score_00, y);
+        else // 1글자라면 0을 앞에 붙여서 변경
+            Query_Text(score_00, '0'+y);
         timecnt++;
         if (timecnt>=50){
             clearInterval(repeat);
-            score.innerText=startscore+much;
-            score_00.innerText='00';
-            score_change.style.visibility='hidden';
+            Query_Text(score, startscore+much);
+            Query_Text(score_00, '00');
+            Query_Visibility(score_change,'hidden');
         }
-    }, 20);
+    }, 20); // 0.02초 * 50번 = 1초동안 실행
 }
 
 function RecordScore(who, much, now){ // 점수 기록에 점수 기입
