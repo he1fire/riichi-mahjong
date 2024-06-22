@@ -31,6 +31,8 @@ function Query_Text(str, ...x){
 function Query_HTML(str, ...x){
     if (x.length===1)
         document.querySelector(str).innerHTML=x[0];
+    else if (x.length===2 && x[1]==='+')
+        document.querySelector(str).innerHTML+=x[0];
     return document.querySelector(str).innerHTML;
 }
 

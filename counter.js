@@ -125,16 +125,16 @@ function ChangeScore(score, much){ // 점수 변동 이펙트
     }, 20); // 0.02초 * 50번 = 1초동안 실행
 }
 
-function RecordScore(who, much, now){ // 점수 기록에 점수 기입
-    var score_record=document.querySelector(who+'record');
+function RecordScore(who, much, now){ // 점수 기록에 점수 기입 - 나중에 copyrecord, rollback, save랑 묶어 한번에 개선
+    let score_record=who+'record';
     if (much>0){
-        score_record.innerHTML+=`<div style="color: lawngreen">+`+much+`00</div><div>`+now+`</div>`;
+        Query_HTML(score_record, '<div style="color: lawngreen">+'+much+'00</div><div>'+now+'</div>', '+');
     }
     else if (much===0){
-        score_record.innerHTML+=`<div style="color: white">+`+much+`00</div><div>`+now+`</div>`;
+        Query_HTML(score_record, `<div style="color: white">+`+much+`00</div><div>`+now+`</div>`, '+');
     }
     else{
-        score_record.innerHTML+=`<div style="color: red">`+much+`00</div><div>`+now+`</div>`;
+        Query_HTML(score_record, `<div style="color: red">`+much+`00</div><div>`+now+`</div>`, '+');
     }
 }
 function RecordTime(){ // 점수 기록에 본장 기입
