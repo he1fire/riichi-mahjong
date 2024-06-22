@@ -33,19 +33,19 @@ function ChangeSeat(){ // 화료/유국시 자리 변경
         Change_Color(winds[i]);
     }
 
-    if (Query_Text("#nowcnt")!=='4'){ // 4국 이전일 경우 국 수치 증가
-        Query_Text("#nowcnt", '++');
+    if (Query_Text('#nowcnt')!=='4'){ // 4국 이전일 경우 국 수치 증가
+        Query_Text('#nowcnt', '++');
     }
     else{ // 아니라면 장풍 변경
-        Query_Text("#nowcnt", 1); // 1국으로 초기화
-        if (Query_Text("#nowwind")==='東') // 왜인지 for문이나 indexOf로 돌리면 안됨,, 왜일까???
-            Query_Text("#nowwind", '南');
-        else if (Query_Text("#nowwind")==='南')
-            Query_Text("#nowwind", '西');
-        else if (Query_Text("#nowwind")==='西')
-            Query_Text("#nowwind", '北');
+        Query_Text('#nowcnt', 1); // 1국으로 초기화
+        if (Query_Text('#nowwind')==='東') // 왜인지 for문이나 indexOf로 돌리면 안됨,, 왜일까???
+            Query_Text('#nowwind', '南');
+        else if (Query_Text('#nowwind')==='南')
+            Query_Text('#nowwind', '西');
+        else if (Query_Text('#nowwind')==='西')
+            Query_Text('#nowwind', '北');
         else
-            Query_Text("#nowwind", '東');
+            Query_Text('#nowwind', '東');
         //document.querySelector("#nowwind").innerText=winds_char[(winds_char.indexOf(document.querySelector("#nowwind").innerText)+1)%4];
     }
 }
@@ -128,7 +128,7 @@ function ChangeScore(score, much){ // 점수 변동 이펙트
 function RecordScore(who, much, now){ // 점수 기록에 점수 기입 - 나중에 copyrecord, rollback, save랑 묶어 한번에 개선
     let score_record=who+'record';
     if (much>0){
-        Query_HTML(score_record, '<div style="color: lawngreen">+'+much+'00</div><div>'+now+'</div>', '+');
+        Query_HTML(score_record, `<div style="color: lawngreen">+`+much+`00</div><div>`+now+`</div>`, '+');
     }
     else if (much===0){
         Query_HTML(score_record, `<div style="color: white">+`+much+`00</div><div>`+now+`</div>`, '+');
@@ -137,12 +137,11 @@ function RecordScore(who, much, now){ // 점수 기록에 점수 기입 - 나중
         Query_HTML(score_record, `<div style="color: red">`+much+`00</div><div>`+now+`</div>`, '+');
     }
 }
-function RecordTime(){ // 점수 기록에 본장 기입
-    var when_record=document.querySelector("#when");
-    var renjang=document.querySelector('#renjang_count').innerText;
-    var wind=document.querySelector("#nowwind").innerText;
-    var cnt=document.querySelector("#nowcnt").innerText;
-    when_record.innerHTML+=`<div>`+wind+cnt+`局 `+renjang+`本場</div><div><br></div>`;
+function RecordTime(){ // 점수 기록에 본장 기입 - RecordScore 참조
+    let renjang=Query_Text('#renjang_count');
+    let wind=Query_Text('#nowwind');
+    let cnt=Query_Text('#nowcnt');
+    Query_HTML("#when", `<div>`+wind+cnt+`局 `+renjang+`本場</div><div><br></div>`, '+');
 }
 
 function makechk(self){ // 화살표 창에서 본인 색칠
