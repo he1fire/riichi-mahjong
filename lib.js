@@ -84,3 +84,27 @@ function Change_Color(str){
     else
         Query_Color(str, '');
 }
+
+function Reset_Choose(type, ...x){
+    if (type!==null){
+        if (Query('input[type=radio][name=fan_'+type+']:checked')!==null)
+            Query_Checked('input[type=radio][name=fan_'+type+']:checked', false);
+        if (Query('input[type=radio][name=bu_'+type+']:checked')!==null)
+            Query_Checked('input[type=radio][name=bu_'+type+']:checked', false);
+        makeundisable(type);
+        Name('fan_'+type)[0].checked=true;
+        Name('bu_'+type)[0].disabled=true;
+        Name('bu_'+type)[1].disabled=true;
+        yakumancnt(type, 0);
+    }
+    for (let i=0;i<x.length;i++){
+        makeunchk(['down', 'right', 'up', 'left'], x[i]);
+    }
+}
+
+function Reset_Fao(type){
+    document.querySelector('#fao_'+type).parentNode.style.display='none';
+    document.querySelector('#fao_'+type).disabled=true;
+    document.querySelector('#fao_'+type).checked=false;
+    document.querySelector('#fao_'+type).nextSibling.innerText='X';
+}

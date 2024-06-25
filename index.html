@@ -6,6 +6,7 @@
   <meta charset="utf-8">
   <link rel="stylesheet" href="counter.css">
   <script src="counter.js"></script>
+  <script src="lib.js"></script>
   <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+KR:wght@500&display=swap" rel="stylesheet">
   <link rel="apple-touch-icon" sizes="57x57" href="ico/apple-icon-57x57.png">
   <link rel="apple-touch-icon" sizes="60x60" href="ico/apple-icon-60x60.png">
@@ -198,7 +199,7 @@
   <div class="modal" id="Modal_ron1" onclick="
     if (event.target==this){
       this.style.display='';
-      makeunchk(['down', 'right', 'up', 'left'],'check_ron1');
+      Reset_Choose(null, 'check_ron1');
     }
   ">
     <div class="modal_content">
@@ -228,8 +229,7 @@
   <div class="modal" id="Modal_ron2" onclick="
     if (event.target==this){
       this.style.display='';
-      makeunchk(['down', 'right', 'up', 'left'],'check_ron1');
-      makeunchk(['down', 'right', 'up', 'left'],'check_ron2');
+      Reset_Choose(null, 'check_ron1', 'check_ron2');
     }
   ">
     <div class="modal_content">
@@ -260,17 +260,7 @@
   <div class="modal" id="Modal_ron3" onclick="
     if (event.target==this){
       this.style.display='';
-      makeunchk(['down', 'right', 'up', 'left'],'check_ron1');
-      makeunchk(['down', 'right', 'up', 'left'],'check_ron2');
-      if (document.querySelector('input[type=radio][name=fan_ron]:checked')!=null)
-        document.querySelector('input[type=radio][name=fan_ron]:checked').checked=false;
-      if (document.querySelector('input[type=radio][name=bu_ron]:checked')!=null)
-        document.querySelector('input[type=radio][name=bu_ron]:checked').checked=false;
-      makeundisable('ron');
-      document.getElementsByName('fan_ron')[0].checked=true;
-      document.getElementsByName('bu_ron')[0].disabled=true;
-      document.getElementsByName('bu_ron')[1].disabled=true;
-      yakumancnt('ron',0);
+      Reset_Choose('ron', 'check_ron1', 'check_ron2');
     }
   ">
     <div class="modal_content">
@@ -344,18 +334,7 @@
   <div class="modal" id="Modal_ron4" onclick="
     if (event.target==this){
       this.style.display='';
-      makeunchk(['down', 'right', 'up', 'left'],'check_ron1');
-      makeunchk(['down', 'right', 'up', 'left'],'check_ron2');
-      if (document.querySelector('input[type=radio][name=fan_ron]:checked')!=null)
-        document.querySelector('input[type=radio][name=fan_ron]:checked').checked=false;
-      if (document.querySelector('input[type=radio][name=bu_ron]:checked')!=null)
-        document.querySelector('input[type=radio][name=bu_ron]:checked').checked=false;
-      makeundisable('ron');
-      document.getElementsByName('fan_ron')[0].checked=true;
-      document.getElementsByName('bu_ron')[0].disabled=true;
-      document.getElementsByName('bu_ron')[1].disabled=true;
-      yakumancnt('ron',0);
-      makeunchk(['down', 'right', 'up', 'left'],'fao_ron');
+      Reset_Choose('ron', 'check_ron1', 'check_ron2', 'fao_ron');
     }
   ">
     <div class="modal_content">
@@ -387,7 +366,7 @@
   <div class="modal" id="Modal_tsumo1" onclick="
     if (event.target==this){
       this.style.display='';
-      makeunchk(['down', 'right', 'up', 'left'],'check_tsumo');
+      Reset_Choose(null, 'check_tsumo');
     }
   ">
     <div class="modal_content">
@@ -418,16 +397,7 @@
   <div class="modal" id="Modal_tsumo2" onclick="
     if (event.target==this){
       this.style.display='';
-      makeunchk(['down', 'right', 'up', 'left'],'check_tsumo');
-      if (document.querySelector('input[type=radio][name=fan_tsumo]:checked')!=null)
-        document.querySelector('input[type=radio][name=fan_tsumo]:checked').checked=false;
-      if (document.querySelector('input[type=radio][name=bu_tsumo]:checked')!=null)
-        document.querySelector('input[type=radio][name=bu_tsumo]:checked').checked=false;
-      makeundisable('tsumo');
-      document.getElementsByName('fan_tsumo')[0].checked=true;
-      document.getElementsByName('bu_tsumo')[0].disabled=true;
-      document.getElementsByName('bu_tsumo')[1].disabled=true;
-      yakumancnt('tsumo',0);
+      Reset_Choose('tsumo', 'check_tsumo');
     }
   ">
     <div class="modal_content">
@@ -493,17 +463,7 @@
   <div class="modal" id="Modal_tsumo3" onclick="
     if (event.target==this){
       this.style.display='';
-      makeunchk(['down', 'right', 'up', 'left'],'check_tsumo');
-      if (document.querySelector('input[type=radio][name=fan_tsumo]:checked')!=null)
-        document.querySelector('input[type=radio][name=fan_tsumo]:checked').checked=false;
-      if (document.querySelector('input[type=radio][name=bu_tsumo]:checked')!=null)
-        document.querySelector('input[type=radio][name=bu_tsumo]:checked').checked=false;
-      makeundisable('tsumo');
-      document.getElementsByName('fan_tsumo')[0].checked=true;
-      document.getElementsByName('bu_tsumo')[0].disabled=true;
-      document.getElementsByName('bu_tsumo')[1].disabled=true;
-      yakumancnt('tsumo',0);
-      makeunchk(['down', 'right', 'up', 'left'],'fao_tsumo');
+      Reset_Choose('tsumo', 'check_tsumo', 'fao_tsumo');
     }
   ">
     <div class="modal_content">

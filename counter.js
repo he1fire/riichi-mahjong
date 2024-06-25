@@ -542,7 +542,7 @@ function ron2(){
         document.querySelector('#Modal_alert').style.display='inline';
     }
     else if (whowin===4){
-        makeunchk(['down', 'right', 'up', 'left'],'check_ron1');
+        Reset_Choose(null, 'check_ron1');
         document.querySelector('#Modal_alertText').innerText='론한 사람이 4명일 수 없습니다.';
         document.querySelector('#Modal_alert').style.display='inline';
     }
@@ -562,13 +562,12 @@ function ron3(){
     }
     ron2.style.display='';
     if (wholose===-1){
-        makeunchk(['down', 'right', 'up', 'left'],'check_ron1');
+        Reset_Choose(null, 'check_ron1');
         document.querySelector('#Modal_alertText').innerText='방총당한 사람이 선택되지 않았습니다.';
         document.querySelector('#Modal_alert').style.display='inline';
     }
     else if (whowin[wholose]===1){
-        makeunchk(['down', 'right', 'up', 'left'],'check_ron1');
-        makeunchk(['down', 'right', 'up', 'left'],'check_ron2');
+        Reset_Choose(null, 'check_ron1', 'check_ron2');
         document.querySelector('#Modal_alertText').innerText='론한 사람과 방총당한 사람이 같습니다.';
         document.querySelector('#Modal_alert').style.display='inline';
     }
@@ -577,10 +576,7 @@ function ron3(){
             if (whowin[i%4]===1){
                 document.querySelector('#name_ron').innerText=document.querySelector(names[i%4]).innerText+'의 점수를 입력해주세요.';
                 document.querySelector('#who_ron').innerText=i%4;
-                document.querySelector('#fao_ron').parentNode.style.display='none';
-                document.querySelector('#fao_ron').disabled=true;
-                document.querySelector('#fao_ron').checked=false;
-                document.querySelector('#fao_ron').nextSibling.innerText='X';
+                Reset_Fao('ron');
                 break;
             }
         }
@@ -606,32 +602,12 @@ function ron5(){
     }
     ron4.style.display='';
     if (whofao===-1){
-        makeunchk(['down', 'right', 'up', 'left'],'check_ron1');
-        makeunchk(['down', 'right', 'up', 'left'],'check_ron2');
-        if (document.querySelector('input[type=radio][name=fan_ron]:checked')!=null)
-            document.querySelector('input[type=radio][name=fan_ron]:checked').checked=false;
-        if (document.querySelector('input[type=radio][name=bu_ron]:checked')!=null)
-            document.querySelector('input[type=radio][name=bu_ron]:checked').checked=false;
-        makeundisable('ron');
-        document.getElementsByName('fan_ron')[0].checked=true;
-        document.getElementsByName('bu_ron')[0].disabled=true;
-        document.getElementsByName('bu_ron')[1].disabled=true;
-        yakumancnt('ron',0);
+        Reset_Choose('ron', 'check_ron1', 'check_ron2');
         document.querySelector('#Modal_alertText').innerText='책임지불할 사람이 선택되지 않았습니다.';
         document.querySelector('#Modal_alert').style.display='inline';
     }
     else if (whofao===whowin){
-        makeunchk(['down', 'right', 'up', 'left'],'check_ron1');
-        makeunchk(['down', 'right', 'up', 'left'],'check_ron2');
-        if (document.querySelector('input[type=radio][name=fan_ron]:checked')!=null)
-            document.querySelector('input[type=radio][name=fan_ron]:checked').checked=false;
-        if (document.querySelector('input[type=radio][name=bu_ron]:checked')!=null)
-            document.querySelector('input[type=radio][name=bu_ron]:checked').checked=false;
-        makeundisable('ron');
-        document.getElementsByName('fan_ron')[0].checked=true;
-        document.getElementsByName('bu_ron')[0].disabled=true;
-        document.getElementsByName('bu_ron')[1].disabled=true;
-        yakumancnt('ron',0);
+        Reset_Choose('ron', 'check_ron1', 'check_ron2', 'fao_ron');
         document.querySelector('#Modal_alertText').innerText='론한 사람과 책임지불할 사람이 같습니다.';
         document.querySelector('#Modal_alert').style.display='inline';
     }
@@ -668,19 +644,8 @@ function ron6(whofao){
         if (document.querySelector(checks_ron1[i%4]).style.color==='red'){
             document.querySelector('#name_ron').innerText=document.querySelector(names[i%4]).innerText+'의 점수를 입력해주세요.';
             document.querySelector('#who_ron').innerText=i%4;
-            document.querySelector('#fao_ron').parentNode.style.display='none';
-            document.querySelector('#fao_ron').disabled=true;
-            document.querySelector('#fao_ron').checked=false;
-            document.querySelector('#fao_ron').nextSibling.innerText='X';
-            if (document.querySelector('input[type=radio][name=fan_ron]:checked')!=null)
-                document.querySelector('input[type=radio][name=fan_ron]:checked').checked=false;
-            if (document.querySelector('input[type=radio][name=bu_ron]:checked')!=null)
-                document.querySelector('input[type=radio][name=bu_ron]:checked').checked=false;
-            makeundisable('ron');
-            document.getElementsByName('fan_ron')[0].checked=true;
-            document.getElementsByName('bu_ron')[0].disabled=true;
-            document.getElementsByName('bu_ron')[1].disabled=true;
-            yakumancnt('ron',0);
+            Reset_Choose('ron');
+            Reset_Fao('ron');
             break;
         }
         else if (document.querySelector(checks_ron2[i%4]).style.color==='red'){
@@ -705,10 +670,7 @@ function tsumo2(){
     if (whowin!==-1){
         document.querySelector('#name_tsumo').innerText=document.querySelector(names[whowin]).innerText+'의 점수를 입력해주세요.';
         tsumo2.style.display='inline';
-        document.querySelector('#fao_tsumo').parentNode.style.display='none';
-        document.querySelector('#fao_tsumo').disabled=true;
-        document.querySelector('#fao_tsumo').checked=false;
-        document.querySelector('#fao_tsumo').nextSibling.innerText='X';
+        Reset_Fao('tsumo');
     }
     else{
         document.querySelector('#Modal_alertText').innerText='쯔모한 사람이 선택되지 않았습니다.';
@@ -738,30 +700,12 @@ function tsumo4(){
     }
     tsumo3.style.display='';
     if (whofao===-1){
-        makeunchk(['down', 'right', 'up', 'left'],'check_tsumo');
-        if (document.querySelector('input[type=radio][name=fan_tsumo]:checked')!=null)
-            document.querySelector('input[type=radio][name=fan_tsumo]:checked').checked=false;
-        if (document.querySelector('input[type=radio][name=bu_tsumo]:checked')!=null)
-            document.querySelector('input[type=radio][name=bu_tsumo]:checked').checked=false;
-        makeundisable('tsumo');
-        document.getElementsByName('fan_tsumo')[0].checked=true;
-        document.getElementsByName('bu_tsumo')[0].disabled=true;
-        document.getElementsByName('bu_tsumo')[1].disabled=true;
-        yakumancnt('tsumo',0);
+        Reset_Choose('tsumo', 'check_tsumo');
         document.querySelector('#Modal_alertText').innerText='책임지불할 사람이 선택되지 않았습니다.';
         document.querySelector('#Modal_alert').style.display='inline';
     }
     else if (whofao===whowin){
-        makeunchk(['down', 'right', 'up', 'left'],'check_tsumo');
-        if (document.querySelector('input[type=radio][name=fan_tsumo]:checked')!=null)
-            document.querySelector('input[type=radio][name=fan_tsumo]:checked').checked=false;
-        if (document.querySelector('input[type=radio][name=bu_tsumo]:checked')!=null)
-            document.querySelector('input[type=radio][name=bu_tsumo]:checked').checked=false;
-        makeundisable('tsumo');
-        document.getElementsByName('fan_tsumo')[0].checked=true;
-        document.getElementsByName('bu_tsumo')[0].disabled=true;
-        document.getElementsByName('bu_tsumo')[1].disabled=true;
-        yakumancnt('tsumo',0);
+        Reset_Choose('tsumo', 'check_tsumo', 'fao_tsumo');
         document.querySelector('#Modal_alertText').innerText='쯔모한 사람과 책임지불 할 사람이 같습니다.';
         document.querySelector('#Modal_alert').style.display='inline';
     }
@@ -787,15 +731,7 @@ function ron_General(fan, bu, fao){
     var whowin=[0,0,0,0], firstwin=-1, wholose=-1, point=[0,0,0,0];
     ron3.style.display='';
 
-    if (document.querySelector('input[type=radio][name=fan_ron]:checked')!=null)
-        document.querySelector('input[type=radio][name=fan_ron]:checked').checked=false;
-    if (document.querySelector('input[type=radio][name=bu_ron]:checked')!=null)
-        document.querySelector('input[type=radio][name=bu_ron]:checked').checked=false;
-    makeundisable('ron');
-    document.getElementsByName('fan_ron')[0].checked=true;
-    document.getElementsByName('bu_ron')[0].disabled=true;
-    document.getElementsByName('bu_ron')[1].disabled=true;
-    yakumancnt('ron',0);
+    Reset_Choose('ron');
     for (var i=0;i<4;i++){ //화료체크
         if (document.querySelector(checks_ron2[i]).style.color==='red'){
             document.querySelector(checks_ron2[i]).style.color='';
@@ -854,15 +790,7 @@ function tsumo_General(fan, bu, fao){
     tsumo2.style.display='';
     tsumo3.style.display='';
     
-    if (document.querySelector('input[type=radio][name=fan_tsumo]:checked')!=null)
-        document.querySelector('input[type=radio][name=fan_tsumo]:checked').checked=false;
-    if (document.querySelector('input[type=radio][name=bu_tsumo]:checked')!=null)
-        document.querySelector('input[type=radio][name=bu_tsumo]:checked').checked=false;
-    makeundisable('tsumo');
-    document.getElementsByName('fan_tsumo')[0].checked=true;
-    document.getElementsByName('bu_tsumo')[0].disabled=true;
-    document.getElementsByName('bu_tsumo')[1].disabled=true;
-    yakumancnt('tsumo',0);
+    Reset_Choose('tsumo');
     for (var i=0;i<4;i++){ //화료체크
         if (document.querySelector(checks_tsumo[i]).style.color==='red'){
             document.querySelector(checks_tsumo[i]).style.color='';
