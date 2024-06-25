@@ -151,9 +151,8 @@ function makechk(self){ // 화살표 창에서 본인 색칠
         self.style.color='';
 }
 function makeunchk(who, type){ // 화살표 창에서 본인 제외 색칠 끄기
-    for (var i=0;i<who.length;i++){
-        if (document.querySelector('#'+who[i]+type).style.color==='red')
-            document.querySelector('#'+who[i]+type).style.color='';
+    for (let i=0;i<who.length;i++){
+        Query_Color('#'+who[i]+type,'');
     }
 }
 function OXbutton(self){ // 옵션용 OX버튼 색칠
@@ -168,24 +167,22 @@ function OXbutton(self){ // 옵션용 OX버튼 색칠
         self.style.color='blue';
     }
 }
-function makedisable(type){ // 5판 이상 부수 선택 불가
-    if (document.querySelector('input[type=radio][name=bu_tsumo]:checked')!=null)
-        document.querySelector('input[type=radio][name=bu_tsumo]:checked').checked=false;
-    if (document.querySelector('input[type=radio][name=bu_ron]:checked')!=null)
-        document.querySelector('input[type=radio][name=bu_ron]:checked').checked=false;
-    var bu=document.getElementsByName('bu_'+type);
-    for (var i=0;i<bu.length;i++) {
-        bu[i].disabled = true;
+function makedisable(type){ // 5판 이상일때 부수 선택 불가
+    if (Query('input[type=radio][name=bu_'+type+']:checked')!==null) // 선택된 값이 있다면 해제
+        Query_Checked('input[type=radio][name=bu_'+type+']:checked', false);
+    let bu=Name('bu_'+type);
+    for (let i=0;i<bu.length;i++){ // 부수 선택 막기
+        bu[i].disabled=true;
     }
 }
 function makeundisable(type){ // 5판 이상 부수 선택 불가 해제
-    var bu=document.getElementsByName('bu_'+type);
-    for (var i=0;i<bu.length;i++) {
-        bu[i].disabled = false;
+    let bu=Name('bu_'+type);
+    for (let i=0;i<bu.length;i++){ // 부수 선택 켜기
+        bu[i].disabled=false;
     }
-    bu[2].checked=true;
-    if (type=='ron')
-        bu[0].disabled = true;
+    bu[2].checked=true; // 기본 값 30부로 설정
+    if (type=='ron') // 론이라면 20부 끄기
+        bu[0].disabled=true;
 }
 function yakumancnt(type, how){ // 역만 옵션 창 선택 및 책임지불 옵션
     var yakuman=document.getElementsByName('fan_'+type)[9];

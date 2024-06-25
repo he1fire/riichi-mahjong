@@ -10,9 +10,12 @@ const checks_ryuukyoku=['#downcheck_ryuukyoku','#rightcheck_ryuukyoku','#upcheck
 const winds_char=['東', '南', '西', '北'];
 let gap_mode=0;
 
-function Query(str, ...x){
-    if (x.length===1)
-        document.querySelector(str)=x[0];
+
+function Name(str){
+    return document.getElementsByName(str);
+}
+
+function Query(str){
     return document.querySelector(str);
 }
 
@@ -57,6 +60,8 @@ function Query_Visibility(str, ...x){
 function Query_Checked(str, ...x){
     if (x.length===1)
         document.querySelector(str).checked=x[0];
+    if (document.querySelector(str)===null)
+        return null;
     return document.querySelector(str).checked;
 }
 
