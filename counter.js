@@ -185,25 +185,25 @@ function makeundisable(type){ // 5판 이상 부수 선택 불가 해제
         bu[0].disabled=true;
 }
 function yakumancnt(type, how){ // 역만 옵션 창 선택 및 책임지불 옵션
-    var yakuman=document.getElementsByName('fan_'+type)[9];
-    if (how){
-        if (yakuman.value<19)
+    let yakuman=Name('fan_'+type)[9];
+    if (how){ // 클릭 했을 때
+        if (yakuman.value<19) // 6배 역만 이하면 증가
             yakuman.value++;
         else
             yakuman.value=14;
         yakuman.nextSibling.innerText=(yakuman.value-13)+'배역만';
-        document.querySelector('#fao_'+type).parentNode.style.display='inline';
-        document.querySelector('#fao_'+type).disabled=false;
-        if (document.querySelector('#fao_'+type).nextSibling.innerText=='O')
-            document.querySelector('#fao_'+type).nextSibling.style.color='blue';
+        Query('#fao_'+type).parentNode.style.display='inline'; // 책임지불 보이게 변경
+        Query('#fao_'+type).disabled=false;
+        if (Query('#fao_'+type).nextSibling.innerText=='O') // 글자 색 변경
+            Query('#fao_'+type).nextSibling.style.color='blue';
         else
-            document.querySelector('#fao_'+type).nextSibling.style.color='red';
+            Query('#fao_'+type).nextSibling.style.color='red';
     }
-    else{
-        yakuman.value=13;
+    else{ // 다른 판수를 클릭했을 때
+        yakuman.value=13; // 값 초기화
         yakuman.nextSibling.innerText='1배역만';
-        document.querySelector('#fao_'+type).parentNode.style.display='none';
-        document.querySelector('#fao_'+type).disabled=true;
+        Query('#fao_'+type).parentNode.style.display='none'; // 책임지불 안보이게 변경
+        Query('#fao_'+type).disabled=true;
     }
 }
 
