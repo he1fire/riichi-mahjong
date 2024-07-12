@@ -816,7 +816,7 @@ function tsumo_General(fan, bu, fao){
                 document.querySelector(scorestmp[i]).style.color='lawngreen';
             }
             else if (i===fao){
-                document.querySelector(scorestmp[i]).innerText=-CalculateScore(fan, bu, document.querySelector(winds[whowin]).innerText, document.querySelector(winds[i]).innerText, 'tsumo', false)-Number(renjang.innerText)*300;
+                document.querySelector(scorestmp[i]).innerText=-CalculateScore(fan, bu, document.querySelector(winds[whowin]).innerText, document.querySelector(winds[i]).innerText, 'ron', false)-Number(renjang.innerText)*300;
                 document.querySelector(scorestmp[i]).style.color='red';
             }
             else{
