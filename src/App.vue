@@ -379,8 +379,19 @@ export default {
     },
     /**국 결과값 처리*/
     saveRound(){
-      for (let i=0;i<this.isRiichi.length;i++) // 리치봉 수거
-        this.isRiichi[i]=false;
+      if (this.roundStatus==='cheat'){
+        for (let i=0;i<this.isRiichi.length;i++){ // 리치봉 반환
+          if (this.isRiichi[i]){
+            this.scoresHigh[i]+=10;
+            this.isRiichi[i]=false;
+            this.countRiichi--;
+          }
+        }
+      }
+      else{
+        for (let i=0;i<this.isRiichi.length;i++) // 리치봉 수거
+          this.isRiichi[i]=false;
+      }
       // 옵션에서 롤백한 경우 처리
       for (let i=0;i<this.scoresDiff.length;i++) // 점수 배분및 기록
         this.changeScores(i);
