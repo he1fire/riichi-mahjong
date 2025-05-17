@@ -81,13 +81,12 @@ export default {
     toggleActiveRiichi(seat){
       let idx=this.seats.indexOf(seat); // 위치 기준 인덱스 반환
       if (this.isRiichi[idx]===false){ //  리치 활성화
-        if (this.scoresHigh[idx]>=10 || this.optMinusRiichi){ // 1000점 이상 있거나 음수리치가 가능하다면
+        if (this.scoresHigh[idx]<10 && this.optMinusRiichi===false) // 리치를 걸수 없을 때
+          return;
+        else { // 1000점 이상 있거나 음수리치가 가능하다면
           this.scoresHigh[idx]-=10;
           this.isRiichi[idx]=true;
           this.countRiichi++;
-        }
-        else{ // 리치를 걸수 없을 때
-          this.showModal('점수가 모자라 리치를 걸 수 없습니다.');
         }
       }
       else{ // 리치 비활성화

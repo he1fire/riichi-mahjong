@@ -12,6 +12,7 @@ export default {
     scoreEffect: Number,
     scoreGap: Number,
     isRiichi: Boolean,
+    optMinusRiichi: Boolean,
   },
   emits: ['toggle-active-riichi'],
   data(){
@@ -19,9 +20,13 @@ export default {
     };
   },
   methods: {
-    /**본인 바람이 동이라면 붉은색으로 표시*/
+    /**본인 바람이 동이라면 붉은색 표시*/
     isEast() {
       return {color: this.wind==='東' ? 'red' : ''};
+    },
+    /**리치가 불가능하면 회색 표시*/
+    ableRiichi() {
+      return {color: (this.scoreHigh<10 && this.optMinusRiichi===false) ? 'gray' : ''};
     },
     /**리치봉 표시*/
     showRiichi() {
@@ -53,7 +58,7 @@ export default {
     {{ wind }}
   </div>
   <!-- 현재 점수 -->
-  <div class="score" @click="toggleActiveRiichi()">
+  <div class="score" :style="ableRiichi()" @click="toggleActiveRiichi()">
     {{ scoreHigh }}<span style="font-size: 50px;"><span v-if="this.scoreLow<10">0</span>{{ scoreLow }}</span>
   </div>
   <!-- 변경되는 점수 -->
