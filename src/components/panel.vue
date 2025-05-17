@@ -52,9 +52,9 @@ export default {
   <div class="draw" @click="showModal('choose_draw_kind')">
     유국
   </div>
-  <!-- 옵션 버튼 -->
-  <div class="option">
-    옵션
+  <!-- 촌보 버튼 -->
+  <div class="cheat" @click="showModal('check_player_cheat')">
+    촌보
   </div>
 </div>
 </template>
@@ -75,7 +75,7 @@ export default {
   grid-template-areas: 
     "now now win"
     "now now draw"
-    "riichi renchan option";
+    "riichi renchan cheat";
   position: fixed;
   text-align: center;
   font-size: 40px;
@@ -95,8 +95,8 @@ export default {
   margin: auto;
   transform: translate(20px,-10px);
 }
-.option{
-  grid-area: option;
+.cheat{
+  grid-area: cheat;
   /* display: flex; */
 }
 .win{

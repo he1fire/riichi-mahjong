@@ -16,6 +16,7 @@ export default {
     isWin: Array,
     isLose: Array,
     isTenpai: Array,
+    isCheat: Array,
     roundStatus: String,
     diceValue: Array,
     isWall: Array,
@@ -50,7 +51,7 @@ export default {
         else
           return {color: this.isWin[x]===true ? 'red' : ''};
       }
-      else if (status==='lose'){  // 방총 체크
+      else if (status==='lose'){ // 방총 체크
         if (x===-1){ // ok버튼
           for (let i=0;i<this.isWin.length;i++){
             if (this.isWin[i]===true) // 화료 인원 세기
@@ -68,9 +69,15 @@ export default {
             return {color: this.isLose[x]===true ? 'red' : ''};
         }
       }
-      else if (status==='tenpai')  // 텐파이 체크
+      else if (status==='tenpai') // 텐파이 체크
         return {color: this.isTenpai[x]===true ? 'red' : ''};
-      else if (status==='fan')  // 판 체크
+      else if (status==='cheat'){ // 촌보 체크
+        if (x===-1) // ok버튼
+          return {color: this.isCheat.every(x => x===false) ? 'gray' : ''};
+        else
+          return {color: this.isCheat[x]===true ? 'red' : ''};
+      }
+      else if (status==='fan') // 판 체크
         return {color: x===this.inputFan ? 'red' : ''};
       else if (status==='bu'){ // 부 체크
         if (this.roundStatus==='ron' && x===0) // 론일때 20부 이하 비활성화
@@ -300,6 +307,25 @@ export default {
         {{ arr_arrow[i] }}
       </div>
       <div class="ok" @click.stop="calculateDraw()">
+        OK
+      </div>
+    </div>
+  </div>
+  <!-- 촌보 인원 선택창 -->
+  <div v-else-if="modalType==='check_player_cheat'" class="modal_content" @click.stop>
+    <div class="container_check">
+      <div class="guide_message">
+        촌보한 사람을 선택해 주세요.
+      </div>
+      <div v-for="(_, i) in class_check"
+        :key="i"
+        :class="class_check[i]"
+        :style="isChecked(i, 'cheat')"
+        @click.stop="toggleCheckStatus(i, 'cheat')"
+      >
+        {{ arr_arrow[i] }}
+      </div>
+      <div class="ok" :style="isChecked(-1, 'cheat')" @click.stop="checkInvalidStatus('cheat')">
         OK
       </div>
     </div>

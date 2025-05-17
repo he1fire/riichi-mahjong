@@ -28,6 +28,7 @@ export default {
       isWin: [false, false, false, false], // 플레이어별 화료 유무
       isLose: [false, false, false, false], // 플레이어별 방총 유무
       isTenpai: [false, false, false, false], // 플레이어별 텐파이 유무
+      isCheat: [false, false, false, false], // 플레이어별 촌보 유무
       currentWind: "東", // 현재 장풍
       currentRound: 1, // 현재 국
       countRiichi: 0, // 현재 누적 리치봉
@@ -191,6 +192,7 @@ export default {
       this.isWin=[false, false, false, false];
       this.isLose=[false, false, false, false];
       this.isTenpai=[false, false, false, false];
+      this.isCheat=[false, false, false, false];
       this.modal=false;
     },
     /**화료, 방총, 텐파이, 판/부, 책임지불 체크*/
@@ -210,6 +212,15 @@ export default {
       }
       else if (status==='tenpai') // 텐파이 체크
         this.isTenpai[idx]=!this.isTenpai[idx];
+      else if (status==='cheat'){ // 촌보 체크
+        if (!this.isCheat[idx]){ // 방총당한 사람을 바꾸는 경우
+          for (let i=0;i<this.isCheat.length;i++){
+            if (i!==idx) // 자신이 아닌 사람들의 체크를 해제
+              this.isCheat[i]=false;
+          }
+        }
+        this.isCheat[idx]=!this.isCheat[idx];
+      }
       else if (status==='fan'){ // 판 체크
         if (idx>=9 && this.inputFan===idx) // 역만일경우 처리
           this.inputFan<14 ? this.inputFan++ : this.inputFan=9;
@@ -273,10 +284,15 @@ export default {
           this.showModal('check_score', 'ron');
         }
       }
-      else if (status==='fao'){
+      else if (status==='fao'){ // 책임지불일때
         if (this.focusFao===-1) // 책임지불할 사람이 없음 (불가능한 경우)
           return;
         this.calculateWin();
+      }
+      else if (status==='cheat'){ // 촌보일때
+        if (this.isCheat.every(x => x===false)) // 촌보한 사람이 없음 (불가능한 경우)
+          return;
+        this.calculateCheat();
       }
     },
     /**화료 점수계산*/
@@ -351,6 +367,15 @@ export default {
         }
       }
       this.showModal('show_score', 'normal_draw');
+    },
+    calculateCheat(){
+      for (let i=0;i<this.isCheat.length;i++){
+        if (this.isCheat[i]===true) // 촌보라면
+          this.scoresDiff[i]=-9000; // 3000점씩 지불
+        else
+          this.scoresDiff[i]=3000; 
+      }
+      this.showModal('show_score', 'cheat');
     },
     /**국 결과값 처리*/
     saveRound(){
@@ -442,6 +467,7 @@ export default {
     :isWin
     :isLose
     :isTenpai
+    :isCheat
     :roundStatus
     :diceValue
     :isWall
