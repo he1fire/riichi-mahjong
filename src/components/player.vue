@@ -41,9 +41,9 @@ export default {
       else
         return {color: ''};
     },
-    /**리치 활성화/비활성화*/
-    toggleActiveRiichi(){
-      this.$emit('toggle-active-riichi', this.seat);
+    /**$emit 이벤트 발생*/
+    emitEvent(eventName, ...args) {
+      this.$emit(eventName, ...args);
     },
   }
 };
@@ -58,7 +58,7 @@ export default {
     {{ wind }}
   </div>
   <!-- 현재 점수 -->
-  <div class="score" :style="ableRiichi()" @click="toggleActiveRiichi()">
+  <div class="score" :style="ableRiichi()" @click="emitEvent('toggle-active-riichi', this.seat)">
     {{ scoreHigh }}<span style="font-size: 50px;"><span v-if="this.scoreLow<10">0</span>{{ scoreLow }}</span>
   </div>
   <!-- 변경되는 점수 -->

@@ -127,48 +127,20 @@ export default {
     /**책임지불이 켜져있는지 확인*/
     checkFao(){
       if (this.isFao===true) // 책임지불이 있다면 선택창 키기
-        this.showModal('check_player_fao',this.roundStatus+'_fao');
+        this.emitEvent('show-modal','check_player_fao',this.roundStatus+'_fao');
       else
-        this.calculateWin();
+        this.emitEvent('calculate-win');
     },
-    /**모달 창 켜기*/
-    showModal(type, status){
-      this.$emit('show-modal', type, status);
-    },
-    /**모달 창 끄기*/
-    hideModal(){
-      this.$emit('hide-modal');
-    },
-    /**화료, 방총, 텐파이, 판/부, 책임지불 체크*/
-    toggleCheckStatus(idx, status){
-      this.$emit('toggle-check-status', idx, status);
-    },
-    /**화료 및 방총 불가능한 경우 반환*/
-    checkInvalidStatus(status){
-      this.$emit('check-invalid-status', status);
-    },
-    /**화료 점수계산*/
-    calculateWin(){
-      this.$emit('calculate-win');
-    },
-    /**유국 점수계산*/
-    calculateDraw(){
-      this.$emit('calculate-draw');
-    },
-    /**국 결과값 처리*/
-    saveRound(){
-      this.$emit('save-round');
-    },
-    /**주사위 굴리기*/
-    rollDice(){
-      this.$emit('roll-dice');
+    /**$emit 이벤트 발생*/
+    emitEvent(eventName, ...args) {
+      this.$emit(eventName, ...args);
     },
   }
 };
 </script>
 
 <template>
-<div class="modal" @click="hideModal">
+<div class="modal" @click="emitEvent('hide-modal')">
   <!-- 화료 인원 선택창 -->
   <div v-if="modalType==='check_player_win'" class="modal_content" @click.stop>
     <div class="container_check">
@@ -179,11 +151,11 @@ export default {
         :key="i"
         :class="class_check[i]"
         :style="isChecked(i, 'win')"
-        @click.stop="toggleCheckStatus(i, 'win')"
+        @click.stop="emitEvent('toggle-check-status', i, 'win')"
       >
         {{ arr_arrow[i] }}
       </div>
-      <div class="ok" :style="isChecked(-1, 'win')" @click.stop="checkInvalidStatus('win')">
+      <div class="ok" :style="isChecked(-1, 'win')" @click.stop="emitEvent('check-invalid-status', 'win')">
         OK
       </div>
     </div>
@@ -198,11 +170,11 @@ export default {
         :key="i"
         :class="class_check[i]"
         :style="isChecked(i, 'lose')"
-        @click.stop="toggleCheckStatus(i, 'lose')"
+        @click.stop="emitEvent('toggle-check-status', i, 'lose')"
       >
         {{ arr_arrow[i] }}
       </div>
-      <div class="ok" :style="isChecked(-1, 'lose')" @click.stop="checkInvalidStatus('lose')">
+      <div class="ok" :style="isChecked(-1, 'lose')" @click.stop="emitEvent('check-invalid-status', 'lose')">
         OK
       </div>
     </div>
@@ -220,7 +192,7 @@ export default {
         <span v-for="(_, i) in fan.slice(0, 9)"
         :key="i"
         :style="isChecked(i, 'fan')"
-        @click.stop="toggleCheckStatus(i, 'fan')"
+        @click.stop="emitEvent('toggle-check-status', i, 'fan')"
         >
           {{ fan[i] }}
         </span>
@@ -228,11 +200,11 @@ export default {
         <span v-for="(_, i) in fan.slice(9)"
         :key="i"
         :style="[isChecked(i+9, 'fan'), isYakuman(i+9)]"
-        @click.stop="toggleCheckStatus(i+9, 'fan')"
+        @click.stop="emitEvent('toggle-check-status', i+9, 'fan')"
         >
           {{ fan[i+9] }}
         </span>
-        <span v-if="inputFan>=9" style="font-size: 20px;" @click.stop="toggleCheckStatus(-1, 'isfao')">(책임지불
+        <span v-if="inputFan>=9" style="font-size: 20px;" @click.stop="emitEvent('toggle-check-status', -1, 'isfao')">(책임지불
           <span :style="isChecked(-1, 'isfao')">
             <span v-if="isFao===true">O</span>
             <span v-if="isFao===false">X</span>
@@ -246,7 +218,7 @@ export default {
         <span v-for="(_, i) in bu.slice(0, 6)"
         :key="i"
         :style="isChecked(i, 'bu')"
-        @click.stop="toggleCheckStatus(i, 'bu')"
+        @click.stop="emitEvent('toggle-check-status', i, 'bu')"
         >
           {{ bu[i] }}
         </span>
@@ -254,7 +226,7 @@ export default {
         <span v-for="(_, i) in bu.slice(6)"
         :key="i"
         :style="isChecked(i+6, 'bu')"
-        @click.stop="toggleCheckStatus(i+6, 'bu')"
+        @click.stop="emitEvent('toggle-check-status', i+6, 'bu')"
         >
           {{ bu[i+6] }}
         </span>
@@ -274,21 +246,21 @@ export default {
         :key="i"
         :class="class_check[i]"
         :style="isChecked(i, 'fao')"
-        @click.stop="toggleCheckStatus(i, 'fao')"
+        @click.stop="emitEvent('toggle-check-status', i, 'fao')"
       >
         {{ arr_arrow[i] }}
       </div>
-      <div class="ok" :style="isChecked(-1, 'fao')" @click.stop="checkInvalidStatus('fao')">
+      <div class="ok" :style="isChecked(-1, 'fao')" @click.stop="emitEvent('check-invalid-status', 'fao')">
         OK
       </div>
     </div>
   </div>
   <!-- 유국 종류 선택창 -->
   <div v-else-if="modalType==='choose_draw_kind'" class="modal_content" @click.stop>
-    <div class="modal_choose_draw" @click.stop="showModal('check_player_tenpai')">
+    <div class="modal_choose_draw" @click.stop="emitEvent('show-modal','check_player_tenpai')">
       일반유국
     </div>
-    <div class="modal_choose_draw" @click.stop="showModal('show_score', 'special_draw')">
+    <div class="modal_choose_draw" @click.stop="emitEvent('show-modal','show_score', 'special_draw')">
       도중유국
     </div>
   </div>
@@ -302,11 +274,11 @@ export default {
         :key="i"
         :class="class_check[i]"
         :style="isChecked(i, 'tenpai')"
-        @click.stop="toggleCheckStatus(i, 'tenpai')"
+        @click.stop="emitEvent('toggle-check-status', i, 'tenpai')"
       >
         {{ arr_arrow[i] }}
       </div>
-      <div class="ok" @click.stop="calculateDraw()">
+      <div class="ok" @click.stop="emitEvent('calculate-draw')">
         OK
       </div>
     </div>
@@ -321,11 +293,11 @@ export default {
         :key="i"
         :class="class_check[i]"
         :style="isChecked(i, 'cheat')"
-        @click.stop="toggleCheckStatus(i, 'cheat')"
+        @click.stop="emitEvent('toggle-check-status', i, 'cheat')"
       >
         {{ arr_arrow[i] }}
       </div>
-      <div class="ok" :style="isChecked(-1, 'cheat')" @click.stop="checkInvalidStatus('cheat')">
+      <div class="ok" :style="isChecked(-1, 'cheat')" @click.stop="emitEvent('check-invalid-status', 'cheat')">
         OK
       </div>
     </div>
@@ -340,14 +312,14 @@ export default {
       >
         <span v-show="scoresDiff[i]>0">+</span>{{ scoresDiff[i] }}
       </div>
-      <div class="ok" @click.stop="saveRound()">
+      <div class="ok" @click.stop="emitEvent('save-round')">
         OK
       </div>
     </div>
   </div>
   <!-- 주사위 굴림창 -->
   <div v-else-if="modalType==='roll_dice'" class="modal_content" :style="isChecked(-1, 'dicemodal')" @click.stop>
-    <div class="container_roll" @click.stop="rollDice()">
+    <div class="container_roll" @click.stop="emitEvent('roll-dice')">
       <graphics kind="dice" :value="diceValue[0]" style="grid-area: dice_1; transform: scale(2);"/>
       <graphics kind="dice" :value="diceValue[1]" style="grid-area: dice_2; transform: scale(2);"/>
       <div class="sum">
@@ -371,7 +343,7 @@ export default {
         kind="tile"
         :style="isChecked(i, 'tile')"
         :value="randomSeats[i]"
-        @click.stop="toggleCheckStatus(i, 'tile')"
+        @click.stop="emitEvent('toggle-check-status', i, 'tile')"
       ></graphics>
     </div>
   </div>

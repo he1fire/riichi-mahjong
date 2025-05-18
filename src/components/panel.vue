@@ -16,13 +16,9 @@ export default {
     };
   },
   methods: {
-    /**모달 창 켜기*/
-    showModal(type, status){
-      this.$emit('show-modal', type, status);
-    },
-    /**주사위 굴리기*/
-    rollDice(){
-      this.$emit('roll-dice');
+    /**$emit 이벤트 발생*/
+    emitEvent(eventName, ...args) {
+      this.$emit(eventName, ...args);
     },
   }
 };
@@ -31,7 +27,7 @@ export default {
 <template>
 <div class="container_mid" id='Mid'>
   <!-- 현재 라운드 -->
-  <div class="now" @click="showModal('roll_dice'), rollDice()">
+  <div class="now" @click="emitEvent('show-modal', 'roll_dice'), emitEvent('roll-dice')">
     {{ currentWind }} {{ currentRound }} 局
   </div>
   <!-- 현재 총 리치봉 -->
@@ -45,15 +41,15 @@ export default {
     <span>x {{ countRenchan }}</span>
   </div>
   <!-- 화료 버튼 -->
-  <div class="win" @click="showModal('check_player_win')">
+  <div class="win" @click="emitEvent('show-modal', 'check_player_win')">
     화료
   </div>
   <!-- 유국 버튼 -->
-  <div class="draw" @click="showModal('choose_draw_kind')">
+  <div class="draw" @click="emitEvent('show-modal', 'choose_draw_kind')">
     유국
   </div>
   <!-- 촌보 버튼 -->
-  <div class="cheat" @click="showModal('check_player_cheat')">
+  <div class="cheat" @click="emitEvent('show-modal', 'check_player_cheat')">
     촌보
   </div>
 </div>
