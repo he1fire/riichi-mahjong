@@ -40,7 +40,7 @@ export default {
       isWall: [false, false, false, false], // 주사위 값에 따른 패산방향
       isOpened: [false, false, false, false], // 타일이 공개되었는지
       randomSeats: ["東", "南", "西", "北"], // 랜덤 타일값
-      recordsTime: ['\n'], // 라운드 기록
+      recordsTime: [], // 라운드 기록
       recordsScore: [[25000],[25000],[25000],[25000]], //  점수 기록
       optMinusRiichi: false, // 음수리치 옵션
       optRoundMangan: false, // 절상만관 옵션
@@ -408,8 +408,8 @@ export default {
     },
     /**국 결과값 처리*/
     saveRound(){
-      if (this.roundStatus==='cheat'){
-        for (let i=0;i<this.isRiichi.length;i++){ // 리치봉 반환
+      if (this.roundStatus==='cheat'){ // 촌보의 경우 리치봉 반환
+        for (let i=0;i<this.isRiichi.length;i++){
           if (this.isRiichi[i]){
             this.scoresHigh[i]+=10;
             this.isRiichi[i]=false;
@@ -424,8 +424,12 @@ export default {
       // 옵션에서 롤백한 경우 처리
       for (let i=0;i<this.scoresDiff.length;i++) // 점수 배분및 기록
         this.changeScores(i);
-      // 점수 기록창에 점수 기록
-      // 점수 기록창에 국+본장 기록
+      for (let i=0;i<this.scoresDiff.length;i++){ // 점수 기록창에 점수 기록
+        this.recordsScore[i].push(this.scoresDiff[i]);
+        this.recordsScore[i].push(this.scoresHigh[i]*100+this.scoresDiff[i]);
+      }
+      this.recordsTime.push('-');
+      this.recordsTime.push(this.currentWind+this.currentRound+'局 '+this.countRenchan+'本場');// 점수 기록창에 국+본장 기록
       if (this.roundStatus==='tsumo' || this.roundStatus==='ron'){ // 화료로 끝났다면
         let chinWin=this.isWin[this.winds.indexOf('東')]; // 친이 화료했는지 체크
         if (chinWin===false){ // 친이 화료를 못했다면

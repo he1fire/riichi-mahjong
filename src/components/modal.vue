@@ -121,12 +121,12 @@ export default {
     },
     /**점수 변동에 따른 글자색*/
     isDiff(x) {
-      if (this.scoresDiff[x]>0)
+      if (x>0)
         return {color: 'limegreen'};
-      else if (this.scoresDiff[x]<0)
+      else if (x<0)
         return {color: 'red'};
       else
-        return {color: ''};
+        return {color: 'white'};
     },
     /**책임지불이 켜져있는지 확인*/
     checkFao(){
@@ -312,7 +312,7 @@ export default {
       <div v-for="(_, i) in class_score_diff"
         :key="i"
         :class="class_score_diff[i]"
-        :style="isDiff(i)"
+        :style="isDiff(this.scoresDiff[i])"
       >
         <span v-show="scoresDiff[i]>0">+</span>{{ scoresDiff[i] }}
       </div>
@@ -379,13 +379,15 @@ export default {
         >
           <div v-for="(_, j) in recordsScore[i]"
             :key="j"
+            :style="j%2===1 ? isDiff(recordsScore[i][j]) : {}"
           >
-            {{ recordsScore[i][j] }}
+          <span v-show="j%2===1 && recordsScore[i][j]>0">+</span>{{ recordsScore[i][j] }}
           </div>
         </div>
         <div style="grid-area: when;">
           <div v-for="(_, i) in recordsTime"
             :key="i"
+            :style="i%2===0 ? isDiff(recordsTime[i]) : {}"
           >
             {{ recordsTime[i] }}
           </div>
