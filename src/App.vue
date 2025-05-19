@@ -428,7 +428,7 @@ export default {
         this.recordsScore[i].push(this.scoresDiff[i]);
         this.recordsScore[i].push(this.scoresHigh[i]*100+this.scoresDiff[i]);
       }
-      this.recordsTime.push('-');
+      this.recordsTime.push('ㅤ');
       this.recordsTime.push(this.currentWind+this.currentRound+'局 '+this.countRenchan+'本場');// 점수 기록창에 국+본장 기록
       if (this.roundStatus==='tsumo' || this.roundStatus==='ron'){ // 화료로 끝났다면
         let chinWin=this.isWin[this.winds.indexOf('東')]; // 친이 화료했는지 체크

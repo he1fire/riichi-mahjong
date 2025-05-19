@@ -208,10 +208,10 @@ export default {
         >
           {{ fan[i+9] }}
         </span>
-        <span v-if="inputFan>=9" style="font-size: 20px;" @click.stop="emitEvent('toggle-check-status', -1, 'isfao')">(책임지불
+        <span v-show="inputFan>=9" style="font-size: 20px;" @click.stop="emitEvent('toggle-check-status', -1, 'isfao')">(책임지불
           <span :style="isChecked(-1, 'isfao')">
-            <span v-if="isFao===true">O</span>
-            <span v-if="isFao===false">X</span>
+            <span v-show="isFao===true">O</span>
+            <span v-show="isFao===false">X</span>
           </span>
         )</span>
       </div>
@@ -327,8 +327,8 @@ export default {
       <graphics kind="dice" :value="diceValue[0]" style="grid-area: dice_1; transform: scale(2);"/>
       <graphics kind="dice" :value="diceValue[1]" style="grid-area: dice_2; transform: scale(2);"/>
       <div class="sum">
-        <span v-if="isWall.every(x => x===false)">?</span>
-        <span v-if="isWall.some(x => x===true)">{{ diceValue[0]+diceValue[1] }}</span>
+        <span v-show="isWall.every(x => x===false)">?</span>
+        <span v-show="isWall.some(x => x===true)">{{ diceValue[0]+diceValue[1] }}</span>
       </div>
       <div v-for="(_, i) in class_dice"
         :key="i"
@@ -387,7 +387,6 @@ export default {
         <div style="grid-area: when;">
           <div v-for="(_, i) in recordsTime"
             :key="i"
-            :style="i%2===0 ? isDiff(recordsTime[i]) : {}"
           >
             {{ recordsTime[i] }}
           </div>

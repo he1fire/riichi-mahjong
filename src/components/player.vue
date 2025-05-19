@@ -73,7 +73,7 @@ export default {
   <!-- 현재 점수 -->
   <div class="score" >
     <div v-if="isGap===false" :style="ableRiichi()" @click="emitEvent('toggle-active-riichi', this.seat)">
-      {{ scoreHigh }}<span style="font-size: 50px;"><span v-if="this.scoreLow<10">0</span>{{ scoreLow }}</span>
+      {{ scoreHigh }}<span style="font-size: 50px;"><span v-show="this.scoreLow<10">0</span>{{ scoreLow }}</span>
     </div>
     <div v-else :style="isDiff(this.scoreGap)">
       <span v-show="scoreGap>0">+</span>{{ scoreGap }}<span style="font-size: 50px;">00</span>
