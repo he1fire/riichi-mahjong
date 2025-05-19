@@ -102,7 +102,9 @@ export default {
       let idx=this.seats.indexOf(seat); // 위치 기준 인덱스 반환
       if (x===true){ // 활성화
         for (let i=0;i<this.isGap.length;i++){
-          if (i!==idx){ // 본인이 아니면 표시 변경
+          if (i===idx)
+            this.isGap[i]=false;
+          else{ // 본인이 아니면 표시 변경
             this.isGap[i]=true;
             this.scoresGap[i]=this.scoresHigh[idx]-this.scoresHigh[i];
           }
