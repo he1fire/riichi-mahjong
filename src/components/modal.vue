@@ -22,6 +22,8 @@ export default {
     isWall: Array,
     isOpened: Array,
     randomSeats: Array,
+    recordsTime: Array,
+    recordsScore: Array,
     modalType: String,
   },
   emits: ['show-modal', 'hide-modal', 'toggle-check-status', 'check-invalid-status', 'calculate-win', 'calculate-draw', 'save-round', 'roll-dice'],
@@ -31,6 +33,8 @@ export default {
       class_check: ["down_check", "right_check", "up_check", "left_check"],
       class_score_diff: ["down_score_diff", "right_score_diff", "up_score_diff", "left_score_diff"],
       class_dice: ["down_dice", "right_dice", "up_dice", "left_dice"],
+      class_name: ["down_name", "right_name", "up_name", "left_name"],
+      class_record: ["down_record", "right_record", "up_record", "left_record"],
       fan: ["1", "2", "3", "4", "5", "6+", "8+", "11+", "13+", "1배역만", "2배역만", "3배역만", "4배역만", "5배역만","6배역만"],
       bu: [20, 25, 30, 40, 50, 60, 70, 80, 90, 100, 110],
     };
@@ -216,17 +220,17 @@ export default {
       </div>
       <div class="bu_check">
         <span v-for="(_, i) in bu.slice(0, 6)"
-        :key="i"
-        :style="isChecked(i, 'bu')"
-        @click.stop="emitEvent('toggle-check-status', i, 'bu')"
+          :key="i"
+          :style="isChecked(i, 'bu')"
+          @click.stop="emitEvent('toggle-check-status', i, 'bu')"
         >
           {{ bu[i] }}
         </span>
         <div></div>
         <span v-for="(_, i) in bu.slice(6)"
-        :key="i"
-        :style="isChecked(i+6, 'bu')"
-        @click.stop="emitEvent('toggle-check-status', i+6, 'bu')"
+          :key="i"
+          :style="isChecked(i+6, 'bu')"
+          @click.stop="emitEvent('toggle-check-status', i+6, 'bu')"
         >
           {{ bu[i+6] }}
         </span>
@@ -351,9 +355,42 @@ export default {
   <div v-else-if="modalType==='choose_option_kind'" class="modal_content" @click.stop>
     <div class="container_choose_option">
       <div>게임결과</div><!-- 구현x -->
-      <div>점수기록</div><!-- 구현x -->
+      <div @click.stop="emitEvent('show-modal','show_record')">점수기록</div>
       <div>규칙설정</div><!-- 구현x -->
       <div>정보편집</div><!-- 구현x -->
+    </div>
+  </div>
+  <!-- 점수 기록창 -->
+  <div v-else-if="modalType==='show_record'" class="modal_content" @click.stop>
+    <div class="container_record">
+      <div style="color: red; grid-area: rollback; font-size: 20px;">
+        기록복사
+      </div>
+      <div v-for="(_, i) in class_name"
+        :key="i"
+        :class="class_name[i]"
+      >
+        {{ names[i] }}
+      </div>
+      <div class="container_record_scroll">
+        <div v-for="(_, i) in class_record"
+          :key="i"
+          :class="class_record[i]"
+        >
+          <div v-for="(_, j) in recordsScore[i]"
+            :key="j"
+          >
+            {{ recordsScore[i][j] }}
+          </div>
+        </div>
+        <div style="grid-area: when;">
+          <div v-for="(_, i) in recordsTime"
+            :key="i"
+          >
+            {{ recordsTime[i] }}
+          </div>
+        </div>
+      </div>
     </div>
   </div>
   <!-- 메시지 팝업창 -->
@@ -502,7 +539,7 @@ export default {
   grid-template-rows: repeat(2, auto);
   grid-template-columns: repeat(2, auto);
   font-size: 40px;
-  gap: 20px;
+  gap: 40px;
   margin: 20px;
 }
 
@@ -560,5 +597,28 @@ export default {
   text-align: center;
   font-size: 80px;
   margin: 15px;
+}
+
+/* 점수 기록창 */
+.container_record{
+  display: grid;
+  grid-template-rows: 35px 200px;
+  grid-template-columns: 120px repeat(4, 100px);
+  grid-template-areas: 
+  "rollback down_name right_name up_name left_name"
+  "scroll scroll scroll scroll scroll";
+  text-align: center;
+  font-size: 25px;
+}
+.container_record_scroll{
+  display: grid;
+  grid-template-rows: auto;
+  grid-template-columns: 120px auto;
+  grid-template-areas: 
+  "when down_record right_record up_record left_record";
+  text-align: center;
+  font-size: 20px;
+  grid-area: scroll;
+  overflow: auto;
 }
 </style>

@@ -40,6 +40,8 @@ export default {
       isWall: [false, false, false, false], // 주사위 값에 따른 패산방향
       isOpened: [false, false, false, false], // 타일이 공개되었는지
       randomSeats: ["東", "南", "西", "北"], // 랜덤 타일값
+      recordsTime: ['\n'], // 라운드 기록
+      recordsScore: [[25000],[25000],[25000],[25000]], //  점수 기록
       optMinusRiichi: false, // 음수리치 옵션
       optRoundMangan: false, // 절상만관 옵션
       modal: false, // 모달창 활성화
@@ -445,6 +447,7 @@ export default {
       }
       this.hideModal(); // 모달 창 끄기
     },
+    /**주사위 굴리기*/
     rollDice(){
       let timecnt=0;
       this.isWall=[false, false, false, false];
@@ -470,8 +473,7 @@ export default {
 <template>
 <div class="background" @dblclick.self="toggleFullScreen()">
   <!-- 각 방향별 player 컴포넌트 생성 -->
-  <player
-    v-for="(_, i) in seats"
+  <player v-for="(_, i) in seats"
     :key="i"
     :seat="seats[i]"
     :wind="winds[i]"
@@ -514,6 +516,8 @@ export default {
     :isWall
     :isOpened
     :randomSeats
+    :recordsTime
+    :recordsScore
     :modalType
     @show-modal="showModal"
     @hide-modal="hideModal"
