@@ -64,6 +64,9 @@ export default {
     @mousedown="toggleShowGap(true)"
     @mouseup="toggleShowGap(false)"
     @mouseleave="toggleShowGap(false)"
+    @touchstart="toggleShowGap(true)"
+    @touchend="toggleShowGap(false)"
+    @touchcancel="toggleShowGap(false)"
     >
     {{ wind }}
   </div>
