@@ -53,7 +53,7 @@ export default {
     촌보
   </div>
 </div>
-<div id='Option'>
+<div id='Option' @click="emitEvent('show-modal', 'choose_option_kind')">
   <graphics kind="gear"/>
 </div>
 </template>

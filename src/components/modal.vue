@@ -347,8 +347,17 @@ export default {
       ></graphics>
     </div>
   </div>
+  <!-- 옵션 종류 선택창 -->
+  <div v-else-if="modalType==='choose_option_kind'" class="modal_content" @click.stop>
+    <div class="container_choose_option">
+      <div>게임결과</div><!-- 구현x -->
+      <div>점수기록</div><!-- 구현x -->
+      <div>규칙설정</div><!-- 구현x -->
+      <div>정보편집</div><!-- 구현x -->
+    </div>
+  </div>
   <!-- 메시지 팝업창 -->
-  <div v-else if class="modal_content" @click.stop>
+  <div v-else class="modal_content" @click.stop>
     <div class="modal_text">{{ modalType }}</div>
   </div>
 </div>
@@ -485,6 +494,16 @@ export default {
 .ok{
   grid-area: ok;
   font-size: 60px;
+}
+
+/* 옵션 선택창 */
+.container_choose_option{
+  display: grid;
+  grid-template-rows: repeat(2, auto);
+  grid-template-columns: repeat(2, auto);
+  font-size: 40px;
+  gap: 20px;
+  margin: 20px;
 }
 
 /* 주사위 굴림창 */

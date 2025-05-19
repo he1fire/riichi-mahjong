@@ -139,7 +139,7 @@ export default {
   position: relative;
   width: 40px;
   height: 40px;
-  background: gray;
+  background: darkgray;
   border-radius: 50%;
 }
 .gear .center{
@@ -159,7 +159,7 @@ export default {
   z-index: 1;
   width: 10px;
   height: 50px;
-  background: gray;
+  background: darkgray;
 }
 .tooth:nth-child(2){
   transform: rotate(45deg);
