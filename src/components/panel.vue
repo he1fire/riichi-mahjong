@@ -53,6 +53,9 @@ export default {
     촌보
   </div>
 </div>
+<div id='Option'>
+  <graphics kind="gear"/>
+</div>
 </template>
 
 <style scoped>
@@ -61,6 +64,14 @@ export default {
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
+}
+
+/* 옵션창 위치 */
+#Option{
+  position: fixed;
+  transform: scale(0.75);
+  top: 5px;
+  left: 5px;
 }
 
 /* 정보창 */

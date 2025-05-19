@@ -358,7 +358,7 @@ export default {
 /* 기본 모달창 */
 .modal {
   position: fixed;
-  z-index: 2;
+  z-index: 5;
   left: 0;
   top: 0;
   width: 100%;
@@ -377,7 +377,7 @@ export default {
   width: auto;
   height: auto;
   padding: 5px;
-  z-index: 2;
+  z-index: 10;
   font-size: 20px;
 }
 

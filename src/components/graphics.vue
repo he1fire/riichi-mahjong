@@ -47,7 +47,15 @@ export default {
   <div v-if="value===6" class="dice_circle" style="grid-area: _7;"></div>
 </div>
 <!-- 바람 타일 -->
-<div v-else-if="kind==='tile'" class="tile" >{{ value }}</div>
+<div v-else-if="kind==='tile'" class="tile">{{ value }}</div>
+<!-- 기어 -->
+<div v-else-if="kind==='gear'" class="gear">
+  <div class="center"></div>
+  <div class="tooth"></div>
+  <div class="tooth"></div>
+  <div class="tooth"></div>
+  <div class="tooth"></div>
+</div>
 </template>
 
 <style scoped>
@@ -124,5 +132,42 @@ export default {
 .tile{
   border: 3px solid black;
   border-radius: 5px;
+}
+
+/* 기어 */
+.gear{
+  position: relative;
+  width: 40px;
+  height: 40px;
+  background: gray;
+  border-radius: 50%;
+}
+.gear .center{
+  position: absolute;
+  top: 10px;
+  left: 10px;
+  z-index: 10;
+  width: 20px;
+  height: 20px;
+  background: white;
+  border-radius: 50%;
+}
+.tooth{
+  position: absolute;
+  top: -5px;
+  left: 15px;
+  z-index: 1;
+  width: 10px;
+  height: 50px;
+  background: gray;
+}
+.tooth:nth-child(2){
+  transform: rotate(45deg);
+}
+.tooth:nth-child(3){
+  transform: rotate(90deg);
+}
+.tooth:nth-child(4){
+  transform: rotate(135deg);
 }
 </style>
