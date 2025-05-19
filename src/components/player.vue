@@ -80,7 +80,7 @@ export default {
     </div>
   </div>
   <!-- 순위 표시 -->
-  <div v-show="rank!==0" class="rank">
+  <div v-show="rank!==0" class="rank" :style="{color: this.rank===1 ? 'red' : ''}">
     {{ rank }}
   </div>
   <!-- 변경되는 점수 -->
@@ -153,7 +153,7 @@ export default {
   font-size: 30px;
   text-align: left;
   font-weight: bold;
-  text-decoration: underline red 3px;
+  text-decoration: underline 3px;
   transform: translate(-15px, 15px);
 }
 .change{
