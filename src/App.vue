@@ -14,6 +14,7 @@ export default {
       winds: ["東", "南", "西", "北"], // 플레이어별 현재 자풍
       scoresHigh: [250, 250, 250, 250], // 플레이어별 현재 점수 (100자리 이상)
       scoresLow: [0, 0, 0, 0], // 플레이어별 현재 점수 (100자리 이하)
+      ranks: [1, 1, 1, 1], // 플레이어별 순위
       scoresEffect: [0, 0, 0, 0], // 플레이어별 이펙트 점수
       scoresDiff: [0, 0, 0, 0], // 플레이어별 변동 점수
       scoresGap: [0, 0, 0, 0], // 플레이어간 점수 차이
@@ -114,7 +115,8 @@ export default {
       let arrCut=[];
       for (let i=0;i<50;i++) // 변경될 점수 사이를 50등분해서 저장
         arrCut[i]=startScore+(this.scoresDiff[idx]/50)*(i+1);
-      this.scoresEffect[idx]=this.scoresDiff[idx];
+      this.scoresEffect[idx]=this.scoresDiff[idx]; // 이펙트 켜기
+      this.ranks[idx]=0; // 순위 표시 끄기
       let timecnt=0;
       let repeat=setInterval(() => { // 시간에 따라 반복
         let x=Math.floor(arrCut[timecnt]/100), y=Math.abs(arrCut[timecnt]%100);
@@ -122,8 +124,13 @@ export default {
         this.scoresLow[idx]=y // 10의자리 변경
         timecnt++;
         if (timecnt>=50){
-          clearInterval(repeat);
-          this.scoresEffect[idx]=0;
+          clearInterval(repeat); 
+          this.scoresEffect[idx]=0; // 이펙트 끄기
+          this.ranks[idx]=1; // 순위 표시 켜기
+          for (let i=0;i<this.scoresHigh.length;i++){ // 순위 계산
+            if (idx!==i && this.scoresHigh[idx]<this.scoresHigh[i])
+              this.ranks[idx]++;
+          }
         }
       }, 20); // 0.02초 * 50번 = 1초동안 실행
     },
@@ -449,6 +456,7 @@ export default {
     :wind="winds[i]"
     :scoreHigh="scoresHigh[i]"
     :scoreLow="scoresLow[i]"
+    :rank="ranks[i]"
     :scoreEffect="scoresEffect[i]"
     :scoreGap="scoresGap[i]"
     :isRiichi="isRiichi[i]"

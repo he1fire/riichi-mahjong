@@ -59,10 +59,10 @@ export default {
   transform: translate(0, 20px);
 }
 .riichi_circle{
-  background-color:red;
-  width:15px;
-  height:15px;
-  border-radius:50%;
+  background-color: red;
+  width: 15px;
+  height: 15px;
+  border-radius: 50%;
   margin: 3px auto 3px auto;
 }
 
@@ -76,26 +76,26 @@ export default {
   transform: rotate(-50deg) translate(-52px,-10px);
 }
 .riichi_circle_mini{
-  background-color:red;
-  width:5px;
-  height:5px;
-  border-radius:50%;
+  background-color: red;
+  width: 5px;
+  height: 5px;
+  border-radius: 50%;
   margin: 3px auto 3px auto;
 }
 .renchan_circle_mini{
   display: inline-block;
-  background-color:black;
-  width:3px;
-  height:3px;
-  border-radius:50%;
+  background-color: black;
+  width: 3px;
+  height: 3px;
+  border-radius: 50%;
   margin: 3px 0px auto 0px;
 }
 
 /* 주사위 */
 .container_dice{
   display: grid;
-  width:35px;
-  height:35px;
+  width: 35px;
+  height: 35px;
   grid-template-rows: repeat(7, 5px);
   grid-template-columns: repeat(7, 5px);
   grid-template-areas: 
@@ -110,7 +110,7 @@ export default {
   vertical-align: middle;
   text-align: center;
   border: 3px solid black;
-  border-radius:5px;
+  border-radius: 5px;
   margin: auto;
 }
 .dice_circle{
@@ -123,6 +123,6 @@ export default {
 /* 타일 */
 .tile{
   border: 3px solid black;
-  border-radius:5px;
+  border-radius: 5px;
 }
 </style>

@@ -9,6 +9,7 @@ export default {
     wind: String,
     scoreHigh: Number,
     scoreLow: Number,
+    rank: Number,
     scoreEffect: Number,
     scoreGap: Number,
     isRiichi: Boolean,
@@ -61,6 +62,10 @@ export default {
   <div class="score" :style="ableRiichi()" @click="emitEvent('toggle-active-riichi', this.seat)">
     {{ scoreHigh }}<span style="font-size: 50px;"><span v-if="this.scoreLow<10">0</span>{{ scoreLow }}</span>
   </div>
+  <!-- 순위 표시 -->
+  <!-- <div v-show="rank!==0" class="rank">
+    {{ rank }}
+  </div> -->
   <!-- 변경되는 점수 -->
   <div v-show="scoreEffect!==0" class="change" :style="isDiff()">
     <span v-show="scoreEffect>0">+</span>{{ scoreEffect }}
@@ -104,10 +109,10 @@ export default {
 .container_player{
   display: grid;
   grid-template-rows: repeat(2, auto);
-  grid-template-columns: repeat(3, auto);
+  grid-template-columns: repeat(4, auto);
   grid-template-areas: 
-    "stick stick ."
-    "wind score change";
+    "stick stick . ."
+    "wind score rank change ";
   position: fixed;
   text-align: center;
   font-size: 80px;
@@ -125,12 +130,20 @@ export default {
   margin: auto;
   white-space: nowrap;
 }
+.rank{
+  grid-area: rank;
+  width: 0px;
+  font-size: 25px;
+  text-align: left;
+  color: Dimgray;
+  font-weight: bold;
+  transform: translate(-10px, 25px);
+}
 .change{
   grid-area: change;
   width: 0px;
   font-size: 30px;
-  padding-top: 30px;
   text-align: left;
-  transform: translate(-100px, -40px);
+  transform: translate(-100px, -10px);
 }
 </style>
