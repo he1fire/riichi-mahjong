@@ -14,7 +14,7 @@ export default {
       winds: ["東", "南", "西", "北"], // 플레이어별 현재 자풍
       scoresHigh: [250, 250, 250, 250], // 플레이어별 현재 점수 (100자리 이상)
       scoresLow: [0, 0, 0, 0], // 플레이어별 현재 점수 (100자리 이하)
-      ranks: [1, 1, 1, 1], // 플레이어별 순위
+      ranks: [0, 0, 0, 0], // 플레이어별 순위
       scoresEffect: [0, 0, 0, 0], // 플레이어별 이펙트 점수
       scoresDiff: [0, 0, 0, 0], // 플레이어별 변동 점수
       scoresGap: [0, 0, 0, 0], // 플레이어간 점수 차이
@@ -25,6 +25,7 @@ export default {
       focusFao: -1, // 현재 책임지불하는 플레이어
       inputFan: 0, // 현재 점수 (판)
       inputBu: 2, // 현재 점수 (부)
+      isGap: [false, false, false, false], // 플레이어간 점수 차이 표시 유무
       isRiichi: [false, false, false, false], // 플레이어별 리치 유무
       isWin: [false, false, false, false], // 플레이어별 화료 유무
       isLose: [false, false, false, false], // 플레이어별 방총 유무
@@ -96,6 +97,30 @@ export default {
         this.countRiichi--;
       }
     },
+    /**점수 차이 활성화/비활성화*/
+    toggleShowGap(seat, x){
+      let idx=this.seats.indexOf(seat); // 위치 기준 인덱스 반환
+      if (x===true){ // 활성화
+        for (let i=0;i<this.isGap.length;i++){
+          if (i!==idx){ // 본인이 아니면 표시 변경
+            this.isGap[i]=true;
+            this.scoresGap[i]=this.scoresHigh[idx]-this.scoresHigh[i];
+          }
+          this.ranks[i]=1; // 순위 표시 켜기
+          for (let j=0;j<this.scoresHigh.length;j++){ // 순위 계산
+            if (i!==j && this.scoresHigh[i]<this.scoresHigh[j])
+              this.ranks[i]++;
+          }
+        }
+      }
+      else{ // 비활성화
+        for (let i=0;i<this.isGap.length;i++){
+          this.isGap[i]=false;
+          this.scoresGap[i]=0;
+          this.ranks[i]=0; // 순위 표시 끄기
+        }
+      }
+    },
     /**바람 및 라운드 변경*/
     changeWindsAndRounds(){
       let allWinds="東南西北";
@@ -116,7 +141,6 @@ export default {
       for (let i=0;i<50;i++) // 변경될 점수 사이를 50등분해서 저장
         arrCut[i]=startScore+(this.scoresDiff[idx]/50)*(i+1);
       this.scoresEffect[idx]=this.scoresDiff[idx]; // 이펙트 켜기
-      this.ranks[idx]=0; // 순위 표시 끄기
       let timecnt=0;
       let repeat=setInterval(() => { // 시간에 따라 반복
         let x=Math.floor(arrCut[timecnt]/100), y=Math.abs(arrCut[timecnt]%100);
@@ -126,11 +150,6 @@ export default {
         if (timecnt>=50){
           clearInterval(repeat); 
           this.scoresEffect[idx]=0; // 이펙트 끄기
-          this.ranks[idx]=1; // 순위 표시 켜기
-          for (let i=0;i<this.scoresHigh.length;i++){ // 순위 계산
-            if (idx!==i && this.scoresHigh[idx]<this.scoresHigh[i])
-              this.ranks[idx]++;
-          }
         }
       }, 20); // 0.02초 * 50번 = 1초동안 실행
     },
@@ -460,7 +479,9 @@ export default {
     :scoreEffect="scoresEffect[i]"
     :scoreGap="scoresGap[i]"
     :isRiichi="isRiichi[i]"
+    :isGap="isGap[i]"
     @toggle-active-riichi="toggleActiveRiichi"
+    @toggle-show-gap="toggleShowGap"
   />
   <!-- 중앙 panel 컴포넌트 생성 -->
   <panel

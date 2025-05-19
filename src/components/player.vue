@@ -13,9 +13,10 @@ export default {
     scoreEffect: Number,
     scoreGap: Number,
     isRiichi: Boolean,
+    isGap: Boolean,
     optMinusRiichi: Boolean,
   },
-  emits: ['toggle-active-riichi'],
+  emits: ['toggle-active-riichi', 'toggle-show-gap'],
   data(){
     return {
     };
@@ -34,10 +35,10 @@ export default {
       return {visibility: this.isRiichi===true ? 'visible' : 'hidden'};
     },
     /**점수 변동에 따른 글자색*/
-    isDiff() {
-      if (this.scoreEffect>0) // 양수일때
+    isDiff(x) {
+      if (x>0) // 양수일때
         return {color: 'limegreen'};
-      else if (this.scoreEffect<0) // 음수일때
+      else if (x<0) // 음수일때
         return {color: 'red'};
       else
         return {color: ''};
@@ -45,6 +46,10 @@ export default {
     /**$emit 이벤트 발생*/
     emitEvent(eventName, ...args) {
       this.$emit(eventName, ...args);
+    },
+    /**점수 차이 보여주기*/
+    toggleShowGap(x){
+      this.emitEvent('toggle-show-gap', this.seat, x);
     },
   }
 };
@@ -55,19 +60,28 @@ export default {
   <!-- 리치봉 -->
   <graphics kind="riichiStick" class="stick" :style="showRiichi()"/>
   <!-- 현재 바람 -->
-  <div class="wind" :style="isEast()"><!-- 점수비교함수 추가 -->
+  <div class="wind" :style="isEast()"
+    @mousedown="toggleShowGap(true)"
+    @mouseup="toggleShowGap(false)"
+    @mouseleave="toggleShowGap(false)"
+    >
     {{ wind }}
   </div>
   <!-- 현재 점수 -->
-  <div class="score" :style="ableRiichi()" @click="emitEvent('toggle-active-riichi', this.seat)">
-    {{ scoreHigh }}<span style="font-size: 50px;"><span v-if="this.scoreLow<10">0</span>{{ scoreLow }}</span>
+  <div class="score" >
+    <div v-if="isGap===false" :style="ableRiichi()" @click="emitEvent('toggle-active-riichi', this.seat)">
+      {{ scoreHigh }}<span style="font-size: 50px;"><span v-if="this.scoreLow<10">0</span>{{ scoreLow }}</span>
+    </div>
+    <div v-else :style="isDiff(this.scoreGap)">
+      <span v-show="scoreGap>0">+</span>{{ scoreGap }}<span style="font-size: 50px;">00</span>
+    </div>
   </div>
   <!-- 순위 표시 -->
-  <!-- <div v-show="rank!==0" class="rank">
+  <div v-show="rank!==0" class="rank">
     {{ rank }}
-  </div> -->
+  </div>
   <!-- 변경되는 점수 -->
-  <div v-show="scoreEffect!==0" class="change" :style="isDiff()">
+  <div v-show="scoreEffect!==0" class="change" :style="isDiff(this.scoreEffect)">
     <span v-show="scoreEffect>0">+</span>{{ scoreEffect }}
   </div>
 </div>
@@ -111,8 +125,8 @@ export default {
   grid-template-rows: repeat(2, auto);
   grid-template-columns: repeat(4, auto);
   grid-template-areas: 
-    "stick stick . ."
-    "wind score rank change ";
+    ". stick stick ."
+    "rank wind score change ";
   position: fixed;
   text-align: center;
   font-size: 80px;
@@ -133,11 +147,11 @@ export default {
 .rank{
   grid-area: rank;
   width: 0px;
-  font-size: 25px;
+  font-size: 30px;
   text-align: left;
-  color: Dimgray;
   font-weight: bold;
-  transform: translate(-10px, 25px);
+  text-decoration: underline red 3px;
+  transform: translate(-15px, 15px);
 }
 .change{
   grid-area: change;
