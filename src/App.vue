@@ -42,8 +42,8 @@ export default {
       randomSeats: ["東", "南", "西", "北"], // 랜덤 타일값
       recordsTime: ["ㅤ"], // 라운드 기록
       recordsScore: [[25000],[25000],[25000],[25000]], //  점수 기록
-      optMinusRiichi: false, // 음수리치 옵션
       optRoundMangan: false, // 절상만관 옵션
+      optMinusRiichi: false, // 음수리치 옵션
       modal: false, // 모달창 활성화
       modalType: "", // 모달창 종류
     };
@@ -276,10 +276,14 @@ export default {
         else
           this.focusFao=idx;
       }
-      else if (status==='isfao') // 책임지불 켜기
+      else if (status==='isfao') // 책임지불 토글
         this.isFao=!this.isFao;
       else if (status==='tile') // 타일 뒤집기
         this.isOpened[idx]=true;
+      else if (status==='roundmangan') // 절상만관 토글
+        this.optRoundMangan=!this.optRoundMangan;
+      else if (status==='minusriichi') // 음수리치 토글
+        this.optMinusRiichi=!this.optMinusRiichi;
     },
     /**화료 및 방총 불가능한 경우 반환*/
     checkInvalidStatus(status){
@@ -569,6 +573,8 @@ export default {
     :randomSeats
     :recordsTime
     :recordsScore
+    :optRoundMangan
+    :optMinusRiichi
     :modalType
     @show-modal="showModal"
     @hide-modal="hideModal"

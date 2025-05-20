@@ -24,12 +24,15 @@ export default {
     randomSeats: Array,
     recordsTime: Array,
     recordsScore: Array,
+    optRoundMangan: Boolean,
+    optMinusRiichi: Boolean,
     modalType: String,
   },
   emits: ['show-modal', 'hide-modal', 'toggle-check-status', 'check-invalid-status', 'calculate-win', 'calculate-draw', 'save-round', 'roll-dice', 'copy-record', 'rollback-record'],
   data(){
     return {
       arr_arrow: ["▼", "▶", "▲", "◀"],
+      arr_seat: ["동(東)",	"남(南)",	"서(西)",	"북(北)"],
       class_check: ["down_check", "right_check", "up_check", "left_check"],
       class_score_diff: ["down_score_diff", "right_score_diff", "up_score_diff", "left_score_diff"],
       class_dice: ["down_dice", "right_dice", "up_dice", "left_dice"],
@@ -114,6 +117,10 @@ export default {
       else if (status==='tile'){ // 타일 뒤집기
         return {gridArea: `tile_${x+1}`, color: this.isOpened[x]===true ? (this.randomSeats[x]==='東' ? 'red' : '') : 'orange', backgroundColor: this.isOpened[x]===true ? '' : 'orange'};
       }
+      else if (status==='roundmangan') // 점수창 OX
+        return {color: this.optRoundMangan===true ? 'blue' : 'red'};
+      else if (status==='minusriichi') // 점수창 OX
+        return {color: this.optMinusRiichi===true ? 'blue' : 'red'};
     },
     /**역만인지 확인하고 숨기기*/
     isYakuman(x){
@@ -411,15 +418,12 @@ export default {
   <!-- 설정 창 -->
   <div v-else-if="modalType==='set_options'" class="modal_content" @click.stop>
     <div class="container_modify">
-      <div style="grid-area: who;">
-        이름 수정
-      </div>
       <div
-        v-for="(_, i) in arr_arrow"
+        v-for="(_, i) in arr_seat"
         :key="i"
         :style="`grid-area: input_name${i};`"
       >
-        {{ arr_arrow[i] }}<br>
+        {{ arr_seat[i] }}<br>
         <input
           type="text"
           maxlength="4"
@@ -433,11 +437,19 @@ export default {
       <div style="grid-area: option1;">
         반환점수<br><input type="number">
       </div>
-      <div style="grid-area: option2;">
-        절상만관<br><span>X</span>
+      <div style="grid-area: option2;" @click.stop="emitEvent('toggle-check-status', -1, 'roundmangan')">
+        절상만관<br>
+        <span :style="isChecked(-1, 'roundmangan')">
+          <span v-show="optRoundMangan===true">O</span>
+          <span v-show="optRoundMangan===false">X</span>
+        </span>
       </div>
-      <div style="grid-area: option3;">
-        음수리치<br><span>X</span>
+      <div style="grid-area: option3;" @click.stop="emitEvent('toggle-check-status', -1, 'minusriichi')">
+        음수리치<br>
+        <span :style="isChecked(-1, 'minusriichi')">
+          <span v-show="optMinusRiichi===true">O</span>
+          <span v-show="optMinusRiichi===false">X</span>
+        </span>
       </div>
     </div>
   </div>
@@ -682,13 +694,13 @@ export default {
 /* 옵션 선택창 */
 .container_modify{
   display: grid;
-  grid-template-rows: repeat(3, auto);
+  grid-template-rows: repeat(2, auto);
   grid-template-columns: repeat(4, auto);
   grid-template-areas:
-  "who who who who"
   "input_name0 input_name1 input_name2 input_name3"
   "option0 option1 option2 option3";
   text-align: center;
+  gap: 10px;
   margin: 5px;
 }
 </style>
