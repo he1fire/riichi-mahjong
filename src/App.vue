@@ -611,6 +611,17 @@ a {
   text-decoration: none;
   color: inherit;
 }
+input[type='text'], input[type='number']{
+  font-size: 15px;
+  width: 100px;
+  font-family: 'Noto Serif KR', serif;
+  text-align: center;
+}
+input[type="number"]::-webkit-outer-spin-button,
+input[type="number"]::-webkit-inner-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+}
 
 /* 가로모드 활성화 */
 @media (orientation: portrait) {

@@ -358,7 +358,9 @@ export default {
       <div @click.stop="emitEvent('show-modal','show_record')">
         점수기록
       </div>
-      <div style="color: gray;">설정</div><!-- 구현x -->
+      <div @click.stop="emitEvent('show-modal','set_options')">
+        설정
+      </div>
       <a href="https://github.com/he1fire/riichi-mahjong" target="_blank" style="font-size: 20px; "><img src="/github-logo.svg" alt="SVG" />Github</a>
     </div>
   </div>
@@ -404,6 +406,39 @@ export default {
     </div>
     <div class="modal_text" style="font-size: 30px;" @click.stop="emitEvent('rollback-record')">
       OK
+    </div>
+  </div>
+  <!-- 설정 창 -->
+  <div v-else-if="modalType==='set_options'" class="modal_content" @click.stop>
+    <div class="container_modify">
+      <div style="grid-area: who;">
+        이름 수정
+      </div>
+      <div
+        v-for="(_, i) in arr_arrow"
+        :key="i"
+        :style="`grid-area: input_name${i};`"
+      >
+        {{ arr_arrow[i] }}<br>
+        <input
+          type="text"
+          maxlength="4"
+          v-model="names[i]"
+          :placeholder="`이름${i+1}`"
+        >
+      </div>
+      <div style="grid-area: option0;">
+        시작점수<br><input type="number">
+      </div>
+      <div style="grid-area: option1;">
+        반환점수<br><input type="number">
+      </div>
+      <div style="grid-area: option2;">
+        절상만관<br><span>X</span>
+      </div>
+      <div style="grid-area: option3;">
+        음수리치<br><span>X</span>
+      </div>
     </div>
   </div>
   <!-- 메시지 팝업창 -->
@@ -642,5 +677,18 @@ export default {
 }
 .when{
   grid-area: when;
+}
+
+/* 옵션 선택창 */
+.container_modify{
+  display: grid;
+  grid-template-rows: repeat(3, auto);
+  grid-template-columns: repeat(4, auto);
+  grid-template-areas:
+  "who who who who"
+  "input_name0 input_name1 input_name2 input_name3"
+  "option0 option1 option2 option3";
+  text-align: center;
+  margin: 5px;
 }
 </style>
