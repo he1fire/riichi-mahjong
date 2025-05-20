@@ -40,7 +40,7 @@ export default {
       isWall: [false, false, false, false], // 주사위 값에 따른 패산방향
       isOpened: [false, false, false, false], // 타일이 공개되었는지
       randomSeats: ["東", "南", "西", "北"], // 랜덤 타일값
-      recordsTime: ['ㅤ'], // 라운드 기록
+      recordsTime: ["ㅤ"], // 라운드 기록
       recordsScore: [[25000],[25000],[25000],[25000]], //  점수 기록
       optMinusRiichi: false, // 음수리치 옵션
       optRoundMangan: false, // 절상만관 옵션
@@ -470,6 +470,26 @@ export default {
         }
       }, 50); // 0.05초 * 10번 = 0.5초동안 실행
     },
+    /**점수 기록 복사*/
+    copyRecord(){
+      let str='이름\t';
+      for (let i=0;i<this.names.length;i++)
+        str+=this.names[i]+'\t';
+      str+='\n';
+      for (let i=0;i<this.recordsTime.length;i++){
+        if (this.recordsTime[i]!=="ㅤ")
+          str+=this.recordsTime[i]; // 라운드 복사
+        str+='\t';
+        for (let j=0;j<this.recordsScore.length;j++){
+          if (this.recordsScore[j][i]!==0)
+            str+=String(this.recordsScore[j][i]); // 점수 복사
+          str+='\t';
+        }
+        str+='\n';
+      }
+      navigator.clipboard.writeText(str);
+      this.showModal('클립보드에 기록을 복사했습니다.');
+    },
     /**해당 국으로 롤백하기*/
     rollbackRecord(){
       let allWinds = ["東", "南", "西", "北"];
@@ -563,6 +583,7 @@ export default {
     @calculate-draw="calculateDraw"
     @save-round="saveRound"
     @roll-dice="rollDice"
+    @copy-record="copyRecord"
     @rollback-record="rollbackRecord"
   />
 </div>

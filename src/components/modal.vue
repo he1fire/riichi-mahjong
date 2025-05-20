@@ -26,7 +26,7 @@ export default {
     recordsScore: Array,
     modalType: String,
   },
-  emits: ['show-modal', 'hide-modal', 'toggle-check-status', 'check-invalid-status', 'calculate-win', 'calculate-draw', 'save-round', 'roll-dice', 'rollback-record'],
+  emits: ['show-modal', 'hide-modal', 'toggle-check-status', 'check-invalid-status', 'calculate-win', 'calculate-draw', 'save-round', 'roll-dice', 'copy-record', 'rollback-record'],
   data(){
     return {
       arr_arrow: ["▼", "▶", "▲", "◀"],
@@ -363,7 +363,7 @@ export default {
   <!-- 점수 기록창 -->
   <div v-else-if="modalType==='show_record'" class="modal_content" @click.stop>
     <div class="container_record">
-      <div style="color: red; grid-area: rollback; font-size: 20px;">
+      <div class="copy" @click.stop="emitEvent('copy-record')">
         복사
       </div>
       <div v-for="(_, i) in class_name"
@@ -373,7 +373,7 @@ export default {
         {{ names[i] }}
       </div>
       <div class="container_record_scroll">
-        <div style="grid-area: when;">
+        <div class="when">
           <div v-for="(_, i) in recordsTime"
             :key="i"
             @click.stop="i%2===1 ? emitEvent('show-modal','rollback_record', recordsTime[i]) : {}"
@@ -612,12 +612,18 @@ export default {
   grid-template-rows: 35px 200px;
   grid-template-columns: 120px repeat(4, 100px);
   grid-template-areas: 
-  "rollback down_name right_name up_name left_name"
+  "copy down_name right_name up_name left_name"
   "scroll scroll scroll scroll scroll";
   text-align: center;
   font-size: 25px;
 }
+.copy{
+  grid-area: copy;
+  color: red; 
+  font-size: 20px;
+}
 .container_record_scroll{
+  grid-area: scroll;
   display: grid;
   grid-template-rows: auto;
   grid-template-columns: 120px auto;
@@ -625,7 +631,9 @@ export default {
   "when down_record right_record up_record left_record";
   text-align: center;
   font-size: 20px;
-  grid-area: scroll;
   overflow: auto;
+}
+.when{
+  grid-area: when;
 }
 </style>
