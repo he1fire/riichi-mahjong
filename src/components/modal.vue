@@ -355,9 +355,11 @@ export default {
   <div v-else-if="modalType==='choose_option_kind'" class="modal_content" @click.stop>
     <div class="container_choose_option">
       <div style="color: gray;">게임결과</div><!-- 구현x -->
-      <div @click.stop="emitEvent('show-modal','show_record')">점수기록</div>
-      <div style="color: gray;">규칙설정</div><!-- 구현x -->
-      <div style="color: gray;">정보편집</div><!-- 구현x -->
+      <div @click.stop="emitEvent('show-modal','show_record')">
+        점수기록
+      </div>
+      <div style="color: gray;">설정</div><!-- 구현x -->
+      <a href="https://github.com/he1fire/riichi-mahjong" target="_blank" style="font-size: 20px; "><img src="/github-logo.svg" alt="SVG" />Github</a>
     </div>
   </div>
   <!-- 점수 기록창 -->
@@ -397,8 +399,12 @@ export default {
   </div>
   <!-- 점수 롤백창 -->
   <div v-else-if="modalType==='rollback_record'" class="modal_content" @click.stop>
-    <div class="modal_text">{{ roundStatus }}으로 되돌리시겠습니까?</div>
-    <div class="modal_text" style="font-size: 30px;" @click.stop="emitEvent('rollback-record')">OK</div>
+    <div class="modal_text">
+      {{ roundStatus }}으로 되돌리시겠습니까?
+    </div>
+    <div class="modal_text" style="font-size: 30px;" @click.stop="emitEvent('rollback-record')">
+      OK
+    </div>
   </div>
   <!-- 메시지 팝업창 -->
   <div v-else class="modal_content" @click.stop>
@@ -601,9 +607,10 @@ export default {
   display: grid;
   grid-template-rows: repeat(2, auto);
   grid-template-columns: repeat(2, auto);
-  font-size: 40px;
-  gap: 40px;
-  margin: 20px;
+  font-size: 30px;
+  gap: 30px;
+  margin: 15px;
+  place-items: center;
 }
 
 /* 점수 기록창 */

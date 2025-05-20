@@ -454,7 +454,7 @@ export default {
     /**주사위 굴리기*/
     rollDice(){
       let timecnt=0;
-      this.isWall=[false, false, false, false];
+      this.isWall=[false, false, false, false]; // 패산 떼는 방향 초기화
       let repeat=setInterval(() => { // 시간에 따라 반복
         this.diceValue[0]=Math.floor(Math.random()*6)+1;
         this.diceValue[1]=Math.floor(Math.random()*6)+1;
@@ -474,7 +474,7 @@ export default {
     copyRecord(){
       let str='이름\t';
       for (let i=0;i<this.names.length;i++)
-        str+=this.names[i]+'\t';
+        str+=this.names[i]+'\t'; // 이름 복사
       str+='\n';
       for (let i=0;i<this.recordsTime.length;i++){
         if (this.recordsTime[i]!=="ㅤ")
@@ -487,7 +487,7 @@ export default {
         }
         str+='\n';
       }
-      navigator.clipboard.writeText(str);
+      navigator.clipboard.writeText(str); // 클립보드로 복사
       this.showModal('클립보드에 기록을 복사했습니다.');
     },
     /**해당 국으로 롤백하기*/
@@ -501,13 +501,8 @@ export default {
         for (let i=0;i<this.recordsScore.length;i++)
           this.recordsScore[i].pop();
       }
-      for (let i=0;i<this.isRiichi.length;i++){ // 리치봉 반환
-        if (this.isRiichi[i]){
-          this.scoresHigh[i]+=10;
-          this.isRiichi[i]=false;
-          this.countRiichi--;
-        }
-      }
+      for (let i=0;i<this.isRiichi.length;i++) // 리치봉 제거
+        this.isRiichi[i]=false;
       this.currentWind=arr[0]; // 장풍 설정
       this.currentRound=Number(arr[1]); // 국 설정
       for (let i=0;i<this.recordsScore.length;i++){
@@ -520,7 +515,7 @@ export default {
         allWinds.unshift(allWinds.pop()); // 현재 바람 세기
       for (let i=0;i<this.winds.length;i++)
         this.winds[i]=allWinds[i]; // 개인 바람 설정
-      this.hideModal();
+      this.hideModal(); // 모달 창 끄기
     },
   }
 };
@@ -611,6 +606,10 @@ html{
   height: 100vh;
   width: 100vw;
   font-family: 'Noto Serif KR', serif;
+}
+a {
+  text-decoration: none;
+  color: inherit;
 }
 
 /* 가로모드 활성화 */
