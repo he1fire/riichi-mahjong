@@ -40,7 +40,7 @@ export default {
       isWall: [false, false, false, false], // 주사위 값에 따른 패산방향
       isOpened: [false, false, false, false], // 타일이 공개되었는지
       randomSeats: ["東", "南", "西", "北"], // 랜덤 타일값
-      recordsTime: [], // 라운드 기록
+      recordsTime: ['ㅤ'], // 라운드 기록
       recordsScore: [[25000],[25000],[25000],[25000]], //  점수 기록
       optMinusRiichi: false, // 음수리치 옵션
       optRoundMangan: false, // 절상만관 옵션
@@ -428,8 +428,8 @@ export default {
         this.recordsScore[i].push(this.scoresDiff[i]);
         this.recordsScore[i].push(this.scoresHigh[i]*100+this.scoresDiff[i]);
       }
-      this.recordsTime.push('ㅤ');
       this.recordsTime.push(this.currentWind+this.currentRound+'局 '+this.countRenchan+'本場');// 점수 기록창에 국+본장 기록
+      this.recordsTime.push('ㅤ');
       if (this.roundStatus==='tsumo' || this.roundStatus==='ron'){ // 화료로 끝났다면
         let chinWin=this.isWin[this.winds.indexOf('東')]; // 친이 화료했는지 체크
         if (chinWin===false){ // 친이 화료를 못했다면
@@ -469,6 +469,38 @@ export default {
             }
         }
       }, 50); // 0.05초 * 10번 = 0.5초동안 실행
+    },
+    /**해당 국으로 롤백하기*/
+    rollbackRecord(){
+      let allWinds = ["東", "南", "西", "北"];
+      let arr=this.roundStatus.match(/[\u4e00-\u9fff]|\d+|\S/g); // 시간 값 분리
+      let idx=this.recordsTime.indexOf(this.roundStatus);
+      let cnt=0;
+      while (idx<this.recordsTime.length){ // 점수기록 지우기
+        this.recordsTime.pop();
+        for (let i=0;i<this.recordsScore.length;i++)
+          this.recordsScore[i].pop();
+      }
+      for (let i=0;i<this.isRiichi.length;i++){ // 리치봉 반환
+        if (this.isRiichi[i]){
+          this.scoresHigh[i]+=10;
+          this.isRiichi[i]=false;
+          this.countRiichi--;
+        }
+      }
+      this.currentWind=arr[0]; // 장풍 설정
+      this.currentRound=Number(arr[1]); // 국 설정
+      for (let i=0;i<this.recordsScore.length;i++){
+        this.scoresHigh[i]=Math.floor(Number(this.recordsScore[i][this.recordsScore[i].length-1])/100); // 점수 설정
+        cnt+=this.scoresHigh[i];
+      }
+      this.countRenchan=Number(arr[3]); // 연장 설정
+      this.countRiichi=Math.floor((1000-cnt)/10); // 리치봉 설정
+      for (let i=1;i<this.currentRound;i++)
+        allWinds.unshift(allWinds.pop()); // 현재 바람 세기
+      for (let i=0;i<this.winds.length;i++)
+        this.winds[i]=allWinds[i]; // 개인 바람 설정
+      this.hideModal();
     },
   }
 };
@@ -531,6 +563,7 @@ export default {
     @calculate-draw="calculateDraw"
     @save-round="saveRound"
     @roll-dice="rollDice"
+    @rollback-record="rollbackRecord"
   />
 </div>
 </template>

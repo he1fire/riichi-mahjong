@@ -26,7 +26,7 @@ export default {
     recordsScore: Array,
     modalType: String,
   },
-  emits: ['show-modal', 'hide-modal', 'toggle-check-status', 'check-invalid-status', 'calculate-win', 'calculate-draw', 'save-round', 'roll-dice'],
+  emits: ['show-modal', 'hide-modal', 'toggle-check-status', 'check-invalid-status', 'calculate-win', 'calculate-draw', 'save-round', 'roll-dice', 'rollback-record'],
   data(){
     return {
       arr_arrow: ["▼", "▶", "▲", "◀"],
@@ -354,17 +354,17 @@ export default {
   <!-- 옵션 종류 선택창 -->
   <div v-else-if="modalType==='choose_option_kind'" class="modal_content" @click.stop>
     <div class="container_choose_option">
-      <div>게임결과</div><!-- 구현x -->
+      <div style="color: gray;">게임결과</div><!-- 구현x -->
       <div @click.stop="emitEvent('show-modal','show_record')">점수기록</div>
-      <div>규칙설정</div><!-- 구현x -->
-      <div>정보편집</div><!-- 구현x -->
+      <div style="color: gray;">규칙설정</div><!-- 구현x -->
+      <div style="color: gray;">정보편집</div><!-- 구현x -->
     </div>
   </div>
   <!-- 점수 기록창 -->
   <div v-else-if="modalType==='show_record'" class="modal_content" @click.stop>
     <div class="container_record">
       <div style="color: red; grid-area: rollback; font-size: 20px;">
-        기록복사
+        복사
       </div>
       <div v-for="(_, i) in class_name"
         :key="i"
@@ -373,6 +373,14 @@ export default {
         {{ names[i] }}
       </div>
       <div class="container_record_scroll">
+        <div style="grid-area: when;">
+          <div v-for="(_, i) in recordsTime"
+            :key="i"
+            @click.stop="i%2===1 ? emitEvent('show-modal','rollback_record', recordsTime[i]) : {}"
+          >
+            {{ recordsTime[i] }}
+          </div>
+        </div>
         <div v-for="(_, i) in class_record"
           :key="i"
           :class="class_record[i]"
@@ -381,18 +389,16 @@ export default {
             :key="j"
             :style="j%2===1 ? isDiff(recordsScore[i][j]) : {}"
           >
-          <span v-show="j%2===1 && recordsScore[i][j]>0">+</span>{{ recordsScore[i][j] }}
-          </div>
-        </div>
-        <div style="grid-area: when;">
-          <div v-for="(_, i) in recordsTime"
-            :key="i"
-          >
-            {{ recordsTime[i] }}
+            <span v-show="j%2===1 && recordsScore[i][j]>0">+</span>{{ recordsScore[i][j] }}
           </div>
         </div>
       </div>
     </div>
+  </div>
+  <!-- 점수 롤백창 -->
+  <div v-else-if="modalType==='rollback_record'" class="modal_content" @click.stop>
+    <div class="modal_text">{{ roundStatus }}으로 되돌리시겠습니까?</div>
+    <div class="modal_text" style="font-size: 30px;" @click.stop="emitEvent('rollback-record')">OK</div>
   </div>
   <!-- 메시지 팝업창 -->
   <div v-else class="modal_content" @click.stop>
@@ -534,16 +540,6 @@ export default {
   font-size: 60px;
 }
 
-/* 옵션 선택창 */
-.container_choose_option{
-  display: grid;
-  grid-template-rows: repeat(2, auto);
-  grid-template-columns: repeat(2, auto);
-  font-size: 40px;
-  gap: 40px;
-  margin: 20px;
-}
-
 /* 주사위 굴림창 */
 .container_roll{
   display: grid;
@@ -598,6 +594,16 @@ export default {
   text-align: center;
   font-size: 80px;
   margin: 15px;
+}
+
+/* 옵션 선택창 */
+.container_choose_option{
+  display: grid;
+  grid-template-rows: repeat(2, auto);
+  grid-template-columns: repeat(2, auto);
+  font-size: 40px;
+  gap: 40px;
+  margin: 20px;
 }
 
 /* 점수 기록창 */
