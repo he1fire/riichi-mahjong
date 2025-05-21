@@ -46,6 +46,7 @@ export default {
       rankUma: [30, 10, -10, -30], // 순위 우마
       optRoundMangan: false, // 절상만관 옵션
       optMinusRiichi: false, // 음수리치 옵션
+      optCheatScore: false, // 촌보 지불 점수
       modal: false, // 모달창 활성화
       modalType: "", // 모달창 종류
     };
@@ -319,6 +320,8 @@ export default {
         this.optRoundMangan=!this.optRoundMangan;
       else if (status==='minusriichi') // 음수리치 토글
         this.optMinusRiichi=!this.optMinusRiichi;
+      else if (status==='cheatscore') // 촌보 점수 토글
+        this.optCheatScore=!this.optCheatScore;
     },
     /**화료 및 방총 불가능한 경우 반환*/
     checkInvalidStatus(status){
@@ -436,12 +439,31 @@ export default {
       }
       this.showModal('show_score', 'normal_draw');
     },
+    /**촌보 점수계산*/
     calculateCheat(){
-      for (let i=0;i<this.isCheat.length;i++){
-        if (this.isCheat[i]===true) // 촌보라면
-          this.scoresDiff[i]=-9000; // 3000점씩 지불
-        else
-          this.scoresDiff[i]=3000; 
+      if (this.optCheatScore===true){ // 만관 지불
+        for (let i=0;i<this.isCheat.length;i++){
+          if (this.isCheat[i]===true){
+            if (this.winds[i]==='東')
+              this.scoresDiff[i]=-12000;
+            else
+              this.scoresDiff[i]=-8000;
+          }
+          else{
+            if (this.winds[i]==='東' || this.winds[this.isCheat.indexOf(true)]==='東')
+              this.scoresDiff[i]=4000;
+            else
+              this.scoresDiff[i]=2000;
+          }
+        }
+      }
+      else{ // 3000점씩 지불
+        for (let i=0;i<this.isCheat.length;i++){
+          if (this.isCheat[i]===true)
+            this.scoresDiff[i]=-9000;
+          else
+            this.scoresDiff[i]=3000; 
+        }
       }
       this.showModal('show_score', 'cheat');
     },
@@ -613,6 +635,7 @@ export default {
     :rankUma
     :optRoundMangan
     :optMinusRiichi
+    :optCheatScore
     :modalType
     @show-modal="showModal"
     @hide-modal="hideModal"

@@ -28,6 +28,7 @@ export default {
     rankUma: Array,
     optRoundMangan: Boolean,
     optMinusRiichi: Boolean,
+    optCheatScore: Boolean,
     modalType: String,
   },
   emits: ['show-modal', 'hide-modal', 'toggle-check-status', 'check-invalid-status', 'calculate-win', 'calculate-draw', 'save-round', 'roll-dice', 'copy-record', 'rollback-record'],
@@ -474,6 +475,11 @@ export default {
           :placeholder="`${i+1}위 우마`"
         >
       </div>
+      <div style="grid-area: option5;" @click.stop="emitEvent('toggle-check-status', -1, 'cheatscore')">
+        촌보처리<br>
+        <span v-show="optCheatScore===true">만관</span>
+        <span v-show="optCheatScore===false">3000 All</span>
+      </div>
     </div>
   </div>
   <!-- 메시지 팝업창 -->
@@ -722,7 +728,7 @@ export default {
   grid-template-areas:
   "input_name0 input_name1 input_name2 input_name3"
   "option0 option1 option2 option3"
-  "option4 option4 . .";
+  "option4 option4 option5 .";
   text-align: center;
   gap: 10px;
   margin: 5px;
