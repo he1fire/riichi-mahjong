@@ -539,6 +539,7 @@ export default {
     :scoreGap="scoresGap[i]"
     :isRiichi="isRiichi[i]"
     :isGap="isGap[i]"
+    :optMinusRiichi
     @toggle-active-riichi="toggleActiveRiichi"
     @toggle-show-gap="toggleShowGap"
   />

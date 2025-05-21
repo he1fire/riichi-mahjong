@@ -28,6 +28,7 @@ export default {
     },
     /**리치가 불가능하면 회색 표시*/
     ableRiichi() {
+      console.log(this.optMinusRiichi);
       return {color: (this.scoreHigh<10 && this.optMinusRiichi===false) ? 'gray' : ''};
     },
     /**리치봉 표시*/
