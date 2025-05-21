@@ -25,6 +25,7 @@ export default {
     recordsTime: Array,
     recordsScore: Array,
     setScore: Array,
+    rankUma: Array,
     optRoundMangan: Boolean,
     optMinusRiichi: Boolean,
     modalType: String,
@@ -428,7 +429,7 @@ export default {
         <input
           type="text"
           maxlength="4"
-          v-model="this.names[i]"
+          v-model="names[i]"
           :placeholder="`이름${i+1}`"
         >
       </div>
@@ -436,14 +437,16 @@ export default {
         시작점수<br>
         <input 
           type="number"
-          v-model="this.setScore[0]"
+          v-model="setScore[0]"
+          :placeholder="25000"
         >
       </div>
       <div style="grid-area: option1;">
         반환점수<br>
         <input 
           type="number"
-          v-model="this.setScore[1]"
+          v-model="setScore[1]"
+          :placeholder="30000"
         >
       </div>
       <div style="grid-area: option2;" @click.stop="emitEvent('toggle-check-status', -1, 'roundmangan')">
@@ -459,6 +462,17 @@ export default {
           <span v-show="optMinusRiichi===true">O</span>
           <span v-show="optMinusRiichi===false">X</span>
         </span>
+      </div>
+      <div style="grid-area: option4;">
+        순위우마 (1-2-3-4)<br>
+        <input
+          v-for="(_, i) in rankUma"
+          :key="i"
+          style="width: 50px;"
+          type="number"
+          v-model="this.rankUma[i]"
+          :placeholder="`${i+1}위 우마`"
+        >
       </div>
     </div>
   </div>
@@ -703,11 +717,12 @@ export default {
 /* 옵션 선택창 */
 .container_modify{
   display: grid;
-  grid-template-rows: repeat(2, auto);
+  grid-template-rows: repeat(3, auto);
   grid-template-columns: repeat(4, auto);
   grid-template-areas:
   "input_name0 input_name1 input_name2 input_name3"
-  "option0 option1 option2 option3";
+  "option0 option1 option2 option3"
+  "option4 option4 . .";
   text-align: center;
   gap: 10px;
   margin: 5px;

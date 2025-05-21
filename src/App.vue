@@ -43,6 +43,7 @@ export default {
       recordsTime: ["ㅤ"], // 라운드 기록
       recordsScore: [[25000],[25000],[25000],[25000]], //  점수 기록
       setScore: [25000, 30000], // 시작, 반환 점수
+      rankUma: [30, 10, -10, -30], // 순위 우마
       optRoundMangan: false, // 절상만관 옵션
       optMinusRiichi: false, // 음수리치 옵션
       modal: false, // 모달창 활성화
@@ -232,15 +233,16 @@ export default {
     /**모달 창 끄기*/
     hideModal(){
       if (this.modalType==='set_options'){
-        
-        let cnt=this.scoresHigh.reduce((acc, cur) => acc + cur, this.countRiichi*10)*100; // 현재 총점
-        console.log(cnt);
-        if (this.setScore[0]*4!==cnt){ // 시작점수가 변경되었다면
+        let cntScore=this.scoresHigh.reduce((acc, cur) => acc + cur, this.countRiichi*10)*100; // 현재 총점
+        let cntUma=this.rankUma.reduce((acc, cur) => acc + cur, 0); // 현재 총우마
+        if (this.setScore[0]*4!==cntScore){ // 시작점수가 변경되었다면
           if (this.setScore[0]%100!==0) // 이상한 값이면 롤백
             this.setScore[0]=cnt/4;
           else // 아니라면 동1국으로 롤백
             this.resetAll();
         }
+        if (cntUma!==0) // 우마 합계가 0이 아니라면 초기화
+          this.rankUma=[30, 10, -10, -30];
       }
       this.modalType='';
       this.roundStatus='';
@@ -608,6 +610,7 @@ export default {
     :recordsTime
     :recordsScore
     :setScore
+    :rankUma
     :optRoundMangan
     :optMinusRiichi
     :modalType
