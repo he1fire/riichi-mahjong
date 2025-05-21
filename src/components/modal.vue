@@ -6,6 +6,7 @@ export default {
   },
   props: {
     winds: Array,
+    scoresHigh: Array,
     scoresDiff: Array,
     names: Array,
     focusWinner: Number,
@@ -35,12 +36,14 @@ export default {
   data(){
     return {
       arr_arrow: ["▼", "▶", "▲", "◀"],
-      arr_seat: ["동(東)",	"남(南)",	"서(西)",	"북(北)"],
+      arr_seat: ["동(東)", "남(南)", "서(西)", "북(北)"],
+      arr_scoresheet: ["바람", "이름", "점수", "리치", "화료", "방총"],
       class_check: ["down_check", "right_check", "up_check", "left_check"],
       class_score_diff: ["down_score_diff", "right_score_diff", "up_score_diff", "left_score_diff"],
       class_dice: ["down_dice", "right_dice", "up_dice", "left_dice"],
       class_name: ["down_name", "right_name", "up_name", "left_name"],
       class_record: ["down_record", "right_record", "up_record", "left_record"],
+      class_scoresheet: ["wind", "name", "score", "riichi", "win", "lose"],
       fan: ["1", "2", "3", "4", "5", "6+", "8+", "11+", "13+", "1배역만", "2배역만", "3배역만", "4배역만", "5배역만","6배역만"],
       bu: [20, 25, 30, 40, 50, 60, 70, 80, 90, 100, 110],
     };
@@ -144,6 +147,24 @@ export default {
         this.emitEvent('show-modal','check_player_fao',this.roundStatus+'_fao');
       else
         this.emitEvent('calculate-win');
+    },
+    /**순위표 점수 계산*/
+    calculatePoint(idx){
+      let point=(this.scoresHigh[idx]*100-this.setScore[1])/1000; // 점수기반
+      let oka=(this.setScore[1]*4-this.setScore[0]*4)/1000; // 오카
+      let rank=1, uma=0, cnt=0;
+      for (let i=0;i<this.scoresHigh.length;i++){
+        if (this.scoresHigh[idx]<this.scoresHigh[i])
+          rank++; //순위 체크
+        else if (this.scoresHigh[idx]===this.scoresHigh[i])
+          cnt++; // 동점자 체크
+      }
+      for (let i=0;i<cnt;i++) // 동점자의 모든 우마 더하기
+        uma+=Number(this.rankUma[rank+i-1]);
+      if (rank===1) // 1위라면 오카도 더하기
+        uma+=oka;
+      uma/=cnt;
+      return point+uma;
     },
     /**$emit 이벤트 발생*/
     emitEvent(eventName, ...args) {
@@ -364,7 +385,9 @@ export default {
   <!-- 옵션 종류 선택창 -->
   <div v-else-if="modalType==='choose_option_kind'" class="modal_content" @click.stop>
     <div class="container_choose_option">
-      <div style="color: gray;">게임결과</div><!-- 구현x -->
+      <div @click.stop="emitEvent('show-modal', 'score_sheet')">
+        게임결과
+      </div>
       <div @click.stop="emitEvent('show-modal', 'show_record')">
         점수기록
       </div>
@@ -420,7 +443,7 @@ export default {
   </div>
   <!-- 설정 창 -->
   <div v-else-if="modalType==='set_options'" class="modal_content" @click.stop>
-    <div class="container_modify">
+    <div class="container_option">
       <div
         v-for="(_, i) in arr_seat"
         :key="i"
@@ -476,9 +499,36 @@ export default {
         >
       </div>
       <div style="grid-area: option5;" @click.stop="emitEvent('toggle-check-status', -1, 'cheatscore')">
-        촌보처리<br>
+        촌보점수<br>
         <span v-show="optCheatScore===true">만관</span>
         <span v-show="optCheatScore===false">3000 All</span>
+      </div>
+    </div>
+  </div>
+  <!-- 게임 결과창 -->
+  <div v-else-if="modalType==='score_sheet'" class="modal_content" @click.stop>
+    <div class="container_scoresheet">
+      <div v-for="(_, i) in class_scoresheet" 
+        :key="i"
+        :class="class_scoresheet[i]"
+        style="font-size: 25px;"
+      >
+        {{ arr_scoresheet[i] }}
+      </div>
+      <div style="grid-area: wind_contents;">
+        <div v-for="(_, i) in arr_seat" :key="i">{{ arr_seat[i][2] }}</div>
+      </div>
+      <div style="grid-area: name_contents;">
+        <div v-for="(_, i) in names" :key="i">{{ names[i] }}</div>
+      </div>
+      <div style="grid-area: score_contents;">
+        <div v-for="(_, i) in scoresHigh" :key="i">{{ scoresHigh[i] }}00 ({{calculatePoint(i)}})</div>
+      </div>
+      <div style="grid-area: riichi_contents;">
+      </div>
+      <div style="grid-area: win_contents;">
+      </div>
+      <div style="grid-area: lose_contents;">
       </div>
     </div>
   </div>
@@ -699,6 +749,7 @@ export default {
   "scroll scroll scroll scroll scroll";
   text-align: center;
   font-size: 25px;
+  margin: 5px;
 }
 .copy{
   grid-area: copy;
@@ -721,7 +772,7 @@ export default {
 }
 
 /* 옵션 선택창 */
-.container_modify{
+.container_option{
   display: grid;
   grid-template-rows: repeat(3, auto);
   grid-template-columns: repeat(4, auto);
@@ -729,6 +780,18 @@ export default {
   "input_name0 input_name1 input_name2 input_name3"
   "option0 option1 option2 option3"
   "option4 option4 option5 .";
+  text-align: center;
+  gap: 10px;
+  margin: 5px;
+}
+/* 게임 결과창 */
+.container_scoresheet{
+  display: grid;
+  grid-template-rows: repeat(2, auto);
+  grid-template-columns: 50px 125px 150px repeat(3, 50px);
+  grid-template-areas:
+  "wind name score riichi win lose"
+  "wind_contents name_contents score_contents riichi_contents win_contents lose_contents";
   text-align: center;
   gap: 10px;
   margin: 5px;

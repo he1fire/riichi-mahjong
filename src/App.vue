@@ -613,6 +613,7 @@ export default {
   <modal
     v-if="modal"
     :winds
+    :scoresHigh
     :scoresDiff
     :names
     :focusWinner
