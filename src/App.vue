@@ -42,6 +42,7 @@ export default {
       randomSeats: ["東", "南", "西", "北"], // 랜덤 타일값
       recordsTime: ["ㅤ"], // 라운드 기록
       recordsScore: [[25000],[25000],[25000],[25000]], //  점수 기록
+      setScore: [25000, 30000], // 시작, 반환 점수
       optRoundMangan: false, // 절상만관 옵션
       optMinusRiichi: false, // 음수리치 옵션
       modal: false, // 모달창 활성화
@@ -201,6 +202,27 @@ export default {
       }
       return ret;
     },
+    /**동1국 처음으로 리셋*/
+    resetAll(){
+      let allWinds = ["東", "南", "西", "北"];
+      while (1<this.recordsTime.length){ // 점수기록 지우기
+        this.recordsTime.pop();
+        for (let i=0;i<this.recordsScore.length;i++)
+          this.recordsScore[i].pop();
+      }
+      for (let i=0;i<this.recordsScore.length;i++)
+        this.recordsScore[i][0]=this.setScore[0];
+      for (let i=0;i<this.isRiichi.length;i++) // 리치봉 제거
+        this.isRiichi[i]=false;
+      this.currentWind="東"; // 장풍 설정
+      this.currentRound=1; // 국 설정
+      for (let i=0;i<this.recordsScore.length;i++)
+        this.scoresHigh[i]=Math.floor(this.setScore[0]/100); // 점수 설정
+      this.countRenchan=0; // 연장 설정
+      this.countRiichi=0; // 리치봉 설정
+      for (let i=0;i<this.winds.length;i++)
+        this.winds[i]=allWinds[i]; // 개인 바람 설정
+    },
     /**모달 창 켜기*/
     showModal(type, status){
       this.modalType=type;
@@ -209,6 +231,17 @@ export default {
     },
     /**모달 창 끄기*/
     hideModal(){
+      if (this.modalType==='set_options'){
+        
+        let cnt=this.scoresHigh.reduce((acc, cur) => acc + cur, this.countRiichi*10)*100; // 현재 총점
+        console.log(cnt);
+        if (this.setScore[0]*4!==cnt){ // 시작점수가 변경되었다면
+          if (this.setScore[0]%100!==0) // 이상한 값이면 롤백
+            this.setScore[0]=cnt/4;
+          else // 아니라면 동1국으로 롤백
+            this.resetAll();
+        }
+      }
       this.modalType='';
       this.roundStatus='';
       this.scoresDiff=[0, 0, 0, 0];
@@ -514,7 +547,7 @@ export default {
         cnt+=this.scoresHigh[i];
       }
       this.countRenchan=Number(arr[3]); // 연장 설정
-      this.countRiichi=Math.floor((1000-cnt)/10); // 리치봉 설정
+      this.countRiichi=Math.floor((Math.floor(this.setScore[0]*4/100)-cnt)/10); // 리치봉 설정
       for (let i=1;i<this.currentRound;i++)
         allWinds.unshift(allWinds.pop()); // 현재 바람 세기
       for (let i=0;i<this.winds.length;i++)
@@ -574,6 +607,7 @@ export default {
     :randomSeats
     :recordsTime
     :recordsScore
+    :setScore
     :optRoundMangan
     :optMinusRiichi
     :modalType

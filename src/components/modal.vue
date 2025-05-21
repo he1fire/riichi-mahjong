@@ -24,6 +24,7 @@ export default {
     randomSeats: Array,
     recordsTime: Array,
     recordsScore: Array,
+    setScore: Array,
     optRoundMangan: Boolean,
     optMinusRiichi: Boolean,
     modalType: String,
@@ -362,10 +363,10 @@ export default {
   <div v-else-if="modalType==='choose_option_kind'" class="modal_content" @click.stop>
     <div class="container_choose_option">
       <div style="color: gray;">게임결과</div><!-- 구현x -->
-      <div @click.stop="emitEvent('show-modal','show_record')">
+      <div @click.stop="emitEvent('show-modal', 'show_record')">
         점수기록
       </div>
-      <div @click.stop="emitEvent('show-modal','set_options')">
+      <div @click.stop="emitEvent('show-modal', 'set_options')">
         설정
       </div>
       <a href="https://github.com/he1fire/riichi-mahjong" target="_blank" style="font-size: 20px; "><img src="/github-logo.svg" alt="SVG" />Github</a>
@@ -427,15 +428,23 @@ export default {
         <input
           type="text"
           maxlength="4"
-          v-model="names[i]"
+          v-model="this.names[i]"
           :placeholder="`이름${i+1}`"
         >
       </div>
       <div style="grid-area: option0;">
-        시작점수<br><input type="number">
+        시작점수<br>
+        <input 
+          type="number"
+          v-model="this.setScore[0]"
+        >
       </div>
       <div style="grid-area: option1;">
-        반환점수<br><input type="number">
+        반환점수<br>
+        <input 
+          type="number"
+          v-model="this.setScore[1]"
+        >
       </div>
       <div style="grid-area: option2;" @click.stop="emitEvent('toggle-check-status', -1, 'roundmangan')">
         절상만관<br>
