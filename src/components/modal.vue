@@ -806,12 +806,15 @@ export default {
 .container_scoresheet{
   display: grid;
   grid-template-rows: repeat(2, auto);
-  grid-template-columns: 50px 125px 150px repeat(3, 50px);
+  grid-template-columns: 50px 125px 150px repeat(3, 60px);
   grid-template-areas:
   "wind name score riichi win lose"
   "wind_contents name_contents score_contents riichi_contents win_contents lose_contents";
   text-align: center;
-  gap: 10px;
   margin: 5px;
+}
+.container_scoresheet div{
+  border-top: 1px solid #000;
+  border-bottom: 1px solid #000;
 }
 </style>

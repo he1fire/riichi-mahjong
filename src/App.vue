@@ -42,9 +42,9 @@ export default {
       randomSeats: ["東", "南", "西", "北"], // 랜덤 타일값
       recordsTime: ["ㅤ"], // 라운드 기록
       recordsScore: [[25000],[25000],[25000],[25000]], //  점수 기록
-      recordsRiichi: [], // 리치 기록
-      recordsWin: [], // 화료 기록
-      recordsLose: [], // 방총 기록
+      recordsRiichi: [[false, false, false, false]], // 리치 기록
+      recordsWin: [[false, false, false, false]], // 화료 기록
+      recordsLose: [[false, false, false, false]], // 방총 기록
       setScore: [25000, 30000], // 시작, 반환 점수
       rankUma: [30, 10, -10, -30], // 순위 우마
       optRoundMangan: false, // 절상만관 옵션
@@ -215,7 +215,7 @@ export default {
         for (let i=0;i<this.recordsScore.length;i++)
           this.recordsScore[i].pop();
       }
-      while (this.recordsRiichi.length){ // 리치, 화료, 방총기록 지우기
+      while (1<this.recordsRiichi.length){ // 리치, 화료, 방총기록 지우기
         this.recordsRiichi.pop();
         this.recordsWin.pop();
         this.recordsLose.pop();
@@ -574,7 +574,7 @@ export default {
         for (let i=0;i<this.recordsScore.length;i++)
           this.recordsScore[i].pop();
       }
-      while (Math.floor(idx/2)<this.recordsRiichi.length){ // 리치, 화료, 방총기록 지우기
+      while (Math.floor(idx/2)+1<this.recordsRiichi.length){ // 리치, 화료, 방총기록 지우기
         this.recordsRiichi.pop();
         this.recordsWin.pop();
         this.recordsLose.pop();
