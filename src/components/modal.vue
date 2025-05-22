@@ -815,7 +815,7 @@ export default {
   margin: 5px;
 }
 .container_scoresheet div{
-  border-top: 1px solid #000;
-  border-bottom: 1px solid #000;
+  border-top: 1px solid black;
+  border-bottom: 1px solid black;
 }
 </style>
