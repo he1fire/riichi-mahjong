@@ -50,6 +50,7 @@ export default {
       optRoundMangan: false, // 절상만관 옵션
       optMinusRiichi: false, // 음수리치 옵션
       optCheatScore: false, // 촌보 지불 점수
+      optEndRiichi: true, // 남은 공탁금 처리
       modal: false, // 모달창 활성화
       modalType: "", // 모달창 종류
     };
@@ -337,6 +338,8 @@ export default {
         this.optMinusRiichi=!this.optMinusRiichi;
       else if (status==='cheatscore') // 촌보 점수 토글
         this.optCheatScore=!this.optCheatScore;
+      else if (status==='endriichi')
+        this.optEndRiichi=!this.optEndRiichi;
     },
     /**화료 및 방총 불가능한 경우 반환*/
     checkInvalidStatus(status){
@@ -649,6 +652,7 @@ export default {
     :isLose
     :isTenpai
     :isCheat
+    :countRiichi
     :roundStatus
     :diceValue
     :isWall
@@ -664,6 +668,7 @@ export default {
     :optRoundMangan
     :optMinusRiichi
     :optCheatScore
+    :optEndRiichi
     :modalType
     @show-modal="showModal"
     @hide-modal="hideModal"

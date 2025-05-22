@@ -19,6 +19,7 @@ export default {
     isLose: Array,
     isTenpai: Array,
     isCheat: Array,
+    countRiichi: Number,
     roundStatus: String,
     diceValue: Array,
     isWall: Array,
@@ -34,6 +35,7 @@ export default {
     optRoundMangan: Boolean,
     optMinusRiichi: Boolean,
     optCheatScore: Boolean,
+    optEndRiichi: Boolean,
     modalType: String,
   },
   emits: ['show-modal', 'hide-modal', 'toggle-check-status', 'check-invalid-status', 'calculate-win', 'calculate-draw', 'save-round', 'roll-dice', 'copy-record', 'rollback-record'],
@@ -154,7 +156,8 @@ export default {
     },
     /**순위표 점수 계산*/
     calculatePoint(idx){
-      let point=(this.scoresHigh[idx]*100-this.setScore[1])/1000; // 점수기반
+      let score=this.scoresHigh[idx]*100;
+      let point=0 // 점수기반
       let oka=(this.setScore[1]*4-this.setScore[0]*4)/1000; // 오카
       let rank=1, uma=0, cnt=0;
       for (let i=0;i<this.scoresHigh.length;i++){
@@ -165,11 +168,14 @@ export default {
       }
       for (let i=0;i<cnt;i++) // 동점자의 모든 우마 더하기
         uma+=Number(this.rankUma[rank+i-1]);
-      if (rank===1) // 1위라면 오카도 더하기
+      if (rank===1){ // 1위라면 오카도 더하기
         uma+=oka;
+        if (this.optEndRiichi) // 1위에게 공탁금을 몰아주는 경우
+          score+=Math.floor(((this.countRiichi*1000)/cnt)/100)*100;
+      }
       uma/=cnt;
-      point+=uma;
-      return point.toFixed(1);
+      point=(score-this.setScore[1])/1000+uma;
+      return String(score)+'('+point.toFixed(1)+')';
     },
     /**순위표 기록 계산*/
     calculateRecord(arr, idx){
@@ -519,6 +525,13 @@ export default {
           <span v-show="optCheatScore===false">3000 All</span>
         </span>
       </div>
+      <div style="grid-area: option6;" @click.stop="emitEvent('toggle-check-status', -1, 'endriichi')">
+        공탁처리<br>
+        <span style="color: red">
+          <span v-show="optEndRiichi===true">1위</span>
+          <span v-show="optEndRiichi===false">X</span>
+        </span>
+      </div>
     </div>
   </div>
   <!-- 게임 결과창 -->
@@ -538,7 +551,7 @@ export default {
         <div v-for="(_, i) in names" :key="i">{{ names[i] }}</div>
       </div>
       <div style="grid-area: score_contents;">
-        <div v-for="(_, i) in scoresHigh" :key="i">{{ scoresHigh[i] }}00 ({{calculatePoint(i)}})</div>
+        <div v-for="(_, i) in scoresHigh" :key="i">{{calculatePoint(i)}}</div>
       </div>
       <div style="grid-area: riichi_contents;">
         <div v-for="(_, i) in recordsRiichi[0]" :key="i">{{calculateRecord(recordsRiichi, i)}}</div>
@@ -798,7 +811,7 @@ export default {
   grid-template-areas:
   "input_name0 input_name1 input_name2 input_name3"
   "option0 option1 option2 option3"
-  "option4 option4 option5 .";
+  "option4 option4 option5 option6";
   text-align: center;
   gap: 10px;
   margin: 5px;
