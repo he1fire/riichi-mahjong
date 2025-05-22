@@ -14,6 +14,7 @@ export default {
     focusFao: Number,
     inputFan: Number,
     inputBu: Number,
+    isRiichi: Array,
     isWin: Array,
     isLose: Array,
     isTenpai: Array,
@@ -86,7 +87,7 @@ export default {
         }
       }
       else if (status==='tenpai') // 텐파이 체크
-        return {color: this.isTenpai[x]===true ? 'red' : ''};
+        return {color: (this.isTenpai[x]===true || this.isRiichi[x]===true) ? 'red' : ''};
       else if (status==='cheat'){ // 촌보 체크
         if (x===-1) // ok버튼
           return {color: this.isCheat.every(x => x===false) ? 'gray' : ''};

@@ -436,6 +436,7 @@ export default {
     calculateDraw(){
       let cntTenpai=0; // 총 텐파이 인원
       for (let i=0;i<this.isTenpai.length;i++){
+        this.isTenpai[i]||=this.isRiichi[i];
         if (this.isTenpai[i]===true) // 텐파이 인원 세기
           cntTenpai++;
       }
@@ -638,6 +639,7 @@ export default {
     :focusFao
     :inputFan
     :inputBu
+    :isRiichi
     :isWin
     :isLose
     :isTenpai
