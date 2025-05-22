@@ -42,6 +42,9 @@ export default {
       randomSeats: ["東", "南", "西", "北"], // 랜덤 타일값
       recordsTime: ["ㅤ"], // 라운드 기록
       recordsScore: [[25000],[25000],[25000],[25000]], //  점수 기록
+      recordsRiichi: [], // 리치 기록
+      recordsWin: [], // 화료 기록
+      recordsLose: [], // 방총 기록
       setScore: [25000, 30000], // 시작, 반환 점수
       rankUma: [30, 10, -10, -30], // 순위 우마
       optRoundMangan: false, // 절상만관 옵션
@@ -212,6 +215,11 @@ export default {
         for (let i=0;i<this.recordsScore.length;i++)
           this.recordsScore[i].pop();
       }
+      while (this.recordsRiichi.length){ // 리치, 화료, 방총기록 지우기
+        this.recordsRiichi.pop();
+        this.recordsWin.pop();
+        this.recordsLose.pop();
+      }
       for (let i=0;i<this.recordsScore.length;i++)
         this.recordsScore[i][0]=this.setScore[0];
       for (let i=0;i<this.isRiichi.length;i++) // 리치봉 제거
@@ -233,7 +241,7 @@ export default {
     },
     /**모달 창 끄기*/
     hideModal(){
-      if (this.modalType==='set_options'){
+      if (this.modalType==='set_options'){ // 옵션 설정창이라면 확인
         let cntScore=this.scoresHigh.reduce((acc, cur) => acc + cur, this.countRiichi*10)*100; // 현재 총점
         let cntUma=this.rankUma.reduce((acc, cur) => acc + cur, 0); // 현재 총우마
         if (this.setScore[0]*4!==cntScore){ // 시작점수가 변경되었다면
@@ -242,6 +250,8 @@ export default {
           else // 아니라면 동1국으로 롤백
             this.resetAll();
         }
+        if (this.setScore[0]>this.setScore[1]) // 시작점수가 반환점수보다 큰 경우
+          this.setScore[1]=this.setScore[0];
         if (cntUma!==0) // 우마 합계가 0이 아니라면 초기화
           this.rankUma=[30, 10, -10, -30];
       }
@@ -444,13 +454,13 @@ export default {
       if (this.optCheatScore===true){ // 만관 지불
         for (let i=0;i<this.isCheat.length;i++){
           if (this.isCheat[i]===true){
-            if (this.winds[i]==='東')
+            if (this.winds[i]==='東') // 친일경우
               this.scoresDiff[i]=-12000;
             else
               this.scoresDiff[i]=-8000;
           }
           else{
-            if (this.winds[i]==='東' || this.winds[this.isCheat.indexOf(true)]==='東')
+            if (this.winds[i]==='東' || this.winds[this.isCheat.indexOf(true)]==='東') //촌보자가 친이거나 내가 친일때
               this.scoresDiff[i]=4000;
             else
               this.scoresDiff[i]=2000;
@@ -479,10 +489,10 @@ export default {
         }
       }
       else{
+        this.recordsRiichi.push([...this.isRiichi]); // 리치 기록에 추가
         for (let i=0;i<this.isRiichi.length;i++) // 리치봉 수거
           this.isRiichi[i]=false;
       }
-      // 옵션에서 롤백한 경우 처리
       for (let i=0;i<this.scoresDiff.length;i++) // 점수 배분및 기록
         this.changeScores(i);
       for (let i=0;i<this.scoresDiff.length;i++){ // 점수 기록창에 점수 기록
@@ -491,6 +501,8 @@ export default {
       }
       this.recordsTime.push(this.currentWind+this.currentRound+'局 '+this.countRenchan+'本場');// 점수 기록창에 국+본장 기록
       this.recordsTime.push('ㅤ');
+      this.recordsWin.push([...this.isWin]);
+      this.recordsLose.push([...this.isLose]);
       if (this.roundStatus==='tsumo' || this.roundStatus==='ron'){ // 화료로 끝났다면
         let chinWin=this.isWin[this.winds.indexOf('東')]; // 친이 화료했는지 체크
         if (chinWin===false){ // 친이 화료를 못했다면
@@ -562,6 +574,11 @@ export default {
         for (let i=0;i<this.recordsScore.length;i++)
           this.recordsScore[i].pop();
       }
+      while (Math.floor(idx/2)<this.recordsRiichi.length){ // 리치, 화료, 방총기록 지우기
+        this.recordsRiichi.pop();
+        this.recordsWin.pop();
+        this.recordsLose.pop();
+      }
       for (let i=0;i<this.isRiichi.length;i++) // 리치봉 제거
         this.isRiichi[i]=false;
       this.currentWind=arr[0]; // 장풍 설정
@@ -632,6 +649,9 @@ export default {
     :randomSeats
     :recordsTime
     :recordsScore
+    :recordsRiichi
+    :recordsWin
+    :recordsLose
     :setScore
     :rankUma
     :optRoundMangan

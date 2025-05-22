@@ -25,6 +25,9 @@ export default {
     randomSeats: Array,
     recordsTime: Array,
     recordsScore: Array,
+    recordsRiichi: Array, 
+    recordsWin: Array, 
+    recordsLose: Array,
     setScore: Array,
     rankUma: Array,
     optRoundMangan: Boolean,
@@ -164,7 +167,17 @@ export default {
       if (rank===1) // 1위라면 오카도 더하기
         uma+=oka;
       uma/=cnt;
-      return point+uma;
+      point+=uma;
+      return point.toFixed(1);
+    },
+    /**순위표 기록 계산*/
+    calculateRecord(arr, idx){
+      let ret=0;
+      for (let i=0;i<arr.length;i++){
+        if (arr[i][idx]===true)
+          ret++;
+      }
+      return ret;
     },
     /**$emit 이벤트 발생*/
     emitEvent(eventName, ...args) {
@@ -497,11 +510,13 @@ export default {
           v-model="this.rankUma[i]"
           :placeholder="`${i+1}위 우마`"
         >
-      </div>
+      </div>  
       <div style="grid-area: option5;" @click.stop="emitEvent('toggle-check-status', -1, 'cheatscore')">
         촌보점수<br>
-        <span v-show="optCheatScore===true">만관</span>
-        <span v-show="optCheatScore===false">3000 All</span>
+        <span style="color: red">
+          <span v-show="optCheatScore===true">만관</span>
+          <span v-show="optCheatScore===false">3000 All</span>
+        </span>
       </div>
     </div>
   </div>
@@ -525,10 +540,13 @@ export default {
         <div v-for="(_, i) in scoresHigh" :key="i">{{ scoresHigh[i] }}00 ({{calculatePoint(i)}})</div>
       </div>
       <div style="grid-area: riichi_contents;">
+        <div v-for="(_, i) in recordsRiichi[0]" :key="i">{{calculateRecord(recordsRiichi, i)}}</div>
       </div>
       <div style="grid-area: win_contents;">
+        <div v-for="(_, i) in recordsWin[0]" :key="i">{{calculateRecord(recordsWin, i)}}</div>
       </div>
       <div style="grid-area: lose_contents;">
+        <div v-for="(_, i) in recordsLose[0]" :key="i">{{calculateRecord(recordsLose, i)}}</div>
       </div>
     </div>
   </div>
