@@ -242,8 +242,13 @@ export default {
     /**모달 창 끄기*/
     hideModal(){
       if (this.modalType==='set_options'){ // 옵션 설정창이라면 확인
+        let arrows=["▼", "▶", "▲", "◀"];
         let cntScore=this.scoresHigh.reduce((acc, cur) => acc + cur, this.countRiichi*10)*100; // 현재 총점
         let cntUma=this.rankUma.reduce((acc, cur) => acc + cur, 0); // 현재 총우마
+        for (let i=0;i<this.names.length;i++){
+          if (this.names[i]==='') // 이름이 없는 경우
+            this.names[i]=arrows[i]; // 기본이름으로 추가
+        }
         if (this.setScore[0]*4!==cntScore){ // 시작점수가 변경되었다면
           if (this.setScore[0]%100!==0) // 이상한 값이면 롤백
             this.setScore[0]=cnt/4;
