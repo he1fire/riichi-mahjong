@@ -49,7 +49,7 @@ export default {
       rankUma: [30, 10, -10, -30], // 순위 우마
       optRoundMangan: false, // 절상만관 옵션
       optMinusRiichi: false, // 음수리치 옵션
-      optCheatScore: false, // 촌보 지불 점수
+      optCheatScore: true, // 촌보 지불 점수
       optEndRiichi: true, // 남은 공탁금 처리
       modal: false, // 모달창 활성화
       modalType: "", // 모달창 종류
@@ -460,7 +460,15 @@ export default {
     },
     /**촌보 점수계산*/
     calculateCheat(){
-      if (this.optCheatScore===true){ // 만관 지불
+      if (this.optCheatScore===true){ // 3000점씩 지불 
+        for (let i=0;i<this.isCheat.length;i++){
+          if (this.isCheat[i]===true)
+            this.scoresDiff[i]=-9000;
+          else
+            this.scoresDiff[i]=3000; 
+        }
+      }
+      else{// 만관 지불
         for (let i=0;i<this.isCheat.length;i++){
           if (this.isCheat[i]===true){
             if (this.winds[i]==='東') // 친일경우
@@ -474,14 +482,6 @@ export default {
             else
               this.scoresDiff[i]=2000;
           }
-        }
-      }
-      else{ // 3000점씩 지불
-        for (let i=0;i<this.isCheat.length;i++){
-          if (this.isCheat[i]===true)
-            this.scoresDiff[i]=-9000;
-          else
-            this.scoresDiff[i]=3000; 
         }
       }
       this.showModal('show_score', 'cheat');
@@ -559,11 +559,11 @@ export default {
         str+=this.names[i]+'\t'; // 이름 복사
       str+='\n';
       for (let i=0;i<this.recordsTime.length;i++){
-        if (this.recordsTime[i]!=="ㅤ")
+        if (this.recordsTime[i]!=="ㅤ") // 공백 제거
           str+=this.recordsTime[i]; // 라운드 복사
         str+='\t';
         for (let j=0;j<this.recordsScore.length;j++){
-          if (this.recordsScore[j][i]!==0)
+          if (this.recordsScore[j][i]!==0 || i%2===0) // 0점 이동 제거
             str+=String(this.recordsScore[j][i]); // 점수 복사
           str+='\t';
         }

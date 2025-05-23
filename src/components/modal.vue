@@ -129,10 +129,14 @@ export default {
       else if (status==='tile'){ // 타일 뒤집기
         return {gridArea: `tile_${x+1}`, color: this.isOpened[x]===true ? (this.randomSeats[x]==='東' ? 'red' : '') : 'orange', backgroundColor: this.isOpened[x]===true ? '' : 'orange'};
       }
-      else if (status==='roundmangan') // 점수창 OX
+      else if (status==='roundmangan') // 유국만관 옵션
         return {color: this.optRoundMangan===true ? 'blue' : 'red'};
-      else if (status==='minusriichi') // 점수창 OX
+      else if (status==='minusriichi') // 음수리치 옵션
         return {color: this.optMinusRiichi===true ? 'blue' : 'red'};
+      else if (status==='cheatscore') // 촌보점수 옵션
+        return {color: this.optCheatScore===true ? 'blue' : 'red'};
+      else if (status==='endriichi') // 공탁처리 옵션
+        return {color: this.optEndRiichi===true ? 'blue' : 'red'};
     },
     /**역만인지 확인하고 숨기기*/
     isYakuman(x){
@@ -520,14 +524,14 @@ export default {
       </div>  
       <div style="grid-area: option5;" @click.stop="emitEvent('toggle-check-status', -1, 'cheatscore')">
         촌보점수<br>
-        <span style="color: red">
-          <span v-show="optCheatScore===true">만관</span>
-          <span v-show="optCheatScore===false">3000 All</span>
+        <span :style="isChecked(-1, 'cheatscore')">
+          <span v-show="optCheatScore===true">3000 All</span>
+          <span v-show="optCheatScore===false">만관</span>
         </span>
       </div>
       <div style="grid-area: option6;" @click.stop="emitEvent('toggle-check-status', -1, 'endriichi')">
         공탁처리<br>
-        <span style="color: red">
+        <span :style="isChecked(-1, 'endriichi')">
           <span v-show="optEndRiichi===true">1위</span>
           <span v-show="optEndRiichi===false">X</span>
         </span>
