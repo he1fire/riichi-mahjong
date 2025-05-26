@@ -23,6 +23,7 @@ export default {
       focusLoser: -1, // 현재 방총 플레이어
       isFao: false, // 책임지불 유무
       focusFao: -1, // 현재 책임지불하는 플레이어
+      inputFao: -1, // 현재 책임지불
       inputFan: 0, // 현재 점수 (판)
       inputBu: 2, // 현재 점수 (부)
       isGap: [false, false, false, false], // 플레이어간 점수 차이 표시 유무
@@ -268,6 +269,7 @@ export default {
       this.focusLoser=-1;
       this.isFao=false;
       this.focusFao=-1;
+      this.inputFao=-1;
       this.inputFan=0;
       this.inputBu=2;
       this.isWin=[false, false, false, false];
@@ -330,6 +332,8 @@ export default {
       }
       else if (status==='isfao') // 책임지불 토글
         this.isFao=!this.isFao;
+      else if (status=='inputfao') // 책임지불 점수창
+        this.inputFao=idx;
       else if (status==='tile') // 타일 뒤집기
         this.isOpened[idx]=true;
       else if (status==='roundmangan') // 절상만관 토글
@@ -338,7 +342,7 @@ export default {
         this.optMinusRiichi=!this.optMinusRiichi;
       else if (status==='cheatscore') // 촌보 점수 토글
         this.optCheatScore=!this.optCheatScore;
-      else if (status==='endriichi')
+      else if (status==='endriichi') // 공탁금 처리 토글
         this.optEndRiichi=!this.optEndRiichi;
     },
     /**화료 및 방총 불가능한 경우 반환*/
@@ -376,7 +380,12 @@ export default {
       else if (status==='fao'){ // 책임지불일때
         if (this.focusFao===-1) // 책임지불할 사람이 없음 (불가능한 경우)
           return;
-        this.calculateWin();
+        if (this.inputFan>=10){ // 2배역만 이상이면 점수 선택
+          this.inputFao=this.inputFan-9;
+          this.showModal('choose_fao_score', this.roundStatus);
+        }
+        else
+          this.calculateWin();
       }
       else if (status==='cheat'){ // 촌보일때
         if (this.isCheat.every(x => x===false)) // 촌보한 사람이 없음 (불가능한 경우)
@@ -396,8 +405,19 @@ export default {
           }
         }
         else if (this.roundStatus==='tsumo_fao'){ // 책임지불시
+          let tmp=this.inputFan;
+          this.inputFan=this.inputFao+9; // 책임지불할 점수
           this.scoresDiff[this.focusWinner]+=this.calculateScore(this.focusWinner)+this.countRiichi*1000+this.countRenchan*300;
           this.scoresDiff[this.focusFao]-=this.calculateScore(this.focusWinner)+this.countRenchan*300;
+          this.inputFan=tmp-this.inputFao-1; // 롤백
+          if (this.inputFan>=9){ // 다른사람도 여전히 지불해야 하는 경우
+            for (let i=0;i<this.seats.length;i++){
+              if (i===this.focusWinner) // 승자
+                this.scoresDiff[i]+=this.calculateScore(i)+this.countRiichi*1000+this.countRenchan*300;
+              else // 패자
+                this.scoresDiff[i]-=this.calculateScore(i)+this.countRenchan*100;
+            }
+          }
         }
         this.showModal('show_score', 'tsumo');
       }
@@ -418,8 +438,11 @@ export default {
           this.scoresDiff[this.focusLoser]-=this.calculateScore(this.focusWinner);
         }
         if (this.roundStatus==='ron_fao'){ // 책임지불시 절반 지불
+          let tmp=this.inputFan;
+          this.inputFan=this.inputFao+9; // 책임지불할 점수
           this.scoresDiff[this.focusLoser]+=Math.floor(this.calculateScore(this.focusWinner)/2);
           this.scoresDiff[this.focusFao]-=Math.floor(this.calculateScore(this.focusWinner)/2);
+          this.inputFan=tmp-this.inputFao-1; // 롤백
         }
         for (let i=1;i<this.isWin.length;i++){
           if ((this.focusWinner+i)%4===this.focusLoser){ // 1바퀴를 모두 돌았을때
@@ -645,6 +668,7 @@ export default {
     :focusWinner
     :isFao
     :focusFao
+    :inputFao
     :inputFan
     :inputBu
     :isRiichi

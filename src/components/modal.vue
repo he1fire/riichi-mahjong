@@ -12,6 +12,7 @@ export default {
     focusWinner: Number,
     isFao: Boolean,
     focusFao: Number,
+    inputFao: Number,
     inputFan: Number,
     inputBu: Number,
     isRiichi: Array,
@@ -122,6 +123,12 @@ export default {
       }
       else if (status==='isfao') // 점수창 OX
         return {color: this.isFao===true ? 'blue' : 'red'};
+      else if (status==='inputfao'){ // 책임지불 점수창
+        if (this.inputFan-9<x) // 입력값보다 크면 불가능
+          return {color: 'gray'};
+        else
+          return {color: x===this.inputFao ? 'red' : ''};
+      }
       else if (status==='dicemodal') // 주사위창 회전
         return {transform: `translate(-50%, -50%) rotate(${360-this.winds.indexOf('東')*90}deg)`};
       else if (status==='dice') // 주사위 방향 보이기
@@ -312,6 +319,24 @@ export default {
       <div class="ok" :style="isChecked(-1, 'fao')" @click.stop="emitEvent('check-invalid-status', 'fao')">
         OK
       </div>
+    </div>
+  </div>
+  <!-- 책임지불 점수 선택창 -->
+  <div v-else-if="modalType==='choose_fao_score'" class="modal_content" @click.stop>
+    <div>
+      책임지불할 점수를 입력해주세요.
+    </div>
+    <div class="container_choose_fao_score">
+      <span v-for="(_, i) in fan.slice(9)"
+        :key="i"
+        :style="[isChecked(i, 'inputfao')]"
+        @click.stop="emitEvent('toggle-check-status', i, 'inputfao')"
+        >
+          {{ fan[i+9] }}
+        </span>
+    </div>
+    <div style="font-size: 30px;" @click.stop="emitEvent('calculate-win');">
+      OK
     </div>
   </div>
   <!-- 유국 종류 선택창 -->
@@ -671,6 +696,17 @@ export default {
 .bu_check > span {
   padding-right: 5px;
   padding-left: 5px;
+}
+
+/* 책임지불 점수 선택창 */
+.container_choose_fao_score{
+  display: grid;
+  grid-template-rows: repeat(2, auto);
+  grid-template-columns: repeat(3, auto);
+  font-size: 30px;
+  gap: 10px;
+  margin: 5px;
+  place-items: center;
 }
 
 /* 점수 확인창 */
