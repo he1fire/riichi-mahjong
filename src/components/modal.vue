@@ -541,10 +541,11 @@ export default {
         <input
           v-for="(_, i) in rankUma"
           :key="i"
-          style="width: 50px;"
+          style="width: 45px;"
           type="number"
           v-model="this.rankUma[i]"
           :placeholder="`${i+1}위 우마`"
+          :style="{ marginRight: i===rankUma.length-1 ? '0px' : '4px' }"
         >
       </div>  
       <div style="grid-area: option5;" @click.stop="emitEvent('toggle-check-status', -1, 'cheatscore')">
