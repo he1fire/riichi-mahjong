@@ -74,19 +74,19 @@ const toggleShowGap = (x) => {
   </div>
   <!-- 현재 점수 -->
   <div class="score">
-    <div v-if="isGap===false" :style="ableRiichi()" @click="emitEvent('toggle-active-riichi', this.seat)">
-      {{ scoreHigh }}<span style="font-size: 50px;"><span v-show="this.scoreLow<10">0</span>{{ scoreLow }}</span>
+    <div v-if="isGap===false" :style="ableRiichi()" @click="emitEvent('toggle-active-riichi', seat)">
+      {{ scoreHigh }}<span style="font-size: 50px;"><span v-show="scoreLow<10">0</span>{{ scoreLow }}</span>
     </div>
-    <div v-else :style="isDiff(this.scoreGap)">
+    <div v-else :style="isDiff(scoreGap)">
       <span v-show="scoreGap>0">+</span>{{ scoreGap }}<span style="font-size: 50px;">00</span>
     </div>
   </div>
   <!-- 순위 표시 -->
-  <div v-show="rank!==0" class="rank" :style="{color: this.rank===1 ? 'red' : ''}">
+  <div v-show="rank!==0" class="rank" :style="{color: rank===1 ? 'red' : ''}">
     {{ rank }}
   </div>
   <!-- 변경되는 점수 -->
-  <div v-show="scoreEffect!==0" class="change" :style="isDiff(this.scoreEffect)">
+  <div v-show="scoreEffect!==0" class="change" :style="isDiff(scoreEffect)">
     <span v-show="scoreEffect>0">+</span>{{ scoreEffect }}
   </div>
 </div>
