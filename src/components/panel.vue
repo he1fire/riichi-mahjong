@@ -16,8 +16,8 @@ const emit = defineEmits([
 ]);
 
 /**$emit 이벤트 발생*/
-function emitEvent(eventName, ...args){
-  emit(eventName, ...args);
+const emitEvent = (eventName, ...args) => {
+  emit(eventName, ...args)
 }
 </script>
 
@@ -50,6 +50,7 @@ function emitEvent(eventName, ...args){
     촌보
   </div>
 </div>
+<!-- 옵션 버튼 -->
 <div id='Option' @click="emitEvent('show-modal', 'choose_option_kind')">
   <graphics kind="gear"/>
 </div>
