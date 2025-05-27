@@ -617,7 +617,7 @@ export default {
         cnt+=this.scores[i];
       }
       this.countRenchan=Number(arr[3]); // 연장 설정
-      this.countRiichi=Math.floor((this.setScore[0]*4-cnt)/10); // 리치봉 설정
+      this.countRiichi=Math.floor((this.setScore[0]*4-cnt)/1000); // 리치봉 설정
       for (let i=1;i<this.currentRound;i++)
         allWinds.unshift(allWinds.pop()); // 현재 바람 세기
       for (let i=0;i<this.winds.length;i++)
