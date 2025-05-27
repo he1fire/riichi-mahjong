@@ -1,12 +1,12 @@
 <script setup>
 import graphics from './graphics.vue'
+import {computed} from 'vue'
 
 /**props 선언*/
 const props = defineProps({
   seat: String,
   wind: String,
-  scoreHigh: Number,
-  scoreLow: Number,
+  score: Number,
   rank: Number,
   scoreEffect: Number,
   scoreGap: Number,
@@ -21,6 +21,14 @@ const emit = defineEmits([
   'toggle-show-gap'
 ])
 
+const scoreHigh = computed(() => {
+  return Math.floor(props.score/100);
+})
+
+const scoreLow = computed(() => {
+  return props.score%100;
+})
+
 /**자풍이 東이라면 붉은색 표시*/
 const isEast = () => {
   return {color: props.wind==='東' ? 'red' : ''}
@@ -28,7 +36,7 @@ const isEast = () => {
 
 /**리치가 불가능하면 회색 표시*/
 const ableRiichi = () => {
-  return {color: props.scoreHigh<10 && props.optMinusRiichi===false ? 'gray' : ''}
+  return {color: props.score<1000 && props.optMinusRiichi===false ? 'gray' : ''}
 }
 
 /**리치봉 표시*/
@@ -73,7 +81,7 @@ const emitEvent = (eventName, ...args) => {
       {{ scoreHigh }}<span style="font-size: 50px;"><span v-show="scoreLow<10">0</span>{{ scoreLow }}</span>
     </div>
     <div v-else :style="isDiff(scoreGap)">
-      <span v-show="scoreGap>0">+</span>{{ scoreGap }}<span style="font-size: 50px;">00</span>
+      <span v-show="scoreGap>0">+</span>{{ scoreGap/100 }}<span style="font-size: 50px;">00</span>
     </div>
   </div>
   <!-- 순위 표시 -->

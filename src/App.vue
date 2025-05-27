@@ -12,8 +12,7 @@ export default {
     return {
       seats: ["Down", "Right", "Up", "Left"], // 플레이어별 위치
       winds: ["東", "南", "西", "北"], // 플레이어별 현재 자풍
-      scoresHigh: [250, 250, 250, 250], // 플레이어별 현재 점수 (100자리 이상)
-      scoresLow: [0, 0, 0, 0], // 플레이어별 현재 점수 (100자리 이하)
+      scores: [25000, 25000, 25000, 25000], // 플레이어별 현재 점수
       ranks: [0, 0, 0, 0], // 플레이어별 순위
       scoresEffect: [0, 0, 0, 0], // 플레이어별 이펙트 점수
       scoresDiff: [0, 0, 0, 0], // 플레이어별 변동 점수
@@ -93,16 +92,16 @@ export default {
     toggleActiveRiichi(seat){
       let idx=this.seats.indexOf(seat); // 위치 기준 인덱스 반환
       if (this.isRiichi[idx]===false){ //  리치 활성화
-        if (this.scoresHigh[idx]<10 && this.optMinusRiichi===false) // 리치를 걸수 없을 때
+        if (this.scores[idx]<1000 && this.optMinusRiichi===false) // 리치를 걸수 없을 때
           return;
         else { // 1000점 이상 있거나 음수리치가 가능하다면
-          this.scoresHigh[idx]-=10;
+          this.scores[idx]-=1000;
           this.isRiichi[idx]=true;
           this.countRiichi++;
         }
       }
       else{ // 리치 비활성화
-        this.scoresHigh[idx]+=10;
+        this.scores[idx]+=1000;
         this.isRiichi[idx]=false;
         this.countRiichi--;
       }
@@ -116,11 +115,11 @@ export default {
             this.isGap[i]=false;
           else{ // 본인이 아니면 표시 변경
             this.isGap[i]=true;
-            this.scoresGap[i]=this.scoresHigh[idx]-this.scoresHigh[i];
+            this.scoresGap[i]=this.scores[idx]-this.scores[i];
           }
           this.ranks[i]=1; // 순위 표시 켜기
-          for (let j=0;j<this.scoresHigh.length;j++){ // 순위 계산
-            if (i!==j && this.scoresHigh[i]<this.scoresHigh[j])
+          for (let j=0;j<this.scores.length;j++){ // 순위 계산
+            if (i!==j && this.scores[i]<this.scores[j])
               this.ranks[i]++;
           }
         }
@@ -148,16 +147,14 @@ export default {
     },
     /**점수 변동 효과*/
     changeScores(idx){
-      let startScore=this.scoresHigh[idx]*100;
+      let startScore=this.scores[idx];
       let arrCut=[];
       for (let i=0;i<50;i++) // 변경될 점수 사이를 50등분해서 저장
         arrCut[i]=startScore+(this.scoresDiff[idx]/50)*(i+1);
       this.scoresEffect[idx]=this.scoresDiff[idx]; // 이펙트 켜기
       let timecnt=0;
       let repeat=setInterval(() => { // 시간에 따라 반복
-        let x=Math.floor(arrCut[timecnt]/100), y=Math.abs(arrCut[timecnt]%100);
-        this.scoresHigh[idx]=x // 100의 자리 변경
-        this.scoresLow[idx]=y // 10의자리 변경
+        this.scores[idx]=arrCut[timecnt] // 100의 자리 변경
         timecnt++;
         if (timecnt>=50){
           clearInterval(repeat); 
@@ -229,7 +226,7 @@ export default {
       this.currentWind="東"; // 장풍 설정
       this.currentRound=1; // 국 설정
       for (let i=0;i<this.recordsScore.length;i++)
-        this.scoresHigh[i]=Math.floor(this.setScore[0]/100); // 점수 설정
+        this.scores[i]=this.setScore[0]; // 점수 설정
       this.countRenchan=0; // 연장 설정
       this.countRiichi=0; // 리치봉 설정
       for (let i=0;i<this.winds.length;i++)
@@ -245,7 +242,7 @@ export default {
     hideModal(){
       if (this.modalType==='set_options'){ // 옵션 설정창이라면 확인
         let arrows=["▼", "▶", "▲", "◀"];
-        let cntScore=this.scoresHigh.reduce((acc, cur) => acc + cur, this.countRiichi*10)*100; // 현재 총점
+        let cntScore=this.scores.reduce((acc, cur) => acc + cur, this.countRiichi*1000); // 현재 총점
         let cntUma=this.rankUma.reduce((acc, cur) => acc + cur, 0); // 현재 총우마
         for (let i=0;i<this.names.length;i++){
           if (this.names[i]==='') // 이름이 없는 경우
@@ -514,7 +511,7 @@ export default {
       if (this.roundStatus==='cheat'){ // 촌보의 경우 리치봉 반환
         for (let i=0;i<this.isRiichi.length;i++){
           if (this.isRiichi[i]){
-            this.scoresHigh[i]+=10;
+            this.scores[i]+=1000;
             this.isRiichi[i]=false;
             this.countRiichi--;
           }
@@ -529,12 +526,12 @@ export default {
         this.changeScores(i);
       for (let i=0;i<this.scoresDiff.length;i++){ // 점수 기록창에 점수 기록
         this.recordsScore[i].push(this.scoresDiff[i]);
-        this.recordsScore[i].push(this.scoresHigh[i]*100+this.scoresDiff[i]);
+        this.recordsScore[i].push(this.scores[i]+this.scoresDiff[i]);
       }
-      this.recordsTime.push(this.currentWind+this.currentRound+'局 '+this.countRenchan+'本場');// 점수 기록창에 국+본장 기록
+      this.recordsTime.push(this.currentWind+this.currentRound+'局 '+this.countRenchan+'本場'); // 점수 기록창에 국+본장 기록
       this.recordsTime.push('ㅤ');
-      this.recordsWin.push([...this.isWin]);
-      this.recordsLose.push([...this.isLose]);
+      this.recordsWin.push([...this.isWin]); // 화료 기록에 추가
+      this.recordsLose.push([...this.isLose]); // 방총 기록에 추가
       if (this.roundStatus==='tsumo' || this.roundStatus==='ron'){ // 화료로 끝났다면
         let chinWin=this.isWin[this.winds.indexOf('東')]; // 친이 화료했는지 체크
         if (chinWin===false){ // 친이 화료를 못했다면
@@ -616,11 +613,11 @@ export default {
       this.currentWind=arr[0]; // 장풍 설정
       this.currentRound=Number(arr[1]); // 국 설정
       for (let i=0;i<this.recordsScore.length;i++){
-        this.scoresHigh[i]=Math.floor(Number(this.recordsScore[i][this.recordsScore[i].length-1])/100); // 점수 설정
-        cnt+=this.scoresHigh[i];
+        this.scores[i]=Number(this.recordsScore[i][this.recordsScore[i].length-1]); // 점수 설정
+        cnt+=this.scores[i];
       }
       this.countRenchan=Number(arr[3]); // 연장 설정
-      this.countRiichi=Math.floor((Math.floor(this.setScore[0]*4/100)-cnt)/10); // 리치봉 설정
+      this.countRiichi=Math.floor((this.setScore[0]*4-cnt)/10); // 리치봉 설정
       for (let i=1;i<this.currentRound;i++)
         allWinds.unshift(allWinds.pop()); // 현재 바람 세기
       for (let i=0;i<this.winds.length;i++)
@@ -638,8 +635,7 @@ export default {
     :key="i"
     :seat="seats[i]"
     :wind="winds[i]"
-    :scoreHigh="scoresHigh[i]"
-    :scoreLow="scoresLow[i]"
+    :score="scores[i]"
     :rank="ranks[i]"
     :scoreEffect="scoresEffect[i]"
     :scoreGap="scoresGap[i]"
@@ -662,7 +658,7 @@ export default {
   <modal
     v-if="modal"
     :winds
-    :scoresHigh
+    :scores
     :scoresDiff
     :names
     :focusWinner

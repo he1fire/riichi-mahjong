@@ -6,7 +6,7 @@ export default {
   },
   props: {
     winds: Array,
-    scoresHigh: Array,
+    scores: Array,
     scoresDiff: Array,
     names: Array,
     focusWinner: Number,
@@ -167,14 +167,14 @@ export default {
     },
     /**순위표 점수 계산*/
     calculatePoint(idx){
-      let score=this.scoresHigh[idx]*100;
+      let score=this.scores[idx];
       let point=0 // 점수기반
       let oka=(this.setScore[1]*4-this.setScore[0]*4)/1000; // 오카
       let rank=1, uma=0, cnt=0;
-      for (let i=0;i<this.scoresHigh.length;i++){
-        if (this.scoresHigh[idx]<this.scoresHigh[i])
+      for (let i=0;i<this.scores.length;i++){
+        if (this.scores[idx]<this.scores[i])
           rank++; //순위 체크
-        else if (this.scoresHigh[idx]===this.scoresHigh[i])
+        else if (this.scores[idx]===this.scores[i])
           cnt++; // 동점자 체크
       }
       for (let i=0;i<cnt;i++) // 동점자의 모든 우마 더하기
@@ -580,7 +580,7 @@ export default {
         <div v-for="(_, i) in names" :key="i">{{ names[i] }}</div>
       </div>
       <div style="grid-area: score_contents;">
-        <div v-for="(_, i) in scoresHigh" :key="i">{{calculatePoint(i)}}</div>
+        <div v-for="(_, i) in scores" :key="i">{{calculatePoint(i)}}</div>
       </div>
       <div style="grid-area: riichi_contents;">
         <div v-for="(_, i) in recordsRiichi[0]" :key="i">{{calculateRecord(recordsRiichi, i)}}</div>
