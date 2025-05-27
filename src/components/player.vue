@@ -1,58 +1,60 @@
-<script>
+<script setup>
 import graphics from './graphics.vue'
-export default {
-  components: {
-    graphics,
-  },
-  props: {
-    seat: String,
-    wind: String,
-    scoreHigh: Number,
-    scoreLow: Number,
-    rank: Number,
-    scoreEffect: Number,
-    scoreGap: Number,
-    isRiichi: Boolean,
-    isGap: Boolean,
-    optMinusRiichi: Boolean,
-  },
-  emits: ['toggle-active-riichi', 'toggle-show-gap'],
-  data(){
-    return {
-    };
-  },
-  methods: {
-    /**본인 바람이 동이라면 붉은색 표시*/
-    isEast() {
-      return {color: this.wind==='東' ? 'red' : ''};
-    },
-    /**리치가 불가능하면 회색 표시*/
-    ableRiichi() {
-      return {color: (this.scoreHigh<10 && this.optMinusRiichi===false) ? 'gray' : ''};
-    },
-    /**리치봉 표시*/
-    showRiichi() {
-      return {visibility: this.isRiichi===true ? 'visible' : 'hidden'};
-    },
-    /**점수 변동에 따른 글자색*/
-    isDiff(x) {
-      if (x>0) // 양수일때
-        return {color: 'limegreen'};
-      else if (x<0) // 음수일때
-        return {color: 'red'};
-      else
-        return {color: ''};
-    },
-    /**$emit 이벤트 발생*/
-    emitEvent(eventName, ...args) {
-      this.$emit(eventName, ...args);
-    },
-    /**점수 차이 보여주기*/
-    toggleShowGap(x){
-      this.emitEvent('toggle-show-gap', this.seat, x);
-    },
-  }
-};
+
+/**props 선언*/
+const props = defineProps({
+  seat: String,
+  wind: String,
+  scoreHigh: Number,
+  scoreLow: Number,
+  rank: Number,
+  scoreEffect: Number,
+  scoreGap: Number,
+  isRiichi: Boolean,
+  isGap: Boolean,
+  optMinusRiichi: Boolean,
+})
+
+/**emits 이벤트 선언*/
+const emit = defineEmits([
+  'toggle-active-riichi',
+  'toggle-show-gap'
+])
+
+/**자풍이 東이라면 붉은색 표시*/
+const isEast = () => {
+  return {color: props.wind==='東' ? 'red' : ''}
+}
+
+/**리치가 불가능하면 회색 표시*/
+const ableRiichi = () => {
+  return {color: props.scoreHigh<10 && props.optMinusRiichi===false ? 'gray' : ''}
+}
+
+/**리치봉 표시*/
+const showRiichi = () => {
+  return {visibility: props.isRiichi===true ? 'visible' : 'hidden'}
+}
+
+/**점수 변동에 따른 글자색*/
+const isDiff = (x) => {
+  if (x>0)
+    return {color: 'limegreen'}
+  else if (x<0)
+    return {color: 'red'}
+  else
+    return {color: ''}
+}
+
+/**emit 이벤트 발생*/
+const emitEvent = (eventName, ...args) => {
+  emit(eventName, ...args)
+}
+
+// 점수 차이 보여주기*/
+const toggleShowGap = (x) => {
+  emitEvent('toggle-show-gap', props.seat, x)
+}
 </script>
 
 <template>
@@ -67,11 +69,11 @@ export default {
     @touchstart="toggleShowGap(true)"
     @touchend="toggleShowGap(false)"
     @touchcancel="toggleShowGap(false)"
-    >
+  >
     {{ wind }}
   </div>
   <!-- 현재 점수 -->
-  <div class="score" >
+  <div class="score">
     <div v-if="isGap===false" :style="ableRiichi()" @click="emitEvent('toggle-active-riichi', this.seat)">
       {{ scoreHigh }}<span style="font-size: 50px;"><span v-show="this.scoreLow<10">0</span>{{ scoreLow }}</span>
     </div>

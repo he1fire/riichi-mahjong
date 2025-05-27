@@ -331,9 +331,9 @@ export default {
         :key="i"
         :style="[isChecked(i, 'inputfao')]"
         @click.stop="emitEvent('toggle-check-status', i, 'inputfao')"
-        >
-          {{ fan[i+9] }}
-        </span>
+      >
+        {{ fan[i+9] }}
+      </span>
     </div>
     <div style="font-size: 30px;" @click.stop="emitEvent('calculate-win');">
       OK
