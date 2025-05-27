@@ -21,10 +21,12 @@ const emit = defineEmits([
   'toggle-show-gap'
 ])
 
+/**100 자리 이상 점수*/
 const scoreHigh = computed(() => {
   return Math.floor(props.score/100);
 })
 
+/**100 자리 이하 점수*/
 const scoreLow = computed(() => {
   return props.score%100;
 })
