@@ -122,7 +122,7 @@ export default {
         }
       }
       else if (status==='isfao') // 점수창 OX
-        return {color: this.isFao===true ? 'blue' : 'red'};
+        return {color: this.isFao===true ? 'mediumblue' : 'red'};
       else if (status==='inputfao'){ // 책임지불 점수창
         if (this.inputFan-9<x) // 입력값보다 크면 불가능
           return {color: 'gray'};
@@ -137,13 +137,13 @@ export default {
         return {gridArea: `tile_${x+1}`, color: this.isOpened[x]===true ? (this.randomSeats[x]==='東' ? 'red' : '') : 'orange', backgroundColor: this.isOpened[x]===true ? '' : 'orange'};
       }
       else if (status==='roundmangan') // 유국만관 옵션
-        return {color: this.optRoundMangan===true ? 'blue' : 'red'};
+        return {color: this.optRoundMangan===true ? 'mediumblue' : 'red'};
       else if (status==='minusriichi') // 음수리치 옵션
-        return {color: this.optMinusRiichi===true ? 'blue' : 'red'};
+        return {color: this.optMinusRiichi===true ? 'mediumblue' : 'red'};
       else if (status==='cheatscore') // 촌보점수 옵션
-        return {color: this.optCheatScore===true ? 'blue' : 'red'};
+        return {color: this.optCheatScore===true ? 'mediumblue' : 'red'};
       else if (status==='endriichi') // 공탁처리 옵션
-        return {color: this.optEndRiichi===true ? 'blue' : 'red'};
+        return {color: this.optEndRiichi===true ? 'mediumblue' : 'red'};
     },
     /**역만인지 확인하고 숨기기*/
     isYakuman(x){
@@ -504,6 +504,7 @@ export default {
           maxlength="4"
           v-model="names[i]"
           :placeholder="`이름${i+1}`"
+          :name="`name${i+1}`"
         >
       </div>
       <div style="grid-area: option0;">
@@ -512,6 +513,7 @@ export default {
           type="number"
           v-model="setScore[0]"
           :placeholder="25000"
+          :name="'startScore'"
         >
       </div>
       <div style="grid-area: option1;">
@@ -520,6 +522,7 @@ export default {
           type="number"
           v-model="setScore[1]"
           :placeholder="30000"
+          :name="'endScore'"
         >
       </div>
       <div style="grid-area: option2;" @click.stop="emitEvent('toggle-check-status', -1, 'roundmangan')">
@@ -544,7 +547,8 @@ export default {
           style="width: 45px;"
           type="number"
           v-model="this.rankUma[i]"
-          :placeholder="`${i+1}위 우마`"
+          :placeholder="`${i+1}위`"
+          :name="`uma${i+1}`"
           :style="{ marginRight: i===rankUma.length-1 ? '0px' : '4px' }"
         >
       </div>  
