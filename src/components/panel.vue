@@ -1,27 +1,24 @@
-<script>
-import graphics from './graphics.vue'
-export default {
-  components: {
-    graphics,
-  },
-  props: {
-    currentWind: String,
-    currentRound: Number,
-    countRiichi: Number,
-    countRenchan: Number,
-  },
-  emits: ['show-modal', 'roll-dice'],
-  data(){
-    return {
-    };
-  },
-  methods: {
-    /**$emit 이벤트 발생*/
-    emitEvent(eventName, ...args) {
-      this.$emit(eventName, ...args);
-    },
-  }
-};
+<script setup>
+import graphics from './graphics.vue';
+
+/**prop 정의*/
+const props = defineProps({
+  currentWind: String,
+  currentRound: Number,
+  countRiichi: Number,
+  countRenchan: Number,
+});
+
+/**emit 이벤트 정의*/
+const emit = defineEmits([
+  'show-modal',
+  'roll-dice'
+]);
+
+/**$emit 이벤트 발생*/
+function emitEvent(eventName, ...args){
+  emit(eventName, ...args);
+}
 </script>
 
 <template>
