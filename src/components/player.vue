@@ -50,11 +50,6 @@ const isDiff = (x) => {
 const emitEvent = (eventName, ...args) => {
   emit(eventName, ...args)
 }
-
-// 점수 차이 보여주기*/
-const toggleShowGap = (x) => {
-  emitEvent('toggle-show-gap', props.seat, x)
-}
 </script>
 
 <template>
@@ -63,12 +58,12 @@ const toggleShowGap = (x) => {
   <graphics kind="riichiStick" class="stick" :style="showRiichi()"/>
   <!-- 현재 바람 -->
   <div class="wind" :style="isEast()"
-    @mousedown="toggleShowGap(true)"
-    @mouseup="toggleShowGap(false)"
-    @mouseleave="toggleShowGap(false)"
-    @touchstart="toggleShowGap(true)"
-    @touchend="toggleShowGap(false)"
-    @touchcancel="toggleShowGap(false)"
+    @mousedown="emitEvent('toggle-show-gap', seat, true)"
+    @mouseup="emitEvent('toggle-show-gap', seat, false)"
+    @mouseleave="emitEvent('toggle-show-gap', seat, false)"
+    @touchstart="emitEvent('toggle-show-gap', seat, true)"
+    @touchend="emitEvent('toggle-show-gap', seat, false)"
+    @touchcancel="emitEvent('toggle-show-gap', seat, false)"
   >
     {{ wind }}
   </div>
