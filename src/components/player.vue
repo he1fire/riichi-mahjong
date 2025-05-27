@@ -28,7 +28,7 @@ const scoreHigh = computed(() => {
 
 /**100 자리 이하 점수*/
 const scoreLow = computed(() => {
-  return props.score%100;
+  return Math.abs(props.score%100);
 })
 
 /**자풍이 東이라면 붉은색 표시*/
