@@ -17,32 +17,37 @@ const emit = defineEmits([
 ])
 
 /**100 자리 이상 점수*/
-const scoreHigh = computed(() => {
+const displayScoreHigh = computed(() => {
   return Math.floor(props.player.displayScore/100);
 })
 
 /**100 자리 이하 점수*/
-const scoreLow = computed(() => {
+const displayScoreLow = computed(() => {
   return Math.abs(props.player.displayScore%100);
 })
 
+/**100 자리 이상 점수 차이*/
+const gapScoreHigh = computed(() => {
+  return Math.floor(props.player.gapScore/100);
+})
+
 /**자풍이 東이라면 붉은색 표시*/
-const isEast = () => {
+const windStyle = () => {
   return {color: props.player.wind==='東' ? 'red' : ''}
 }
 
 /**리치가 불가능하면 회색 표시*/
-const ableRiichi = () => {
+const displayScoreStyle = () => {
   return {color: props.player.displayScore<1000 && props.option.minusRiichi===false ? 'gray' : ''}
 }
 
 /**리치봉 표시*/
-const showRiichi = () => {
+const riichiStickVisibility = () => {
   return {visibility: props.isRiichi===true ? 'visible' : 'hidden'}
 }
 
 /**점수 변동에 따른 글자색*/
-const getScoreColor = (x) => {
+const getSignColor = (x) => {
   if (x>0)
     return {color: 'limegreen'}
   else if (x<0)
@@ -60,9 +65,9 @@ const emitEvent = (eventName, ...args) => {
 <template>
 <div class="container_player" :id=player.seat>
   <!-- 리치봉 -->
-  <graphics kind="riichiStick" class="stick" :style="showRiichi()"/>
+  <graphics kind="riichiStick" class="stick" :style="riichiStickVisibility()"/>
   <!-- 현재 바람 -->
-  <div class="wind" :style="isEast()"
+  <div class="wind" :style="windStyle()"
     @mousedown="emitEvent('toggle-show-gap', player.seat, true)"
     @mouseup="emitEvent('toggle-show-gap', player.seat, false)"
     @mouseleave="emitEvent('toggle-show-gap', player.seat, false)"
@@ -74,11 +79,11 @@ const emitEvent = (eventName, ...args) => {
   </div>
   <!-- 현재 점수 -->
   <div class="score">
-    <div v-if="isGap===false" :style="ableRiichi()" @click="emitEvent('toggle-active-riichi', player.seat)">
-      {{ scoreHigh }}<span style="font-size: 50px;"><span v-show="scoreLow<10">0</span>{{ scoreLow }}</span>
+    <div v-if="isGap===false" :style="displayScoreStyle()" @click="emitEvent('toggle-active-riichi', player.seat)">
+      {{ displayScoreHigh }}<span style="font-size: 50px;"><span v-show="displayScoreLow<10">0</span>{{ displayScoreLow }}</span>
     </div>
-    <div v-else :style="getScoreColor(player.gapScore)">
-      <span v-show="player.gapScore>0">+</span>{{ Math.floor(player.gapScore/100) }}<span style="font-size: 50px;">00</span>
+    <div v-else :style="getSignColor(player.gapScore)">
+      <span v-show="gapScoreHigh>0">+</span>{{ gapScoreHigh }}<span style="font-size: 50px;">00</span>
     </div>
   </div>
   <!-- 순위 표시 -->
@@ -86,7 +91,7 @@ const emitEvent = (eventName, ...args) => {
     {{ player.rank }}
   </div>
   <!-- 변경되는 점수 -->
-  <div v-show="player.effectScore!==0" class="change" :style="getScoreColor(player.effectScore)">
+  <div v-show="player.effectScore!==0" class="change" :style="getSignColor(player.effectScore)">
     <span v-show="player.effectScore>0">+</span>{{ player.effectScore }}
   </div>
 </div>

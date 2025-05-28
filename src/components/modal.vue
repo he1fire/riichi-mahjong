@@ -62,7 +62,7 @@ const fan = ["1", "2", "3", "4", "5", "6+", "8+", "11+", "13+", "1배역만", "2
 const bu = [20, 25, 30, 40, 50, 60, 70, 80, 90, 100, 110];
 
 /**ok 버튼 색상*/
-const getOkButtonColor = (status) => {
+const okButtonStyle = (status) => {
   let cntWin=props.isWin.filter(x => x===true).length; // 화료 인원 세기
   let cntLose=props.isLose.filter(x => x===true).length; // 방총 인원 세기
   let cntCheat=props.isCheat.filter(x => x===true).length; // 촌보 인원 세기
@@ -77,7 +77,7 @@ const getOkButtonColor = (status) => {
 }
 
 /**화살표 버튼 색상*/
-const getArrowButtonColor = (status, idx) => {
+const arrowButtonStyle = (status, idx) => {
   if (status==='win') // 화료 화살표 버튼
     return {color: props.isWin[idx]===true ? 'red' : ''}; // 선택시 빨간색
   else if (status==='lose') // 방총 화살표 버튼
@@ -91,7 +91,7 @@ const getArrowButtonColor = (status, idx) => {
 }
 
 /**토글 버튼 색상*/
-const getToggleButtonColor = (status) => {
+const toggleButtonStyle = (status) => {
   if (status==='isfao') // 점수창 책임지불 OX
     return {color: props.isFao===true ? 'mediumblue' : 'red'};
   else if (status==='roundmangan') // 유국만관 옵션
@@ -104,42 +104,50 @@ const getToggleButtonColor = (status) => {
     return {color: props.option.endRiichi===true ? 'mediumblue' : 'red'};
 }
 
-/**체크 표시시 색상 변경*/
-const isChecked = (x, status) => {
+/**판/부 버튼 색상*/
+const fanBuButtonStyle = (status, idx) => {
   if (status==='fan') // 판 체크
-    return {color: x===props.inputFan ? 'red' : ''};
+    return {color: idx===props.inputFan ? 'red' : ''};
   else if (status==='bu'){ // 부 체크
-    if (props.roundStatus==='ron' && x===0) // 론일때 20부 이하 비활성화
+    if (props.roundStatus==='ron' && idx===0) // 론일때 20부 이하시 회색
       return {color: 'gray'};
-    else if (props.inputFan===0 && x<=1) // 1판 25부 이하 비활성화
+    else if (props.inputFan===0 && idx<=1) // 1판 25부 이하시 회색
       return {color: 'gray'};
-    else if (props.inputFan>=4) // 만관 이상일때 부수 비활성화
+    else if (props.inputFan>=4) // 만관 이상일때 부수 회색
       return {color: 'gray'};
     else
-      return {color: x===props.inputBu ? 'red' : ''};
+      return {color: idx===props.inputBu ? 'red' : ''}; // 선택시 빨간색
   }
   else if (status==='inputfao'){ // 책임지불 점수창
-    if (props.inputFan-9<x) // 입력값보다 크면 불가능
+    if (props.inputFan-9<idx) // 입력값보다 크면 불가능
       return {color: 'gray'};
     else
-      return {color: x===props.inputFao ? 'red' : ''};
-  }
-  else if (status==='dicemodal') // 주사위창 회전
-    return {transform: `translate(-50%, -50%) rotate(${360-props.players.findIndex(player => player.wind==='東')*90}deg)`};
-  else if (status==='dice') // 주사위 방향 보이기
-    return {visibility: props.isWall[x]===true ? 'visible' : 'hidden'};
-  else if (status==='tile'){ // 타일 뒤집기
-    return {gridArea: `tile_${x+1}`, color: props.isOpened[x]===true ? (props.randomSeats[x]==='東' ? 'red' : '') : 'orange', backgroundColor: props.isOpened[x]===true ? '' : 'orange'};
+      return {color: idx===props.inputFao ? 'red' : ''}; // 선택시 빨간색
   }
 }
 
 /**역만인지 확인하고 숨기기*/
-const isYakuman = (x) => {
-  return {display: ((props.inputFan<9 && x===9) || x===props.inputFan) ? '' : 'none'};
+const yakumanVisibility = (idx) => {
+  return {display: ((props.inputFan<9 && idx===9) || idx===props.inputFan) ? '' : 'none'};
+}
+
+/**주사위 모달창 회전*/
+const diceModalTransform = () => {
+  return {transform: `translate(-50%, -50%) rotate(${360-props.players.findIndex(player => player.wind==='東')*90}deg)`};
+}
+
+/**주사위 패산 방향 표시*/
+const wallDirectionVisibility = (idx) => {
+  return {visibility: props.isWall[idx]===true ? 'visible' : 'hidden'};
+}
+
+/**주사위 패산 방향 표시*/
+const seatTileStyle = (idx) => {
+  return {gridArea: `tile_${idx+1}`, color: props.isOpened[idx]===true ? (props.randomSeats[idx]==='東' ? 'red' : '') : 'orange', backgroundColor: props.isOpened[idx]===true ? '' : 'orange'};
 }
 
 /**점수 색상*/
-const getScoreColor = (x) => {
+const getSignColor = (x) => {
   if (x>0)
     return {color: 'limegreen'};
   else if (x<0)
@@ -164,7 +172,7 @@ const calculatePoint = (idx) => {
   let rank=1, uma=0, cnt=0;
   for (let i=0;i<props.players.length;i++){
     if (myScore<props.players[i].displayScore)
-      rank++; //순위 체크
+      rank++; // 순위 체크
     else if (myScore===props.players[i].displayScore)
       cnt++; // 동점자 체크
   }
@@ -172,10 +180,10 @@ const calculatePoint = (idx) => {
     uma+=Number(props.rankUma[rank+i-1]);
   if (rank===1){ // 1위라면 오카도 더하기
     uma+=oka;
-    if (props.option.endRiichi) // 1위에게 공탁금을 몰아주는 경우
+    if (props.option.endRiichi) // 1위에게 공탁금을 몰아주는 경우 (100점단위)
       myScore+=Math.floor(((props.panel.riichi*1000)/cnt)/100)*100;
   }
-  uma/=cnt;
+  uma/=cnt; // 동점자 수만큼 우마 나누기
   point=(myScore-props.setScore[1])/1000+uma;
   return String(myScore)+'('+point.toFixed(1)+')';
 }
@@ -207,12 +215,12 @@ const emitEvent = (eventName, ...args) => {
       <div v-for="(_, i) in class_check"
         :key="i"
         :class="class_check[i]"
-        :style="getArrowButtonColor('win', i)"
+        :style="arrowButtonStyle('win', i)"
         @click.stop="emitEvent('toggle-check-status', i, 'win')"
       >
         {{ arr_arrow[i] }}
       </div>
-      <div class="ok" :style="getOkButtonColor('win')" @click.stop="emitEvent('check-invalid-status', 'win')">
+      <div class="ok" :style="okButtonStyle('win')" @click.stop="emitEvent('check-invalid-status', 'win')">
         OK
       </div>
     </div>
@@ -226,12 +234,12 @@ const emitEvent = (eventName, ...args) => {
       <div v-for="(_, i) in class_check"
         :key="i"
         :class="class_check[i]"
-        :style="getArrowButtonColor('lose', i)"
+        :style="arrowButtonStyle('lose', i)"
         @click.stop="emitEvent('toggle-check-status', i, 'lose')"
       >
         {{ arr_arrow[i] }}
       </div>
-      <div class="ok" :style="getOkButtonColor('lose')" @click.stop="emitEvent('check-invalid-status', 'lose')">
+      <div class="ok" :style="okButtonStyle('lose')" @click.stop="emitEvent('check-invalid-status', 'lose')">
         OK
       </div>
     </div>
@@ -248,7 +256,7 @@ const emitEvent = (eventName, ...args) => {
       <div class="fan_check">
         <span v-for="(_, i) in fan.slice(0, 9)"
         :key="i"
-        :style="isChecked(i, 'fan')"
+        :style="fanBuButtonStyle('fan', i)"
         @click.stop="emitEvent('toggle-check-status', i, 'fan')"
         >
           {{ fan[i] }}
@@ -256,13 +264,13 @@ const emitEvent = (eventName, ...args) => {
         <div></div>
         <span v-for="(_, i) in fan.slice(9)"
         :key="i"
-        :style="[isChecked(i+9, 'fan'), isYakuman(i+9)]"
+        :style="[fanBuButtonStyle('fan', i+9), yakumanVisibility(i+9)]"
         @click.stop="emitEvent('toggle-check-status', i+9, 'fan')"
         >
           {{ fan[i+9] }}
         </span>
         <span v-show="inputFan>=9" style="font-size: 20px;" @click.stop="emitEvent('toggle-check-status', -1, 'isfao')">(책임지불
-          <span :style="getToggleButtonColor('isfao')">
+          <span :style="toggleButtonStyle('isfao')">
             <span v-show="isFao===true">O</span>
             <span v-show="isFao===false">X</span>
           </span>
@@ -274,7 +282,7 @@ const emitEvent = (eventName, ...args) => {
       <div class="bu_check">
         <span v-for="(_, i) in bu.slice(0, 6)"
           :key="i"
-          :style="isChecked(i, 'bu')"
+          :style="fanBuButtonStyle('bu', i)"
           @click.stop="emitEvent('toggle-check-status', i, 'bu')"
         >
           {{ bu[i] }}
@@ -282,7 +290,7 @@ const emitEvent = (eventName, ...args) => {
         <div></div>
         <span v-for="(_, i) in bu.slice(6)"
           :key="i"
-          :style="isChecked(i+6, 'bu')"
+          :style="fanBuButtonStyle('bu', i+6)"
           @click.stop="emitEvent('toggle-check-status', i+6, 'bu')"
         >
           {{ bu[i+6] }}
@@ -302,12 +310,12 @@ const emitEvent = (eventName, ...args) => {
       <div v-for="(_, i) in class_check"
         :key="i"
         :class="class_check[i]"
-        :style="getArrowButtonColor('fao', i)"
+        :style="arrowButtonStyle('fao', i)"
         @click.stop="emitEvent('toggle-check-status', i, 'fao')"
       >
         {{ arr_arrow[i] }}
       </div>
-      <div class="ok" :style="getOkButtonColor('fao')" @click.stop="emitEvent('check-invalid-status', 'fao')">
+      <div class="ok" :style="okButtonStyle('fao')" @click.stop="emitEvent('check-invalid-status', 'fao')">
         OK
       </div>
     </div>
@@ -320,7 +328,7 @@ const emitEvent = (eventName, ...args) => {
     <div class="container_choose_fao_score">
       <span v-for="(_, i) in fan.slice(9)"
         :key="i"
-        :style="[isChecked(i, 'inputfao')]"
+        :style="fanBuButtonStyle('inputfao', i)"
         @click.stop="emitEvent('toggle-check-status', i, 'inputfao')"
       >
         {{ fan[i+9] }}
@@ -348,7 +356,7 @@ const emitEvent = (eventName, ...args) => {
       <div v-for="(_, i) in class_check"
         :key="i"
         :class="class_check[i]"
-        :style="getArrowButtonColor('tenpai', i)"
+        :style="arrowButtonStyle('tenpai', i)"
         @click.stop="emitEvent('toggle-check-status', i, 'tenpai')"
       >
         {{ arr_arrow[i] }}
@@ -367,12 +375,12 @@ const emitEvent = (eventName, ...args) => {
       <div v-for="(_, i) in class_check"
         :key="i"
         :class="class_check[i]"
-        :style="getArrowButtonColor('cheat', i)"
+        :style="arrowButtonStyle('cheat', i)"
         @click.stop="emitEvent('toggle-check-status', i, 'cheat')"
       >
         {{ arr_arrow[i] }}
       </div>
-      <div class="ok" :style="getOkButtonColor('cheat')" @click.stop="emitEvent('check-invalid-status', 'cheat')">
+      <div class="ok" :style="okButtonStyle('cheat')" @click.stop="emitEvent('check-invalid-status', 'cheat')">
         OK
       </div>
     </div>
@@ -383,7 +391,7 @@ const emitEvent = (eventName, ...args) => {
       <div v-for="(_, i) in class_score_diff"
         :key="i"
         :class="class_score_diff[i]"
-        :style="getScoreColor(scoresDiff[i])"
+        :style="getSignColor(scoresDiff[i])"
       >
         <span v-show="scoresDiff[i]>0">+</span>{{ scoresDiff[i] }}
       </div>
@@ -393,7 +401,7 @@ const emitEvent = (eventName, ...args) => {
     </div>
   </div>
   <!-- 주사위 굴림창 -->
-  <div v-else-if="modalType==='roll_dice'" class="modal_content" :style="isChecked(-1, 'dicemodal')" @click.stop>
+  <div v-else-if="modalType==='roll_dice'" class="modal_content" :style="diceModalTransform()" @click.stop>
     <div class="container_roll" @click.stop="emitEvent('roll-dice')">
       <graphics kind="dice" :value="diceValue[0]" style="grid-area: dice_1; transform: scale(2);"/>
       <graphics kind="dice" :value="diceValue[1]" style="grid-area: dice_2; transform: scale(2);"/>
@@ -404,7 +412,7 @@ const emitEvent = (eventName, ...args) => {
       <div v-for="(_, i) in class_dice"
         :key="i"
         :class="class_dice[i]"
-        :style="isChecked(i, 'dice')"
+        :style="wallDirectionVisibility(i)"
       >
         {{ arr_arrow[i] }}
       </div>
@@ -416,7 +424,7 @@ const emitEvent = (eventName, ...args) => {
       <graphics v-for="(_, i) in randomSeats"
         :key="i"
         kind="tile"
-        :style="isChecked(i, 'tile')"
+        :style="seatTileStyle(i)"
         :value="randomSeats[i]"
         @click.stop="emitEvent('toggle-check-status', i, 'tile')"
       ></graphics>
@@ -464,7 +472,7 @@ const emitEvent = (eventName, ...args) => {
         >
           <div v-for="(_, j) in recordsScore[i]"
             :key="j"
-            :style="j%2===1 ? getScoreColor(recordsScore[i][j]) : {}"
+            :style="j%2===1 ? getSignColor(recordsScore[i][j]) : {}"
           >
             <span v-show="j%2===1 && recordsScore[i][j]>0">+</span>{{ recordsScore[i][j] }}
           </div>
@@ -518,14 +526,14 @@ const emitEvent = (eventName, ...args) => {
       </div>
       <div style="grid-area: option2;" @click.stop="emitEvent('toggle-check-status', -1, 'roundmangan')">
         절상만관<br>
-        <span :style="getToggleButtonColor('roundmangan')">
+        <span :style="toggleButtonStyle('roundmangan')">
           <span v-show="option.roundMangan===true">O</span>
           <span v-show="option.roundMangan===false">X</span>
         </span>
       </div>
       <div style="grid-area: option3;" @click.stop="emitEvent('toggle-check-status', -1, 'minusriichi')">
         음수리치<br>
-        <span :style="getToggleButtonColor('minusriichi')">
+        <span :style="toggleButtonStyle('minusriichi')">
           <span v-show="option.minusRiichi===true">O</span>
           <span v-show="option.minusRiichi===false">X</span>
         </span>
@@ -545,14 +553,14 @@ const emitEvent = (eventName, ...args) => {
       </div>  
       <div style="grid-area: option5;" @click.stop="emitEvent('toggle-check-status', -1, 'cheatscore')">
         촌보점수<br>
-        <span :style="getToggleButtonColor('cheatscore')">
+        <span :style="toggleButtonStyle('cheatscore')">
           <span v-show="option.cheatScore===true">3000 All</span>
           <span v-show="option.cheatScore===false">만관</span>
         </span>
       </div>
       <div style="grid-area: option6;" @click.stop="emitEvent('toggle-check-status', -1, 'endriichi')">
         공탁처리<br>
-        <span :style="getToggleButtonColor('endriichi')">
+        <span :style="toggleButtonStyle('endriichi')">
           <span v-show="option.endRiichi===true">1위</span>
           <span v-show="option.endRiichi===false">X</span>
         </span>
