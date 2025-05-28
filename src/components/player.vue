@@ -2,7 +2,7 @@
 import graphics from './graphics.vue'
 import {computed} from 'vue'
 
-/**props 선언*/
+/**props 정의*/
 const props = defineProps({
   seat: String,
   wind: String,
@@ -15,7 +15,7 @@ const props = defineProps({
   optMinusRiichi: Boolean,
 })
 
-/**emits 이벤트 선언*/
+/**emits 정의*/
 const emit = defineEmits([
   'toggle-active-riichi',
   'toggle-show-gap'

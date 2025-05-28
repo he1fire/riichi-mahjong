@@ -1,207 +1,220 @@
-<script>
+<script setup>
 import graphics from './graphics.vue'
-export default {
-  components: {
-    graphics,
-  },
-  props: {
-    winds: Array,
-    scores: Array,
-    scoresDiff: Array,
-    names: Array,
-    focusWinner: Number,
-    isFao: Boolean,
-    focusFao: Number,
-    inputFao: Number,
-    inputFan: Number,
-    inputBu: Number,
-    isRiichi: Array,
-    isWin: Array,
-    isLose: Array,
-    isTenpai: Array,
-    isCheat: Array,
-    countRiichi: Number,
-    roundStatus: String,
-    diceValue: Array,
-    isWall: Array,
-    isOpened: Array,
-    randomSeats: Array,
-    recordsTime: Array,
-    recordsScore: Array,
-    recordsRiichi: Array, 
-    recordsWin: Array, 
-    recordsLose: Array,
-    setScore: Array,
-    rankUma: Array,
-    optRoundMangan: Boolean,
-    optMinusRiichi: Boolean,
-    optCheatScore: Boolean,
-    optEndRiichi: Boolean,
-    modalType: String,
-  },
-  emits: ['show-modal', 'hide-modal', 'toggle-check-status', 'check-invalid-status', 'calculate-win', 'calculate-draw', 'save-round', 'roll-dice', 'copy-record', 'rollback-record'],
-  data(){
-    return {
-      arr_arrow: ["▼", "▶", "▲", "◀"],
-      arr_seat: ["동(東)", "남(南)", "서(西)", "북(北)"],
-      arr_scoresheet: ["바람", "이름", "점수", "리치", "화료", "방총"],
-      class_check: ["down_check", "right_check", "up_check", "left_check"],
-      class_score_diff: ["down_score_diff", "right_score_diff", "up_score_diff", "left_score_diff"],
-      class_dice: ["down_dice", "right_dice", "up_dice", "left_dice"],
-      class_name: ["down_name", "right_name", "up_name", "left_name"],
-      class_record: ["down_record", "right_record", "up_record", "left_record"],
-      class_scoresheet: ["wind", "name", "score", "riichi", "win", "lose"],
-      fan: ["1", "2", "3", "4", "5", "6+", "8+", "11+", "13+", "1배역만", "2배역만", "3배역만", "4배역만", "5배역만","6배역만"],
-      bu: [20, 25, 30, 40, 50, 60, 70, 80, 90, 100, 110],
-    };
-  },
-  methods: {
-    /**체크 표시시 색상 변경*/
-    isChecked(x, status) {
-      let cntWin=0, cntLose=0;
-      if (status==='win'){ // 화료 체크
-        if (x===-1){ // ok버튼
-          for (let i=0;i<this.isWin.length;i++){
-            if (this.isWin[i]===true) // 화료 인원 세기
-              cntWin++;
-          }
-          if (cntWin===0 || cntWin===4) // 화료한 사람이 없거나 4명임 (불가능한 경우)
-            return {color: 'gray'};
-        }
-        else
-          return {color: this.isWin[x]===true ? 'red' : ''};
+
+/**props 정의*/
+const props = defineProps({
+  winds: Array,
+  scores: Array,
+  scoresDiff: Array,
+  names: Array,
+  focusWinner: Number,
+  isFao: Boolean,
+  focusFao: Number,
+  inputFao: Number,
+  inputFan: Number,
+  inputBu: Number,
+  isRiichi: Array,
+  isWin: Array,
+  isLose: Array,
+  isTenpai: Array,
+  isCheat: Array,
+  countRiichi: Number,
+  roundStatus: String,
+  diceValue: Array,
+  isWall: Array,
+  isOpened: Array,
+  randomSeats: Array,
+  recordsTime: Array,
+  recordsScore: Array,
+  recordsRiichi: Array, 
+  recordsWin: Array, 
+  recordsLose: Array,
+  setScore: Array,
+  rankUma: Array,
+  optRoundMangan: Boolean,
+  optMinusRiichi: Boolean,
+  optCheatScore: Boolean,
+  optEndRiichi: Boolean,
+  modalType: String,
+})
+
+/**emits 정의*/
+const emit = defineEmits([
+  'show-modal',
+  'hide-modal',
+  'toggle-check-status',
+  'check-invalid-status',
+  'calculate-win',
+  'calculate-draw',
+  'save-round',
+  'roll-dice',
+  'copy-record',
+  'rollback-record'
+])
+
+/**data 정의*/
+const arr_arrow = ["▼", "▶", "▲", "◀"];
+const arr_seat = ["동(東)", "남(南)", "서(西)", "북(北)"];
+const arr_scoresheet = ["바람", "이름", "점수", "리치", "화료", "방총"];
+const class_check = ["down_check", "right_check", "up_check", "left_check"];
+const class_score_diff = ["down_score_diff", "right_score_diff", "up_score_diff", "left_score_diff"];
+const class_dice = ["down_dice", "right_dice", "up_dice", "left_dice"];
+const class_name = ["down_name", "right_name", "up_name", "left_name"];
+const class_record = ["down_record", "right_record", "up_record", "left_record"];
+const class_scoresheet = ["wind", "name", "score", "riichi", "win", "lose"];
+const fan = ["1", "2", "3", "4", "5", "6+", "8+", "11+", "13+", "1배역만", "2배역만", "3배역만", "4배역만", "5배역만","6배역만"];
+const bu = [20, 25, 30, 40, 50, 60, 70, 80, 90, 100, 110];
+
+/**체크 표시시 색상 변경*/
+const isChecked = (x, status) => {
+  let cntWin=0, cntLose=0;
+  if (status==='win'){ // 화료 체크
+    if (x===-1){ // ok버튼
+      for (let i=0;i<props.isWin.length;i++){
+        if (props.isWin[i]===true) // 화료 인원 세기
+          cntWin++;
       }
-      else if (status==='lose'){ // 방총 체크
-        if (x===-1){ // ok버튼
-          for (let i=0;i<this.isWin.length;i++){
-            if (this.isWin[i]===true) // 화료 인원 세기
-              cntWin++;
-            if (this.isLose[i]===true) // 방총 인원 세기
-              cntLose++;
-          }
-          if (cntWin!==1 && cntLose===0) // 2명 이상 화료했는데 쯔모임 (불가능한 경우)
-            return {color: 'gray'};
-        }
-        else{
-          if (this.isWin[x]===true) // 승자와 같을때
-            return {color: 'gray'};
-          else
-            return {color: this.isLose[x]===true ? 'red' : ''};
-        }
-      }
-      else if (status==='tenpai') // 텐파이 체크
-        return {color: (this.isTenpai[x]===true || this.isRiichi[x]===true) ? 'red' : ''};
-      else if (status==='cheat'){ // 촌보 체크
-        if (x===-1) // ok버튼
-          return {color: this.isCheat.every(x => x===false) ? 'gray' : ''};
-        else
-          return {color: this.isCheat[x]===true ? 'red' : ''};
-      }
-      else if (status==='fan') // 판 체크
-        return {color: x===this.inputFan ? 'red' : ''};
-      else if (status==='bu'){ // 부 체크
-        if (this.roundStatus==='ron' && x===0) // 론일때 20부 이하 비활성화
-          return {color: 'gray'};
-        else if (this.inputFan===0 && x<=1) // 1판 25부 이하 비활성화
-          return {color: 'gray'};
-        else if (this.inputFan>=4) // 만관 이상일때 부수 비활성화
-          return {color: 'gray'};
-        else
-          return {color: x===this.inputBu ? 'red' : ''};
-      }
-      else if (status==='fao'){ // 책임지불 체크
-        if (x===-1){
-          if (this.focusFao===-1) // 책임지불할 사람이 없음 (불가능한 경우)
-            return {color: 'gray'};
-        }
-        else{
-          if (this.focusWinner===x) // 현재 승자와 같을때
-            return {color: 'gray'};
-          else
-            return {color: this.focusFao===x ? 'red' : ''};
-        }
-      }
-      else if (status==='isfao') // 점수창 OX
-        return {color: this.isFao===true ? 'mediumblue' : 'red'};
-      else if (status==='inputfao'){ // 책임지불 점수창
-        if (this.inputFan-9<x) // 입력값보다 크면 불가능
-          return {color: 'gray'};
-        else
-          return {color: x===this.inputFao ? 'red' : ''};
-      }
-      else if (status==='dicemodal') // 주사위창 회전
-        return {transform: `translate(-50%, -50%) rotate(${360-this.winds.indexOf('東')*90}deg)`};
-      else if (status==='dice') // 주사위 방향 보이기
-        return {visibility: this.isWall[x]===true ? 'visible' : 'hidden'};
-      else if (status==='tile'){ // 타일 뒤집기
-        return {gridArea: `tile_${x+1}`, color: this.isOpened[x]===true ? (this.randomSeats[x]==='東' ? 'red' : '') : 'orange', backgroundColor: this.isOpened[x]===true ? '' : 'orange'};
-      }
-      else if (status==='roundmangan') // 유국만관 옵션
-        return {color: this.optRoundMangan===true ? 'mediumblue' : 'red'};
-      else if (status==='minusriichi') // 음수리치 옵션
-        return {color: this.optMinusRiichi===true ? 'mediumblue' : 'red'};
-      else if (status==='cheatscore') // 촌보점수 옵션
-        return {color: this.optCheatScore===true ? 'mediumblue' : 'red'};
-      else if (status==='endriichi') // 공탁처리 옵션
-        return {color: this.optEndRiichi===true ? 'mediumblue' : 'red'};
-    },
-    /**역만인지 확인하고 숨기기*/
-    isYakuman(x){
-      return {display: ((this.inputFan < 9 && x === 9) || x === this.inputFan) ? '' : 'none'};
-    },
-    /**점수 변동에 따른 글자색*/
-    isDiff(x) {
-      if (x>0)
-        return {color: 'limegreen'};
-      else if (x<0)
-        return {color: 'red'};
-      else
-        return {color: 'white'};
-    },
-    /**책임지불이 켜져있는지 확인*/
-    checkFao(){
-      if (this.isFao===true) // 책임지불이 있다면 선택창 키기
-        this.emitEvent('show-modal','check_player_fao',this.roundStatus+'_fao');
-      else
-        this.emitEvent('calculate-win');
-    },
-    /**순위표 점수 계산*/
-    calculatePoint(idx){
-      let score=this.scores[idx];
-      let point=0 // 점수기반
-      let oka=(this.setScore[1]*4-this.setScore[0]*4)/1000; // 오카
-      let rank=1, uma=0, cnt=0;
-      for (let i=0;i<this.scores.length;i++){
-        if (this.scores[idx]<this.scores[i])
-          rank++; //순위 체크
-        else if (this.scores[idx]===this.scores[i])
-          cnt++; // 동점자 체크
-      }
-      for (let i=0;i<cnt;i++) // 동점자의 모든 우마 더하기
-        uma+=Number(this.rankUma[rank+i-1]);
-      if (rank===1){ // 1위라면 오카도 더하기
-        uma+=oka;
-        if (this.optEndRiichi) // 1위에게 공탁금을 몰아주는 경우
-          score+=Math.floor(((this.countRiichi*1000)/cnt)/100)*100;
-      }
-      uma/=cnt;
-      point=(score-this.setScore[1])/1000+uma;
-      return String(score)+'('+point.toFixed(1)+')';
-    },
-    /**순위표 기록 계산*/
-    calculateRecord(arr, idx){
-      let ret=0;
-      for (let i=0;i<arr.length;i++){
-        if (arr[i][idx]===true)
-          ret++;
-      }
-      return ret;
-    },
-    /**$emit 이벤트 발생*/
-    emitEvent(eventName, ...args) {
-      this.$emit(eventName, ...args);
-    },
+      if (cntWin===0 || cntWin===4) // 화료한 사람이 없거나 4명임 (불가능한 경우)
+        return {color: 'gray'};
+    }
+    else
+      return {color: props.isWin[x]===true ? 'red' : ''};
   }
+  else if (status==='lose'){ // 방총 체크
+    if (x===-1){ // ok버튼
+      for (let i=0;i<props.isWin.length;i++){
+        if (props.isWin[i]===true) // 화료 인원 세기
+          cntWin++;
+        if (props.isLose[i]===true) // 방총 인원 세기
+          cntLose++;
+      }
+      if (cntWin!==1 && cntLose===0) // 2명 이상 화료했는데 쯔모임 (불가능한 경우)
+        return {color: 'gray'};
+    }
+    else{
+      if (props.isWin[x]===true) // 승자와 같을때
+        return {color: 'gray'};
+      else
+        return {color: props.isLose[x]===true ? 'red' : ''};
+    }
+  }
+  else if (status==='tenpai') // 텐파이 체크
+    return {color: (props.isTenpai[x]===true || props.isRiichi[x]===true) ? 'red' : ''};
+  else if (status==='cheat'){ // 촌보 체크
+    if (x===-1) // ok버튼
+      return {color: props.isCheat.every(x => x===false) ? 'gray' : ''};
+    else
+      return {color: props.isCheat[x]===true ? 'red' : ''};
+  }
+  else if (status==='fan') // 판 체크
+    return {color: x===props.inputFan ? 'red' : ''};
+  else if (status==='bu'){ // 부 체크
+    if (props.roundStatus==='ron' && x===0) // 론일때 20부 이하 비활성화
+      return {color: 'gray'};
+    else if (props.inputFan===0 && x<=1) // 1판 25부 이하 비활성화
+      return {color: 'gray'};
+    else if (props.inputFan>=4) // 만관 이상일때 부수 비활성화
+      return {color: 'gray'};
+    else
+      return {color: x===props.inputBu ? 'red' : ''};
+  }
+  else if (status==='fao'){ // 책임지불 체크
+    if (x===-1){
+      if (props.focusFao===-1) // 책임지불할 사람이 없음 (불가능한 경우)
+        return {color: 'gray'};
+    }
+    else{
+      if (props.focusWinner===x) // 현재 승자와 같을때
+        return {color: 'gray'};
+      else
+        return {color: props.focusFao===x ? 'red' : ''};
+    }
+  }
+  else if (status==='isfao') // 점수창 OX
+    return {color: props.isFao===true ? 'mediumblue' : 'red'};
+  else if (status==='inputfao'){ // 책임지불 점수창
+    if (props.inputFan-9<x) // 입력값보다 크면 불가능
+      return {color: 'gray'};
+    else
+      return {color: x===props.inputFao ? 'red' : ''};
+  }
+  else if (status==='dicemodal') // 주사위창 회전
+    return {transform: `translate(-50%, -50%) rotate(${360-props.winds.indexOf('東')*90}deg)`};
+  else if (status==='dice') // 주사위 방향 보이기
+    return {visibility: props.isWall[x]===true ? 'visible' : 'hidden'};
+  else if (status==='tile'){ // 타일 뒤집기
+    return {gridArea: `tile_${x+1}`, color: props.isOpened[x]===true ? (props.randomSeats[x]==='東' ? 'red' : '') : 'orange', backgroundColor: props.isOpened[x]===true ? '' : 'orange'};
+  }
+  else if (status==='roundmangan') // 유국만관 옵션
+    return {color: props.optRoundMangan===true ? 'mediumblue' : 'red'};
+  else if (status==='minusriichi') // 음수리치 옵션
+    return {color: props.optMinusRiichi===true ? 'mediumblue' : 'red'};
+  else if (status==='cheatscore') // 촌보점수 옵션
+    return {color: props.optCheatScore===true ? 'mediumblue' : 'red'};
+  else if (status==='endriichi') // 공탁처리 옵션
+    return {color: props.optEndRiichi===true ? 'mediumblue' : 'red'};
+};
+
+/**역만인지 확인하고 숨기기*/
+const isYakuman = (x) => {
+  return {display: ((props.inputFan<9 && x===9) || x===props.inputFan) ? '' : 'none'};
+};
+
+/**점수 변동에 따른 글자색*/
+const isDiff = (x) => {
+  if (x>0)
+    return {color: 'limegreen'};
+  else if (x<0)
+    return {color: 'red'};
+  else
+    return {color: 'white'};
+};
+
+/**책임지불이 켜져있는지 확인*/
+const checkFao = () => {
+  if (props.isFao===true) // 책임지불이 있다면 선택창 키기
+    emitEvent('show-modal', 'check_player_fao', props.roundStatus+'_fao');
+  else
+    emitEvent('calculate-win');
+};
+
+/**순위표 점수 계산*/
+const calculatePoint = (idx) => {
+  let score=props.scores[idx];
+  let point=0 // 점수기반
+  let oka=(props.setScore[1]*4-props.setScore[0]*4)/1000; // 오카
+  let rank=1, uma=0, cnt=0;
+  for (let i=0;i<props.scores.length;i++){
+    if (props.scores[idx]<props.scores[i])
+      rank++; //순위 체크
+    else if (props.scores[idx]===props.scores[i])
+      cnt++; // 동점자 체크
+  }
+  for (let i=0;i<cnt;i++) // 동점자의 모든 우마 더하기
+    uma+=Number(props.rankUma[rank+i-1]);
+  if (rank===1){ // 1위라면 오카도 더하기
+    uma+=oka;
+    if (props.optEndRiichi) // 1위에게 공탁금을 몰아주는 경우
+      score+=Math.floor(((props.countRiichi*1000)/cnt)/100)*100;
+  }
+  uma/=cnt;
+  point=(score-props.setScore[1])/1000+uma;
+  return String(score)+'('+point.toFixed(1)+')';
+};
+
+/**순위표 기록 계산*/
+const calculateRecord = (arr, idx) => {
+  let ret=0;
+  for (let i=0;i<arr.length;i++){
+    if (arr[i][idx]===true)
+      ret++;
+  }
+  return ret;
+};
+
+/**$emit 이벤트 발생*/
+const emitEvent = (eventName, ...args) => {
+  emit(eventName, ...args);
 };
 </script>
 
@@ -392,7 +405,7 @@ export default {
       <div v-for="(_, i) in class_score_diff"
         :key="i"
         :class="class_score_diff[i]"
-        :style="isDiff(this.scoresDiff[i])"
+        :style="isDiff(props.scoresDiff[i])"
       >
         <span v-show="scoresDiff[i]>0">+</span>{{ scoresDiff[i] }}
       </div>
@@ -546,7 +559,7 @@ export default {
           :key="i"
           style="width: 41px;"
           type="number"
-          v-model="this.rankUma[i]"
+          v-model="props.rankUma[i]"
           :placeholder="`${i+1}위`"
           :name="`uma${i+1}`"
           :style="{ marginRight: i===rankUma.length-1 ? '0px' : '10px' }"

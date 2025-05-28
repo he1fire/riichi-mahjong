@@ -1,7 +1,7 @@
 <script setup>
 import graphics from './graphics.vue';
 
-/**props 선언*/
+/**props 정의*/
 const props = defineProps({
   currentWind: String,
   currentRound: Number,
@@ -9,7 +9,7 @@ const props = defineProps({
   countRenchan: Number,
 });
 
-/**emits 이벤트 선언*/
+/**emits 정의*/
 const emit = defineEmits([
   'show-modal',
   'roll-dice'
