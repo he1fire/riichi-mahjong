@@ -375,12 +375,11 @@ export default {
         }
       }
       else if (status==='fao'){ // 책임지불일때
+        this.inputFao=this.inputFan-9;
         if (this.focusFao===-1) // 책임지불할 사람이 없음 (불가능한 경우)
           return;
-        if (this.inputFan>=10){ // 2배역만 이상이면 점수 선택
-          this.inputFao=this.inputFan-9;
+        if (this.inputFan>=10) // 2배역만 이상이면 점수 선택
           this.showModal('choose_fao_score', this.roundStatus);
-        }
         else
           this.calculateWin();
       }
