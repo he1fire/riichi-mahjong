@@ -5,7 +5,6 @@ import {computed} from 'vue'
 /**props 정의*/
 const props = defineProps({
   player: Object,
-  score: Number,
   isRiichi: Boolean,
   isGap: Boolean,
   option: Object,
@@ -19,12 +18,12 @@ const emit = defineEmits([
 
 /**100 자리 이상 점수*/
 const scoreHigh = computed(() => {
-  return Math.floor(props.score/100);
+  return Math.floor(props.player.displayScore/100);
 })
 
 /**100 자리 이하 점수*/
 const scoreLow = computed(() => {
-  return Math.abs(props.score%100);
+  return Math.abs(props.player.displayScore%100);
 })
 
 /**자풍이 東이라면 붉은색 표시*/
@@ -34,7 +33,7 @@ const isEast = () => {
 
 /**리치가 불가능하면 회색 표시*/
 const ableRiichi = () => {
-  return {color: props.score<1000 && props.option.minusRiichi===false ? 'gray' : ''}
+  return {color: props.player.displayScore<1000 && props.option.minusRiichi===false ? 'gray' : ''}
 }
 
 /**리치봉 표시*/

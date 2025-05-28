@@ -4,7 +4,6 @@ import graphics from './graphics.vue'
 /**props 정의*/
 const props = defineProps({
   players: Array,
-  scores: Array,
   scoresDiff: Array,
   names: Array,
   focusWinner: Number,
@@ -177,14 +176,14 @@ const checkFao = () => {
 
 /**순위표 점수 계산*/
 const calculatePoint = (idx) => {
-  let score=props.scores[idx];
+  let myScore=props.players[idx].displayScore;
   let point=0 // 점수기반
   let oka=(props.setScore[1]*4-props.setScore[0]*4)/1000; // 오카
   let rank=1, uma=0, cnt=0;
-  for (let i=0;i<props.scores.length;i++){
-    if (props.scores[idx]<props.scores[i])
+  for (let i=0;i<props.players.length;i++){
+    if (myScore<props.players[i].displayScore)
       rank++; //순위 체크
-    else if (props.scores[idx]===props.scores[i])
+    else if (myScore===props.players[i].displayScore)
       cnt++; // 동점자 체크
   }
   for (let i=0;i<cnt;i++) // 동점자의 모든 우마 더하기
@@ -192,11 +191,11 @@ const calculatePoint = (idx) => {
   if (rank===1){ // 1위라면 오카도 더하기
     uma+=oka;
     if (props.option.endRiichi) // 1위에게 공탁금을 몰아주는 경우
-      score+=Math.floor(((props.panel.riichi*1000)/cnt)/100)*100;
+      myScore+=Math.floor(((props.panel.riichi*1000)/cnt)/100)*100;
   }
   uma/=cnt;
-  point=(score-props.setScore[1])/1000+uma;
-  return String(score)+'('+point.toFixed(1)+')';
+  point=(myScore-props.setScore[1])/1000+uma;
+  return String(myScore)+'('+point.toFixed(1)+')';
 };
 
 /**순위표 기록 계산*/
@@ -595,7 +594,7 @@ const emitEvent = (eventName, ...args) => {
         <div v-for="(_, i) in names" :key="i">{{ names[i] }}</div>
       </div>
       <div style="grid-area: score_contents;">
-        <div v-for="(_, i) in scores" :key="i">{{calculatePoint(i)}}</div>
+        <div v-for="(_, i) in players" :key="i">{{calculatePoint(i)}}</div>
       </div>
       <div style="grid-area: riichi_contents;">
         <div v-for="(_, i) in recordsRiichi[0]" :key="i">{{calculateRecord(recordsRiichi, i)}}</div>

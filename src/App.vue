@@ -16,7 +16,6 @@ export default {
         {seat: "Up",    wind: "西", displayScore: 25000, rank: 0, effectScore: 0, gapScore: 0},
         {seat: "Left",  wind: "北", displayScore: 25000, rank: 0, effectScore: 0, gapScore: 0}
       ],
-      scores: [25000, 25000, 25000, 25000], // 플레이어별 현재 점수
       scoresDiff: [0, 0, 0, 0], // 플레이어별 변동 점수
       names: ["▼", "▶", "▲", "◀"], // 플레이어별 이름
       focusWinner: -1, // 현재 점수 입력하는 플레이어
@@ -104,16 +103,16 @@ export default {
     toggleActiveRiichi(seat){
       let idx=this.returnIndex(this.players, 'seat', seat); // 위치 기준 인덱스 반환
       if (this.isRiichi[idx]===false){ // 리치 활성화
-        if (this.scores[idx]<1000 && this.option.minusRiichi===false) // 리치를 걸수 없을 때
+        if (this.players[idx].displayScore<1000 && this.option.minusRiichi===false) // 리치를 걸수 없을 때
           return;
         else { // 1000점 이상 있거나 음수리치가 가능하다면
-          this.scores[idx]-=1000;
+          this.players[idx].displayScore-=1000;
           this.isRiichi[idx]=true;
           this.panel.riichi++;
         }
       }
       else{ // 리치 비활성화
-        this.scores[idx]+=1000;
+        this.players[idx].displayScore+=1000;
         this.isRiichi[idx]=false;
         this.panel.riichi--;
       }
@@ -127,11 +126,11 @@ export default {
             this.isGap[i]=false;
           else{ // 본인이 아니면 표시 변경
             this.isGap[i]=true;
-            this.players[i].gapScore=this.scores[idx]-this.scores[i];
+            this.players[i].gapScore=this.players[idx].displayScore-this.players[i].displayScore;
           }
           this.players[i].rank=1; // 순위 표시 켜기
-          for (let j=0;j<this.scores.length;j++){ // 순위 계산
-            if (i!==j && this.scores[i]<this.scores[j])
+          for (let j=0;j<this.players.length;j++){ // 순위 계산
+            if (i!==j && this.players[i].displayScore<this.players[j].displayScore)
               this.players[i].rank++;
           }
         }
@@ -161,14 +160,14 @@ export default {
     },
     /**점수 변동 효과*/
     changeScores(idx){
-      let startScore=this.scores[idx];
+      let startScore=this.players[idx].displayScore;
       let arrCut=[];
       for (let i=0;i<50;i++) // 변경될 점수 사이를 50등분해서 저장
         arrCut[i]=startScore+(this.scoresDiff[idx]/50)*(i+1);
       this.players[idx].effectScore=this.scoresDiff[idx]; // 이펙트 켜기
       let timecnt=0;
       let repeat=setInterval(() => { // 시간에 따라 반복
-        this.scores[idx]=arrCut[timecnt] // 100의 자리 변경
+        this.players[idx].displayScore=arrCut[timecnt] // 100의 자리 변경
         timecnt++;
         if (timecnt>=50){
           clearInterval(repeat); 
@@ -240,7 +239,7 @@ export default {
       this.panel.wind="東"; // 장풍 설정
       this.panel.round=1; // 국 설정
       for (let i=0;i<this.recordsScore.length;i++)
-        this.scores[i]=this.setScore[0]; // 점수 설정
+        this.players[i].displayScore=this.setScore[0]; // 점수 설정
       this.panel.renchan=0; // 연장 설정
       this.panel.riichi=0; // 리치봉 설정
       for (let i=0;i<this.players.length;i++)
@@ -256,7 +255,7 @@ export default {
     hideModal(){
       if (this.modalType==='set_options'){ // 옵션 설정창이라면 확인
         let arrows=["▼", "▶", "▲", "◀"];
-        let cntScore=this.scores.reduce((acc, cur) => acc + cur, this.panel.riichi*1000); // 현재 총점
+        let cntScore=this.players.reduce((acc, player) => acc+player.displayScore, this.panel.riichi*1000); // 현재 총점
         let cntUma=this.rankUma.reduce((acc, cur) => acc + cur, 0); // 현재 총우마
         for (let i=0;i<this.names.length;i++){
           if (this.names[i]==='') // 이름이 없는 경우
@@ -524,7 +523,7 @@ export default {
       if (this.roundStatus==='cheat'){ // 촌보의 경우 리치봉 반환
         for (let i=0;i<this.isRiichi.length;i++){
           if (this.isRiichi[i]){
-            this.scores[i]+=1000;
+            this.players[i].displayScore+=1000;
             this.isRiichi[i]=false;
             this.panel.riichi--;
           }
@@ -539,7 +538,7 @@ export default {
         this.changeScores(i);
       for (let i=0;i<this.scoresDiff.length;i++){ // 점수 기록창에 점수 기록
         this.recordsScore[i].push(this.scoresDiff[i]);
-        this.recordsScore[i].push(this.scores[i]+this.scoresDiff[i]);
+        this.recordsScore[i].push(this.players[i].displayScore+this.scoresDiff[i]);
       }
       this.recordsTime.push(this.panel.wind+this.panel.round+'局 '+this.panel.renchan+'本場'); // 점수 기록창에 국+본장 기록
       this.recordsTime.push('ㅤ');
@@ -626,8 +625,8 @@ export default {
       this.panel.wind=arr[0]; // 장풍 설정
       this.panel.round=Number(arr[1]); // 국 설정
       for (let i=0;i<this.recordsScore.length;i++){
-        this.scores[i]=Number(this.recordsScore[i][this.recordsScore[i].length-1]); // 점수 설정
-        cnt+=this.scores[i];
+        this.players[i].displayScore=Number(this.recordsScore[i][this.recordsScore[i].length-1]); // 점수 설정
+        cnt+=this.players[i].displayScore;
       }
       this.panel.renchan=Number(arr[3]); // 연장 설정
       this.panel.riichi=Math.floor((this.setScore[0]*4-cnt)/1000); // 리치봉 설정
@@ -647,7 +646,6 @@ export default {
   <player v-for="(_, i) in players"
     :key="i"
     :player="players[i]"
-    :score="scores[i]"
     :isRiichi="isRiichi[i]"
     :isGap="isGap[i]"
     :option
@@ -664,7 +662,6 @@ export default {
   <modal
     v-if="modal"
     :players
-    :scores
     :scoresDiff
     :names
     :focusWinner
