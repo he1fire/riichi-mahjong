@@ -3,10 +3,7 @@ import graphics from './graphics.vue';
 
 /**props 정의*/
 const props = defineProps({
-  currentWind: String,
-  currentRound: Number,
-  countRiichi: Number,
-  countRenchan: Number,
+  panel: Object,
 });
 
 /**emits 정의*/
@@ -25,17 +22,17 @@ const emitEvent = (eventName, ...args) => {
 <div class="container_mid" id='Mid'>
   <!-- 현재 라운드 -->
   <div class="now" @click="emitEvent('show-modal', 'roll_dice'), emitEvent('roll-dice')">
-    {{ currentWind }} {{ currentRound }} 局
+    {{ panel.wind }} {{ panel.round }} 局
   </div>
   <!-- 현재 총 리치봉 -->
   <div class="riichi">
     <graphics kind="riichiStickMini"/>
-    <span>x {{ countRiichi }}</span>
+    <span>x {{ panel.riichi }}</span>
   </div>
   <!-- 현재 연장봉 -->
   <div class="renchan">
     <graphics kind="renchanStickMini"/>
-    <span>x {{ countRenchan }}</span>
+    <span>x {{ panel.renchan }}</span>
   </div>
   <!-- 화료 버튼 -->
   <div class="win" @click="emitEvent('show-modal', 'check_player_win')">

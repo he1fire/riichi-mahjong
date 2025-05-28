@@ -31,10 +31,12 @@ export default {
       isLose: [false, false, false, false], // 플레이어별 방총 유무
       isTenpai: [false, false, false, false], // 플레이어별 텐파이 유무
       isCheat: [false, false, false, false], // 플레이어별 촌보 유무
-      currentWind: "東", // 현재 장풍
-      currentRound: 1, // 현재 국
-      countRiichi: 0, // 현재 누적 리치봉
-      countRenchan: 0, // 현재 누적 연장봉
+      panel: { // 패널
+        wind: "東", // 현재 장풍
+        round: 1, // 현재 국
+        riichi: 0, // 현재 누적 리치봉
+        renchan: 0, // 현재 누적 연장봉
+      },
       roundStatus: "", // 라운드 형태 - 론 쯔모 일반유국 특수유국
       diceValue: [1, 6], // 주사위 값
       isWall: [false, false, false, false], // 주사위 값에 따른 패산방향
@@ -99,13 +101,13 @@ export default {
         else { // 1000점 이상 있거나 음수리치가 가능하다면
           this.scores[idx]-=1000;
           this.isRiichi[idx]=true;
-          this.countRiichi++;
+          this.panel.riichi++;
         }
       }
       else{ // 리치 비활성화
         this.scores[idx]+=1000;
         this.isRiichi[idx]=false;
-        this.countRiichi--;
+        this.panel.riichi--;
       }
     },
     /**점수 차이 활성화/비활성화*/
@@ -140,12 +142,12 @@ export default {
       let cnt=0;
       this.winds.unshift(this.winds.pop()); // 개인 바람 변경
       for (let i=0;i<allWinds.length;i++){
-        if (this.currentWind===allWinds[i]) // 현재 라운드 계산
+        if (this.panel.wind===allWinds[i]) // 현재 라운드 계산
           cnt+=i*4;
       }
-      cnt+=this.currentRound; // 국 증가
-      this.currentWind=allWinds[Math.floor((cnt%16)/4)]; // 현재 바람 수정
-      this.currentRound=cnt%4+1; // 현재 라운드 수정
+      cnt+=this.panel.round; // 국 증가
+      this.panel.wind=allWinds[Math.floor((cnt%16)/4)]; // 현재 바람 수정
+      this.panel.round=cnt%4+1; // 현재 라운드 수정
     },
     /**점수 변동 효과*/
     changeScores(idx){
@@ -225,12 +227,12 @@ export default {
         this.recordsScore[i][0]=this.setScore[0];
       for (let i=0;i<this.isRiichi.length;i++) // 리치봉 제거
         this.isRiichi[i]=false;
-      this.currentWind="東"; // 장풍 설정
-      this.currentRound=1; // 국 설정
+      this.panel.wind="東"; // 장풍 설정
+      this.panel.round=1; // 국 설정
       for (let i=0;i<this.recordsScore.length;i++)
         this.scores[i]=this.setScore[0]; // 점수 설정
-      this.countRenchan=0; // 연장 설정
-      this.countRiichi=0; // 리치봉 설정
+      this.panel.renchan=0; // 연장 설정
+      this.panel.riichi=0; // 리치봉 설정
       for (let i=0;i<this.winds.length;i++)
         this.winds[i]=allWinds[i]; // 개인 바람 설정
     },
@@ -244,7 +246,7 @@ export default {
     hideModal(){
       if (this.modalType==='set_options'){ // 옵션 설정창이라면 확인
         let arrows=["▼", "▶", "▲", "◀"];
-        let cntScore=this.scores.reduce((acc, cur) => acc + cur, this.countRiichi*1000); // 현재 총점
+        let cntScore=this.scores.reduce((acc, cur) => acc + cur, this.panel.riichi*1000); // 현재 총점
         let cntUma=this.rankUma.reduce((acc, cur) => acc + cur, 0); // 현재 총우마
         for (let i=0;i<this.names.length;i++){
           if (this.names[i]==='') // 이름이 없는 경우
@@ -397,23 +399,23 @@ export default {
         if (this.roundStatus==='tsumo'){
           for (let i=0;i<this.seats.length;i++){
             if (i===this.focusWinner) // 승자
-              this.scoresDiff[i]+=this.calculateScore(i)+this.countRiichi*1000+this.countRenchan*300;
+              this.scoresDiff[i]+=this.calculateScore(i)+this.panel.riichi*1000+this.panel.renchan*300;
             else // 패자
-              this.scoresDiff[i]-=this.calculateScore(i)+this.countRenchan*100;
+              this.scoresDiff[i]-=this.calculateScore(i)+this.panel.renchan*100;
           }
         }
         else if (this.roundStatus==='tsumo_fao'){ // 책임지불시
           let tmp=this.inputFan;
           this.inputFan=this.inputFao+9; // 책임지불할 점수
-          this.scoresDiff[this.focusWinner]+=this.calculateScore(this.focusWinner)+this.countRiichi*1000+this.countRenchan*300;
-          this.scoresDiff[this.focusFao]-=this.calculateScore(this.focusWinner)+this.countRenchan*300;
+          this.scoresDiff[this.focusWinner]+=this.calculateScore(this.focusWinner)+this.panel.riichi*1000+this.panel.renchan*300;
+          this.scoresDiff[this.focusFao]-=this.calculateScore(this.focusWinner)+this.panel.renchan*300;
           this.inputFan=tmp-this.inputFao-1; // 롤백
           if (this.inputFan>=9){ // 다른사람도 여전히 지불해야 하는 경우
             for (let i=0;i<this.seats.length;i++){
               if (i===this.focusWinner) // 승자
-                this.scoresDiff[i]+=this.calculateScore(i)+this.countRiichi*1000+this.countRenchan*300;
+                this.scoresDiff[i]+=this.calculateScore(i)+this.panel.riichi*1000+this.panel.renchan*300;
               else // 패자
-                this.scoresDiff[i]-=this.calculateScore(i)+this.countRenchan*100;
+                this.scoresDiff[i]-=this.calculateScore(i)+this.panel.renchan*100;
             }
           }
         }
@@ -428,8 +430,8 @@ export default {
           }
         }
         if (firstWinner===this.focusWinner) { // 승자+선하네
-          this.scoresDiff[this.focusWinner]+=this.calculateScore(this.focusWinner)+this.countRiichi*1000+this.countRenchan*300;
-          this.scoresDiff[this.focusLoser]-=this.calculateScore(this.focusWinner)+this.countRenchan*300;
+          this.scoresDiff[this.focusWinner]+=this.calculateScore(this.focusWinner)+this.panel.riichi*1000+this.panel.renchan*300;
+          this.scoresDiff[this.focusLoser]-=this.calculateScore(this.focusWinner)+this.panel.renchan*300;
         }
         else{ // 나머지 승자
           this.scoresDiff[this.focusWinner]+=this.calculateScore(this.focusWinner);
@@ -514,7 +516,7 @@ export default {
           if (this.isRiichi[i]){
             this.scores[i]+=1000;
             this.isRiichi[i]=false;
-            this.countRiichi--;
+            this.panel.riichi--;
           }
         }
       }
@@ -529,7 +531,7 @@ export default {
         this.recordsScore[i].push(this.scoresDiff[i]);
         this.recordsScore[i].push(this.scores[i]+this.scoresDiff[i]);
       }
-      this.recordsTime.push(this.currentWind+this.currentRound+'局 '+this.countRenchan+'本場'); // 점수 기록창에 국+본장 기록
+      this.recordsTime.push(this.panel.wind+this.panel.round+'局 '+this.panel.renchan+'本場'); // 점수 기록창에 국+본장 기록
       this.recordsTime.push('ㅤ');
       this.recordsWin.push([...this.isWin]); // 화료 기록에 추가
       this.recordsLose.push([...this.isLose]); // 방총 기록에 추가
@@ -537,20 +539,20 @@ export default {
         let chinWin=this.isWin[this.winds.indexOf('東')]; // 친이 화료했는지 체크
         if (chinWin===false){ // 친이 화료를 못했다면
           this.changeWindsAndRounds(); // 바람 및 라운드 변경
-          this.countRenchan=0; // 연장봉 초기화
+          this.panel.renchan=0; // 연장봉 초기화
         }
         else // 연장에 성공했다면
-          this.countRenchan++; // 연장봉 추가
-        this.countRiichi=0; // 리치봉 초기화
+          this.panel.renchan++; // 연장봉 추가
+        this.panel.riichi=0; // 리치봉 초기화
       }
       else if (this.roundStatus==='normal_draw'){ // 일반유국이라면
         let chinTenpai=this.isTenpai[this.winds.indexOf('東')]; // 친이 노텐인지 체크
         if (chinTenpai===false) // 친이 노텐이라면
           this.changeWindsAndRounds(); // 바람 및 라운드 변경
-        this.countRenchan++; // 연장봉 추가
+        this.panel.renchan++; // 연장봉 추가
       }
       else if (this.roundStatus==='special_draw'){ // 특수유국이라면
-        this.countRenchan++; // 연장봉 추가
+        this.panel.renchan++; // 연장봉 추가
       }
       this.hideModal(); // 모달 창 끄기
     },
@@ -611,15 +613,15 @@ export default {
       }
       for (let i=0;i<this.isRiichi.length;i++) // 리치봉 제거
         this.isRiichi[i]=false;
-      this.currentWind=arr[0]; // 장풍 설정
-      this.currentRound=Number(arr[1]); // 국 설정
+      this.panel.wind=arr[0]; // 장풍 설정
+      this.panel.round=Number(arr[1]); // 국 설정
       for (let i=0;i<this.recordsScore.length;i++){
         this.scores[i]=Number(this.recordsScore[i][this.recordsScore[i].length-1]); // 점수 설정
         cnt+=this.scores[i];
       }
-      this.countRenchan=Number(arr[3]); // 연장 설정
-      this.countRiichi=Math.floor((this.setScore[0]*4-cnt)/1000); // 리치봉 설정
-      for (let i=1;i<this.currentRound;i++)
+      this.panel.renchan=Number(arr[3]); // 연장 설정
+      this.panel.riichi=Math.floor((this.setScore[0]*4-cnt)/1000); // 리치봉 설정
+      for (let i=1;i<this.panel.round;i++)
         allWinds.unshift(allWinds.pop()); // 현재 바람 세기
       for (let i=0;i<this.winds.length;i++)
         this.winds[i]=allWinds[i]; // 개인 바람 설정
@@ -648,10 +650,7 @@ export default {
   />
   <!-- 중앙 panel 컴포넌트 생성 -->
   <panel
-    :currentWind
-    :currentRound
-    :countRiichi
-    :countRenchan
+    :panel
     @show-modal="showModal"
     @roll-dice="rollDice"
   />
@@ -673,7 +672,7 @@ export default {
     :isLose
     :isTenpai
     :isCheat
-    :countRiichi
+    :panel
     :roundStatus
     :diceValue
     :isWall

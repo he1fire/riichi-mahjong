@@ -18,7 +18,7 @@ const props = defineProps({
   isLose: Array,
   isTenpai: Array,
   isCheat: Array,
-  countRiichi: Number,
+  panel: Object,
   roundStatus: String,
   diceValue: Array,
   isWall: Array,
@@ -192,7 +192,7 @@ const calculatePoint = (idx) => {
   if (rank===1){ // 1위라면 오카도 더하기
     uma+=oka;
     if (props.option.endRiichi) // 1위에게 공탁금을 몰아주는 경우
-      score+=Math.floor(((props.countRiichi*1000)/cnt)/100)*100;
+      score+=Math.floor(((props.panel.riichi*1000)/cnt)/100)*100;
   }
   uma/=cnt;
   point=(score-props.setScore[1])/1000+uma;
