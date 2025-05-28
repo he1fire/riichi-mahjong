@@ -76,21 +76,22 @@ const getOkButtonStyle = (status) => {
     return {color: props.focusFao===-1 ? 'gray' : ''}; // 책임지불할 사람이 없음 (불가능한 경우)
 }
 
+const getArrowButtonStyle = (status, idx) => {
+  if (status==='win') // 화료 화살표 버튼
+    return {color: props.isWin[idx]===true ? 'red' : ''}; // 선택시 빨간색
+  else if (status==='lose') // 방총 화살표 버튼
+    return {color: props.isWin[idx]!==true ? (props.isLose[idx]===true ? 'red' : '') : 'gray'}; // 선택시 빨간색, 불가능시 회색
+  else if (status==='cheat') // 촌보 화살표 버튼
+    return {color: props.isCheat[idx]===true ? 'red' : ''}; // 선택시 빨간색
+  else if (status==='fao') // 책임지불 화살표 버튼
+    return {color: props.focusWinner!==idx ? (props.focusFao===idx ? 'red' : '') : 'gray'}; // 선택시 빨간색, 불가능시 회색
+  else if (status==='tenpai') // 텐파이 화살표 버튼
+    return {color: (props.isTenpai[idx]===true || props.isRiichi[idx]===true) ? 'red' : ''}; // 선택 또는 리치시 빨간색
+}
+
 /**체크 표시시 색상 변경*/
 const isChecked = (x, status) => {
-  if (status==='win') // 화료 체크
-    return {color: props.isWin[x]===true ? 'red' : ''};
-  else if (status==='lose'){ // 방총 체크
-    if (props.isWin[x]===true) // 승자와 같을때
-      return {color: 'gray'};
-    else
-      return {color: props.isLose[x]===true ? 'red' : ''};
-  }
-  else if (status==='tenpai') // 텐파이 체크
-    return {color: (props.isTenpai[x]===true || props.isRiichi[x]===true) ? 'red' : ''};
-  else if (status==='cheat') // 촌보 체크
-    return {color: props.isCheat[x]===true ? 'red' : ''};
-  else if (status==='fan') // 판 체크
+  if (status==='fan') // 판 체크
     return {color: x===props.inputFan ? 'red' : ''};
   else if (status==='bu'){ // 부 체크
     if (props.roundStatus==='ron' && x===0) // 론일때 20부 이하 비활성화
@@ -101,12 +102,6 @@ const isChecked = (x, status) => {
       return {color: 'gray'};
     else
       return {color: x===props.inputBu ? 'red' : ''};
-  }
-  else if (status==='fao'){ // 책임지불 체크
-    if (props.focusWinner===x) // 현재 승자와 같을때
-      return {color: 'gray'};
-    else
-      return {color: props.focusFao===x ? 'red' : ''};
   }
   else if (status==='isfao') // 점수창 OX
     return {color: props.isFao===true ? 'mediumblue' : 'red'};
@@ -207,7 +202,7 @@ const emitEvent = (eventName, ...args) => {
       <div v-for="(_, i) in class_check"
         :key="i"
         :class="class_check[i]"
-        :style="isChecked(i, 'win')"
+        :style="getArrowButtonStyle('win', i)"
         @click.stop="emitEvent('toggle-check-status', i, 'win')"
       >
         {{ arr_arrow[i] }}
@@ -226,7 +221,7 @@ const emitEvent = (eventName, ...args) => {
       <div v-for="(_, i) in class_check"
         :key="i"
         :class="class_check[i]"
-        :style="isChecked(i, 'lose')"
+        :style="getArrowButtonStyle('lose', i)"
         @click.stop="emitEvent('toggle-check-status', i, 'lose')"
       >
         {{ arr_arrow[i] }}
@@ -302,7 +297,7 @@ const emitEvent = (eventName, ...args) => {
       <div v-for="(_, i) in class_check"
         :key="i"
         :class="class_check[i]"
-        :style="isChecked(i, 'fao')"
+        :style="getArrowButtonStyle('fao', i)"
         @click.stop="emitEvent('toggle-check-status', i, 'fao')"
       >
         {{ arr_arrow[i] }}
@@ -348,7 +343,7 @@ const emitEvent = (eventName, ...args) => {
       <div v-for="(_, i) in class_check"
         :key="i"
         :class="class_check[i]"
-        :style="isChecked(i, 'tenpai')"
+        :style="getArrowButtonStyle('tenpai', i)"
         @click.stop="emitEvent('toggle-check-status', i, 'tenpai')"
       >
         {{ arr_arrow[i] }}
@@ -367,7 +362,7 @@ const emitEvent = (eventName, ...args) => {
       <div v-for="(_, i) in class_check"
         :key="i"
         :class="class_check[i]"
-        :style="isChecked(i, 'cheat')"
+        :style="getArrowButtonStyle('cheat', i)"
         @click.stop="emitEvent('toggle-check-status', i, 'cheat')"
       >
         {{ arr_arrow[i] }}
