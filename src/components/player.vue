@@ -4,8 +4,7 @@ import {computed} from 'vue'
 
 /**props 정의*/
 const props = defineProps({
-  seat: String,
-  wind: String,
+  player: Object,
   score: Number,
   rank: Number,
   scoreEffect: Number,
@@ -33,7 +32,7 @@ const scoreLow = computed(() => {
 
 /**자풍이 東이라면 붉은색 표시*/
 const isEast = () => {
-  return {color: props.wind==='東' ? 'red' : ''}
+  return {color: props.player.wind==='東' ? 'red' : ''}
 }
 
 /**리치가 불가능하면 회색 표시*/
@@ -63,27 +62,27 @@ const emitEvent = (eventName, ...args) => {
 </script>
 
 <template>
-<div class="container_player" :id=seat>
+<div class="container_player" :id=player.seat>
   <!-- 리치봉 -->
   <graphics kind="riichiStick" class="stick" :style="showRiichi()"/>
   <!-- 현재 바람 -->
   <div class="wind" :style="isEast()"
-    @mousedown="emitEvent('toggle-show-gap', seat, true)"
-    @mouseup="emitEvent('toggle-show-gap', seat, false)"
-    @mouseleave="emitEvent('toggle-show-gap', seat, false)"
-    @touchstart="emitEvent('toggle-show-gap', seat, true)"
-    @touchend="emitEvent('toggle-show-gap', seat, false)"
-    @touchcancel="emitEvent('toggle-show-gap', seat, false)"
+    @mousedown="emitEvent('toggle-show-gap', player.seat, true)"
+    @mouseup="emitEvent('toggle-show-gap', player.seat, false)"
+    @mouseleave="emitEvent('toggle-show-gap', player.seat, false)"
+    @touchstart="emitEvent('toggle-show-gap', player.seat, true)"
+    @touchend="emitEvent('toggle-show-gap', player.seat, false)"
+    @touchcancel="emitEvent('toggle-show-gap', player.seat, false)"
   >
-    {{ wind }}
+    {{ player.wind }}
   </div>
   <!-- 현재 점수 -->
   <div class="score">
-    <div v-if="isGap===false" :style="ableRiichi()" @click="emitEvent('toggle-active-riichi', seat)">
+    <div v-if="isGap===false" :style="ableRiichi()" @click="emitEvent('toggle-active-riichi', player.seat)">
       {{ scoreHigh }}<span style="font-size: 50px;"><span v-show="scoreLow<10">0</span>{{ scoreLow }}</span>
     </div>
     <div v-else :style="isDiff(scoreGap)">
-      <span v-show="scoreGap>0">+</span>{{ scoreGap/100 }}<span style="font-size: 50px;">00</span>
+      <span v-show="scoreGap>0">+</span>{{ Math.floor(scoreGap/100) }}<span style="font-size: 50px;">00</span>
     </div>
   </div>
   <!-- 순위 표시 -->

@@ -3,7 +3,7 @@ import graphics from './graphics.vue'
 
 /**props 정의*/
 const props = defineProps({
-  winds: Array,
+  players: Array,
   scores: Array,
   scoresDiff: Array,
   names: Array,
@@ -136,7 +136,7 @@ const isChecked = (x, status) => {
       return {color: x===props.inputFao ? 'red' : ''};
   }
   else if (status==='dicemodal') // 주사위창 회전
-    return {transform: `translate(-50%, -50%) rotate(${360-props.winds.indexOf('東')*90}deg)`};
+    return {transform: `translate(-50%, -50%) rotate(${360-props.players.findIndex(player => player.wind==='東')*90}deg)`};
   else if (status==='dice') // 주사위 방향 보이기
     return {visibility: props.isWall[x]===true ? 'visible' : 'hidden'};
   else if (status==='tile'){ // 타일 뒤집기
