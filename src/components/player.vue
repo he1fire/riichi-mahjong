@@ -42,7 +42,7 @@ const showRiichi = () => {
 }
 
 /**점수 변동에 따른 글자색*/
-const isDiff = (x) => {
+const getScoreColor = (x) => {
   if (x>0)
     return {color: 'limegreen'}
   else if (x<0)
@@ -77,7 +77,7 @@ const emitEvent = (eventName, ...args) => {
     <div v-if="isGap===false" :style="ableRiichi()" @click="emitEvent('toggle-active-riichi', player.seat)">
       {{ scoreHigh }}<span style="font-size: 50px;"><span v-show="scoreLow<10">0</span>{{ scoreLow }}</span>
     </div>
-    <div v-else :style="isDiff(player.gapScore)">
+    <div v-else :style="getScoreColor(player.gapScore)">
       <span v-show="player.gapScore>0">+</span>{{ Math.floor(player.gapScore/100) }}<span style="font-size: 50px;">00</span>
     </div>
   </div>
@@ -86,7 +86,7 @@ const emitEvent = (eventName, ...args) => {
     {{ player.rank }}
   </div>
   <!-- 변경되는 점수 -->
-  <div v-show="player.effectScore!==0" class="change" :style="isDiff(player.effectScore)">
+  <div v-show="player.effectScore!==0" class="change" :style="getScoreColor(player.effectScore)">
     <span v-show="player.effectScore>0">+</span>{{ player.effectScore }}
   </div>
 </div>

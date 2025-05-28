@@ -61,8 +61,8 @@ const class_scoresheet = ["wind", "name", "score", "riichi", "win", "lose"];
 const fan = ["1", "2", "3", "4", "5", "6+", "8+", "11+", "13+", "1배역만", "2배역만", "3배역만", "4배역만", "5배역만","6배역만"];
 const bu = [20, 25, 30, 40, 50, 60, 70, 80, 90, 100, 110];
 
-/**ok버튼을 선택 불가능한 경우 회색처리*/
-const getOkButtonStyle = (status) => {
+/**ok 버튼 색상*/
+const getOkButtonColor = (status) => {
   let cntWin=props.isWin.filter(x => x===true).length; // 화료 인원 세기
   let cntLose=props.isLose.filter(x => x===true).length; // 방총 인원 세기
   let cntCheat=props.isCheat.filter(x => x===true).length; // 촌보 인원 세기
@@ -76,7 +76,8 @@ const getOkButtonStyle = (status) => {
     return {color: props.focusFao===-1 ? 'gray' : ''}; // 책임지불할 사람이 없음 (불가능한 경우)
 }
 
-const getArrowButtonStyle = (status, idx) => {
+/**화살표 버튼 색상*/
+const getArrowButtonColor = (status, idx) => {
   if (status==='win') // 화료 화살표 버튼
     return {color: props.isWin[idx]===true ? 'red' : ''}; // 선택시 빨간색
   else if (status==='lose') // 방총 화살표 버튼
@@ -133,8 +134,8 @@ const isYakuman = (x) => {
   return {display: ((props.inputFan<9 && x===9) || x===props.inputFan) ? '' : 'none'};
 }
 
-/**점수 변동에 따른 글자색*/
-const isDiff = (x) => {
+/**점수 색상*/
+const getScoreColor = (x) => {
   if (x>0)
     return {color: 'limegreen'};
   else if (x<0)
@@ -202,12 +203,12 @@ const emitEvent = (eventName, ...args) => {
       <div v-for="(_, i) in class_check"
         :key="i"
         :class="class_check[i]"
-        :style="getArrowButtonStyle('win', i)"
+        :style="getArrowButtonColor('win', i)"
         @click.stop="emitEvent('toggle-check-status', i, 'win')"
       >
         {{ arr_arrow[i] }}
       </div>
-      <div class="ok" :style="getOkButtonStyle('win')" @click.stop="emitEvent('check-invalid-status', 'win')">
+      <div class="ok" :style="getOkButtonColor('win')" @click.stop="emitEvent('check-invalid-status', 'win')">
         OK
       </div>
     </div>
@@ -221,12 +222,12 @@ const emitEvent = (eventName, ...args) => {
       <div v-for="(_, i) in class_check"
         :key="i"
         :class="class_check[i]"
-        :style="getArrowButtonStyle('lose', i)"
+        :style="getArrowButtonColor('lose', i)"
         @click.stop="emitEvent('toggle-check-status', i, 'lose')"
       >
         {{ arr_arrow[i] }}
       </div>
-      <div class="ok" :style="getOkButtonStyle('lose')" @click.stop="emitEvent('check-invalid-status', 'lose')">
+      <div class="ok" :style="getOkButtonColor('lose')" @click.stop="emitEvent('check-invalid-status', 'lose')">
         OK
       </div>
     </div>
@@ -297,12 +298,12 @@ const emitEvent = (eventName, ...args) => {
       <div v-for="(_, i) in class_check"
         :key="i"
         :class="class_check[i]"
-        :style="getArrowButtonStyle('fao', i)"
+        :style="getArrowButtonColor('fao', i)"
         @click.stop="emitEvent('toggle-check-status', i, 'fao')"
       >
         {{ arr_arrow[i] }}
       </div>
-      <div class="ok" :style="getOkButtonStyle('fao')" @click.stop="emitEvent('check-invalid-status', 'fao')">
+      <div class="ok" :style="getOkButtonColor('fao')" @click.stop="emitEvent('check-invalid-status', 'fao')">
         OK
       </div>
     </div>
@@ -343,7 +344,7 @@ const emitEvent = (eventName, ...args) => {
       <div v-for="(_, i) in class_check"
         :key="i"
         :class="class_check[i]"
-        :style="getArrowButtonStyle('tenpai', i)"
+        :style="getArrowButtonColor('tenpai', i)"
         @click.stop="emitEvent('toggle-check-status', i, 'tenpai')"
       >
         {{ arr_arrow[i] }}
@@ -362,12 +363,12 @@ const emitEvent = (eventName, ...args) => {
       <div v-for="(_, i) in class_check"
         :key="i"
         :class="class_check[i]"
-        :style="getArrowButtonStyle('cheat', i)"
+        :style="getArrowButtonColor('cheat', i)"
         @click.stop="emitEvent('toggle-check-status', i, 'cheat')"
       >
         {{ arr_arrow[i] }}
       </div>
-      <div class="ok" :style="getOkButtonStyle('cheat')" @click.stop="emitEvent('check-invalid-status', 'cheat')">
+      <div class="ok" :style="getOkButtonColor('cheat')" @click.stop="emitEvent('check-invalid-status', 'cheat')">
         OK
       </div>
     </div>
@@ -378,7 +379,7 @@ const emitEvent = (eventName, ...args) => {
       <div v-for="(_, i) in class_score_diff"
         :key="i"
         :class="class_score_diff[i]"
-        :style="isDiff(scoresDiff[i])"
+        :style="getScoreColor(scoresDiff[i])"
       >
         <span v-show="scoresDiff[i]>0">+</span>{{ scoresDiff[i] }}
       </div>
@@ -459,7 +460,7 @@ const emitEvent = (eventName, ...args) => {
         >
           <div v-for="(_, j) in recordsScore[i]"
             :key="j"
-            :style="j%2===1 ? isDiff(recordsScore[i][j]) : {}"
+            :style="j%2===1 ? getScoreColor(recordsScore[i][j]) : {}"
           >
             <span v-show="j%2===1 && recordsScore[i][j]>0">+</span>{{ recordsScore[i][j] }}
           </div>
