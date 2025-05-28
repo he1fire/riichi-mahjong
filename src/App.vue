@@ -17,7 +17,6 @@ export default {
         {seat: "Left",  wind: "北", displayScore: 25000, rank: 0, effectScore: 0, gapScore: 0}
       ],
       scores: [25000, 25000, 25000, 25000], // 플레이어별 현재 점수
-      ranks: [0, 0, 0, 0], // 플레이어별 순위
       scoresDiff: [0, 0, 0, 0], // 플레이어별 변동 점수
       names: ["▼", "▶", "▲", "◀"], // 플레이어별 이름
       focusWinner: -1, // 현재 점수 입력하는 플레이어
@@ -130,10 +129,10 @@ export default {
             this.isGap[i]=true;
             this.players[i].gapScore=this.scores[idx]-this.scores[i];
           }
-          this.ranks[i]=1; // 순위 표시 켜기
+          this.players[i].rank=1; // 순위 표시 켜기
           for (let j=0;j<this.scores.length;j++){ // 순위 계산
             if (i!==j && this.scores[i]<this.scores[j])
-              this.ranks[i]++;
+              this.players[i].rank++;
           }
         }
       }
@@ -141,7 +140,7 @@ export default {
         for (let i=0;i<this.isGap.length;i++){
           this.isGap[i]=false;
           this.players[i].gapScore=0;
-          this.ranks[i]=0; // 순위 표시 끄기
+          this.players[i].rank=0; // 순위 표시 끄기
         }
       }
     },
@@ -649,7 +648,6 @@ export default {
     :key="i"
     :player="players[i]"
     :score="scores[i]"
-    :rank="ranks[i]"
     :isRiichi="isRiichi[i]"
     :isGap="isGap[i]"
     :option

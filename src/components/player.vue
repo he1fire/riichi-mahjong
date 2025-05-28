@@ -6,7 +6,6 @@ import {computed} from 'vue'
 const props = defineProps({
   player: Object,
   score: Number,
-  rank: Number,
   isRiichi: Boolean,
   isGap: Boolean,
   option: Object,
@@ -84,8 +83,8 @@ const emitEvent = (eventName, ...args) => {
     </div>
   </div>
   <!-- 순위 표시 -->
-  <div v-show="rank!==0" class="rank" :style="{color: rank===1 ? 'red' : ''}">
-    {{ rank }}
+  <div v-show="player.rank!==0" class="rank" :style="{color: player.rank===1 ? 'red' : ''}">
+    {{ player.rank }}
   </div>
   <!-- 변경되는 점수 -->
   <div v-show="player.effectScore!==0" class="change" :style="isDiff(player.effectScore)">
