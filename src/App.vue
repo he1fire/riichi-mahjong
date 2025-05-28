@@ -249,8 +249,8 @@ export default {
             this.names[i]=arrows[i]; // 기본이름으로 추가
         }
         if (this.setScore[0]*4!==cntScore){ // 시작점수가 변경되었다면
-          if (this.setScore[0]%100!==0) // 이상한 값이면 롤백
-            this.setScore[0]=cnt/4;
+          if (this.setScore[0]%100!==0 || this.setScore[0]==='') // 이상한 값이면 롤백
+            this.setScore[0]=cntScore/4;
           else // 아니라면 동1국으로 롤백
             this.resetAll();
         }
