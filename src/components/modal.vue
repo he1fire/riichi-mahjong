@@ -61,47 +61,35 @@ const class_scoresheet = ["wind", "name", "score", "riichi", "win", "lose"];
 const fan = ["1", "2", "3", "4", "5", "6+", "8+", "11+", "13+", "1배역만", "2배역만", "3배역만", "4배역만", "5배역만","6배역만"];
 const bu = [20, 25, 30, 40, 50, 60, 70, 80, 90, 100, 110];
 
+/**ok버튼을 선택 불가능한 경우 회색처리*/
+const getOkButtonStyle = (status) => {
+  let cntWin=props.isWin.filter(x => x===true).length; // 화료 인원 세기
+  let cntLose=props.isLose.filter(x => x===true).length; // 방총 인원 세기
+  let cntCheat=props.isCheat.filter(x => x===true).length; // 촌보 인원 세기
+  if (status==='win') // 화료 ok 버튼
+    return {color: (cntWin===0 || cntWin===4) ? 'gray' : ''}; // 화료한 사람이 없거나 4명임 (불가능한 경우)
+  else if (status==='lose') // 방총 ok 버튼
+    return {color: (cntWin!==1 && cntLose===0) ? 'gray' : ''}; // 2명 이상 화료했는데 쯔모임 (불가능한 경우)
+  else if (status==='cheat') // 촌보 ok 버튼
+    return {color: cntCheat===0 ? 'gray' : ''}; // 촌보한 사람이 없음 (불가능한 경우)
+  else if (status==='fao') // 책임지불 ok 버튼
+    return {color: props.focusFao===-1 ? 'gray' : ''}; // 책임지불할 사람이 없음 (불가능한 경우)
+}
+
 /**체크 표시시 색상 변경*/
 const isChecked = (x, status) => {
-  let cntWin=0, cntLose=0;
-  if (status==='win'){ // 화료 체크
-    if (x===-1){ // ok버튼
-      for (let i=0;i<props.isWin.length;i++){
-        if (props.isWin[i]===true) // 화료 인원 세기
-          cntWin++;
-      }
-      if (cntWin===0 || cntWin===4) // 화료한 사람이 없거나 4명임 (불가능한 경우)
-        return {color: 'gray'};
-    }
-    else
-      return {color: props.isWin[x]===true ? 'red' : ''};
-  }
+  if (status==='win') // 화료 체크
+    return {color: props.isWin[x]===true ? 'red' : ''};
   else if (status==='lose'){ // 방총 체크
-    if (x===-1){ // ok버튼
-      for (let i=0;i<props.isWin.length;i++){
-        if (props.isWin[i]===true) // 화료 인원 세기
-          cntWin++;
-        if (props.isLose[i]===true) // 방총 인원 세기
-          cntLose++;
-      }
-      if (cntWin!==1 && cntLose===0) // 2명 이상 화료했는데 쯔모임 (불가능한 경우)
-        return {color: 'gray'};
-    }
-    else{
-      if (props.isWin[x]===true) // 승자와 같을때
-        return {color: 'gray'};
-      else
-        return {color: props.isLose[x]===true ? 'red' : ''};
-    }
+    if (props.isWin[x]===true) // 승자와 같을때
+      return {color: 'gray'};
+    else
+      return {color: props.isLose[x]===true ? 'red' : ''};
   }
   else if (status==='tenpai') // 텐파이 체크
     return {color: (props.isTenpai[x]===true || props.isRiichi[x]===true) ? 'red' : ''};
-  else if (status==='cheat'){ // 촌보 체크
-    if (x===-1) // ok버튼
-      return {color: props.isCheat.every(x => x===false) ? 'gray' : ''};
-    else
-      return {color: props.isCheat[x]===true ? 'red' : ''};
-  }
+  else if (status==='cheat') // 촌보 체크
+    return {color: props.isCheat[x]===true ? 'red' : ''};
   else if (status==='fan') // 판 체크
     return {color: x===props.inputFan ? 'red' : ''};
   else if (status==='bu'){ // 부 체크
@@ -115,16 +103,10 @@ const isChecked = (x, status) => {
       return {color: x===props.inputBu ? 'red' : ''};
   }
   else if (status==='fao'){ // 책임지불 체크
-    if (x===-1){
-      if (props.focusFao===-1) // 책임지불할 사람이 없음 (불가능한 경우)
-        return {color: 'gray'};
-    }
-    else{
-      if (props.focusWinner===x) // 현재 승자와 같을때
-        return {color: 'gray'};
-      else
-        return {color: props.focusFao===x ? 'red' : ''};
-    }
+    if (props.focusWinner===x) // 현재 승자와 같을때
+      return {color: 'gray'};
+    else
+      return {color: props.focusFao===x ? 'red' : ''};
   }
   else if (status==='isfao') // 점수창 OX
     return {color: props.isFao===true ? 'mediumblue' : 'red'};
@@ -149,12 +131,12 @@ const isChecked = (x, status) => {
     return {color: props.option.cheatScore===true ? 'mediumblue' : 'red'};
   else if (status==='endriichi') // 공탁처리 옵션
     return {color: props.option.endRiichi===true ? 'mediumblue' : 'red'};
-};
+}
 
 /**역만인지 확인하고 숨기기*/
 const isYakuman = (x) => {
   return {display: ((props.inputFan<9 && x===9) || x===props.inputFan) ? '' : 'none'};
-};
+}
 
 /**점수 변동에 따른 글자색*/
 const isDiff = (x) => {
@@ -164,7 +146,7 @@ const isDiff = (x) => {
     return {color: 'red'};
   else
     return {color: 'white'};
-};
+}
 
 /**책임지불이 켜져있는지 확인*/
 const checkFao = () => {
@@ -172,7 +154,7 @@ const checkFao = () => {
     emitEvent('show-modal', 'check_player_fao', props.roundStatus+'_fao');
   else
     emitEvent('calculate-win');
-};
+}
 
 /**순위표 점수 계산*/
 const calculatePoint = (idx) => {
@@ -196,7 +178,7 @@ const calculatePoint = (idx) => {
   uma/=cnt;
   point=(myScore-props.setScore[1])/1000+uma;
   return String(myScore)+'('+point.toFixed(1)+')';
-};
+}
 
 /**순위표 기록 계산*/
 const calculateRecord = (arr, idx) => {
@@ -206,12 +188,12 @@ const calculateRecord = (arr, idx) => {
       ret++;
   }
   return ret;
-};
+}
 
 /**$emit 이벤트 발생*/
 const emitEvent = (eventName, ...args) => {
   emit(eventName, ...args);
-};
+}
 </script>
 
 <template>
@@ -230,7 +212,7 @@ const emitEvent = (eventName, ...args) => {
       >
         {{ arr_arrow[i] }}
       </div>
-      <div class="ok" :style="isChecked(-1, 'win')" @click.stop="emitEvent('check-invalid-status', 'win')">
+      <div class="ok" :style="getOkButtonStyle('win')" @click.stop="emitEvent('check-invalid-status', 'win')">
         OK
       </div>
     </div>
@@ -249,7 +231,7 @@ const emitEvent = (eventName, ...args) => {
       >
         {{ arr_arrow[i] }}
       </div>
-      <div class="ok" :style="isChecked(-1, 'lose')" @click.stop="emitEvent('check-invalid-status', 'lose')">
+      <div class="ok" :style="getOkButtonStyle('lose')" @click.stop="emitEvent('check-invalid-status', 'lose')">
         OK
       </div>
     </div>
@@ -325,7 +307,7 @@ const emitEvent = (eventName, ...args) => {
       >
         {{ arr_arrow[i] }}
       </div>
-      <div class="ok" :style="isChecked(-1, 'fao')" @click.stop="emitEvent('check-invalid-status', 'fao')">
+      <div class="ok" :style="getOkButtonStyle('fao')" @click.stop="emitEvent('check-invalid-status', 'fao')">
         OK
       </div>
     </div>
@@ -390,7 +372,7 @@ const emitEvent = (eventName, ...args) => {
       >
         {{ arr_arrow[i] }}
       </div>
-      <div class="ok" :style="isChecked(-1, 'cheat')" @click.stop="emitEvent('check-invalid-status', 'cheat')">
+      <div class="ok" :style="getOkButtonStyle('cheat')" @click.stop="emitEvent('check-invalid-status', 'cheat')">
         OK
       </div>
     </div>

@@ -357,13 +357,9 @@ export default {
     },
     /**화료 및 방총 불가능한 경우 반환*/
     checkInvalidStatus(status){
-      let cntWin=0, cntLose=0;
-      for (let i=0;i<this.isWin.length;i++){
-        if (this.isWin[i]===true) // 화료 인원 세기
-          cntWin++;
-        if (this.isLose[i]===true) // 방총 인원 세기
-          cntLose++;
-      }
+      let cntWin=this.isWin.filter(x => x===true).length; // 화료 인원 세기
+      let cntLose=this.isLose.filter(x => x===true).length; // 방총 인원 세기
+      let cntCheat=this.isCheat.filter(x => x===true).length; // 촌보 인원 세기
       if (status==='win'){ // 화료일때
         if (cntWin===0 || cntWin===4) // 화료한 사람이 없거나 4명임 (불가능한 경우)
           return -1;
@@ -397,7 +393,7 @@ export default {
           this.calculateWin();
       }
       else if (status==='cheat'){ // 촌보일때
-        if (this.isCheat.every(x => x===false)) // 촌보한 사람이 없음 (불가능한 경우)
+        if (cntCheat===0) // 촌보한 사람이 없음 (불가능한 경우)
           return;
         this.calculateCheat();
       }

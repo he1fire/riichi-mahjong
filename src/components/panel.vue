@@ -4,13 +4,13 @@ import graphics from './graphics.vue';
 /**props 정의*/
 const props = defineProps({
   panel: Object,
-});
+})
 
 /**emits 정의*/
 const emit = defineEmits([
   'show-modal',
   'roll-dice'
-]);
+])
 
 /**emit 이벤트 발생*/
 const emitEvent = (eventName, ...args) => {
