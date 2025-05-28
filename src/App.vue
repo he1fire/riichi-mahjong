@@ -10,8 +10,7 @@ export default {
   },
   data(){
     return {
-      players: [
-        // 위치, 자풍, 현재 점수, 순위, 이펙트, 점수 차이
+      players: [ // 위치, 자풍, 현재 점수, 순위, 이펙트용 점수, 점수 차이
         {seat: "Down",  wind: "東", displayScore: 25000, rank: 0, effectScore: 0, gapScore: 0},
         {seat: "Right", wind: "南", displayScore: 25000, rank: 0, effectScore: 0, gapScore: 0},
         {seat: "Up",    wind: "西", displayScore: 25000, rank: 0, effectScore: 0, gapScore: 0},
@@ -19,9 +18,7 @@ export default {
       ],
       scores: [25000, 25000, 25000, 25000], // 플레이어별 현재 점수
       ranks: [0, 0, 0, 0], // 플레이어별 순위
-      scoresEffect: [0, 0, 0, 0], // 플레이어별 이펙트 점수
       scoresDiff: [0, 0, 0, 0], // 플레이어별 변동 점수
-      scoresGap: [0, 0, 0, 0], // 플레이어간 점수 차이
       names: ["▼", "▶", "▲", "◀"], // 플레이어별 이름
       focusWinner: -1, // 현재 점수 입력하는 플레이어
       focusLoser: -1, // 현재 방총 플레이어
@@ -131,7 +128,7 @@ export default {
             this.isGap[i]=false;
           else{ // 본인이 아니면 표시 변경
             this.isGap[i]=true;
-            this.scoresGap[i]=this.scores[idx]-this.scores[i];
+            this.players[i].gapScore=this.scores[idx]-this.scores[i];
           }
           this.ranks[i]=1; // 순위 표시 켜기
           for (let j=0;j<this.scores.length;j++){ // 순위 계산
@@ -143,7 +140,7 @@ export default {
       else{ // 비활성화
         for (let i=0;i<this.isGap.length;i++){
           this.isGap[i]=false;
-          this.scoresGap[i]=0;
+          this.players[i].gapScore=0;
           this.ranks[i]=0; // 순위 표시 끄기
         }
       }
@@ -169,14 +166,14 @@ export default {
       let arrCut=[];
       for (let i=0;i<50;i++) // 변경될 점수 사이를 50등분해서 저장
         arrCut[i]=startScore+(this.scoresDiff[idx]/50)*(i+1);
-      this.scoresEffect[idx]=this.scoresDiff[idx]; // 이펙트 켜기
+      this.players[idx].effectScore=this.scoresDiff[idx]; // 이펙트 켜기
       let timecnt=0;
       let repeat=setInterval(() => { // 시간에 따라 반복
         this.scores[idx]=arrCut[timecnt] // 100의 자리 변경
         timecnt++;
         if (timecnt>=50){
           clearInterval(repeat); 
-          this.scoresEffect[idx]=0; // 이펙트 끄기
+          this.players[idx].effectScore=0; // 이펙트 끄기
         }
       }, 20); // 0.02초 * 50번 = 1초동안 실행
     },
@@ -653,8 +650,6 @@ export default {
     :player="players[i]"
     :score="scores[i]"
     :rank="ranks[i]"
-    :scoreEffect="scoresEffect[i]"
-    :scoreGap="scoresGap[i]"
     :isRiichi="isRiichi[i]"
     :isGap="isGap[i]"
     :option

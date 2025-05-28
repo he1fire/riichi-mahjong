@@ -7,8 +7,6 @@ const props = defineProps({
   player: Object,
   score: Number,
   rank: Number,
-  scoreEffect: Number,
-  scoreGap: Number,
   isRiichi: Boolean,
   isGap: Boolean,
   option: Object,
@@ -81,8 +79,8 @@ const emitEvent = (eventName, ...args) => {
     <div v-if="isGap===false" :style="ableRiichi()" @click="emitEvent('toggle-active-riichi', player.seat)">
       {{ scoreHigh }}<span style="font-size: 50px;"><span v-show="scoreLow<10">0</span>{{ scoreLow }}</span>
     </div>
-    <div v-else :style="isDiff(scoreGap)">
-      <span v-show="scoreGap>0">+</span>{{ Math.floor(scoreGap/100) }}<span style="font-size: 50px;">00</span>
+    <div v-else :style="isDiff(player.gapScore)">
+      <span v-show="player.gapScore>0">+</span>{{ Math.floor(player.gapScore/100) }}<span style="font-size: 50px;">00</span>
     </div>
   </div>
   <!-- 순위 표시 -->
@@ -90,8 +88,8 @@ const emitEvent = (eventName, ...args) => {
     {{ rank }}
   </div>
   <!-- 변경되는 점수 -->
-  <div v-show="scoreEffect!==0" class="change" :style="isDiff(scoreEffect)">
-    <span v-show="scoreEffect>0">+</span>{{ scoreEffect }}
+  <div v-show="player.effectScore!==0" class="change" :style="isDiff(player.effectScore)">
+    <span v-show="player.effectScore>0">+</span>{{ player.effectScore }}
   </div>
 </div>
 </template>
