@@ -1,16 +1,9 @@
-<script>
-export default {
-  props: {
-    kind: String,
-    value: [Number, String],
-  },
-  data(){
-    return {
-    };
-  },
-  methods: {
-  }
-};
+<script setup>
+/**props 정의*/
+const props = defineProps({
+  kind: String,
+  value: [Number, String],
+})
 </script>
 
 <template>

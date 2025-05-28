@@ -405,7 +405,7 @@ const emitEvent = (eventName, ...args) => {
       <div v-for="(_, i) in class_score_diff"
         :key="i"
         :class="class_score_diff[i]"
-        :style="isDiff(props.scoresDiff[i])"
+        :style="isDiff(scoresDiff[i])"
       >
         <span v-show="scoresDiff[i]>0">+</span>{{ scoresDiff[i] }}
       </div>
@@ -559,7 +559,7 @@ const emitEvent = (eventName, ...args) => {
           :key="i"
           style="width: 41px;"
           type="number"
-          v-model="props.rankUma[i]"
+          v-model="rankUma[i]"
           :placeholder="`${i+1}위`"
           :name="`uma${i+1}`"
           :style="{ marginRight: i===rankUma.length-1 ? '0px' : '10px' }"
