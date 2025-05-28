@@ -31,10 +31,7 @@ const props = defineProps({
   recordsLose: Array,
   setScore: Array,
   rankUma: Array,
-  optRoundMangan: Boolean,
-  optMinusRiichi: Boolean,
-  optCheatScore: Boolean,
-  optEndRiichi: Boolean,
+  option: Object,
   modalType: String,
 })
 
@@ -146,13 +143,13 @@ const isChecked = (x, status) => {
     return {gridArea: `tile_${x+1}`, color: props.isOpened[x]===true ? (props.randomSeats[x]==='東' ? 'red' : '') : 'orange', backgroundColor: props.isOpened[x]===true ? '' : 'orange'};
   }
   else if (status==='roundmangan') // 유국만관 옵션
-    return {color: props.optRoundMangan===true ? 'mediumblue' : 'red'};
+    return {color: props.option.roundMangan===true ? 'mediumblue' : 'red'};
   else if (status==='minusriichi') // 음수리치 옵션
-    return {color: props.optMinusRiichi===true ? 'mediumblue' : 'red'};
+    return {color: props.option.minusRiichi===true ? 'mediumblue' : 'red'};
   else if (status==='cheatscore') // 촌보점수 옵션
-    return {color: props.optCheatScore===true ? 'mediumblue' : 'red'};
+    return {color: props.option.cheatScore===true ? 'mediumblue' : 'red'};
   else if (status==='endriichi') // 공탁처리 옵션
-    return {color: props.optEndRiichi===true ? 'mediumblue' : 'red'};
+    return {color: props.option.endRiichi===true ? 'mediumblue' : 'red'};
 };
 
 /**역만인지 확인하고 숨기기*/
@@ -194,7 +191,7 @@ const calculatePoint = (idx) => {
     uma+=Number(props.rankUma[rank+i-1]);
   if (rank===1){ // 1위라면 오카도 더하기
     uma+=oka;
-    if (props.optEndRiichi) // 1위에게 공탁금을 몰아주는 경우
+    if (props.option.endRiichi) // 1위에게 공탁금을 몰아주는 경우
       score+=Math.floor(((props.countRiichi*1000)/cnt)/100)*100;
   }
   uma/=cnt;
@@ -541,15 +538,15 @@ const emitEvent = (eventName, ...args) => {
       <div style="grid-area: option2;" @click.stop="emitEvent('toggle-check-status', -1, 'roundmangan')">
         절상만관<br>
         <span :style="isChecked(-1, 'roundmangan')">
-          <span v-show="optRoundMangan===true">O</span>
-          <span v-show="optRoundMangan===false">X</span>
+          <span v-show="option.roundMangan===true">O</span>
+          <span v-show="option.roundMangan===false">X</span>
         </span>
       </div>
       <div style="grid-area: option3;" @click.stop="emitEvent('toggle-check-status', -1, 'minusriichi')">
         음수리치<br>
         <span :style="isChecked(-1, 'minusriichi')">
-          <span v-show="optMinusRiichi===true">O</span>
-          <span v-show="optMinusRiichi===false">X</span>
+          <span v-show="option.minusRiichi===true">O</span>
+          <span v-show="option.minusRiichi===false">X</span>
         </span>
       </div>
       <div style="grid-area: option4;">
@@ -568,15 +565,15 @@ const emitEvent = (eventName, ...args) => {
       <div style="grid-area: option5;" @click.stop="emitEvent('toggle-check-status', -1, 'cheatscore')">
         촌보점수<br>
         <span :style="isChecked(-1, 'cheatscore')">
-          <span v-show="optCheatScore===true">3000 All</span>
-          <span v-show="optCheatScore===false">만관</span>
+          <span v-show="option.cheatScore===true">3000 All</span>
+          <span v-show="option.cheatScore===false">만관</span>
         </span>
       </div>
       <div style="grid-area: option6;" @click.stop="emitEvent('toggle-check-status', -1, 'endriichi')">
         공탁처리<br>
         <span :style="isChecked(-1, 'endriichi')">
-          <span v-show="optEndRiichi===true">1위</span>
-          <span v-show="optEndRiichi===false">X</span>
+          <span v-show="option.endRiichi===true">1위</span>
+          <span v-show="option.endRiichi===false">X</span>
         </span>
       </div>
     </div>

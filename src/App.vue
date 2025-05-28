@@ -47,10 +47,12 @@ export default {
       recordsLose: [[false, false, false, false]], // 방총 기록
       setScore: [25000, 30000], // 시작, 반환 점수
       rankUma: [30, 10, -10, -30], // 순위 우마
-      optRoundMangan: false, // 절상만관 옵션
-      optMinusRiichi: false, // 음수리치 옵션
-      optCheatScore: true, // 촌보 지불 점수
-      optEndRiichi: true, // 남은 공탁금 처리
+      option: { // 옵션
+        roundMangan: false, // 절상만관
+        minusRiichi: false, // 음수리치
+        cheatScore: true, // 촌보 지불 점수
+        endRiichi: true, // 남은 공탁금 처리
+      },
       modal: false, // 모달창 활성화
       modalType: "", // 모달창 종류
     };
@@ -92,7 +94,7 @@ export default {
     toggleActiveRiichi(seat){
       let idx=this.seats.indexOf(seat); // 위치 기준 인덱스 반환
       if (this.isRiichi[idx]===false){ //  리치 활성화
-        if (this.scores[idx]<1000 && this.optMinusRiichi===false) // 리치를 걸수 없을 때
+        if (this.scores[idx]<1000 && this.option.minusRiichi===false) // 리치를 걸수 없을 때
           return;
         else { // 1000점 이상 있거나 음수리치가 가능하다면
           this.scores[idx]-=1000;
@@ -171,7 +173,7 @@ export default {
       let ret=0, chinScore=0, score=0;
       if ((fan===3 && bu>=70) || (fan===4 && bu>=40)) // 3판 70부, 4판 40부 이상이면 만관
         fan=5;
-      if (((fan===3 && bu>=60) || (fan===4 && bu>=30)) && this.optRoundMangan) // 절상만관시 3판 60부, 4판 30부 인정
+      if (((fan===3 && bu>=60) || (fan===4 && bu>=30)) && this.option.roundMangan) // 절상만관시 3판 60부, 4판 30부 인정
         fan=5;
       if (5<=fan)
         chinScore=score=arrMangan[fan-5]; // 만관 이상이면 배열 참조
@@ -334,13 +336,13 @@ export default {
       else if (status==='tile') // 타일 뒤집기
         this.isOpened[idx]=true;
       else if (status==='roundmangan') // 절상만관 토글
-        this.optRoundMangan=!this.optRoundMangan;
+      this.option.roundMangan=!this.option.roundMangan;
       else if (status==='minusriichi') // 음수리치 토글
-        this.optMinusRiichi=!this.optMinusRiichi;
+        this.option.minusRiichi=!this.option.minusRiichi;
       else if (status==='cheatscore') // 촌보 점수 토글
-        this.optCheatScore=!this.optCheatScore;
+        this.option.cheatScore=!this.option.cheatScore;
       else if (status==='endriichi') // 공탁금 처리 토글
-        this.optEndRiichi=!this.optEndRiichi;
+        this.option.endRiichi=!this.option.endRiichi;
     },
     /**화료 및 방총 불가능한 경우 반환*/
     checkInvalidStatus(status){
@@ -479,7 +481,7 @@ export default {
     },
     /**촌보 점수계산*/
     calculateCheat(){
-      if (this.optCheatScore===true){ // 3000점씩 지불 
+      if (this.option.cheatScore===true){ // 3000점씩 지불 
         for (let i=0;i<this.isCheat.length;i++){
           if (this.isCheat[i]===true)
             this.scoresDiff[i]=-9000;
@@ -640,7 +642,7 @@ export default {
     :scoreGap="scoresGap[i]"
     :isRiichi="isRiichi[i]"
     :isGap="isGap[i]"
-    :optMinusRiichi
+    :option
     @toggle-active-riichi="toggleActiveRiichi"
     @toggle-show-gap="toggleShowGap"
   />
@@ -684,10 +686,7 @@ export default {
     :recordsLose
     :setScore
     :rankUma
-    :optRoundMangan
-    :optMinusRiichi
-    :optCheatScore
-    :optEndRiichi
+    :option
     :modalType
     @show-modal="showModal"
     @hide-modal="hideModal"
