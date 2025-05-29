@@ -126,11 +126,11 @@ export default {
       }
     },
     /**점수 차이 활성화/비활성화*/
-    toggleShowGap(seat, x){
+    toggleShowGap(seat, toggle){
+      let idx=this.returnIndex(this.players, 'seat', seat); // 위치 기준 인덱스 반환
       if (this.players[idx].effectScore!==0) // 점수변동 이펙트 도중이면 실행 x
         return;
-      let idx=this.returnIndex(this.players, 'seat', seat); // 위치 기준 인덱스 반환
-      if (x===true){ // 활성화
+      if (toggle===true){ // 활성화
         for (let i=0;i<this.isGap.length;i++){
           if (i===idx)
             this.isGap[i]=false;
