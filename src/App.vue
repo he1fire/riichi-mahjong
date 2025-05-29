@@ -187,7 +187,7 @@ export default {
       this.players[idx].effectScore=this.players[idx].deltaScore; // 이펙트 켜기
       let timecnt=0;
       let repeat=setInterval(() => { // 시간에 따라 반복
-        this.players[idx].displayScore=arrCut[timecnt] // 100의 자리 변경
+        this.players[idx].displayScore=arrCut[timecnt]; // 100의 자리 변경
         timecnt++;
         if (timecnt>=50){
           clearInterval(repeat); 
@@ -254,16 +254,13 @@ export default {
       }
       for (let i=0;i<this.records.score.length;i++)
         this.records.score[i][0]=this.option.startingScore;
-      for (let i=0;i<this.players.length;i++) // 리치봉 제거
-        this.players[i].isRiichi=false;
+      this.players.forEach((x) => {x.isRiichi=false;}); // 리치봉 제거
+      this.players.forEach((x) => {x.displayScore=this.option.startingScore;}); // 점수 설정
+      this.players.forEach((x, idx) => {x.wind=allWinds[idx];}); // 개인 바람 설정
       this.panel.wind="東"; // 장풍 설정
       this.panel.round=1; // 국 설정
-      for (let i=0;i<this.records.score.length;i++)
-        this.players[i].displayScore=this.option.startingScore; // 점수 설정
       this.panel.renchan=0; // 연장 설정
       this.panel.riichi=0; // 리치봉 설정
-      for (let i=0;i<this.players.length;i++)
-        this.players[i].wind=allWinds[i]; // 개인 바람 설정
     },
     /**모달 창 켜기*/
     showModal(type, status){
@@ -540,8 +537,7 @@ export default {
         }
       }
       else{
-        for (let i=0;i<this.players.length;i++) // 리치봉 수거
-          this.players[i].isRiichi=false;
+        this.players.forEach((x) => {x.isRiichi=false;}); // 리치봉 수거
       }
       for (let i=0;i<this.players.length;i++) // 점수 배분및 기록
         this.changeScores(i);
@@ -619,7 +615,7 @@ export default {
       let allWinds = ["東", "南", "西", "北"];
       let arr=this.modal.status.match(/[\u4e00-\u9fff]|\d+|\S/g); // 시간 값 분리
       let idx=this.returnIndex(this.records.time, this.modal.status); // 기록 인덱스
-      let cnt=0;
+      let sumScore=0;
       while (idx<this.records.time.length){ // 점수기록 지우기
         this.records.time.pop();
         for (let i=0;i<this.records.score.length;i++)
@@ -630,20 +626,18 @@ export default {
         this.records.win.pop();
         this.records.lose.pop();
       }
-      for (let i=0;i<this.players.length;i++) // 리치봉 제거
-        this.players[i].isRiichi=false;
-      this.panel.wind=arr[0]; // 장풍 설정
-      this.panel.round=Number(arr[1]); // 국 설정
+      this.players.forEach((x) => {x.isRiichi=false;}); // 리치봉 제거
       for (let i=0;i<this.records.score.length;i++){
         this.players[i].displayScore=Number(this.records.score[i][this.records.score[i].length-1]); // 점수 설정
-        cnt+=this.players[i].displayScore;
+        sumScore+=this.players[i].displayScore;
       }
-      this.panel.renchan=Number(arr[3]); // 연장 설정
-      this.panel.riichi=Math.floor((this.option.startingScore*4-cnt)/1000); // 리치봉 설정
       for (let i=1;i<this.panel.round;i++)
         allWinds.unshift(allWinds.pop()); // 현재 바람 세기
-      for (let i=0;i<this.players.length;i++)
-        this.players[i].wind=allWinds[i]; // 개인 바람 설정
+      this.players.forEach((x, idx) => {x.wind=allWinds[idx];}); // 개인 바람 설정
+      this.panel.wind=arr[0]; // 장풍 설정
+      this.panel.round=Number(arr[1]); // 국 설정
+      this.panel.renchan=Number(arr[3]); // 연장 설정
+      this.panel.riichi=Math.floor((this.option.startingScore*4-sumScore)/1000); // 리치봉 설정
       this.hideModal(); // 모달 창 끄기
     },
   }
