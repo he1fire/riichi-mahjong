@@ -11,7 +11,6 @@ const props = defineProps({
   inputFao: Number,
   inputFan: Number,
   inputBu: Number,
-  isLose: Array,
   isCheat: Array,
   panel: Object,
   roundStatus: String,
@@ -52,7 +51,7 @@ const bu = [20, 25, 30, 40, 50, 60, 70, 80, 90, 100, 110];
 /**ok 버튼 색상*/
 const okButtonStyle = (status) => {
   let cntWin=props.players.filter(x => x.isWin===true).length; // 화료 인원 세기
-  let cntLose=props.isLose.filter(x => x===true).length; // 방총 인원 세기
+  let cntLose=props.players.filter(x => x.isLose===true).length; // 방총 인원 세기
   let cntCheat=props.isCheat.filter(x => x===true).length; // 촌보 인원 세기
   if (status==='win') // 화료 ok 버튼
     return {color: (cntWin===0 || cntWin===4) ? 'gray' : ''}; // 화료한 사람이 없거나 4명임 (불가능한 경우)
@@ -69,7 +68,7 @@ const arrowButtonStyle = (status, idx) => {
   if (status==='win') // 화료 화살표 버튼
     return {color: props.players[idx].isWin===true ? 'red' : ''}; // 선택시 빨간색
   else if (status==='lose') // 방총 화살표 버튼
-    return {color: props.players[idx].isWin!==true ? (props.isLose[idx]===true ? 'red' : '') : 'gray'}; // 선택시 빨간색, 불가능시 회색
+    return {color: props.players[idx].isWin!==true ? (props.players[idx].isLose===true ? 'red' : '') : 'gray'}; // 선택시 빨간색, 불가능시 회색
   else if (status==='cheat') // 촌보 화살표 버튼
     return {color: props.isCheat[idx]===true ? 'red' : ''}; // 선택시 빨간색
   else if (status==='fao') // 책임지불 화살표 버튼

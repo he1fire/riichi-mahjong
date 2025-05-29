@@ -15,19 +15,19 @@ export default {
         // 리치, 화료, 방총, 텐파이, 촌보 유무
         {
           seat: "Down",  name: "▼", wind: "東", displayScore: 25000, rank: 0, effectScore: 0, gapScore: null,
-          isRiichi: false, isWin: false, isTenpai: false,
+          isRiichi: false, isWin: false, isLose: false, isTenpai: false,
         },
         {
           seat: "Right", name: "▶", wind: "南", displayScore: 25000, rank: 0, effectScore: 0, gapScore: null,
-          isRiichi: false, isWin: false, isTenpai: false,
+          isRiichi: false, isWin: false, isLose: false, isTenpai: false,
         },
         {
           seat: "Up",    name: "▲", wind: "西", displayScore: 25000, rank: 0, effectScore: 0, gapScore: null,
-          isRiichi: false, isWin: false, isTenpai: false,
+          isRiichi: false, isWin: false, isLose: false, isTenpai: false,
         },
         {
           seat: "Left",  name: "◀", wind: "北", displayScore: 25000, rank: 0, effectScore: 0, gapScore: null,
-          isRiichi: false, isWin: false, isTenpai: false,
+          isRiichi: false, isWin: false, isLose: false, isTenpai: false,
         }
       ],
       scoresDiff: [0, 0, 0, 0], // 플레이어별 변동 점수
@@ -38,7 +38,6 @@ export default {
       inputFao: -1, // 현재 책임지불
       inputFan: 0, // 현재 점수 (판)
       inputBu: 2, // 현재 점수 (부)
-      isLose: [false, false, false, false], // 플레이어별 방총 유무
       isCheat: [false, false, false, false], // 플레이어별 촌보 유무
       panel: { // 패널
         wind: "東", // 현재 장풍
@@ -299,9 +298,9 @@ export default {
       this.inputBu=2;
       this.players.forEach((x) => {
         x.isWin=false;
+        x.isLose=false;
         x.isTenpai=false;
       });
-      this.isLose=[false, false, false, false];
       this.isCheat=[false, false, false, false];
       this.modal.isOpen=false;
     },
@@ -312,13 +311,13 @@ export default {
       else if (status==='lose'){ // 방총 체크
         if (this.players[idx].isWin)// 화료한 사람이랑 겹치는 경우 스킵
           return;
-        if (!this.isLose[idx]){ // 방총당한 사람을 바꾸는 경우
-          for (let i=0;i<this.isLose.length;i++){
+        if (this.players[idx].isLose===false){ // 방총당한 사람을 바꾸는 경우
+          for (let i=0;i<this.players.length;i++){
             if (i!==idx) // 자신이 아닌 사람들의 체크를 해제
-              this.isLose[i]=false;
+              this.players[i].isLose=false;
           }
         }
-        this.isLose[idx]=!this.isLose[idx];
+        this.players[idx].isLose=!this.players[idx].isLose;
       }
       else if (status==='tenpai') // 텐파이 체크
         this.players[idx].isTenpai=!this.players[idx].isTenpai;
@@ -375,11 +374,11 @@ export default {
     /**화료 및 방총 불가능한 경우 반환*/
     checkInvalidStatus(status){
       let cntWin=this.players.filter(x => x.isWin===true).length; // 화료 인원 세기
-      let cntLose=this.isLose.filter(x => x===true).length; // 방총 인원 세기
+      let cntLose=this.players.filter(x => x.isLose===true).length; // 방총 인원 세기
       let cntCheat=this.isCheat.filter(x => x===true).length; // 촌보 인원 세기
       if (status==='win'){ // 화료일때
         if (cntWin===0 || cntWin===4) // 화료한 사람이 없거나 4명임 (불가능한 경우)
-          return -1;
+          return;
         this.showModal('check_player_lose');
       }
       else if (status==='lose'){ // 방총일때
@@ -390,7 +389,7 @@ export default {
           this.showModal('check_score', 'tsumo');
         }
         else{ // 론
-          this.focusLoser=this.returnIndex(this.isLose, true); // 패자 찾아서 저장
+          this.focusLoser=this.returnIndex(this.players, 'isLose', true); // 패자 찾아서 저장
           for (let i=0;i<this.players.length;i++){
             if (this.players[(this.focusLoser+i)%4].isWin===true){ // 승자 찾아서 저장 (선하네 순서로 탐색)
               this.focusWinner=(this.focusLoser+i)%4;
@@ -552,7 +551,7 @@ export default {
       this.records.time.push('ㅤ');
       this.records.riichi.push(this.players.map(x => x.isRiichi)); // 리치 기록에 추가
       this.records.win.push(this.players.map(x => x.isWin)); // 화료 기록에 추가
-      this.records.lose.push([...this.isLose]); // 방총 기록에 추가
+      this.records.lose.push(this.players.map(x => x.isLose)); // 방총 기록에 추가
 
       let chin=this.players[this.returnIndex(this.players, 'wind', '東')]; // 친이 누구인지 저장
       if (this.roundStatus==='tsumo' || this.roundStatus==='ron'){ // 화료로 끝났다면
@@ -676,7 +675,6 @@ export default {
     :inputFao
     :inputFan
     :inputBu
-    :isLose
     :isCheat
     :panel
     :roundStatus
