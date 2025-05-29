@@ -38,8 +38,10 @@ export default {
         renchan: 0, // 현재 누적 연장봉
       },
       roundStatus: "", // 라운드 형태 - 론 쯔모 일반유국 특수유국
-      diceValue: [1, 6], // 주사위 값
-      isWall: [false, false, false, false], // 주사위 값에 따른 패산방향
+      dice: { // 주사위
+        value: [1, 6], // 값
+        wallDirection: [false, false, false, false], // 주사위 값에 따른 패산방향
+      },
       isOpened: [false, false, false, false], // 타일이 공개되었는지
       randomSeats: ["東", "南", "西", "北"], // 랜덤 타일값
       records : { // 기록
@@ -571,18 +573,18 @@ export default {
     /**주사위 굴리기*/
     rollDice(){
       let timecnt=0;
-      this.isWall=[false, false, false, false]; // 패산 떼는 방향 초기화
+      this.dice.wallDirection=[false, false, false, false]; // 패산 떼는 방향 초기화
       let repeat=setInterval(() => { // 시간에 따라 반복
-        this.diceValue[0]=Math.floor(Math.random()*6)+1;
-        this.diceValue[1]=Math.floor(Math.random()*6)+1;
+        this.dice.value[0]=Math.floor(Math.random()*6)+1;
+        this.dice.value[1]=Math.floor(Math.random()*6)+1;
         timecnt++;
         if (timecnt>=10){
             clearInterval(repeat);
-            for (let i=0;i<this.isWall.length;i++){ // 패산 떼는 방향 표시
-              if (i===(this.diceValue[0]+this.diceValue[1]-1)%4)
-                this.isWall[i]=true;
+            for (let i=0;i<this.dice.wallDirection.length;i++){ // 패산 떼는 방향 표시
+              if (i===(this.dice.value[0]+this.dice.value[1]-1)%4)
+                this.dice.wallDirection[i]=true;
               else
-                this.isWall[i]=false;
+                this.dice.wallDirection[i]=false;
             }
         }
       }, 50); // 0.05초 * 10번 = 0.5초동안 실행
@@ -680,8 +682,7 @@ export default {
     :isCheat
     :panel
     :roundStatus
-    :diceValue
-    :isWall
+    :dice
     :isOpened
     :randomSeats
     :records

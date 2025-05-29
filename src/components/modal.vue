@@ -19,8 +19,7 @@ const props = defineProps({
   isCheat: Array,
   panel: Object,
   roundStatus: String,
-  diceValue: Array,
-  isWall: Array,
+  dice: Object,
   isOpened: Array,
   randomSeats: Array,
   records: Object,
@@ -132,7 +131,7 @@ const diceModalTransform = () => {
 
 /**주사위 패산 방향 표시*/
 const wallDirectionVisibility = (idx) => {
-  return {visibility: props.isWall[idx]===true ? 'visible' : 'hidden'};
+  return {visibility: props.dice.wallDirection[idx]===true ? 'visible' : 'hidden'};
 }
 
 /**타일 앞뒤 표시*/
@@ -397,11 +396,11 @@ const emitEvent = (eventName, ...args) => {
   <!-- 주사위 굴림창 -->
   <div v-else-if="modal.type==='roll_dice'" class="modal_content" :style="diceModalTransform()" @click.stop>
     <div class="container_roll" @click.stop="emitEvent('roll-dice')">
-      <graphics kind="dice" :value="diceValue[0]" style="grid-area: dice_1; transform: scale(2);"/>
-      <graphics kind="dice" :value="diceValue[1]" style="grid-area: dice_2; transform: scale(2);"/>
+      <graphics kind="dice" :value="dice.value[0]" style="grid-area: dice_1; transform: scale(2);"/>
+      <graphics kind="dice" :value="dice.value[1]" style="grid-area: dice_2; transform: scale(2);"/>
       <div class="sum">
-        <span v-show="isWall.every(x => x===false)">?</span>
-        <span v-show="isWall.some(x => x===true)">{{ diceValue[0]+diceValue[1] }}</span>
+        <span v-show="dice.wallDirection.every(x => x===false)">?</span>
+        <span v-show="dice.wallDirection.some(x => x===true)">{{ dice.value[0]+dice.value[1] }}</span>
       </div>
       <div v-for="(_, i) in class_dice"
         :key="i"
