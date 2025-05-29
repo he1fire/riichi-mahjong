@@ -11,13 +11,12 @@ export default {
   data(){
     return {
       players: [ // 위치, 자풍, 현재 점수, 순위, 이펙트용 점수, 점수 차이
-        {seat: "Down",  wind: "東", displayScore: 25000, rank: 0, effectScore: 0, gapScore: 0},
-        {seat: "Right", wind: "南", displayScore: 25000, rank: 0, effectScore: 0, gapScore: 0},
-        {seat: "Up",    wind: "西", displayScore: 25000, rank: 0, effectScore: 0, gapScore: 0},
-        {seat: "Left",  wind: "北", displayScore: 25000, rank: 0, effectScore: 0, gapScore: 0}
+        {seat: "Down",  name: "▼", wind: "東", displayScore: 25000, rank: 0, effectScore: 0, gapScore: 0},
+        {seat: "Right", name: "▶", wind: "南", displayScore: 25000, rank: 0, effectScore: 0, gapScore: 0},
+        {seat: "Up",    name: "▲", wind: "西", displayScore: 25000, rank: 0, effectScore: 0, gapScore: 0},
+        {seat: "Left",  name: "◀", wind: "北", displayScore: 25000, rank: 0, effectScore: 0, gapScore: 0}
       ],
       scoresDiff: [0, 0, 0, 0], // 플레이어별 변동 점수
-      names: ["▼", "▶", "▲", "◀"], // 플레이어별 이름
       focusWinner: -1, // 현재 점수 입력하는 플레이어
       focusLoser: -1, // 현재 방총 플레이어
       isFao: false, // 책임지불 유무
@@ -112,7 +111,7 @@ export default {
       if (this.isRiichi[idx]===false){ // 리치 활성화
         if (this.players[idx].displayScore<1000 && this.option.minusRiichi===false) // 리치를 걸수 없을 때
           return;
-        else if (this.players[idx].effectScore!==0) // 점수변동 이펙트 도중
+        else if (this.players[idx].effectScore!==0) // 점수변동 이펙트 도중이면 실행 x
           return;
         else{ // 1000점 이상 있거나 음수리치가 가능하다면
           this.players[idx].displayScore-=1000;
@@ -128,6 +127,8 @@ export default {
     },
     /**점수 차이 활성화/비활성화*/
     toggleShowGap(seat, x){
+      if (this.players[idx].effectScore!==0) // 점수변동 이펙트 도중이면 실행 x
+        return;
       let idx=this.returnIndex(this.players, 'seat', seat); // 위치 기준 인덱스 반환
       if (x===true){ // 활성화
         for (let i=0;i<this.isGap.length;i++){
@@ -266,9 +267,9 @@ export default {
         let arrows=["▼", "▶", "▲", "◀"];
         let cntScore=this.players.reduce((acc, player) => acc+player.displayScore, this.panel.riichi*1000); // 현재 총점
         let cntUma=this.option.rankUma.reduce((acc, cur) => acc + cur, 0); // 현재 총우마
-        for (let i=0;i<this.names.length;i++){
-          if (this.names[i]==='') // 이름이 없는 경우
-            this.names[i]=arrows[i]; // 기본이름으로 추가
+        for (let i=0;i<this.players.length;i++){
+          if (this.players[i].name==='') // 이름이 없는 경우
+            this.players[i].name=arrows[i]; // 기본이름으로 추가
         }
         if (this.option.startingScore*4!==cntScore){ // 시작점수가 변경되었다면
           if (this.option.startingScore%100!==0 || this.option.startingScore==='') // 이상한 값이면 롤백
@@ -592,8 +593,8 @@ export default {
     /**점수 기록 복사*/
     copyRecord(){
       let str='이름\t';
-      for (let i=0;i<this.names.length;i++)
-        str+=this.names[i]+'\t'; // 이름 복사
+      for (let i=0;i<this.players.length;i++)
+        str+=this.players[i].name+'\t'; // 이름 복사
       str+='\n';
       for (let i=0;i<this.records.time.length;i++){
         if (this.records.time[i]!=="ㅤ") // 공백 제거
@@ -668,7 +669,6 @@ export default {
     v-if="modal.isOpen"
     :players
     :scoresDiff
-    :names
     :focusWinner
     :isFao
     :focusFao

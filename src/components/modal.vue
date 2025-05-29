@@ -5,7 +5,6 @@ import graphics from './graphics.vue'
 const props = defineProps({
   players: Array,
   scoresDiff: Array,
-  names: Array,
   focusWinner: Number,
   isFao: Boolean,
   focusFao: Number,
@@ -240,7 +239,7 @@ const emitEvent = (eventName, ...args) => {
   <!-- 판/부 선택창 -->
   <div v-else-if="modal.type==='check_score'" class="modal_content" @click.stop>
     <div>
-      {{ names[focusWinner] }}의 점수를 입력해주세요.
+      {{ players[focusWinner].name }}의 점수를 입력해주세요.
     </div>
     <div class="container_check_fanbu">
       <div class="fan">
@@ -448,7 +447,7 @@ const emitEvent = (eventName, ...args) => {
         :key="i"
         :class="class_name[i]"
       >
-        {{ names[i] }}
+        {{ players[i].name }}
       </div>
       <div class="container_record_scroll">
         <div class="when">
@@ -494,7 +493,7 @@ const emitEvent = (eventName, ...args) => {
         <input
           type="text"
           maxlength="4"
-          v-model="names[i]"
+          v-model="players[i].name"
           :placeholder="`이름${i+1}`"
           :name="`name${i+1}`"
         >
@@ -574,7 +573,7 @@ const emitEvent = (eventName, ...args) => {
         <div v-for="(_, i) in arr_seat" :key="i">{{ arr_seat[i][2] }}</div>
       </div>
       <div style="grid-area: name_contents;">
-        <div v-for="(_, i) in names" :key="i">{{ names[i] }}</div>
+        <div v-for="(_, i) in players" :key="i">{{ players[i].name }}</div>
       </div>
       <div style="grid-area: score_contents;">
         <div v-for="(_, i) in players" :key="i">{{calculatePoint(i)}}</div>
