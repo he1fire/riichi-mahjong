@@ -10,11 +10,25 @@ export default {
   },
   data(){
     return {
-      players: [ // 위치, 자풍, 현재 점수, 순위, 이펙트용 점수, 점수 차이
-        {seat: "Down",  name: "▼", wind: "東", displayScore: 25000, rank: 0, effectScore: 0, gapScore: null},
-        {seat: "Right", name: "▶", wind: "南", displayScore: 25000, rank: 0, effectScore: 0, gapScore: null},
-        {seat: "Up",    name: "▲", wind: "西", displayScore: 25000, rank: 0, effectScore: 0, gapScore: null},
-        {seat: "Left",  name: "◀", wind: "北", displayScore: 25000, rank: 0, effectScore: 0, gapScore: null}
+      players: [
+        // 위치, 이름, 자풍, 현재 점수, 순위, 이펙트용 점수, 점수 차이,
+        // 리치, 화료, 방총, 텐파이, 촌보 유무
+        {
+          seat: "Down",  name: "▼", wind: "東", displayScore: 25000, rank: 0, effectScore: 0, gapScore: null,
+          isRiichi: false,
+        },
+        {
+          seat: "Right", name: "▶", wind: "南", displayScore: 25000, rank: 0, effectScore: 0, gapScore: null,
+          isRiichi: false,
+        },
+        {
+          seat: "Up",    name: "▲", wind: "西", displayScore: 25000, rank: 0, effectScore: 0, gapScore: null,
+          isRiichi: false,
+        },
+        {
+          seat: "Left",  name: "◀", wind: "北", displayScore: 25000, rank: 0, effectScore: 0, gapScore: null,
+          isRiichi: false,
+        }
       ],
       scoresDiff: [0, 0, 0, 0], // 플레이어별 변동 점수
       focusWinner: -1, // 현재 점수 입력하는 플레이어
@@ -24,7 +38,6 @@ export default {
       inputFao: -1, // 현재 책임지불
       inputFan: 0, // 현재 점수 (판)
       inputBu: 2, // 현재 점수 (부)
-      isRiichi: [false, false, false, false], // 플레이어별 리치 유무
       isWin: [false, false, false, false], // 플레이어별 화료 유무
       isLose: [false, false, false, false], // 플레이어별 방총 유무
       isTenpai: [false, false, false, false], // 플레이어별 텐파이 유무
@@ -109,20 +122,20 @@ export default {
     /**리치 활성화/비활성화*/
     toggleActiveRiichi(seat){
       let idx=this.returnIndex(this.players, 'seat', seat); // 위치 기준 인덱스 반환
-      if (this.isRiichi[idx]===false){ // 리치 활성화
+      if (this.players[idx].isRiichi===false){ // 리치 활성화
         if (this.players[idx].displayScore<1000 && this.option.minusRiichi===false) // 리치를 걸수 없을 때
           return;
         else if (this.players[idx].effectScore!==0) // 점수변동 이펙트 도중이면 실행 x
           return;
         else{ // 1000점 이상 있거나 음수리치가 가능하다면
           this.players[idx].displayScore-=1000;
-          this.isRiichi[idx]=true;
+          this.players[idx].isRiichi=true;
           this.panel.riichi++;
         }
       }
       else{ // 리치 비활성화
         this.players[idx].displayScore+=1000;
-        this.isRiichi[idx]=false;
+        this.players[idx].isRiichi=false;
         this.panel.riichi--;
       }
     },
@@ -135,11 +148,9 @@ export default {
         for (let i=0;i<this.players.length;i++){
           if (i!==idx) // 본인이 아니면 점수 차 표시 켜기
             this.players[i].gapScore=this.players[idx].displayScore-this.players[i].displayScore;
-          this.players[i].rank=1; // 순위 표시 켜기
-          for (let j=0;j<this.players.length;j++){ // 순위 계산
-            if (i!==j && this.players[i].displayScore<this.players[j].displayScore)
-              this.players[i].rank++;
-          }
+          else
+            this.players[i].gapScore=null;
+          this.players[i].rank=this.players.filter(x => x.displayScore>this.players[i].displayScore).length+1; // 순위 표시 켜기
         }
       }
       else{ // 비활성화
@@ -240,8 +251,8 @@ export default {
       }
       for (let i=0;i<this.records.score.length;i++)
         this.records.score[i][0]=this.option.startingScore;
-      for (let i=0;i<this.isRiichi.length;i++) // 리치봉 제거
-        this.isRiichi[i]=false;
+      for (let i=0;i<this.players.length;i++) // 리치봉 제거
+        this.players[i].isRiichi=false;
       this.panel.wind="東"; // 장풍 설정
       this.panel.round=1; // 국 설정
       for (let i=0;i<this.records.score.length;i++)
@@ -262,7 +273,7 @@ export default {
       if (this.modal.type==='set_options'){ // 옵션 설정창이라면 확인
         let arrows=["▼", "▶", "▲", "◀"];
         let cntScore=this.players.reduce((acc, player) => acc+player.displayScore, this.panel.riichi*1000); // 현재 총점
-        let cntUma=this.option.rankUma.reduce((acc, cur) => acc + cur, 0); // 현재 총우마
+        let cntUma=this.option.rankUma.reduce((acc, cur) => acc+cur, 0); // 현재 총우마
         for (let i=0;i<this.players.length;i++){
           if (this.players[i].name==='') // 이름이 없는 경우
             this.players[i].name=arrows[i]; // 기본이름으로 추가
@@ -478,7 +489,7 @@ export default {
     calculateDraw(){
       let cntTenpai=0; // 총 텐파이 인원
       for (let i=0;i<this.isTenpai.length;i++){
-        this.isTenpai[i]||=this.isRiichi[i];
+        this.isTenpai[i]||=this.players[i].isRiichi;
         if (this.isTenpai[i]===true) // 텐파이 인원 세기
           cntTenpai++;
       }
@@ -523,18 +534,18 @@ export default {
     /**국 결과값 처리*/
     saveRound(){
       if (this.roundStatus==='cheat'){ // 촌보의 경우 리치봉 반환
-        for (let i=0;i<this.isRiichi.length;i++){
-          if (this.isRiichi[i]){
+        for (let i=0;i<this.players.length;i++){
+          if (this.players[i].isRiichi===true){
             this.players[i].displayScore+=1000;
-            this.isRiichi[i]=false;
+            this.players[i].isRiichi=false;
             this.panel.riichi--;
           }
         }
       }
       else{
-        this.records.riichi.push([...this.isRiichi]); // 리치 기록에 추가
-        for (let i=0;i<this.isRiichi.length;i++) // 리치봉 수거
-          this.isRiichi[i]=false;
+        this.records.riichi.push(this.players.map(player => player.isRiichi)); // 리치 기록에 추가
+        for (let i=0;i<this.players.length;i++) // 리치봉 수거
+          this.players[i].isRiichi=false;
       }
       for (let i=0;i<this.scoresDiff.length;i++) // 점수 배분및 기록
         this.changeScores(i);
@@ -622,8 +633,8 @@ export default {
         this.records.win.pop();
         this.records.lose.pop();
       }
-      for (let i=0;i<this.isRiichi.length;i++) // 리치봉 제거
-        this.isRiichi[i]=false;
+      for (let i=0;i<this.players.length;i++) // 리치봉 제거
+        this.players[i].isRiichi=false;
       this.panel.wind=arr[0]; // 장풍 설정
       this.panel.round=Number(arr[1]); // 국 설정
       for (let i=0;i<this.records.score.length;i++){
@@ -648,7 +659,6 @@ export default {
   <player v-for="(_, i) in players"
     :key="i"
     :player="players[i]"
-    :isRiichi="isRiichi[i]"
     :option
     @toggle-active-riichi="toggleActiveRiichi"
     @toggle-show-gap="toggleShowGap"
@@ -670,7 +680,6 @@ export default {
     :inputFao
     :inputFan
     :inputBu
-    :isRiichi
     :isWin
     :isLose
     :isTenpai

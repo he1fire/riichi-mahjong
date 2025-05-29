@@ -11,7 +11,6 @@ const props = defineProps({
   inputFao: Number,
   inputFan: Number,
   inputBu: Number,
-  isRiichi: Array,
   isWin: Array,
   isLose: Array,
   isTenpai: Array,
@@ -78,7 +77,7 @@ const arrowButtonStyle = (status, idx) => {
   else if (status==='fao') // 책임지불 화살표 버튼
     return {color: props.focusWinner!==idx ? (props.focusFao===idx ? 'red' : '') : 'gray'}; // 선택시 빨간색, 불가능시 회색
   else if (status==='tenpai') // 텐파이 화살표 버튼
-    return {color: (props.isTenpai[idx]===true || props.isRiichi[idx]===true) ? 'red' : ''}; // 선택 또는 리치시 빨간색
+    return {color: (props.isTenpai[idx]===true || props.players[idx].isRiichi===true) ? 'red' : ''}; // 선택 또는 리치시 빨간색
 }
 
 /**토글 버튼 색상*/
@@ -160,13 +159,9 @@ const calculatePoint = (idx) => {
   let myScore=props.players[idx].displayScore;
   let point=0 // 점수기반
   let oka=(props.option.returnScore*4-props.option.startingScore*4)/1000; // 오카
-  let rank=1, uma=0, cnt=0;
-  for (let i=0;i<props.players.length;i++){
-    if (myScore<props.players[i].displayScore)
-      rank++; // 순위 체크
-    else if (myScore===props.players[i].displayScore)
-      cnt++; // 동점자 체크
-  }
+  let uma=0; // 우마
+  let rank=props.players.filter(x => x.displayScore>myScore).length+1; // 순위
+  let cnt=props.players.filter(x => x.displayScore===myScore).length; // 동점자 수
   for (let i=0;i<cnt;i++) // 동점자의 모든 우마 더하기
     uma+=Number(props.option.rankUma[rank+i-1]);
   if (rank===1){ // 1위라면 오카도 더하기

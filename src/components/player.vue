@@ -5,7 +5,6 @@ import {computed} from 'vue'
 /**props 정의*/
 const props = defineProps({
   player: Object,
-  isRiichi: Boolean,
   option: Object,
 })
 
@@ -42,7 +41,7 @@ const displayScoreStyle = () => {
 
 /**리치봉 표시*/
 const riichiStickVisibility = () => {
-  return {visibility: props.isRiichi===true ? 'visible' : 'hidden'}
+  return {visibility: props.player.isRiichi===true ? 'visible' : 'hidden'}
 }
 
 /**점수 부호에 따른 색상*/
