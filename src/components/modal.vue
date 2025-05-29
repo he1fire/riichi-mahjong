@@ -13,7 +13,6 @@ const props = defineProps({
   inputBu: Number,
   isWin: Array,
   isLose: Array,
-  isTenpai: Array,
   isCheat: Array,
   panel: Object,
   roundStatus: String,
@@ -77,7 +76,7 @@ const arrowButtonStyle = (status, idx) => {
   else if (status==='fao') // 책임지불 화살표 버튼
     return {color: props.focusWinner!==idx ? (props.focusFao===idx ? 'red' : '') : 'gray'}; // 선택시 빨간색, 불가능시 회색
   else if (status==='tenpai') // 텐파이 화살표 버튼
-    return {color: (props.isTenpai[idx]===true || props.players[idx].isRiichi===true) ? 'red' : ''}; // 선택 또는 리치시 빨간색
+    return {color: (props.players[idx].isTenpai===true || props.players[idx].isRiichi===true) ? 'red' : ''}; // 선택 또는 리치시 빨간색
 }
 
 /**토글 버튼 색상*/

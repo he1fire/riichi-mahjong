@@ -15,19 +15,19 @@ export default {
         // 리치, 화료, 방총, 텐파이, 촌보 유무
         {
           seat: "Down",  name: "▼", wind: "東", displayScore: 25000, rank: 0, effectScore: 0, gapScore: null,
-          isRiichi: false,
+          isRiichi: false, isTenpai: false,
         },
         {
           seat: "Right", name: "▶", wind: "南", displayScore: 25000, rank: 0, effectScore: 0, gapScore: null,
-          isRiichi: false,
+          isRiichi: false, isTenpai: false,
         },
         {
           seat: "Up",    name: "▲", wind: "西", displayScore: 25000, rank: 0, effectScore: 0, gapScore: null,
-          isRiichi: false,
+          isRiichi: false, isTenpai: false,
         },
         {
           seat: "Left",  name: "◀", wind: "北", displayScore: 25000, rank: 0, effectScore: 0, gapScore: null,
-          isRiichi: false,
+          isRiichi: false, isTenpai: false,
         }
       ],
       scoresDiff: [0, 0, 0, 0], // 플레이어별 변동 점수
@@ -40,7 +40,6 @@ export default {
       inputBu: 2, // 현재 점수 (부)
       isWin: [false, false, false, false], // 플레이어별 화료 유무
       isLose: [false, false, false, false], // 플레이어별 방총 유무
-      isTenpai: [false, false, false, false], // 플레이어별 텐파이 유무
       isCheat: [false, false, false, false], // 플레이어별 촌보 유무
       panel: { // 패널
         wind: "東", // 현재 장풍
@@ -164,9 +163,9 @@ export default {
     changeWindsAndRounds(){
       let allWinds="東南西北";
       let cnt=0;
-      let playerWinds=this.players.map(player => player.wind); // 개인 바람 복사
+      let playerWinds=this.players.map(x => x.wind); // 개인 바람 복사
       playerWinds.unshift(playerWinds.pop()); // 개인 바람 변경
-      this.players.forEach((player, idx) => {player.wind=playerWinds[idx];}); // 개인 바람 덮어씌우기
+      this.players.forEach((x, idx) => {x.wind=playerWinds[idx];}); // 개인 바람 덮어씌우기
       for (let i=0;i<allWinds.length;i++){
         if (this.panel.wind===allWinds[i]) // 현재 라운드 계산
           cnt+=i*4;
@@ -272,8 +271,8 @@ export default {
     hideModal(){
       if (this.modal.type==='set_options'){ // 옵션 설정창이라면 확인
         let arrows=["▼", "▶", "▲", "◀"];
-        let cntScore=this.players.reduce((acc, player) => acc+player.displayScore, this.panel.riichi*1000); // 현재 총점
-        let cntUma=this.option.rankUma.reduce((acc, cur) => acc+cur, 0); // 현재 총우마
+        let cntScore=this.players.reduce((acc, x) => acc+x.displayScore, this.panel.riichi*1000); // 현재 총점
+        let cntUma=this.option.rankUma.reduce((acc, x) => acc+cur, 0); // 현재 총우마
         for (let i=0;i<this.players.length;i++){
           if (this.players[i].name==='') // 이름이 없는 경우
             this.players[i].name=arrows[i]; // 기본이름으로 추가
@@ -301,7 +300,7 @@ export default {
       this.inputBu=2;
       this.isWin=[false, false, false, false];
       this.isLose=[false, false, false, false];
-      this.isTenpai=[false, false, false, false];
+      this.players.forEach((x) => {x.isTenpai=false;});
       this.isCheat=[false, false, false, false];
       this.modal.isOpen=false;
     },
@@ -321,7 +320,7 @@ export default {
         this.isLose[idx]=!this.isLose[idx];
       }
       else if (status==='tenpai') // 텐파이 체크
-        this.isTenpai[idx]=!this.isTenpai[idx];
+        this.players[idx].isTenpai=!this.players[idx].isTenpai;
       else if (status==='cheat'){ // 촌보 체크
         if (!this.isCheat[idx]){ // 방총당한 사람을 바꾸는 경우
           for (let i=0;i<this.isCheat.length;i++){
@@ -487,15 +486,11 @@ export default {
     },
     /**유국 점수계산*/
     calculateDraw(){
-      let cntTenpai=0; // 총 텐파이 인원
-      for (let i=0;i<this.isTenpai.length;i++){
-        this.isTenpai[i]||=this.players[i].isRiichi;
-        if (this.isTenpai[i]===true) // 텐파이 인원 세기
-          cntTenpai++;
-      }
+      this.players.forEach((x) => {x.isTenpai||=x.isRiichi;}); // 리치자 텐파이 선언
+      let cntTenpai=this.players.filter(x => x.isTenpai===true).length; // 총 텐파이 인원
       if (0<cntTenpai && cntTenpai<4){ //올텐파이나 올노텐이 아니라면
-        for (let i=0;i<this.isTenpai.length;i++){
-          if (this.isTenpai[i]===true) // 텐파이라면
+        for (let i=0;i<this.players.length;i++){
+          if (this.players[i].isTenpai===true) // 텐파이라면
             this.scoresDiff[i]=3000/cntTenpai; // 3000 나눠서 획득
           else
             this.scoresDiff[i]=-3000/(this.players.length-cntTenpai); 
@@ -543,7 +538,7 @@ export default {
         }
       }
       else{
-        this.records.riichi.push(this.players.map(player => player.isRiichi)); // 리치 기록에 추가
+        this.records.riichi.push(this.players.map(x => x.isRiichi)); // 리치 기록에 추가
         for (let i=0;i<this.players.length;i++) // 리치봉 수거
           this.players[i].isRiichi=false;
       }
@@ -557,6 +552,8 @@ export default {
       this.records.time.push('ㅤ');
       this.records.win.push([...this.isWin]); // 화료 기록에 추가
       this.records.lose.push([...this.isLose]); // 방총 기록에 추가
+
+      let chin=this.players[this.returnIndex(this.players, 'wind', '東')]; // 친이 누구인지 저장
       if (this.roundStatus==='tsumo' || this.roundStatus==='ron'){ // 화료로 끝났다면
         let chinWin=this.isWin[this.returnIndex(this.players, 'wind', '東')]; // 친이 화료했는지 체크
         if (chinWin===false){ // 친이 화료를 못했다면
@@ -568,8 +565,7 @@ export default {
         this.panel.riichi=0; // 리치봉 초기화
       }
       else if (this.roundStatus==='normal_draw'){ // 일반유국이라면
-        let chinTenpai=this.isTenpai[this.returnIndex(this.players, 'wind', '東')]; // 친이 노텐인지 체크
-        if (chinTenpai===false) // 친이 노텐이라면
+        if (chin.isTenpai===false) // 친이 노텐이라면
           this.changeWindsAndRounds(); // 바람 및 라운드 변경
         this.panel.renchan++; // 연장봉 추가
       }
@@ -682,7 +678,6 @@ export default {
     :inputBu
     :isWin
     :isLose
-    :isTenpai
     :isCheat
     :panel
     :roundStatus
