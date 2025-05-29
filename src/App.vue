@@ -58,8 +58,10 @@ export default {
         cheatScore: true, // 촌보 지불 점수
         endRiichi: true, // 남은 공탁금 처리
       },
-      modal: false, // 모달창 활성화
-      modalType: "", // 모달창 종류
+      modal: {
+        isOpen :false, // 모달창 on/off
+        type: "", // 모달창 종류
+      },
     };
   },
   mounted() {
@@ -252,13 +254,13 @@ export default {
     },
     /**모달 창 켜기*/
     showModal(type, status){
-      this.modalType=type;
+      this.modal.type=type;
       this.roundStatus=status;
-      this.modal=true;
+      this.modal.isOpen=true;
     },
     /**모달 창 끄기*/
     hideModal(){
-      if (this.modalType==='set_options'){ // 옵션 설정창이라면 확인
+      if (this.modal.type==='set_options'){ // 옵션 설정창이라면 확인
         let arrows=["▼", "▶", "▲", "◀"];
         let cntScore=this.players.reduce((acc, player) => acc+player.displayScore, this.panel.riichi*1000); // 현재 총점
         let cntUma=this.option.rankUma.reduce((acc, cur) => acc + cur, 0); // 현재 총우마
@@ -277,7 +279,7 @@ export default {
         if (cntUma!==0) // 우마 합계가 0이 아니라면 초기화
           this.option.rankUma=[30, 10, -10, -30];
       }
-      this.modalType='';
+      this.modal.type='';
       this.roundStatus='';
       this.scoresDiff=[0, 0, 0, 0];
       this.focusWinner=-1;
@@ -291,7 +293,7 @@ export default {
       this.isLose=[false, false, false, false];
       this.isTenpai=[false, false, false, false];
       this.isCheat=[false, false, false, false];
-      this.modal=false;
+      this.modal.isOpen=false;
     },
     /**화료, 방총, 텐파이, 판/부, 책임지불 체크*/
     toggleCheckStatus(idx, status){
@@ -661,7 +663,7 @@ export default {
   />
   <!-- modal 컴포넌트 생성 -->
   <modal
-    v-if="modal"
+    v-if="modal.isOpen"
     :players
     :scoresDiff
     :names
@@ -684,7 +686,7 @@ export default {
     :randomSeats
     :records
     :option
-    :modalType
+    :modal
     @show-modal="showModal"
     @hide-modal="hideModal"
     @toggle-check-status="toggleCheckStatus"

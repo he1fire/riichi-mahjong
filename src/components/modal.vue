@@ -25,7 +25,7 @@ const props = defineProps({
   randomSeats: Array,
   records: Object,
   option: Object,
-  modalType: String,
+  modal: Object,
 })
 
 /**emits 정의*/
@@ -201,7 +201,7 @@ const emitEvent = (eventName, ...args) => {
 <template>
 <div class="modal" @click="emitEvent('hide-modal')">
   <!-- 화료 인원 선택창 -->
-  <div v-if="modalType==='check_player_win'" class="modal_content" @click.stop>
+  <div v-if="modal.type==='check_player_win'" class="modal_content" @click.stop>
     <div class="container_check">
       <div class="guide_message">
         화료한 사람을 선택해 주세요.
@@ -220,7 +220,7 @@ const emitEvent = (eventName, ...args) => {
     </div>
   </div>
   <!--방총 인원 선택창 -->
-  <div v-else-if="modalType==='check_player_lose'" class="modal_content" @click.stop>
+  <div v-else-if="modal.type==='check_player_lose'" class="modal_content" @click.stop>
     <div class="container_check">
       <div class="guide_message">
         방총당한 사람을 선택해 주세요.
@@ -239,7 +239,7 @@ const emitEvent = (eventName, ...args) => {
     </div>
   </div>
   <!-- 판/부 선택창 -->
-  <div v-else-if="modalType==='check_score'" class="modal_content" @click.stop>
+  <div v-else-if="modal.type==='check_score'" class="modal_content" @click.stop>
     <div>
       {{ names[focusWinner] }}의 점수를 입력해주세요.
     </div>
@@ -296,7 +296,7 @@ const emitEvent = (eventName, ...args) => {
     </div>
   </div>
   <!--책임지불 인원 선택창 -->
-  <div v-else-if="modalType==='check_player_fao'" class="modal_content" @click.stop>
+  <div v-else-if="modal.type==='check_player_fao'" class="modal_content" @click.stop>
     <div class="container_check">
       <div class="guide_message">
         책임지불할 사람을 선택해 주세요.
@@ -315,7 +315,7 @@ const emitEvent = (eventName, ...args) => {
     </div>
   </div>
   <!-- 책임지불 점수 선택창 -->
-  <div v-else-if="modalType==='choose_fao_score'" class="modal_content" @click.stop>
+  <div v-else-if="modal.type==='choose_fao_score'" class="modal_content" @click.stop>
     <div>
       책임지불할 점수를 입력해주세요.
     </div>
@@ -333,7 +333,7 @@ const emitEvent = (eventName, ...args) => {
     </div>
   </div>
   <!-- 유국 종류 선택창 -->
-  <div v-else-if="modalType==='choose_draw_kind'" class="modal_content" @click.stop>
+  <div v-else-if="modal.type==='choose_draw_kind'" class="modal_content" @click.stop>
     <div class="modal_choose_draw" @click.stop="emitEvent('show-modal','check_player_tenpai')">
       일반유국
     </div>
@@ -342,7 +342,7 @@ const emitEvent = (eventName, ...args) => {
     </div>
   </div>
   <!-- 텐파이 인원 선택창 -->
-  <div v-else-if="modalType==='check_player_tenpai'" class="modal_content" @click.stop>
+  <div v-else-if="modal.type==='check_player_tenpai'" class="modal_content" @click.stop>
     <div class="container_check">
       <div class="guide_message">
         텐파이한 사람을 선택해 주세요.
@@ -361,7 +361,7 @@ const emitEvent = (eventName, ...args) => {
     </div>
   </div>
   <!-- 촌보 인원 선택창 -->
-  <div v-else-if="modalType==='check_player_cheat'" class="modal_content" @click.stop>
+  <div v-else-if="modal.type==='check_player_cheat'" class="modal_content" @click.stop>
     <div class="container_check">
       <div class="guide_message">
         촌보한 사람을 선택해 주세요.
@@ -380,7 +380,7 @@ const emitEvent = (eventName, ...args) => {
     </div>
   </div>
   <!-- 점수 확인창 -->
-  <div v-else-if="modalType==='show_score'" class="modal_content" style="border-radius:50%;" @click.stop>
+  <div v-else-if="modal.type==='show_score'" class="modal_content" style="border-radius:50%;" @click.stop>
     <div class="container_show_score_diff">
       <div v-for="(_, i) in class_score_diff"
         :key="i"
@@ -395,7 +395,7 @@ const emitEvent = (eventName, ...args) => {
     </div>
   </div>
   <!-- 주사위 굴림창 -->
-  <div v-else-if="modalType==='roll_dice'" class="modal_content" :style="diceModalTransform()" @click.stop>
+  <div v-else-if="modal.type==='roll_dice'" class="modal_content" :style="diceModalTransform()" @click.stop>
     <div class="container_roll" @click.stop="emitEvent('roll-dice')">
       <graphics kind="dice" :value="diceValue[0]" style="grid-area: dice_1; transform: scale(2);"/>
       <graphics kind="dice" :value="diceValue[1]" style="grid-area: dice_2; transform: scale(2);"/>
@@ -413,7 +413,7 @@ const emitEvent = (eventName, ...args) => {
     </div>
   </div>
   <!-- 동남서북 선택창 -->
-  <div v-else-if="modalType==='choose_seat'" class="modal_content" @click.stop>
+  <div v-else-if="modal.type==='choose_seat'" class="modal_content" @click.stop>
     <div class="container_tile">
       <graphics v-for="(_, i) in randomSeats"
         :key="i"
@@ -425,7 +425,7 @@ const emitEvent = (eventName, ...args) => {
     </div>
   </div>
   <!-- 옵션 종류 선택창 -->
-  <div v-else-if="modalType==='choose_option_kind'" class="modal_content" @click.stop>
+  <div v-else-if="modal.type==='choose_option_kind'" class="modal_content" @click.stop>
     <div class="container_choose_option">
       <div @click.stop="emitEvent('show-modal', 'score_sheet')">
         게임결과
@@ -440,7 +440,7 @@ const emitEvent = (eventName, ...args) => {
     </div>
   </div>
   <!-- 점수 기록창 -->
-  <div v-else-if="modalType==='show_record'" class="modal_content" @click.stop>
+  <div v-else-if="modal.type==='show_record'" class="modal_content" @click.stop>
     <div class="container_record">
       <div class="copy" @click.stop="emitEvent('copy-record')">
         복사
@@ -475,7 +475,7 @@ const emitEvent = (eventName, ...args) => {
     </div>
   </div>
   <!-- 점수 롤백창 -->
-  <div v-else-if="modalType==='rollback_record'" class="modal_content" @click.stop>
+  <div v-else-if="modal.type==='rollback_record'" class="modal_content" @click.stop>
     <div class="modal_text">
       {{ roundStatus }}으로 되돌리시겠습니까?
     </div>
@@ -484,7 +484,7 @@ const emitEvent = (eventName, ...args) => {
     </div>
   </div>
   <!-- 설정 창 -->
-  <div v-else-if="modalType==='set_options'" class="modal_content" @click.stop>
+  <div v-else-if="modal.type==='set_options'" class="modal_content" @click.stop>
     <div class="container_option">
       <div
         v-for="(_, i) in arr_seat"
@@ -562,7 +562,7 @@ const emitEvent = (eventName, ...args) => {
     </div>
   </div>
   <!-- 게임 결과창 -->
-  <div v-else-if="modalType==='score_sheet'" class="modal_content" @click.stop>
+  <div v-else-if="modal.type==='score_sheet'" class="modal_content" @click.stop>
     <div class="container_scoresheet">
       <div v-for="(_, i) in class_scoresheet" 
         :key="i"
@@ -593,7 +593,7 @@ const emitEvent = (eventName, ...args) => {
   </div>
   <!-- 메시지 팝업창 -->
   <div v-else class="modal_content" @click.stop>
-    <div class="modal_text">{{ modalType }}</div>
+    <div class="modal_text">{{ modal.type }}</div>
   </div>
 </div>
 </template>
