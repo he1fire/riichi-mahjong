@@ -150,7 +150,7 @@ const getSignColor = (x) => {
 /**책임지불이 켜져있는지 확인*/
 const checkFao = () => {
   if (props.isFao===true) // 책임지불이 있다면 선택창 키기
-    emitEvent('show-modal', 'check_player_fao', props.roundStatus+'_fao');
+    emitEvent('show-modal', 'check_player_fao', props.roundStatus);
   else
     emitEvent('calculate-win');
 }

@@ -196,7 +196,7 @@ export default {
         chinScore=score=arrMangan[fan-5]; // 만관 이상이면 배열 참조
       else
         chinScore=score=bu*Math.pow(2,fan+2); // 아니면 점수 계산식으로 계산
-      if (this.roundStatus==='ron' || this.roundStatus==='ron_fao'){ // 론일 때
+      if (this.roundStatus==='ron'){ // 론일 때
         if (this.players[this.focusWinner].wind==='東') // 친이라면 6배
           score*=6;
         else // 자라면 4배
@@ -204,7 +204,7 @@ export default {
         score=Math.ceil(score/100)*100;
         ret=score;
       }
-      else if (this.roundStatus==='tsumo' || this.roundStatus==='tsumo_fao'){ // 쯔모일 때
+      else if (this.roundStatus==='tsumo'){ // 쯔모일 때
         chinScore*=2; // 친이라면 2배
         chinScore=Math.ceil(chinScore/100)*100;
         score=Math.ceil(score/100)*100;
@@ -406,7 +406,7 @@ export default {
     },
     /**화료 점수계산*/
     calculateWin(){
-      if (this.roundStatus==='tsumo' || this.roundStatus==='tsumo_fao'){ // 쯔모
+      if (this.roundStatus==='tsumo'){ // 쯔모
         if (this.roundStatus==='tsumo'){
           for (let i=0;i<this.players.length;i++){
             if (i===this.focusWinner) // 승자
@@ -415,7 +415,7 @@ export default {
               this.scoresDiff[i]-=this.calculateScore(i)+this.panel.renchan*100;
           }
         }
-        else if (this.roundStatus==='tsumo_fao'){ // 책임지불시
+        else if (this.isFao===true){ // 책임지불시
           let tmp=this.inputFan;
           this.inputFan=this.inputFao+9; // 책임지불할 점수
           this.scoresDiff[this.focusWinner]+=this.calculateScore(this.focusWinner)+this.panel.riichi*1000+this.panel.renchan*300;
@@ -432,7 +432,7 @@ export default {
         }
         this.showModal('show_score', 'tsumo');
       }
-      else if (this.roundStatus==='ron' || this.roundStatus==='ron_fao'){ // 론
+      else if (this.roundStatus==='ron'){ // 론
         let firstWinner=-1, chkFinish=false;
         for (let i=1;i<this.isWin.length;i++){
           if (this.isWin[(this.focusLoser+i)%4]===true){
@@ -448,7 +448,7 @@ export default {
           this.scoresDiff[this.focusWinner]+=this.calculateScore(this.focusWinner);
           this.scoresDiff[this.focusLoser]-=this.calculateScore(this.focusWinner);
         }
-        if (this.roundStatus==='ron_fao'){ // 책임지불시 절반 지불
+        if (this.isFao===true){ // 책임지불시 절반 지불
           let tmp=this.inputFan;
           this.inputFan=this.inputFao+9; // 책임지불할 점수
           this.scoresDiff[this.focusLoser]+=Math.floor(this.calculateScore(this.focusWinner)/2);
