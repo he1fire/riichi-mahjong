@@ -15,19 +15,19 @@ export default {
         // 리치, 화료, 방총, 텐파이, 촌보 유무
         {
           seat: "Down",  name: "▼", wind: "東", displayScore: 25000, rank: 0, effectScore: 0, gapScore: null,
-          isRiichi: false, isTenpai: false,
+          isRiichi: false, isWin: false, isTenpai: false,
         },
         {
           seat: "Right", name: "▶", wind: "南", displayScore: 25000, rank: 0, effectScore: 0, gapScore: null,
-          isRiichi: false, isTenpai: false,
+          isRiichi: false, isWin: false, isTenpai: false,
         },
         {
           seat: "Up",    name: "▲", wind: "西", displayScore: 25000, rank: 0, effectScore: 0, gapScore: null,
-          isRiichi: false, isTenpai: false,
+          isRiichi: false, isWin: false, isTenpai: false,
         },
         {
           seat: "Left",  name: "◀", wind: "北", displayScore: 25000, rank: 0, effectScore: 0, gapScore: null,
-          isRiichi: false, isTenpai: false,
+          isRiichi: false, isWin: false, isTenpai: false,
         }
       ],
       scoresDiff: [0, 0, 0, 0], // 플레이어별 변동 점수
@@ -38,7 +38,6 @@ export default {
       inputFao: -1, // 현재 책임지불
       inputFan: 0, // 현재 점수 (판)
       inputBu: 2, // 현재 점수 (부)
-      isWin: [false, false, false, false], // 플레이어별 화료 유무
       isLose: [false, false, false, false], // 플레이어별 방총 유무
       isCheat: [false, false, false, false], // 플레이어별 촌보 유무
       panel: { // 패널
@@ -298,18 +297,20 @@ export default {
       this.inputFao=-1;
       this.inputFan=0;
       this.inputBu=2;
-      this.isWin=[false, false, false, false];
+      this.players.forEach((x) => {
+        x.isWin=false;
+        x.isTenpai=false;
+      });
       this.isLose=[false, false, false, false];
-      this.players.forEach((x) => {x.isTenpai=false;});
       this.isCheat=[false, false, false, false];
       this.modal.isOpen=false;
     },
     /**화료, 방총, 텐파이, 판/부, 책임지불 체크*/
     toggleCheckStatus(idx, status){
       if (status==='win') // 화료 체크
-        this.isWin[idx]=!this.isWin[idx];
+        this.players[idx].isWin=!this.players[idx].isWin;
       else if (status==='lose'){ // 방총 체크
-        if (this.isWin[idx])// 화료한 사람이랑 겹치는 경우 스킵
+        if (this.players[idx].isWin)// 화료한 사람이랑 겹치는 경우 스킵
           return;
         if (!this.isLose[idx]){ // 방총당한 사람을 바꾸는 경우
           for (let i=0;i<this.isLose.length;i++){
@@ -373,7 +374,7 @@ export default {
     },
     /**화료 및 방총 불가능한 경우 반환*/
     checkInvalidStatus(status){
-      let cntWin=this.isWin.filter(x => x===true).length; // 화료 인원 세기
+      let cntWin=this.players.filter(x => x.isWin===true).length; // 화료 인원 세기
       let cntLose=this.isLose.filter(x => x===true).length; // 방총 인원 세기
       let cntCheat=this.isCheat.filter(x => x===true).length; // 촌보 인원 세기
       if (status==='win'){ // 화료일때
@@ -385,13 +386,13 @@ export default {
         if (cntWin!==1 && cntLose===0) // 2명 이상 화료했는데 쯔모임 (불가능한 경우)
           return;
         if (!cntLose){ // 쯔모
-          this.focusWinner=this.returnIndex(this.isWin, true); // 승자 찾아서 저장
+          this.focusWinner=this.returnIndex(this.players, 'isWin', true); // 승자 찾아서 저장
           this.showModal('check_score', 'tsumo');
         }
         else{ // 론
           this.focusLoser=this.returnIndex(this.isLose, true); // 패자 찾아서 저장
-          for (let i=0;i<this.isWin.length;i++){
-            if (this.isWin[(this.focusLoser+i)%4]===true){ // 승자 찾아서 저장 (선하네 순서로 탐색)
+          for (let i=0;i<this.players.length;i++){
+            if (this.players[(this.focusLoser+i)%4].isWin===true){ // 승자 찾아서 저장 (선하네 순서로 탐색)
               this.focusWinner=(this.focusLoser+i)%4;
               break;
             }
@@ -444,8 +445,8 @@ export default {
       }
       else if (this.roundStatus==='ron'){ // 론
         let firstWinner=-1, chkFinish=false;
-        for (let i=1;i<this.isWin.length;i++){
-          if (this.isWin[(this.focusLoser+i)%4]===true){
+        for (let i=1;i<this.players.length;i++){
+          if (this.players[(this.focusLoser+i)%4].isWin===true){
             firstWinner=(this.focusLoser+i)%4; // 선하네 판별
             break;
           }
@@ -465,12 +466,12 @@ export default {
           this.scoresDiff[this.focusFao]-=Math.floor(this.calculateScore(this.focusWinner)/2);
           this.inputFan=tmp-this.inputFao-1; // 롤백
         }
-        for (let i=1;i<this.isWin.length;i++){
+        for (let i=1;i<this.players.length;i++){
           if ((this.focusWinner+i)%4===this.focusLoser){ // 1바퀴를 모두 돌았을때
             chkFinish=true;
             break;
           }
-          else if (this.isWin[(this.focusWinner+i)%4]===true){ // 다음 승자가 남아있을때
+          else if (this.players[(this.focusWinner+i)%4].isWin===true){ // 다음 승자가 남아있을때
             this.focusWinner=(this.focusWinner+i)%4; // 현재 승자 변경
             this.inputFan=0;
             this.inputBu=2;
@@ -486,7 +487,7 @@ export default {
     },
     /**유국 점수계산*/
     calculateDraw(){
-      this.players.forEach((x) => {x.isTenpai||=x.isRiichi;}); // 리치자 텐파이 선언
+      this.players.forEach((x) => {x.isTenpai||=x.isRiichi;}); // 리치자 텐파이로 변경
       let cntTenpai=this.players.filter(x => x.isTenpai===true).length; // 총 텐파이 인원
       if (0<cntTenpai && cntTenpai<4){ //올텐파이나 올노텐이 아니라면
         for (let i=0;i<this.players.length;i++){
@@ -538,7 +539,6 @@ export default {
         }
       }
       else{
-        this.records.riichi.push(this.players.map(x => x.isRiichi)); // 리치 기록에 추가
         for (let i=0;i<this.players.length;i++) // 리치봉 수거
           this.players[i].isRiichi=false;
       }
@@ -550,13 +550,13 @@ export default {
       }
       this.records.time.push(this.panel.wind+this.panel.round+'局 '+this.panel.renchan+'本場'); // 점수 기록창에 국+본장 기록
       this.records.time.push('ㅤ');
-      this.records.win.push([...this.isWin]); // 화료 기록에 추가
+      this.records.riichi.push(this.players.map(x => x.isRiichi)); // 리치 기록에 추가
+      this.records.win.push(this.players.map(x => x.isWin)); // 화료 기록에 추가
       this.records.lose.push([...this.isLose]); // 방총 기록에 추가
 
       let chin=this.players[this.returnIndex(this.players, 'wind', '東')]; // 친이 누구인지 저장
       if (this.roundStatus==='tsumo' || this.roundStatus==='ron'){ // 화료로 끝났다면
-        let chinWin=this.isWin[this.returnIndex(this.players, 'wind', '東')]; // 친이 화료했는지 체크
-        if (chinWin===false){ // 친이 화료를 못했다면
+        if (chin.isWin===false){ // 친이 화료를 못했다면
           this.changeWindsAndRounds(); // 바람 및 라운드 변경
           this.panel.renchan=0; // 연장봉 초기화
         }
@@ -676,7 +676,6 @@ export default {
     :inputFao
     :inputFan
     :inputBu
-    :isWin
     :isLose
     :isCheat
     :panel
