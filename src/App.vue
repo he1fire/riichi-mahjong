@@ -51,7 +51,6 @@ export default {
         riichi: 0, // 현재 누적 리치봉
         renchan: 0, // 현재 누적 연장봉
       },
-      roundStatus: "", // 라운드 형태 - 론 쯔모 일반유국 특수유국
       dice: { // 주사위
         value: [1, 6], // 값
         wallDirection: [false, false, false, false], // 주사위 값에 따른 패산방향
@@ -79,6 +78,7 @@ export default {
       modal: {
         isOpen :false, // 모달창 on/off
         type: "", // 모달창 종류
+        status: "", // 라운드 형태 - 론 쯔모 일반유국 특수유국
       },
     };
   },
@@ -210,7 +210,7 @@ export default {
         chinScore=score=arrMangan[fan-5]; // 만관 이상이면 배열 참조
       else
         chinScore=score=bu*Math.pow(2,fan+2); // 아니면 점수 계산식으로 계산
-      if (this.roundStatus==='ron'){ // 론일 때
+      if (this.modal.status==='ron'){ // 론일 때
         if (this.players[this.focusWinner].wind==='東') // 친이라면 6배
           score*=6;
         else // 자라면 4배
@@ -218,7 +218,7 @@ export default {
         score=Math.ceil(score/100)*100;
         ret=score;
       }
-      else if (this.roundStatus==='tsumo'){ // 쯔모일 때
+      else if (this.modal.status==='tsumo'){ // 쯔모일 때
         chinScore*=2; // 친이라면 2배
         chinScore=Math.ceil(chinScore/100)*100;
         score=Math.ceil(score/100)*100;
@@ -268,7 +268,7 @@ export default {
     /**모달 창 켜기*/
     showModal(type, status){
       this.modal.type=type;
-      this.roundStatus=status;
+      this.modal.status=status;
       this.modal.isOpen=true;
     },
     /**모달 창 끄기*/
@@ -293,7 +293,7 @@ export default {
           this.option.rankUma=[30, 10, -10, -30];
       }
       this.modal.type='';
-      this.roundStatus='';
+      this.modal.status='';
       this.focusWinner=-1;
       this.focusLoser=-1;
       this.isFao=false;
@@ -343,7 +343,7 @@ export default {
         this.inputBu=2; // 30부로 초기화
       }
       else if (status==='bu'){ // 부 체크
-        if (this.roundStatus==='ron' && idx===0) // 론일때 20부 이하 비활성화
+        if (this.modal.status==='ron' && idx===0) // 론일때 20부 이하 비활성화
           return;
         else if (this.inputFan===0 && idx<=1) // 1판 25부 이하 비활성화
           return;
@@ -406,7 +406,7 @@ export default {
         if (this.focusFao===-1) // 책임지불할 사람이 없음 (불가능한 경우)
           return;
         if (this.inputFan>=10) // 2배역만 이상이면 점수 선택
-          this.showModal('choose_fao_score', this.roundStatus);
+          this.showModal('choose_fao_score', this.modal.status);
         else
           this.calculateWin();
       }
@@ -418,7 +418,7 @@ export default {
     },
     /**화료 점수계산*/
     calculateWin(){
-      if (this.roundStatus==='tsumo'){ // 쯔모
+      if (this.modal.status==='tsumo'){ // 쯔모
         if (this.isFao===false){
           for (let i=0;i<this.players.length;i++){
             if (i===this.focusWinner) // 승자
@@ -444,7 +444,7 @@ export default {
         }
         this.showModal('show_score', 'tsumo');
       }
-      else if (this.roundStatus==='ron'){ // 론
+      else if (this.modal.status==='ron'){ // 론
         let firstWinner=-1, chkFinish=false;
         for (let i=1;i<this.players.length;i++){
           if (this.players[(this.focusLoser+i)%4].isWin===true){
@@ -530,7 +530,7 @@ export default {
     },
     /**국 결과값 처리*/
     saveRound(){
-      if (this.roundStatus==='cheat'){ // 촌보의 경우 리치봉 반환
+      if (this.modal.status==='cheat'){ // 촌보의 경우 리치봉 반환
         for (let i=0;i<this.players.length;i++){
           if (this.players[i].isRiichi===true){
             this.players[i].displayScore+=1000;
@@ -556,7 +556,7 @@ export default {
       this.records.lose.push(this.players.map(x => x.isLose)); // 방총 기록에 추가
 
       let chin=this.players[this.returnIndex(this.players, 'wind', '東')]; // 친이 누구인지 저장
-      if (this.roundStatus==='tsumo' || this.roundStatus==='ron'){ // 화료로 끝났다면
+      if (this.modal.status==='tsumo' || this.modal.status==='ron'){ // 화료로 끝났다면
         if (chin.isWin===false){ // 친이 화료를 못했다면
           this.changeWindsAndRounds(); // 바람 및 라운드 변경
           this.panel.renchan=0; // 연장봉 초기화
@@ -565,12 +565,12 @@ export default {
           this.panel.renchan++; // 연장봉 추가
         this.panel.riichi=0; // 리치봉 초기화
       }
-      else if (this.roundStatus==='normal_draw'){ // 일반유국이라면
+      else if (this.modal.status==='normal_draw'){ // 일반유국이라면
         if (chin.isTenpai===false) // 친이 노텐이라면
           this.changeWindsAndRounds(); // 바람 및 라운드 변경
         this.panel.renchan++; // 연장봉 추가
       }
-      else if (this.roundStatus==='special_draw'){ // 특수유국이라면
+      else if (this.modal.status==='special_draw'){ // 특수유국이라면
         this.panel.renchan++; // 연장봉 추가
       }
       this.hideModal(); // 모달 창 끄기
@@ -617,8 +617,8 @@ export default {
     /**해당 국으로 롤백하기*/
     rollbackRecord(){
       let allWinds = ["東", "南", "西", "北"];
-      let arr=this.roundStatus.match(/[\u4e00-\u9fff]|\d+|\S/g); // 시간 값 분리
-      let idx=this.returnIndex(this.records.time, this.roundStatus); // 기록 인덱스
+      let arr=this.modal.status.match(/[\u4e00-\u9fff]|\d+|\S/g); // 시간 값 분리
+      let idx=this.returnIndex(this.records.time, this.modal.status); // 기록 인덱스
       let cnt=0;
       while (idx<this.records.time.length){ // 점수기록 지우기
         this.records.time.pop();
@@ -679,7 +679,6 @@ export default {
     :inputBu
     :focusCheater
     :panel
-    :roundStatus
     :dice
     :seatTile
     :records

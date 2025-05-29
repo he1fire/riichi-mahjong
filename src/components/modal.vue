@@ -13,7 +13,6 @@ const props = defineProps({
   inputBu: Number,
   focusCheater: Number,
   panel: Object,
-  roundStatus: String,
   dice: Object,
   seatTile: Object,
   records: Object,
@@ -95,7 +94,7 @@ const fanBuButtonStyle = (status, idx) => {
   if (status==='fan') // 판 체크
     return {color: idx===props.inputFan ? 'red' : ''};
   else if (status==='bu'){ // 부 체크
-    if (props.roundStatus==='ron' && idx===0) // 론일때 20부 이하시 회색
+    if (props.modal.status==='ron' && idx===0) // 론일때 20부 이하시 회색
       return {color: 'gray'};
     else if (props.inputFan===0 && idx<=1) // 1판 25부 이하시 회색
       return {color: 'gray'};
@@ -145,7 +144,7 @@ const getSignColor = (x) => {
 /**책임지불이 켜져있는지 확인*/
 const checkFao = () => {
   if (props.isFao===true) // 책임지불이 있다면 선택창 키기
-    emitEvent('show-modal', 'check_player_fao', props.roundStatus);
+    emitEvent('show-modal', 'check_player_fao', props.modal.status);
   else
     emitEvent('calculate-win');
 }
@@ -465,7 +464,7 @@ const emitEvent = (eventName, ...args) => {
   <!-- 점수 롤백창 -->
   <div v-else-if="modal.type==='rollback_record'" class="modal_content" @click.stop>
     <div class="modal_text">
-      {{ roundStatus }}으로 되돌리시겠습니까?
+      {{ modal.status }}으로 되돌리시겠습니까?
     </div>
     <div class="modal_text" style="font-size: 30px;" @click.stop="emitEvent('rollback-record')">
       OK
