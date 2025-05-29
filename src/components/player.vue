@@ -6,7 +6,6 @@ import {computed} from 'vue'
 const props = defineProps({
   player: Object,
   isRiichi: Boolean,
-  isGap: Boolean,
   option: Object,
 })
 
@@ -79,7 +78,7 @@ const emitEvent = (eventName, ...args) => {
   </div>
   <!-- 현재 점수 -->
   <div class="score">
-    <div v-if="isGap===false" :style="displayScoreStyle()" @click="emitEvent('toggle-active-riichi', player.seat)">
+    <div v-if="player.gapScore===null" :style="displayScoreStyle()" @click="emitEvent('toggle-active-riichi', player.seat)">
       {{ displayScoreHigh }}<span style="font-size: 50px;"><span v-show="displayScoreLow<10">0</span>{{ displayScoreLow }}</span>
     </div>
     <div v-else :style="getSignColor(player.gapScore)">

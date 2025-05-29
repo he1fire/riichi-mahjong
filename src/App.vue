@@ -11,10 +11,10 @@ export default {
   data(){
     return {
       players: [ // 위치, 자풍, 현재 점수, 순위, 이펙트용 점수, 점수 차이
-        {seat: "Down",  name: "▼", wind: "東", displayScore: 25000, rank: 0, effectScore: 0, gapScore: 0},
-        {seat: "Right", name: "▶", wind: "南", displayScore: 25000, rank: 0, effectScore: 0, gapScore: 0},
-        {seat: "Up",    name: "▲", wind: "西", displayScore: 25000, rank: 0, effectScore: 0, gapScore: 0},
-        {seat: "Left",  name: "◀", wind: "北", displayScore: 25000, rank: 0, effectScore: 0, gapScore: 0}
+        {seat: "Down",  name: "▼", wind: "東", displayScore: 25000, rank: 0, effectScore: 0, gapScore: null},
+        {seat: "Right", name: "▶", wind: "南", displayScore: 25000, rank: 0, effectScore: 0, gapScore: null},
+        {seat: "Up",    name: "▲", wind: "西", displayScore: 25000, rank: 0, effectScore: 0, gapScore: null},
+        {seat: "Left",  name: "◀", wind: "北", displayScore: 25000, rank: 0, effectScore: 0, gapScore: null}
       ],
       scoresDiff: [0, 0, 0, 0], // 플레이어별 변동 점수
       focusWinner: -1, // 현재 점수 입력하는 플레이어
@@ -24,7 +24,6 @@ export default {
       inputFao: -1, // 현재 책임지불
       inputFan: 0, // 현재 점수 (판)
       inputBu: 2, // 현재 점수 (부)
-      isGap: [false, false, false, false], // 플레이어간 점수 차이 표시 유무
       isRiichi: [false, false, false, false], // 플레이어별 리치 유무
       isWin: [false, false, false, false], // 플레이어별 화료 유무
       isLose: [false, false, false, false], // 플레이어별 방총 유무
@@ -133,13 +132,9 @@ export default {
       if (this.players[idx].effectScore!==0) // 점수변동 이펙트 도중이면 실행 x
         return;
       if (toggle===true){ // 활성화
-        for (let i=0;i<this.isGap.length;i++){
-          if (i===idx)
-            this.isGap[i]=false;
-          else{ // 본인이 아니면 표시 변경
-            this.isGap[i]=true;
+        for (let i=0;i<this.players.length;i++){
+          if (i!==idx) // 본인이 아니면 점수 차 표시 켜기
             this.players[i].gapScore=this.players[idx].displayScore-this.players[i].displayScore;
-          }
           this.players[i].rank=1; // 순위 표시 켜기
           for (let j=0;j<this.players.length;j++){ // 순위 계산
             if (i!==j && this.players[i].displayScore<this.players[j].displayScore)
@@ -148,9 +143,8 @@ export default {
         }
       }
       else{ // 비활성화
-        for (let i=0;i<this.isGap.length;i++){
-          this.isGap[i]=false;
-          this.players[i].gapScore=0;
+        for (let i=0;i<this.players.length;i++){
+          this.players[i].gapScore=null; // 점수 차 표시 끄기
           this.players[i].rank=0; // 순위 표시 끄기
         }
       }
@@ -655,7 +649,6 @@ export default {
     :key="i"
     :player="players[i]"
     :isRiichi="isRiichi[i]"
-    :isGap="isGap[i]"
     :option
     @toggle-active-riichi="toggleActiveRiichi"
     @toggle-show-gap="toggleShowGap"
