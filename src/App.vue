@@ -49,9 +49,10 @@ export default {
         win: [[false, false, false, false]], // 화료 횟수
         lose: [[false, false, false, false]], // 방총 횟수
       },
-      setScore: [25000, 30000], // 시작, 반환 점수
-      rankUma: [30, 10, -10, -30], // 순위 우마
       option: { // 옵션
+        startingScore: 25000, // 시작 점수
+        returnScore: 30000, // 반환 점수
+        rankUma: [30, 10, -10, -30], // 순위 우마
         roundMangan: false, // 절상만관
         minusRiichi: false, // 음수리치
         cheatScore: true, // 촌보 지불 점수
@@ -235,13 +236,13 @@ export default {
         this.records.lose.pop();
       }
       for (let i=0;i<this.records.score.length;i++)
-        this.records.score[i][0]=this.setScore[0];
+        this.records.score[i][0]=this.option.startingScore;
       for (let i=0;i<this.isRiichi.length;i++) // 리치봉 제거
         this.isRiichi[i]=false;
       this.panel.wind="東"; // 장풍 설정
       this.panel.round=1; // 국 설정
       for (let i=0;i<this.records.score.length;i++)
-        this.players[i].displayScore=this.setScore[0]; // 점수 설정
+        this.players[i].displayScore=this.option.startingScore; // 점수 설정
       this.panel.renchan=0; // 연장 설정
       this.panel.riichi=0; // 리치봉 설정
       for (let i=0;i<this.players.length;i++)
@@ -258,21 +259,21 @@ export default {
       if (this.modalType==='set_options'){ // 옵션 설정창이라면 확인
         let arrows=["▼", "▶", "▲", "◀"];
         let cntScore=this.players.reduce((acc, player) => acc+player.displayScore, this.panel.riichi*1000); // 현재 총점
-        let cntUma=this.rankUma.reduce((acc, cur) => acc + cur, 0); // 현재 총우마
+        let cntUma=this.option.rankUma.reduce((acc, cur) => acc + cur, 0); // 현재 총우마
         for (let i=0;i<this.names.length;i++){
           if (this.names[i]==='') // 이름이 없는 경우
             this.names[i]=arrows[i]; // 기본이름으로 추가
         }
-        if (this.setScore[0]*4!==cntScore){ // 시작점수가 변경되었다면
-          if (this.setScore[0]%100!==0 || this.setScore[0]==='') // 이상한 값이면 롤백
-            this.setScore[0]=cntScore/4;
+        if (this.option.startingScore*4!==cntScore){ // 시작점수가 변경되었다면
+          if (this.option.startingScore%100!==0 || this.option.startingScore==='') // 이상한 값이면 롤백
+            this.option.startingScore=cntScore/4;
           else // 아니라면 동1국으로 롤백
             this.resetAll();
         }
-        if (this.setScore[0]>this.setScore[1]) // 시작점수가 반환점수보다 큰 경우
-          this.setScore[1]=this.setScore[0];
+        if (this.option.startingScore>this.option.returnScore) // 시작점수가 반환점수보다 큰 경우
+          this.option.returnScore=this.option.startingScore;
         if (cntUma!==0) // 우마 합계가 0이 아니라면 초기화
-          this.rankUma=[30, 10, -10, -30];
+          this.option.rankUma=[30, 10, -10, -30];
       }
       this.modalType='';
       this.roundStatus='';
@@ -627,7 +628,7 @@ export default {
         cnt+=this.players[i].displayScore;
       }
       this.panel.renchan=Number(arr[3]); // 연장 설정
-      this.panel.riichi=Math.floor((this.setScore[0]*4-cnt)/1000); // 리치봉 설정
+      this.panel.riichi=Math.floor((this.option.startingScore*4-cnt)/1000); // 리치봉 설정
       for (let i=1;i<this.panel.round;i++)
         allWinds.unshift(allWinds.pop()); // 현재 바람 세기
       for (let i=0;i<this.players.length;i++)
@@ -680,8 +681,6 @@ export default {
     :isOpened
     :randomSeats
     :records
-    :setScore
-    :rankUma
     :option
     :modalType
     @show-modal="showModal"

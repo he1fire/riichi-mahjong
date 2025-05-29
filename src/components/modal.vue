@@ -24,8 +24,6 @@ const props = defineProps({
   isOpened: Array,
   randomSeats: Array,
   records: Object,
-  setScore: Array,
-  rankUma: Array,
   option: Object,
   modalType: String,
 })
@@ -164,7 +162,7 @@ const checkFao = () => {
 const calculatePoint = (idx) => {
   let myScore=props.players[idx].displayScore;
   let point=0 // 점수기반
-  let oka=(props.setScore[1]*4-props.setScore[0]*4)/1000; // 오카
+  let oka=(props.option.returnScore*4-props.option.startingScore*4)/1000; // 오카
   let rank=1, uma=0, cnt=0;
   for (let i=0;i<props.players.length;i++){
     if (myScore<props.players[i].displayScore)
@@ -173,14 +171,14 @@ const calculatePoint = (idx) => {
       cnt++; // 동점자 체크
   }
   for (let i=0;i<cnt;i++) // 동점자의 모든 우마 더하기
-    uma+=Number(props.rankUma[rank+i-1]);
+    uma+=Number(props.option.rankUma[rank+i-1]);
   if (rank===1){ // 1위라면 오카도 더하기
     uma+=oka;
     if (props.option.endRiichi) // 1위에게 공탁금을 몰아주는 경우 (100점단위)
       myScore+=Math.floor(((props.panel.riichi*1000)/cnt)/100)*100;
   }
   uma/=cnt; // 동점자 수만큼 우마 나누기
-  point=(myScore-props.setScore[1])/1000+uma;
+  point=(myScore-props.option.returnScore)/1000+uma;
   return String(myScore)+'('+point.toFixed(1)+')';
 }
 
@@ -506,7 +504,7 @@ const emitEvent = (eventName, ...args) => {
         시작점수<br>
         <input 
           type="number"
-          v-model="setScore[0]"
+          v-model="option.startingScore"
           :placeholder="25000"
           :name="'startScore'"
         >
@@ -515,7 +513,7 @@ const emitEvent = (eventName, ...args) => {
         반환점수<br>
         <input 
           type="number"
-          v-model="setScore[1]"
+          v-model="option.returnScore"
           :placeholder="30000"
           :name="'endScore'"
         >
@@ -537,14 +535,14 @@ const emitEvent = (eventName, ...args) => {
       <div style="grid-area: option4;">
         순위우마 (1-2-3-4)<br>
         <input
-          v-for="(_, i) in rankUma"
+          v-for="(_, i) in option.rankUma"
           :key="i"
           style="width: 41px;"
           type="number"
-          v-model="rankUma[i]"
+          v-model="option.rankUma[i]"
           :placeholder="`${i+1}위`"
           :name="`uma${i+1}`"
-          :style="{ marginRight: i===rankUma.length-1 ? '0px' : '10px' }"
+          :style="{ marginRight: i===option.rankUma.length-1 ? '0px' : '10px' }"
         >
       </div>  
       <div style="grid-area: option5;" @click.stop="emitEvent('toggle-check-status', -1, 'cheatscore')">
