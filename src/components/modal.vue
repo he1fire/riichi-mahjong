@@ -4,7 +4,6 @@ import graphics from './graphics.vue'
 /**props 정의*/
 const props = defineProps({
   players: Array,
-  scoresDiff: Array,
   focusWinner: Number,
   focusLoser: Number,
   isFao: Boolean,
@@ -374,9 +373,9 @@ const emitEvent = (eventName, ...args) => {
       <div v-for="(_, i) in class_score_diff"
         :key="i"
         :class="class_score_diff[i]"
-        :style="getSignColor(scoresDiff[i])"
+        :style="getSignColor(players[i].deltaScore)"
       >
-        <span v-show="scoresDiff[i]>0">+</span>{{ scoresDiff[i] }}
+        <span v-show="players[i].deltaScore>0">+</span>{{ players[i].deltaScore }}
       </div>
       <div class="ok" @click.stop="emitEvent('save-round')">
         OK

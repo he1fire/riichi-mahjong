@@ -11,26 +11,32 @@ export default {
   data(){
     return {
       players: [
-        // 위치, 이름, 자풍, 현재 점수, 순위, 이펙트용 점수, 점수 차이,
-        // 리치, 화료, 방총, 텐파이, 촌보 유무
+        /*
+        위치, 이름, 자풍, 순위,
+        현재 점수, 이펙트용 점수, 점수 차이, 변하는 점수
+        리치, 화료, 방총, 텐파이 유무
+        */
         {
-          seat: "Down",  name: "▼", wind: "東", displayScore: 25000, rank: 0, effectScore: 0, gapScore: null,
+          seat: "Down",  name: "▼", wind: "東", rank: 0,
+          displayScore: 25000, effectScore: 0, gapScore: null, deltaScore: 0,
           isRiichi: false, isWin: false, isLose: false, isTenpai: false,
         },
         {
-          seat: "Right", name: "▶", wind: "南", displayScore: 25000, rank: 0, effectScore: 0, gapScore: null,
+          seat: "Right", name: "▶", wind: "南", rank: 0,
+          displayScore: 25000, effectScore: 0, gapScore: null, deltaScore: 0,
           isRiichi: false, isWin: false, isLose: false, isTenpai: false,
         },
         {
-          seat: "Up",    name: "▲", wind: "西", displayScore: 25000, rank: 0, effectScore: 0, gapScore: null,
+          seat: "Up",    name: "▲", wind: "西", rank: 0,
+          displayScore: 25000, effectScore: 0, gapScore: null, deltaScore: 0,
           isRiichi: false, isWin: false, isLose: false, isTenpai: false,
         },
         {
-          seat: "Left",  name: "◀", wind: "北", displayScore: 25000, rank: 0, effectScore: 0, gapScore: null,
+          seat: "Left",  name: "◀", wind: "北", rank: 0,
+          displayScore: 25000, effectScore: 0, gapScore: null, deltaScore: 0,
           isRiichi: false, isWin: false, isLose: false, isTenpai: false,
         }
       ],
-      scoresDiff: [0, 0, 0, 0], // 플레이어별 변동 점수
       isFao: false, // 책임지불 유무
       focusWinner: -1, // 현재 점수 입력하는 플레이어
       focusLoser: -1, // 현재 방총 플레이어
@@ -177,8 +183,8 @@ export default {
       let currentScore=this.players[idx].displayScore;
       let arrCut=[];
       for (let i=0;i<50;i++) // 변경될 점수 사이를 50등분해서 저장
-        arrCut[i]=currentScore+(this.scoresDiff[idx]/50)*(i+1);
-      this.players[idx].effectScore=this.scoresDiff[idx]; // 이펙트 켜기
+        arrCut[i]=currentScore+(this.players[idx].deltaScore/50)*(i+1);
+      this.players[idx].effectScore=this.players[idx].deltaScore; // 이펙트 켜기
       let timecnt=0;
       let repeat=setInterval(() => { // 시간에 따라 반복
         this.players[idx].displayScore=arrCut[timecnt] // 100의 자리 변경
@@ -288,7 +294,6 @@ export default {
       }
       this.modal.type='';
       this.roundStatus='';
-      this.scoresDiff=[0, 0, 0, 0];
       this.focusWinner=-1;
       this.focusLoser=-1;
       this.isFao=false;
@@ -297,6 +302,7 @@ export default {
       this.inputFan=0;
       this.inputBu=2;
       this.players.forEach((x) => {
+        x.deltaScore=0;
         x.isWin=false;
         x.isLose=false;
         x.isTenpai=false;
@@ -416,23 +422,23 @@ export default {
         if (this.isFao===false){
           for (let i=0;i<this.players.length;i++){
             if (i===this.focusWinner) // 승자
-              this.scoresDiff[i]+=this.calculateScore(i)+this.panel.riichi*1000+this.panel.renchan*300;
+              this.players[i].deltaScore+=this.calculateScore(i)+this.panel.riichi*1000+this.panel.renchan*300;
             else // 패자
-              this.scoresDiff[i]-=this.calculateScore(i)+this.panel.renchan*100;
+              this.players[i].deltaScore-=this.calculateScore(i)+this.panel.renchan*100;
           }
         }
         else{ // 책임지불시
           let tmp=this.inputFan;
           this.inputFan=this.inputFao+9; // 책임지불할 점수
-          this.scoresDiff[this.focusWinner]+=this.calculateScore(this.focusWinner)+this.panel.riichi*1000+this.panel.renchan*300;
-          this.scoresDiff[this.focusFao]-=this.calculateScore(this.focusWinner)+this.panel.renchan*300;
+          this.players[this.focusWinner].deltaScore+=this.calculateScore(this.focusWinner)+this.panel.riichi*1000+this.panel.renchan*300;
+          this.players[this.focusFao].deltaScore-=this.calculateScore(this.focusWinner)+this.panel.renchan*300;
           this.inputFan=tmp-this.inputFao-1; // 롤백
           if (this.inputFan>=9){ // 다른사람도 여전히 지불해야 하는 경우
             for (let i=0;i<this.players.length;i++){
               if (i===this.focusWinner) // 승자
-                this.scoresDiff[i]+=this.calculateScore(i)+this.panel.riichi*1000+this.panel.renchan*300;
+                this.players[i].deltaScore+=this.calculateScore(i)+this.panel.riichi*1000+this.panel.renchan*300;
               else // 패자
-                this.scoresDiff[i]-=this.calculateScore(i)+this.panel.renchan*100;
+                this.players[i].deltaScore-=this.calculateScore(i)+this.panel.renchan*100;
             }
           }
         }
@@ -447,18 +453,18 @@ export default {
           }
         }
         if (firstWinner===this.focusWinner) { // 승자+선하네
-          this.scoresDiff[this.focusWinner]+=this.calculateScore(this.focusWinner)+this.panel.riichi*1000+this.panel.renchan*300;
-          this.scoresDiff[this.focusLoser]-=this.calculateScore(this.focusWinner)+this.panel.renchan*300;
+          this.players[this.focusWinner].deltaScore+=this.calculateScore(this.focusWinner)+this.panel.riichi*1000+this.panel.renchan*300;
+          this.players[this.focusLoser].deltaScore-=this.calculateScore(this.focusWinner)+this.panel.renchan*300;
         }
         else{ // 나머지 승자
-          this.scoresDiff[this.focusWinner]+=this.calculateScore(this.focusWinner);
-          this.scoresDiff[this.focusLoser]-=this.calculateScore(this.focusWinner);
+          this.players[this.focusWinner].deltaScore+=this.calculateScore(this.focusWinner);
+          this.players[this.focusLoser].deltaScore-=this.calculateScore(this.focusWinner);
         }
         if (this.isFao===true){ // 책임지불시 절반 지불
           let tmp=this.inputFan;
           this.inputFan=this.inputFao+9; // 책임지불할 점수
-          this.scoresDiff[this.focusLoser]+=Math.floor(this.calculateScore(this.focusWinner)/2);
-          this.scoresDiff[this.focusFao]-=Math.floor(this.calculateScore(this.focusWinner)/2);
+          this.players[this.focusLoser].deltaScore+=Math.floor(this.calculateScore(this.focusWinner)/2);
+          this.players[this.focusFao].deltaScore-=Math.floor(this.calculateScore(this.focusWinner)/2);
           this.inputFan=tmp-this.inputFao-1; // 롤백
         }
         for (let i=1;i<this.players.length;i++){
@@ -487,9 +493,9 @@ export default {
       if (0<cntTenpai && cntTenpai<4){ //올텐파이나 올노텐이 아니라면
         for (let i=0;i<this.players.length;i++){
           if (this.players[i].isTenpai===true) // 텐파이라면
-            this.scoresDiff[i]=3000/cntTenpai; // 3000 나눠서 획득
+            this.players[i].deltaScore=3000/cntTenpai; // 3000 나눠서 획득
           else
-            this.scoresDiff[i]=-3000/(this.players.length-cntTenpai); 
+            this.players[i].deltaScore=-3000/(this.players.length-cntTenpai); 
         }
       }
       this.showModal('show_score', 'normal_draw');
@@ -499,24 +505,24 @@ export default {
       if (this.option.cheatScore===true){ // 3000점씩 지불 
         for (let i=0;i<this.players.length;i++){
           if (this.focusCheater===i)
-            this.scoresDiff[i]=-9000;
+            this.players[i].deltaScore=-9000;
           else
-            this.scoresDiff[i]=3000; 
+            this.players[i].deltaScore=3000; 
         }
       }
       else{// 만관 지불
         for (let i=0;i<this.players.length;i++){
           if (this.focusCheater===i){
             if (this.players[i].wind==='東') // 친일경우
-              this.scoresDiff[i]=-12000;
+              this.players[i].deltaScore=-12000;
             else
-              this.scoresDiff[i]=-8000;
+              this.players[i].deltaScore=-8000;
           }
           else{
             if (this.players[i].wind==='東' || this.players[this.focusCheater].wind==='東') //촌보자가 친이거나 내가 친일때
-              this.scoresDiff[i]=4000;
+              this.players[i].deltaScore=4000;
             else
-              this.scoresDiff[i]=2000;
+              this.players[i].deltaScore=2000;
           }
         }
       }
@@ -537,11 +543,11 @@ export default {
         for (let i=0;i<this.players.length;i++) // 리치봉 수거
           this.players[i].isRiichi=false;
       }
-      for (let i=0;i<this.scoresDiff.length;i++) // 점수 배분및 기록
+      for (let i=0;i<this.players.length;i++) // 점수 배분및 기록
         this.changeScores(i);
-      for (let i=0;i<this.scoresDiff.length;i++){ // 점수 기록창에 점수 기록
-        this.records.score[i].push(this.scoresDiff[i]);
-        this.records.score[i].push(this.players[i].displayScore+this.scoresDiff[i]);
+      for (let i=0;i<this.players.length;i++){ // 점수 기록창에 점수 기록
+        this.records.score[i].push(this.players[i].deltaScore);
+        this.records.score[i].push(this.players[i].displayScore+this.players[i].deltaScore);
       }
       this.records.time.push(this.panel.wind+this.panel.round+'局 '+this.panel.renchan+'本場'); // 점수 기록창에 국+본장 기록
       this.records.time.push('ㅤ');
@@ -664,7 +670,6 @@ export default {
   <modal
     v-if="modal.isOpen"
     :players
-    :scoresDiff
     :focusWinner
     :focusLoser
     :isFao
