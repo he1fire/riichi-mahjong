@@ -108,7 +108,9 @@ export default {
       if (this.isRiichi[idx]===false){ // 리치 활성화
         if (this.players[idx].displayScore<1000 && this.option.minusRiichi===false) // 리치를 걸수 없을 때
           return;
-        else { // 1000점 이상 있거나 음수리치가 가능하다면
+        else if (this.players[idx].effectScore!==0) // 점수변동 이펙트 도중
+          return;
+        else{ // 1000점 이상 있거나 음수리치가 가능하다면
           this.players[idx].displayScore-=1000;
           this.isRiichi[idx]=true;
           this.panel.riichi++;
