@@ -19,8 +19,7 @@ const props = defineProps({
   panel: Object,
   roundStatus: String,
   dice: Object,
-  isOpened: Array,
-  randomSeats: Array,
+  seatTile: Object,
   records: Object,
   option: Object,
   modal: Object,
@@ -135,7 +134,7 @@ const wallDirectionVisibility = (idx) => {
 
 /**타일 앞뒤 표시*/
 const seatTileStyle = (idx) => {
-  return {gridArea: `tile_${idx+1}`, color: props.isOpened[idx]===true ? (props.randomSeats[idx]==='東' ? 'red' : '') : 'orange', backgroundColor: props.isOpened[idx]===true ? '' : 'orange'};
+  return {gridArea: `tile_${idx+1}`, color: props.seatTile.isOpened[idx]===true ? (props.seatTile.value[idx]==='東' ? 'red' : '') : 'orange', backgroundColor: props.seatTile.isOpened[idx]===true ? '' : 'orange'};
 }
 
 /**점수 부호에 따른 색상*/
@@ -413,11 +412,11 @@ const emitEvent = (eventName, ...args) => {
   <!-- 동남서북 선택창 -->
   <div v-else-if="modal.type==='choose_seat'" class="modal_content" @click.stop>
     <div class="container_tile">
-      <graphics v-for="(_, i) in randomSeats"
+      <graphics v-for="(_, i) in seatTile.value"
         :key="i"
         kind="tile"
         :style="seatTileStyle(i)"
-        :value="randomSeats[i]"
+        :value="seatTile.value[i]"
         @click.stop="emitEvent('toggle-check-status', i, 'tile')"
       ></graphics>
     </div>

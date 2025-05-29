@@ -41,8 +41,10 @@ export default {
         value: [1, 6], // 값
         wallDirection: [false, false, false, false], // 주사위 값에 따른 패산방향
       },
-      isOpened: [false, false, false, false], // 타일이 공개되었는지
-      randomSeats: ["東", "南", "西", "北"], // 랜덤 타일값
+      seatTile: { // 자리정하기 타일
+        value: ["東", "南", "西", "北"], // 랜덤 타일값
+        isOpened: [false, false, false, false], // 타일이 공개되었는지
+      },
       records : { // 기록
         time: ["ㅤ"], // 시간
         score: [[25000],[25000],[25000],[25000]], // 점수
@@ -69,7 +71,7 @@ export default {
     // 자리 선택 창
     for (let i=3;i>0;i--){ // 자리 섞기
       let j=Math.floor(Math.random()*(i+1));
-      [this.randomSeats[i], this.randomSeats[j]]=[this.randomSeats[j], this.randomSeats[i]];
+      [this.seatTile.value[i], this.seatTile.value[j]]=[this.seatTile.value[j], this.seatTile.value[i]];
     }
     this.showModal('choose_seat');
   },
@@ -355,7 +357,7 @@ export default {
       else if (status=='inputfao') // 책임지불 점수창
         this.inputFao=idx;
       else if (status==='tile') // 타일 뒤집기
-        this.isOpened[idx]=true;
+        this.seatTile.isOpened[idx]=true;
       else if (status==='roundmangan') // 절상만관 토글
       this.option.roundMangan=!this.option.roundMangan;
       else if (status==='minusriichi') // 음수리치 토글
@@ -683,8 +685,7 @@ export default {
     :panel
     :roundStatus
     :dice
-    :isOpened
-    :randomSeats
+    :seatTile
     :records
     :option
     :modal
