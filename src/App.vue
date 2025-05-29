@@ -31,14 +31,14 @@ export default {
         }
       ],
       scoresDiff: [0, 0, 0, 0], // 플레이어별 변동 점수
+      isFao: false, // 책임지불 유무
       focusWinner: -1, // 현재 점수 입력하는 플레이어
       focusLoser: -1, // 현재 방총 플레이어
-      isFao: false, // 책임지불 유무
       focusFao: -1, // 현재 책임지불하는 플레이어
-      inputFao: -1, // 현재 책임지불
+      focusCheater: -1, // 플레이어별 촌보 유무
+      inputFao: -1, // 현재 책임지불 점수 (판)
       inputFan: 0, // 현재 점수 (판)
       inputBu: 2, // 현재 점수 (부)
-      isCheat: [false, false, false, false], // 플레이어별 촌보 유무
       panel: { // 패널
         wind: "東", // 현재 장풍
         round: 1, // 현재 국
@@ -270,7 +270,7 @@ export default {
       if (this.modal.type==='set_options'){ // 옵션 설정창이라면 확인
         let arrows=["▼", "▶", "▲", "◀"];
         let cntScore=this.players.reduce((acc, x) => acc+x.displayScore, this.panel.riichi*1000); // 현재 총점
-        let cntUma=this.option.rankUma.reduce((acc, x) => acc+cur, 0); // 현재 총우마
+        let cntUma=this.option.rankUma.reduce((acc, x) => acc+x, 0); // 현재 총우마
         for (let i=0;i<this.players.length;i++){
           if (this.players[i].name==='') // 이름이 없는 경우
             this.players[i].name=arrows[i]; // 기본이름으로 추가
@@ -301,7 +301,7 @@ export default {
         x.isLose=false;
         x.isTenpai=false;
       });
-      this.isCheat=[false, false, false, false];
+      this.focusCheater=-1;
       this.modal.isOpen=false;
     },
     /**화료, 방총, 텐파이, 판/부, 책임지불 체크*/
@@ -322,13 +322,10 @@ export default {
       else if (status==='tenpai') // 텐파이 체크
         this.players[idx].isTenpai=!this.players[idx].isTenpai;
       else if (status==='cheat'){ // 촌보 체크
-        if (!this.isCheat[idx]){ // 방총당한 사람을 바꾸는 경우
-          for (let i=0;i<this.isCheat.length;i++){
-            if (i!==idx) // 자신이 아닌 사람들의 체크를 해제
-              this.isCheat[i]=false;
-          }
-        }
-        this.isCheat[idx]=!this.isCheat[idx];
+        if (this.focusCheater===idx)
+          this.focusCheater=-1;
+        else
+          this.focusCheater=idx;
       }
       else if (status==='fan'){ // 판 체크
         if (idx>=9 && this.inputFan===idx) // 역만일경우 처리
@@ -375,7 +372,6 @@ export default {
     checkInvalidStatus(status){
       let cntWin=this.players.filter(x => x.isWin===true).length; // 화료 인원 세기
       let cntLose=this.players.filter(x => x.isLose===true).length; // 방총 인원 세기
-      let cntCheat=this.isCheat.filter(x => x===true).length; // 촌보 인원 세기
       if (status==='win'){ // 화료일때
         if (cntWin===0 || cntWin===4) // 화료한 사람이 없거나 4명임 (불가능한 경우)
           return;
@@ -409,7 +405,7 @@ export default {
           this.calculateWin();
       }
       else if (status==='cheat'){ // 촌보일때
-        if (cntCheat===0) // 촌보한 사람이 없음 (불가능한 경우)
+        if (this.focusCheater===-1) // 촌보한 사람이 없음 (불가능한 경우)
           return;
         this.calculateCheat();
       }
@@ -501,23 +497,23 @@ export default {
     /**촌보 점수계산*/
     calculateCheat(){
       if (this.option.cheatScore===true){ // 3000점씩 지불 
-        for (let i=0;i<this.isCheat.length;i++){
-          if (this.isCheat[i]===true)
+        for (let i=0;i<this.players.length;i++){
+          if (this.focusCheater===i)
             this.scoresDiff[i]=-9000;
           else
             this.scoresDiff[i]=3000; 
         }
       }
       else{// 만관 지불
-        for (let i=0;i<this.isCheat.length;i++){
-          if (this.isCheat[i]===true){
+        for (let i=0;i<this.players.length;i++){
+          if (this.focusCheater===i){
             if (this.players[i].wind==='東') // 친일경우
               this.scoresDiff[i]=-12000;
             else
               this.scoresDiff[i]=-8000;
           }
           else{
-            if (this.players[i].wind==='東' || this.players[this.returnIndex(this.isCheat, true)].wind==='東') //촌보자가 친이거나 내가 친일때
+            if (this.players[i].wind==='東' || this.players[this.focusCheater].wind==='東') //촌보자가 친이거나 내가 친일때
               this.scoresDiff[i]=4000;
             else
               this.scoresDiff[i]=2000;
@@ -676,7 +672,7 @@ export default {
     :inputFao
     :inputFan
     :inputBu
-    :isCheat
+    :focusCheater
     :panel
     :roundStatus
     :dice

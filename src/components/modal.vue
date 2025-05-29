@@ -12,7 +12,7 @@ const props = defineProps({
   inputFao: Number,
   inputFan: Number,
   inputBu: Number,
-  isCheat: Array,
+  focusCheater: Number,
   panel: Object,
   roundStatus: String,
   dice: Object,
@@ -53,13 +53,12 @@ const bu = [20, 25, 30, 40, 50, 60, 70, 80, 90, 100, 110];
 const okButtonStyle = (status) => {
   let cntWin=props.players.filter(x => x.isWin===true).length; // 화료 인원 세기
   let cntLose=props.players.filter(x => x.isLose===true).length; // 방총 인원 세기
-  let cntCheat=props.isCheat.filter(x => x===true).length; // 촌보 인원 세기
   if (status==='win') // 화료 ok 버튼
     return {color: (cntWin===0 || cntWin===4) ? 'gray' : ''}; // 화료한 사람이 없거나 4명임 (불가능한 경우)
   else if (status==='lose') // 방총 ok 버튼
     return {color: (cntWin!==1 && cntLose===0) ? 'gray' : ''}; // 2명 이상 화료했는데 쯔모임 (불가능한 경우)
   else if (status==='cheat') // 촌보 ok 버튼
-    return {color: cntCheat===0 ? 'gray' : ''}; // 촌보한 사람이 없음 (불가능한 경우)
+    return {color: props.focusCheater===-1 ? 'gray' : ''}; // 촌보한 사람이 없음 (불가능한 경우)
   else if (status==='fao') // 책임지불 ok 버튼
     return {color: props.focusFao===-1 ? 'gray' : ''}; // 책임지불할 사람이 없음 (불가능한 경우)
 }
@@ -71,7 +70,7 @@ const arrowButtonStyle = (status, idx) => {
   else if (status==='lose') // 방총 화살표 버튼
     return {color: props.players[idx].isWin!==true ? (props.players[idx].isLose===true ? 'red' : '') : 'gray'}; // 선택시 빨간색, 불가능시 회색
   else if (status==='cheat') // 촌보 화살표 버튼
-    return {color: props.isCheat[idx]===true ? 'red' : ''}; // 선택시 빨간색
+    return {color: props.focusCheater===idx ? 'red' : ''}; // 선택시 빨간색
   else if (status==='fao') // 책임지불 화살표 버튼
     return {color: props.focusWinner!==idx && props.focusLoser!==idx ? (props.focusFao===idx ? 'red' : '') : 'gray'}; // 선택시 빨간색, 불가능시 회색
   else if (status==='tenpai') // 텐파이 화살표 버튼
