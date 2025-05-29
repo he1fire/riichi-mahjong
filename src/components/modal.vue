@@ -23,11 +23,7 @@ const props = defineProps({
   isWall: Array,
   isOpened: Array,
   randomSeats: Array,
-  recordsTime: Array,
-  recordsScore: Array,
-  recordsRiichi: Array, 
-  recordsWin: Array, 
-  recordsLose: Array,
+  records: Object,
   setScore: Array,
   rankUma: Array,
   option: Object,
@@ -141,12 +137,12 @@ const wallDirectionVisibility = (idx) => {
   return {visibility: props.isWall[idx]===true ? 'visible' : 'hidden'};
 }
 
-/**주사위 패산 방향 표시*/
+/**타일 앞뒤 표시*/
 const seatTileStyle = (idx) => {
   return {gridArea: `tile_${idx+1}`, color: props.isOpened[idx]===true ? (props.randomSeats[idx]==='東' ? 'red' : '') : 'orange', backgroundColor: props.isOpened[idx]===true ? '' : 'orange'};
 }
 
-/**점수 색상*/
+/**점수 부호에 따른 색상*/
 const getSignColor = (x) => {
   if (x>0)
     return {color: 'limegreen'};
@@ -459,22 +455,22 @@ const emitEvent = (eventName, ...args) => {
       </div>
       <div class="container_record_scroll">
         <div class="when">
-          <div v-for="(_, i) in recordsTime"
+          <div v-for="(_, i) in records.time"
             :key="i"
-            @click.stop="i%2===1 ? emitEvent('show-modal','rollback_record', recordsTime[i]) : {}"
+            @click.stop="i%2===1 ? emitEvent('show-modal','rollback_record', records.time[i]) : {}"
           >
-            {{ recordsTime[i] }}
+            {{ records.time[i] }}
           </div>
         </div>
         <div v-for="(_, i) in class_record"
           :key="i"
           :class="class_record[i]"
         >
-          <div v-for="(_, j) in recordsScore[i]"
+          <div v-for="(_, j) in records.score[i]"
             :key="j"
-            :style="j%2===1 ? getSignColor(recordsScore[i][j]) : {}"
+            :style="j%2===1 ? getSignColor(records.score[i][j]) : {}"
           >
-            <span v-show="j%2===1 && recordsScore[i][j]>0">+</span>{{ recordsScore[i][j] }}
+            <span v-show="j%2===1 && records.score[i][j]>0">+</span>{{ records.score[i][j] }}
           </div>
         </div>
       </div>
@@ -587,13 +583,13 @@ const emitEvent = (eventName, ...args) => {
         <div v-for="(_, i) in players" :key="i">{{calculatePoint(i)}}</div>
       </div>
       <div style="grid-area: riichi_contents;">
-        <div v-for="(_, i) in recordsRiichi[0]" :key="i">{{calculateRecord(recordsRiichi, i)}}</div>
+        <div v-for="(_, i) in records.riichi[0]" :key="i">{{calculateRecord(records.riichi, i)}}</div>
       </div>
       <div style="grid-area: win_contents;">
-        <div v-for="(_, i) in recordsWin[0]" :key="i">{{calculateRecord(recordsWin, i)}}</div>
+        <div v-for="(_, i) in records.win[0]" :key="i">{{calculateRecord(records.win, i)}}</div>
       </div>
       <div style="grid-area: lose_contents;">
-        <div v-for="(_, i) in recordsLose[0]" :key="i">{{calculateRecord(recordsLose, i)}}</div>
+        <div v-for="(_, i) in records.lose[0]" :key="i">{{calculateRecord(records.lose, i)}}</div>
       </div>
     </div>
   </div>

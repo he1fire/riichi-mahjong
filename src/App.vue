@@ -42,11 +42,13 @@ export default {
       isWall: [false, false, false, false], // 주사위 값에 따른 패산방향
       isOpened: [false, false, false, false], // 타일이 공개되었는지
       randomSeats: ["東", "南", "西", "北"], // 랜덤 타일값
-      recordsTime: ["ㅤ"], // 라운드 기록
-      recordsScore: [[25000],[25000],[25000],[25000]], //  점수 기록
-      recordsRiichi: [[false, false, false, false]], // 리치 기록
-      recordsWin: [[false, false, false, false]], // 화료 기록
-      recordsLose: [[false, false, false, false]], // 방총 기록
+      records : { // 기록
+        time: ["ㅤ"], // 시간
+        score: [[25000],[25000],[25000],[25000]], // 점수
+        riichi: [[false, false, false, false]], // 리치 횟수
+        win: [[false, false, false, false]], // 화료 횟수
+        lose: [[false, false, false, false]], // 방총 횟수
+      },
       setScore: [25000, 30000], // 시작, 반환 점수
       rankUma: [30, 10, -10, -30], // 순위 우마
       option: { // 옵션
@@ -160,10 +162,10 @@ export default {
     },
     /**점수 변동 효과*/
     changeScores(idx){
-      let startScore=this.players[idx].displayScore;
+      let currentScore=this.players[idx].displayScore;
       let arrCut=[];
       for (let i=0;i<50;i++) // 변경될 점수 사이를 50등분해서 저장
-        arrCut[i]=startScore+(this.scoresDiff[idx]/50)*(i+1);
+        arrCut[i]=currentScore+(this.scoresDiff[idx]/50)*(i+1);
       this.players[idx].effectScore=this.scoresDiff[idx]; // 이펙트 켜기
       let timecnt=0;
       let repeat=setInterval(() => { // 시간에 따라 반복
@@ -222,23 +224,23 @@ export default {
     /**동1국 처음으로 리셋*/
     resetAll(){
       let allWinds = ["東", "南", "西", "北"];
-      while (1<this.recordsTime.length){ // 점수기록 지우기
-        this.recordsTime.pop();
-        for (let i=0;i<this.recordsScore.length;i++)
-          this.recordsScore[i].pop();
+      while (1<this.records.time.length){ // 점수기록 지우기
+        this.records.time.pop();
+        for (let i=0;i<this.records.score.length;i++)
+          this.records.score[i].pop();
       }
-      while (1<this.recordsRiichi.length){ // 리치, 화료, 방총기록 지우기
-        this.recordsRiichi.pop();
-        this.recordsWin.pop();
-        this.recordsLose.pop();
+      while (1<this.records.riichi.length){ // 리치, 화료, 방총기록 지우기
+        this.records.riichi.pop();
+        this.records.win.pop();
+        this.records.lose.pop();
       }
-      for (let i=0;i<this.recordsScore.length;i++)
-        this.recordsScore[i][0]=this.setScore[0];
+      for (let i=0;i<this.records.score.length;i++)
+        this.records.score[i][0]=this.setScore[0];
       for (let i=0;i<this.isRiichi.length;i++) // 리치봉 제거
         this.isRiichi[i]=false;
       this.panel.wind="東"; // 장풍 설정
       this.panel.round=1; // 국 설정
-      for (let i=0;i<this.recordsScore.length;i++)
+      for (let i=0;i<this.records.score.length;i++)
         this.players[i].displayScore=this.setScore[0]; // 점수 설정
       this.panel.renchan=0; // 연장 설정
       this.panel.riichi=0; // 리치봉 설정
@@ -526,20 +528,20 @@ export default {
         }
       }
       else{
-        this.recordsRiichi.push([...this.isRiichi]); // 리치 기록에 추가
+        this.records.riichi.push([...this.isRiichi]); // 리치 기록에 추가
         for (let i=0;i<this.isRiichi.length;i++) // 리치봉 수거
           this.isRiichi[i]=false;
       }
       for (let i=0;i<this.scoresDiff.length;i++) // 점수 배분및 기록
         this.changeScores(i);
       for (let i=0;i<this.scoresDiff.length;i++){ // 점수 기록창에 점수 기록
-        this.recordsScore[i].push(this.scoresDiff[i]);
-        this.recordsScore[i].push(this.players[i].displayScore+this.scoresDiff[i]);
+        this.records.score[i].push(this.scoresDiff[i]);
+        this.records.score[i].push(this.players[i].displayScore+this.scoresDiff[i]);
       }
-      this.recordsTime.push(this.panel.wind+this.panel.round+'局 '+this.panel.renchan+'本場'); // 점수 기록창에 국+본장 기록
-      this.recordsTime.push('ㅤ');
-      this.recordsWin.push([...this.isWin]); // 화료 기록에 추가
-      this.recordsLose.push([...this.isLose]); // 방총 기록에 추가
+      this.records.time.push(this.panel.wind+this.panel.round+'局 '+this.panel.renchan+'本場'); // 점수 기록창에 국+본장 기록
+      this.records.time.push('ㅤ');
+      this.records.win.push([...this.isWin]); // 화료 기록에 추가
+      this.records.lose.push([...this.isLose]); // 방총 기록에 추가
       if (this.roundStatus==='tsumo' || this.roundStatus==='ron'){ // 화료로 끝났다면
         let chinWin=this.isWin[this.returnIndex(this.players, 'wind', '東')]; // 친이 화료했는지 체크
         if (chinWin===false){ // 친이 화료를 못했다면
@@ -586,13 +588,13 @@ export default {
       for (let i=0;i<this.names.length;i++)
         str+=this.names[i]+'\t'; // 이름 복사
       str+='\n';
-      for (let i=0;i<this.recordsTime.length;i++){
-        if (this.recordsTime[i]!=="ㅤ") // 공백 제거
-          str+=this.recordsTime[i]; // 라운드 복사
+      for (let i=0;i<this.records.time.length;i++){
+        if (this.records.time[i]!=="ㅤ") // 공백 제거
+          str+=this.records.time[i]; // 라운드 복사
         str+='\t';
-        for (let j=0;j<this.recordsScore.length;j++){
-          if (this.recordsScore[j][i]!==0 || i%2===0) // 0점 이동 제거
-            str+=String(this.recordsScore[j][i]); // 점수 복사
+        for (let j=0;j<this.records.score.length;j++){
+          if (this.records.score[j][i]!==0 || i%2===0) // 0점 이동 제거
+            str+=String(this.records.score[j][i]); // 점수 복사
           str+='\t';
         }
         str+='\n';
@@ -604,24 +606,24 @@ export default {
     rollbackRecord(){
       let allWinds = ["東", "南", "西", "北"];
       let arr=this.roundStatus.match(/[\u4e00-\u9fff]|\d+|\S/g); // 시간 값 분리
-      let idx=this.returnIndex(this.recordsTime, this.roundStatus); // 기록 인덱스
+      let idx=this.returnIndex(this.records.time, this.roundStatus); // 기록 인덱스
       let cnt=0;
-      while (idx<this.recordsTime.length){ // 점수기록 지우기
-        this.recordsTime.pop();
-        for (let i=0;i<this.recordsScore.length;i++)
-          this.recordsScore[i].pop();
+      while (idx<this.records.time.length){ // 점수기록 지우기
+        this.records.time.pop();
+        for (let i=0;i<this.records.score.length;i++)
+          this.records.score[i].pop();
       }
-      while (Math.floor(idx/2)+1<this.recordsRiichi.length){ // 리치, 화료, 방총기록 지우기
-        this.recordsRiichi.pop();
-        this.recordsWin.pop();
-        this.recordsLose.pop();
+      while (Math.floor(idx/2)+1<this.records.riichi.length){ // 리치, 화료, 방총기록 지우기
+        this.records.riichi.pop();
+        this.records.win.pop();
+        this.records.lose.pop();
       }
       for (let i=0;i<this.isRiichi.length;i++) // 리치봉 제거
         this.isRiichi[i]=false;
       this.panel.wind=arr[0]; // 장풍 설정
       this.panel.round=Number(arr[1]); // 국 설정
-      for (let i=0;i<this.recordsScore.length;i++){
-        this.players[i].displayScore=Number(this.recordsScore[i][this.recordsScore[i].length-1]); // 점수 설정
+      for (let i=0;i<this.records.score.length;i++){
+        this.players[i].displayScore=Number(this.records.score[i][this.records.score[i].length-1]); // 점수 설정
         cnt+=this.players[i].displayScore;
       }
       this.panel.renchan=Number(arr[3]); // 연장 설정
@@ -677,11 +679,7 @@ export default {
     :isWall
     :isOpened
     :randomSeats
-    :recordsTime
-    :recordsScore
-    :recordsRiichi
-    :recordsWin
-    :recordsLose
+    :records
     :setScore
     :rankUma
     :option

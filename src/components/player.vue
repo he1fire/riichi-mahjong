@@ -46,7 +46,7 @@ const riichiStickVisibility = () => {
   return {visibility: props.isRiichi===true ? 'visible' : 'hidden'}
 }
 
-/**점수 변동에 따른 글자색*/
+/**점수 부호에 따른 색상*/
 const getSignColor = (x) => {
   if (x>0)
     return {color: 'limegreen'}
