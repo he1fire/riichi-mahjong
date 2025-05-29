@@ -6,6 +6,7 @@ const props = defineProps({
   players: Array,
   scoresDiff: Array,
   focusWinner: Number,
+  focusLoser: Number,
   isFao: Boolean,
   focusFao: Number,
   inputFao: Number,
@@ -72,7 +73,7 @@ const arrowButtonStyle = (status, idx) => {
   else if (status==='cheat') // 촌보 화살표 버튼
     return {color: props.isCheat[idx]===true ? 'red' : ''}; // 선택시 빨간색
   else if (status==='fao') // 책임지불 화살표 버튼
-    return {color: props.focusWinner!==idx ? (props.focusFao===idx ? 'red' : '') : 'gray'}; // 선택시 빨간색, 불가능시 회색
+    return {color: props.focusWinner!==idx && props.focusLoser!==idx ? (props.focusFao===idx ? 'red' : '') : 'gray'}; // 선택시 빨간색, 불가능시 회색
   else if (status==='tenpai') // 텐파이 화살표 버튼
     return {color: (props.players[idx].isTenpai===true || props.players[idx].isRiichi===true) ? 'red' : ''}; // 선택 또는 리치시 빨간색
 }

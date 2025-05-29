@@ -349,7 +349,7 @@ export default {
         this.inputBu=idx;
       }
       else if (status==='fao'){
-        if (this.focusWinner===idx) // 현재 승자와 같을때 비활성화
+        if (this.focusWinner===idx || this.focusLoser===idx) // 현재 승자 또는 패자와 같을때 비활성화
           return;
         if (this.focusFao===idx)
           this.focusFao=-1;
@@ -417,7 +417,7 @@ export default {
     /**화료 점수계산*/
     calculateWin(){
       if (this.roundStatus==='tsumo'){ // 쯔모
-        if (this.roundStatus==='tsumo'){
+        if (this.isFao===false){
           for (let i=0;i<this.players.length;i++){
             if (i===this.focusWinner) // 승자
               this.scoresDiff[i]+=this.calculateScore(i)+this.panel.riichi*1000+this.panel.renchan*300;
@@ -425,7 +425,7 @@ export default {
               this.scoresDiff[i]-=this.calculateScore(i)+this.panel.renchan*100;
           }
         }
-        else if (this.isFao===true){ // 책임지불시
+        else{ // 책임지불시
           let tmp=this.inputFan;
           this.inputFan=this.inputFao+9; // 책임지불할 점수
           this.scoresDiff[this.focusWinner]+=this.calculateScore(this.focusWinner)+this.panel.riichi*1000+this.panel.renchan*300;
@@ -670,6 +670,7 @@ export default {
     :players
     :scoresDiff
     :focusWinner
+    :focusLoser
     :isFao
     :focusFao
     :inputFao
