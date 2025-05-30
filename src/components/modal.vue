@@ -5,8 +5,6 @@ import graphics from './graphics.vue'
 const props = defineProps({
   players: Array,
   scoringState: Object,
-  isFao: Boolean,
-  focusFao: Number,
   inputFao: Number,
   inputFan: Number,
   inputBu: Number,
@@ -54,9 +52,9 @@ const okButtonStyle = (status) => {
   else if (status==='lose') // 방총 ok 버튼
     return {color: (cntWin!==1 && cntLose===0) ? 'gray' : ''}; // 2명 이상 화료했는데 쯔모임 (불가능한 경우)
   else if (status==='cheat') // 촌보 ok 버튼
-    return {color: props.scoringState.focusCheater===-1 ? 'gray' : ''}; // 촌보한 사람이 없음 (불가능한 경우)
+    return {color: props.scoringState.whoCheat===-1 ? 'gray' : ''}; // 촌보한 사람이 없음 (불가능한 경우)
   else if (status==='fao') // 책임지불 ok 버튼
-    return {color: props.focusFao===-1 ? 'gray' : ''}; // 책임지불할 사람이 없음 (불가능한 경우)
+    return {color: props.scoringState.whoFao===-1 ? 'gray' : ''}; // 책임지불할 사람이 없음 (불가능한 경우)
 }
 
 /**화살표 버튼 색상*/
@@ -66,9 +64,9 @@ const arrowButtonStyle = (status, idx) => {
   else if (status==='lose') // 방총 화살표 버튼
     return {color: props.players[idx].isWin!==true ? (props.players[idx].isLose===true ? 'red' : '') : 'gray'}; // 선택시 빨간색, 불가능시 회색
   else if (status==='cheat') // 촌보 화살표 버튼
-    return {color: props.scoringState.focusCheater===idx ? 'red' : ''}; // 선택시 빨간색
+    return {color: props.scoringState.whoCheat===idx ? 'red' : ''}; // 선택시 빨간색
   else if (status==='fao') // 책임지불 화살표 버튼
-    return {color: props.scoringState.focusWinner!==idx && props.scoringState.focusLoser!==idx ? (props.focusFao===idx ? 'red' : '') : 'gray'}; // 선택시 빨간색, 불가능시 회색
+    return {color: props.scoringState.whoWin!==idx && props.scoringState.whoLose!==idx ? (props.scoringState.whoFao===idx ? 'red' : '') : 'gray'}; // 선택시 빨간색, 불가능시 회색
   else if (status==='tenpai') // 텐파이 화살표 버튼
     return {color: (props.players[idx].isTenpai===true || props.players[idx].isRiichi===true) ? 'red' : ''}; // 선택 또는 리치시 빨간색
 }
@@ -76,7 +74,7 @@ const arrowButtonStyle = (status, idx) => {
 /**토글 버튼 색상*/
 const toggleButtonStyle = (status) => {
   if (status==='isfao') // 점수창 책임지불 OX
-    return {color: props.isFao===true ? 'mediumblue' : 'red'};
+    return {color: props.scoringState.isFao===true ? 'mediumblue' : 'red'};
   else if (status==='roundmangan') // 유국만관 옵션
     return {color: props.option.roundMangan===true ? 'mediumblue' : 'red'};
   else if (status==='minusriichi') // 음수리치 옵션
@@ -141,7 +139,7 @@ const getSignColor = (x) => {
 
 /**책임지불이 켜져있는지 확인*/
 const checkFao = () => {
-  if (props.isFao===true) // 책임지불이 있다면 선택창 키기
+  if (props.scoringState.isFao===true) // 책임지불이 있다면 선택창 키기
     emitEvent('show-modal', 'check_player_fao', props.modal.status);
   else
     emitEvent('calculate-win');
@@ -226,7 +224,7 @@ const emitEvent = (eventName, ...args) => {
   <!-- 판/부 선택창 -->
   <div v-else-if="modal.type==='check_score'" class="modal_content" @click.stop>
     <div>
-      {{ players[scoringState.focusWinner].name }}의 점수를 입력해주세요.
+      {{ players[scoringState.whoWin].name }}의 점수를 입력해주세요.
     </div>
     <div class="container_check_fanbu">
       <div class="fan">
@@ -250,8 +248,8 @@ const emitEvent = (eventName, ...args) => {
         </span>
         <span v-show="inputFan>=9" style="font-size: 20px;" @click.stop="emitEvent('toggle-check-status', -1, 'isfao')">(책임지불
           <span :style="toggleButtonStyle('isfao')">
-            <span v-show="isFao===true">O</span>
-            <span v-show="isFao===false">X</span>
+            <span v-show="scoringState.isFao===true">O</span>
+            <span v-show="scoringState.isFao===false">X</span>
           </span>
         )</span>
       </div>
