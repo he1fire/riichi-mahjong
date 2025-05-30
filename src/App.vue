@@ -11,37 +11,29 @@ export default {
   data(){
     return {
       players: [
-        /*
-        위치, 이름, 자풍, 순위,
+        /* 위치, 이름, 자풍, 순위,
         현재 점수, 이펙트용 점수, 점수 차이, 변하는 점수
-        리치, 화료, 방총, 텐파이 유무
-        */
-        {
-          seat: "Down",  name: "▼", wind: "東", rank: 0,
+        리치, 화료, 방총, 텐파이 유무 */
+        {seat: "Down",  name: "▼", wind: "東", rank: 0,
           displayScore: 25000, effectScore: 0, gapScore: null, deltaScore: 0,
-          isRiichi: false, isWin: false, isLose: false, isTenpai: false,
-        },
-        {
-          seat: "Right", name: "▶", wind: "南", rank: 0,
+          isRiichi: false, isWin: false, isLose: false, isTenpai: false,},
+        {seat: "Right", name: "▶", wind: "南", rank: 0,
           displayScore: 25000, effectScore: 0, gapScore: null, deltaScore: 0,
-          isRiichi: false, isWin: false, isLose: false, isTenpai: false,
-        },
-        {
-          seat: "Up",    name: "▲", wind: "西", rank: 0,
+          isRiichi: false, isWin: false, isLose: false, isTenpai: false,},
+        {seat: "Up",    name: "▲", wind: "西", rank: 0,
           displayScore: 25000, effectScore: 0, gapScore: null, deltaScore: 0,
-          isRiichi: false, isWin: false, isLose: false, isTenpai: false,
-        },
-        {
-          seat: "Left",  name: "◀", wind: "北", rank: 0,
+          isRiichi: false, isWin: false, isLose: false, isTenpai: false,},
+        {seat: "Left",  name: "◀", wind: "北", rank: 0,
           displayScore: 25000, effectScore: 0, gapScore: null, deltaScore: 0,
-          isRiichi: false, isWin: false, isLose: false, isTenpai: false,
-        }
+          isRiichi: false, isWin: false, isLose: false, isTenpai: false,}
       ],
+      scoringState: { // 점수계산 요소
+        focusWinner: -1, // 현재 점수 입력하는 플레이어
+        focusLoser: -1, // 현재 방총 플레이어
+        focusCheater: -1, // 현재 촌보 플레이어
+      },
       isFao: false, // 책임지불 유무
-      focusWinner: -1, // 현재 점수 입력하는 플레이어
-      focusLoser: -1, // 현재 방총 플레이어
       focusFao: -1, // 현재 책임지불하는 플레이어
-      focusCheater: -1, // 플레이어별 촌보 유무
       inputFao: -1, // 현재 책임지불 점수 (판)
       inputFan: 0, // 현재 점수 (판)
       inputBu: 2, // 현재 점수 (부)
@@ -211,7 +203,7 @@ export default {
       else
         chinScore=score=bu*Math.pow(2,fan+2); // 아니면 점수 계산식으로 계산
       if (this.modal.status==='ron'){ // 론일 때
-        if (this.players[this.focusWinner].wind==='東') // 친이라면 6배
+        if (this.players[this.scoringState.focusWinner].wind==='東') // 친이라면 6배
           score*=6;
         else // 자라면 4배
           score*=4;
@@ -222,14 +214,14 @@ export default {
         chinScore*=2; // 친이라면 2배
         chinScore=Math.ceil(chinScore/100)*100;
         score=Math.ceil(score/100)*100;
-        if (this.players[this.focusWinner].wind==='東'){ // 이긴사람이 친이라면
-          if (who===this.focusWinner) // 이겼다면 3배
+        if (this.players[this.scoringState.focusWinner].wind==='東'){ // 이긴사람이 친이라면
+          if (who===this.scoringState.focusWinner) // 이겼다면 3배
             ret=chinScore*3;
           else // 졌다면 그대로
             ret=chinScore;
         }
         else{ // 이긴사람이 자라면
-          if (who===this.focusWinner) // 내가 이겼다면
+          if (who===this.scoringState.focusWinner) // 내가 이겼다면
             ret=chinScore+score*2;
           else if (this.players[who].wind==='東') // 내가 친이라면 
             ret=chinScore;
@@ -291,8 +283,9 @@ export default {
       }
       this.modal.type='';
       this.modal.status='';
-      this.focusWinner=-1;
-      this.focusLoser=-1;
+      this.scoringState.focusWinner=-1;
+      this.scoringState.focusLoser=-1;
+      this.scoringState.focusCheater=-1;
       this.isFao=false;
       this.focusFao=-1;
       this.inputFao=-1;
@@ -304,7 +297,6 @@ export default {
         x.isLose=false;
         x.isTenpai=false;
       });
-      this.focusCheater=-1;
       this.modal.isOpen=false;
     },
     /**화료, 방총, 텐파이, 판/부, 책임지불 체크*/
@@ -325,10 +317,10 @@ export default {
       else if (status==='tenpai') // 텐파이 체크
         this.players[idx].isTenpai=!this.players[idx].isTenpai;
       else if (status==='cheat'){ // 촌보 체크
-        if (this.focusCheater===idx)
-          this.focusCheater=-1;
+        if (this.scoringState.focusCheater===idx)
+          this.scoringState.focusCheater=-1;
         else
-          this.focusCheater=idx;
+          this.scoringState.focusCheater=idx;
       }
       else if (status==='fan'){ // 판 체크
         if (idx>=9 && this.inputFan===idx) // 역만일경우 처리
@@ -349,7 +341,7 @@ export default {
         this.inputBu=idx;
       }
       else if (status==='fao'){
-        if (this.focusWinner===idx || this.focusLoser===idx) // 현재 승자 또는 패자와 같을때 비활성화
+        if (this.scoringState.focusWinner===idx || this.scoringState.focusLoser===idx) // 현재 승자 또는 패자와 같을때 비활성화
           return;
         if (this.focusFao===idx)
           this.focusFao=-1;
@@ -384,14 +376,14 @@ export default {
         if (cntWin!==1 && cntLose===0) // 2명 이상 화료했는데 쯔모임 (불가능한 경우)
           return;
         if (!cntLose){ // 쯔모
-          this.focusWinner=this.returnIndex(this.players, 'isWin', true); // 승자 찾아서 저장
+          this.scoringState.focusWinner=this.returnIndex(this.players, 'isWin', true); // 승자 찾아서 저장
           this.showModal('check_score', 'tsumo');
         }
         else{ // 론
-          this.focusLoser=this.returnIndex(this.players, 'isLose', true); // 패자 찾아서 저장
+          this.scoringState.focusLoser=this.returnIndex(this.players, 'isLose', true); // 패자 찾아서 저장
           for (let i=0;i<this.players.length;i++){
-            if (this.players[(this.focusLoser+i)%4].isWin===true){ // 승자 찾아서 저장 (선하네 순서로 탐색)
-              this.focusWinner=(this.focusLoser+i)%4;
+            if (this.players[(this.scoringState.focusLoser+i)%4].isWin===true){ // 승자 찾아서 저장 (선하네 순서로 탐색)
+              this.scoringState.focusWinner=(this.scoringState.focusLoser+i)%4;
               break;
             }
           }
@@ -408,7 +400,7 @@ export default {
           this.calculateWin();
       }
       else if (status==='cheat'){ // 촌보일때
-        if (this.focusCheater===-1) // 촌보한 사람이 없음 (불가능한 경우)
+        if (this.scoringState.focusCheater===-1) // 촌보한 사람이 없음 (불가능한 경우)
           return;
         this.calculateCheat();
       }
@@ -418,7 +410,7 @@ export default {
       if (this.modal.status==='tsumo'){ // 쯔모
         if (this.isFao===false){
           for (let i=0;i<this.players.length;i++){
-            if (i===this.focusWinner) // 승자
+            if (i===this.scoringState.focusWinner) // 승자
               this.players[i].deltaScore+=this.calculateScore(i)+this.panel.riichi*1000+this.panel.renchan*300;
             else // 패자
               this.players[i].deltaScore-=this.calculateScore(i)+this.panel.renchan*100;
@@ -427,12 +419,12 @@ export default {
         else{ // 책임지불시
           let tmp=this.inputFan;
           this.inputFan=this.inputFao+9; // 책임지불할 점수
-          this.players[this.focusWinner].deltaScore+=this.calculateScore(this.focusWinner)+this.panel.riichi*1000+this.panel.renchan*300;
-          this.players[this.focusFao].deltaScore-=this.calculateScore(this.focusWinner)+this.panel.renchan*300;
+          this.players[this.scoringState.focusWinner].deltaScore+=this.calculateScore(this.scoringState.focusWinner)+this.panel.riichi*1000+this.panel.renchan*300;
+          this.players[this.focusFao].deltaScore-=this.calculateScore(this.scoringState.focusWinner)+this.panel.renchan*300;
           this.inputFan=tmp-this.inputFao-1; // 롤백
           if (this.inputFan>=9){ // 다른사람도 여전히 지불해야 하는 경우
             for (let i=0;i<this.players.length;i++){
-              if (i===this.focusWinner) // 승자
+              if (i===this.scoringState.focusWinner) // 승자
                 this.players[i].deltaScore+=this.calculateScore(i)+this.panel.riichi*1000+this.panel.renchan*300;
               else // 패자
                 this.players[i].deltaScore-=this.calculateScore(i)+this.panel.renchan*100;
@@ -444,33 +436,33 @@ export default {
       else if (this.modal.status==='ron'){ // 론
         let firstWinner=-1, chkFinish=false;
         for (let i=1;i<this.players.length;i++){
-          if (this.players[(this.focusLoser+i)%4].isWin===true){
-            firstWinner=(this.focusLoser+i)%4; // 선하네 판별
+          if (this.players[(this.scoringState.focusLoser+i)%4].isWin===true){
+            firstWinner=(this.scoringState.focusLoser+i)%4; // 선하네 판별
             break;
           }
         }
-        if (firstWinner===this.focusWinner) { // 승자+선하네
-          this.players[this.focusWinner].deltaScore+=this.calculateScore(this.focusWinner)+this.panel.riichi*1000+this.panel.renchan*300;
-          this.players[this.focusLoser].deltaScore-=this.calculateScore(this.focusWinner)+this.panel.renchan*300;
+        if (firstWinner===this.scoringState.focusWinner) { // 승자+선하네
+          this.players[this.scoringState.focusWinner].deltaScore+=this.calculateScore(this.scoringState.focusWinner)+this.panel.riichi*1000+this.panel.renchan*300;
+          this.players[this.scoringState.focusLoser].deltaScore-=this.calculateScore(this.scoringState.focusWinner)+this.panel.renchan*300;
         }
         else{ // 나머지 승자
-          this.players[this.focusWinner].deltaScore+=this.calculateScore(this.focusWinner);
-          this.players[this.focusLoser].deltaScore-=this.calculateScore(this.focusWinner);
+          this.players[this.scoringState.focusWinner].deltaScore+=this.calculateScore(this.scoringState.focusWinner);
+          this.players[this.scoringState.focusLoser].deltaScore-=this.calculateScore(this.scoringState.focusWinner);
         }
         if (this.isFao===true){ // 책임지불시 절반 지불
           let tmp=this.inputFan;
           this.inputFan=this.inputFao+9; // 책임지불할 점수
-          this.players[this.focusLoser].deltaScore+=Math.floor(this.calculateScore(this.focusWinner)/2);
-          this.players[this.focusFao].deltaScore-=Math.floor(this.calculateScore(this.focusWinner)/2);
+          this.players[this.scoringState.focusLoser].deltaScore+=Math.floor(this.calculateScore(this.scoringState.focusWinner)/2);
+          this.players[this.focusFao].deltaScore-=Math.floor(this.calculateScore(this.scoringState.focusWinner)/2);
           this.inputFan=tmp-this.inputFao-1; // 롤백
         }
         for (let i=1;i<this.players.length;i++){
-          if ((this.focusWinner+i)%4===this.focusLoser){ // 1바퀴를 모두 돌았을때
+          if ((this.scoringState.focusWinner+i)%4===this.scoringState.focusLoser){ // 1바퀴를 모두 돌았을때
             chkFinish=true;
             break;
           }
-          else if (this.players[(this.focusWinner+i)%4].isWin===true){ // 다음 승자가 남아있을때
-            this.focusWinner=(this.focusWinner+i)%4; // 현재 승자 변경
+          else if (this.players[(this.scoringState.focusWinner+i)%4].isWin===true){ // 다음 승자가 남아있을때
+            this.scoringState.focusWinner=(this.scoringState.focusWinner+i)%4; // 현재 승자 변경
             this.inputFan=0;
             this.inputBu=2;
             this.isFao=false;
@@ -501,7 +493,7 @@ export default {
     calculateCheat(){
       if (this.option.cheatScore===true){ // 3000점씩 지불 
         for (let i=0;i<this.players.length;i++){
-          if (this.focusCheater===i)
+          if (this.scoringState.focusCheater===i)
             this.players[i].deltaScore=-9000;
           else
             this.players[i].deltaScore=3000; 
@@ -509,14 +501,14 @@ export default {
       }
       else{// 만관 지불
         for (let i=0;i<this.players.length;i++){
-          if (this.focusCheater===i){
+          if (this.scoringState.focusCheater===i){
             if (this.players[i].wind==='東') // 친일경우
               this.players[i].deltaScore=-12000;
             else
               this.players[i].deltaScore=-8000;
           }
           else{
-            if (this.players[i].wind==='東' || this.players[this.focusCheater].wind==='東') //촌보자가 친이거나 내가 친일때
+            if (this.players[i].wind==='東' || this.players[this.scoringState.focusCheater].wind==='東') //촌보자가 친이거나 내가 친일때
               this.players[i].deltaScore=4000;
             else
               this.players[i].deltaScore=2000;
@@ -664,14 +656,12 @@ export default {
   <modal
     v-if="modal.isOpen"
     :players
-    :focusWinner
-    :focusLoser
+    :scoringState
     :isFao
     :focusFao
     :inputFao
     :inputFan
     :inputBu
-    :focusCheater
     :panel
     :dice
     :seatTile

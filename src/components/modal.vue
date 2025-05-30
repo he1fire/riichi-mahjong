@@ -4,14 +4,12 @@ import graphics from './graphics.vue'
 /**props 정의*/
 const props = defineProps({
   players: Array,
-  focusWinner: Number,
-  focusLoser: Number,
+  scoringState: Object,
   isFao: Boolean,
   focusFao: Number,
   inputFao: Number,
   inputFan: Number,
   inputBu: Number,
-  focusCheater: Number,
   panel: Object,
   dice: Object,
   seatTile: Object,
@@ -56,7 +54,7 @@ const okButtonStyle = (status) => {
   else if (status==='lose') // 방총 ok 버튼
     return {color: (cntWin!==1 && cntLose===0) ? 'gray' : ''}; // 2명 이상 화료했는데 쯔모임 (불가능한 경우)
   else if (status==='cheat') // 촌보 ok 버튼
-    return {color: props.focusCheater===-1 ? 'gray' : ''}; // 촌보한 사람이 없음 (불가능한 경우)
+    return {color: props.scoringState.focusCheater===-1 ? 'gray' : ''}; // 촌보한 사람이 없음 (불가능한 경우)
   else if (status==='fao') // 책임지불 ok 버튼
     return {color: props.focusFao===-1 ? 'gray' : ''}; // 책임지불할 사람이 없음 (불가능한 경우)
 }
@@ -68,9 +66,9 @@ const arrowButtonStyle = (status, idx) => {
   else if (status==='lose') // 방총 화살표 버튼
     return {color: props.players[idx].isWin!==true ? (props.players[idx].isLose===true ? 'red' : '') : 'gray'}; // 선택시 빨간색, 불가능시 회색
   else if (status==='cheat') // 촌보 화살표 버튼
-    return {color: props.focusCheater===idx ? 'red' : ''}; // 선택시 빨간색
+    return {color: props.scoringState.focusCheater===idx ? 'red' : ''}; // 선택시 빨간색
   else if (status==='fao') // 책임지불 화살표 버튼
-    return {color: props.focusWinner!==idx && props.focusLoser!==idx ? (props.focusFao===idx ? 'red' : '') : 'gray'}; // 선택시 빨간색, 불가능시 회색
+    return {color: props.scoringState.focusWinner!==idx && props.scoringState.focusLoser!==idx ? (props.focusFao===idx ? 'red' : '') : 'gray'}; // 선택시 빨간색, 불가능시 회색
   else if (status==='tenpai') // 텐파이 화살표 버튼
     return {color: (props.players[idx].isTenpai===true || props.players[idx].isRiichi===true) ? 'red' : ''}; // 선택 또는 리치시 빨간색
 }
@@ -228,7 +226,7 @@ const emitEvent = (eventName, ...args) => {
   <!-- 판/부 선택창 -->
   <div v-else-if="modal.type==='check_score'" class="modal_content" @click.stop>
     <div>
-      {{ players[focusWinner].name }}의 점수를 입력해주세요.
+      {{ players[scoringState.focusWinner].name }}의 점수를 입력해주세요.
     </div>
     <div class="container_check_fanbu">
       <div class="fan">
