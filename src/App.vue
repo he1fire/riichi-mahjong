@@ -10,7 +10,7 @@ export default {
   },
   data(){
     return {
-      players: [
+      players: [ // 플레이어
         /* 위치, 이름, 자풍, 순위,
         현재 점수, 이펙트용 점수, 점수 차이, 변하는 점수
         리치, 화료, 방총, 텐파이 유무 */
@@ -67,9 +67,9 @@ export default {
         cheatScore: true, // 촌보 지불 점수
         endRiichi: true, // 남은 공탁금 처리
       },
-      modal: {
-        isOpen :false, // 모달창 on/off
-        type: "", // 모달창 종류
+      modal: { // 모달창
+        isOpen :false, // on/off
+        type: "", // 종류
         status: "", // 라운드 형태 - 론 쯔모 일반유국 특수유국
       },
     };
@@ -193,43 +193,37 @@ export default {
       let arrBu= [20, 25, 30, 40, 50, 60, 70, 80, 90, 100, 110];
       let arrMangan=[2000,3000,3000,4000,4000,4000,6000,6000,8000,16000,24000,32000,40000,48000]; // 만관 이상 인당 점수
       let fan=arrFan[this.scoringState.inputFan], bu=arrBu[this.scoringState.inputBu];
-      let ret=0, chinScore=0, score=0;
+      let baseScore=0;
       if ((fan===3 && bu>=70) || (fan===4 && bu>=40)) // 3판 70부, 4판 40부 이상이면 만관
         fan=5;
       if (((fan===3 && bu>=60) || (fan===4 && bu>=30)) && this.option.roundMangan) // 절상만관시 3판 60부, 4판 30부 인정
         fan=5;
       if (5<=fan)
-        chinScore=score=arrMangan[fan-5]; // 만관 이상이면 배열 참조
+        baseScore=arrMangan[fan-5]; // 만관 이상이면 배열 참조
       else
-        chinScore=score=bu*Math.pow(2,fan+2); // 아니면 점수 계산식으로 계산
+        baseScore=bu*Math.pow(2,fan+2); // 아니면 점수 계산식으로 계산
       if (this.modal.status==='ron'){ // 론일 때
         if (this.players[this.scoringState.whoWin].wind==='東') // 친이라면 6배
-          score*=6;
+          return Math.ceil(baseScore*6/100)*100;
         else // 자라면 4배
-          score*=4;
-        score=Math.ceil(score/100)*100;
-        ret=score;
+          return Math.ceil(baseScore*4/100)*100;
       }
       else if (this.modal.status==='tsumo'){ // 쯔모일 때
-        chinScore*=2; // 친이라면 2배
-        chinScore=Math.ceil(chinScore/100)*100;
-        score=Math.ceil(score/100)*100;
         if (this.players[this.scoringState.whoWin].wind==='東'){ // 이긴사람이 친이라면
           if (who===this.scoringState.whoWin) // 이겼다면 3배
-            ret=chinScore*3;
+            return Math.ceil(baseScore*2/100)*100*3;
           else // 졌다면 그대로
-            ret=chinScore;
+            return Math.ceil(baseScore*2/100)*100;
         }
         else{ // 이긴사람이 자라면
           if (who===this.scoringState.whoWin) // 내가 이겼다면
-            ret=chinScore+score*2;
+            return Math.ceil(baseScore*2/100)*100+Math.ceil(baseScore/100)*100*2;
           else if (this.players[who].wind==='東') // 내가 친이라면 
-            ret=chinScore;
+            return Math.ceil(baseScore*2/100)*100;
           else
-            ret=score;
+            return Math.ceil(baseScore/100)*100;
         }
       }
-      return ret;
     },
     /**동1국 처음으로 리셋*/
     resetAll(){
@@ -256,9 +250,11 @@ export default {
     },
     /**모달 창 켜기*/
     showModal(type, status){
-      this.modal.type=type;
-      this.modal.status=status;
-      this.modal.isOpen=true;
+      Object.assign(this.modal, {
+        isOpen: true,
+        type: type,
+        status: status,
+      });
     },
     /**모달 창 끄기*/
     hideModal(){
@@ -281,8 +277,11 @@ export default {
         if (cntUma!==0) // 우마 합계가 0이 아니라면 초기화
           this.option.rankUma=[30, 10, -10, -30];
       }
-      this.modal.type='';
-      this.modal.status='';
+      Object.assign(this.modal, {
+        isOpen: false,
+        type: "",
+        status: "",
+      });
       Object.assign(this.scoringState, {
         whoWin: -1,
         whoLose: -1,
@@ -299,7 +298,6 @@ export default {
         x.isLose=false;
         x.isTenpai=false;
       });
-      this.modal.isOpen=false;
     },
     /**화료, 방총, 텐파이, 판/부, 책임지불 체크*/
     toggleCheckStatus(idx, status){
@@ -445,16 +443,16 @@ export default {
         }
         if (firstWinner===this.scoringState.whoWin) { // 승자+선하네
           this.players[this.scoringState.whoWin].deltaScore+=this.calculateScore(this.scoringState.whoWin)+this.panel.riichi*1000+this.panel.renchan*300;
-          this.players[this.scoringState.whoLose].deltaScore-=this.calculateScore(this.scoringState.whoWin)+this.panel.renchan*300;
+          this.players[this.scoringState.whoLose].deltaScore-=this.calculateScore(this.scoringState.whoLose)+this.panel.renchan*300;
         }
         else{ // 나머지 승자
           this.players[this.scoringState.whoWin].deltaScore+=this.calculateScore(this.scoringState.whoWin);
-          this.players[this.scoringState.whoLose].deltaScore-=this.calculateScore(this.scoringState.whoWin);
+          this.players[this.scoringState.whoLose].deltaScore-=this.calculateScore(this.scoringState.whoLose);
         }
         if (this.scoringState.isFao===true){ // 책임지불시 절반 지불
           this.scoringState.inputFan=this.scoringState.inputFao+9; // 책임지불할 점수
-          this.players[this.scoringState.whoLose].deltaScore+=Math.floor(this.calculateScore(this.scoringState.whoWin)/2);
-          this.players[this.scoringState.whoFao].deltaScore-=Math.floor(this.calculateScore(this.scoringState.whoWin)/2);
+          this.players[this.scoringState.whoLose].deltaScore+=Math.floor(this.calculateScore(this.scoringState.whoLose)/2);
+          this.players[this.scoringState.whoFao].deltaScore-=Math.floor(this.calculateScore(this.scoringState.whoLose)/2);
         }
         for (let i=1;i<this.players.length;i++){
           if ((this.scoringState.whoWin+i)%4===this.scoringState.whoLose){ // 1바퀴를 모두 돌았을때
@@ -542,7 +540,6 @@ export default {
       this.records.riichi.push(this.players.map(x => x.isRiichi)); // 리치 기록에 추가
       this.records.win.push(this.players.map(x => x.isWin)); // 화료 기록에 추가
       this.records.lose.push(this.players.map(x => x.isLose)); // 방총 기록에 추가
-
       let chin=this.players[this.returnIndex(this.players, 'wind', '東')]; // 친이 누구인지 저장
       if (this.modal.status==='tsumo' || this.modal.status==='ron'){ // 화료로 끝났다면
         if (chin.isWin===false){ // 친이 화료를 못했다면
@@ -573,12 +570,7 @@ export default {
         timecnt++;
         if (timecnt>=10){
             clearInterval(repeat);
-            for (let i=0;i<this.dice.wallDirection.length;i++){ // 패산 떼는 방향 표시
-              if (i===(this.dice.value[0]+this.dice.value[1]-1)%4)
-                this.dice.wallDirection[i]=true;
-              else
-                this.dice.wallDirection[i]=false;
-            }
+            this.dice.wallDirection[(this.dice.value[0]+this.dice.value[1]-1)%4]=true; // 패산 떼는 방향 표시
         }
       }, 50); // 0.05초 * 10번 = 0.5초동안 실행
     },
