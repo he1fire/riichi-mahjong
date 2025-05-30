@@ -5,12 +5,12 @@ import graphics from './graphics.vue'
 const props = defineProps({
   players: Array,
   scoringState: Object,
-  panel: Object,
+  panelInfo: Object,
   dice: Object,
   seatTile: Object,
   records: Object,
   option: Object,
-  modal: Object,
+  modalInfo: Object,
 })
 
 /**emits 정의*/
@@ -28,17 +28,17 @@ const emit = defineEmits([
 ])
 
 /**data 정의*/
-const arr_arrow = ["▼", "▶", "▲", "◀"];
-const arr_seat = ["동(東)", "남(南)", "서(西)", "북(北)"];
-const arr_scoresheet = ["바람", "이름", "점수", "리치", "화료", "방총"];
-const class_check = ["down_check", "right_check", "up_check", "left_check"];
-const class_score_diff = ["down_score_diff", "right_score_diff", "up_score_diff", "left_score_diff"];
-const class_dice = ["down_dice", "right_dice", "up_dice", "left_dice"];
-const class_name = ["down_name", "right_name", "up_name", "left_name"];
-const class_record = ["down_record", "right_record", "up_record", "left_record"];
-const class_scoresheet = ["wind", "name", "score", "riichi", "win", "lose"];
-const fan = ["1", "2", "3", "4", "5", "6+", "8+", "11+", "13+", "1배역만", "2배역만", "3배역만", "4배역만", "5배역만","6배역만"];
-const bu = [20, 25, 30, 40, 50, 60, 70, 80, 90, 100, 110];
+const arr_arrow = ["▼", "▶", "▲", "◀"]
+const arr_seat = ["동(東)", "남(南)", "서(西)", "북(北)"]
+const arr_scoresheet = ["바람", "이름", "점수", "리치", "화료", "방총"]
+const class_check = ["down_check", "right_check", "up_check", "left_check"]
+const class_score_diff = ["down_score_diff", "right_score_diff", "up_score_diff", "left_score_diff"]
+const class_dice = ["down_dice", "right_dice", "up_dice", "left_dice"]
+const class_name = ["down_name", "right_name", "up_name", "left_name"]
+const class_record = ["down_record", "right_record", "up_record", "left_record"]
+const class_scoresheet = ["wind", "name", "score", "riichi", "win", "lose"]
+const fan = ["1", "2", "3", "4", "5", "6+", "8+", "11+", "13+", "1배역만", "2배역만", "3배역만", "4배역만", "5배역만","6배역만"]
+const bu = [20, 25, 30, 40, 50, 60, 70, 80, 90, 100, 110]
 
 /**ok 버튼 색상*/
 const okButtonStyle = (status) => {
@@ -87,7 +87,7 @@ const fanBuButtonStyle = (status, idx) => {
   if (status==='fan') // 판 체크
     return {color: idx===props.scoringState.inputFan ? 'red' : ''};
   else if (status==='bu'){ // 부 체크
-    if (props.modal.status==='ron' && idx===0) // 론일때 20부 이하시 회색
+    if (props.modalInfo.status==='ron' && idx===0) // 론일때 20부 이하시 회색
       return {color: 'gray'};
     else if (props.scoringState.inputFan===0 && idx<=1) // 1판 25부 이하시 회색
       return {color: 'gray'};
@@ -137,7 +137,7 @@ const getSignColor = (x) => {
 /**책임지불이 켜져있는지 확인*/
 const checkFao = () => {
   if (props.scoringState.isFao===true) // 책임지불이 있다면 선택창 키기
-    emitEvent('show-modal', 'check_player_fao', props.modal.status);
+    emitEvent('show-modal', 'check_player_fao', props.modalInfo.status);
   else
     emitEvent('calculate-win');
 }
@@ -155,7 +155,7 @@ const calculatePoint = (idx) => {
   if (rank===1){ // 1위라면 오카도 더하기
     uma+=oka;
     if (props.option.endRiichi) // 1위에게 공탁금을 몰아주는 경우 (100점단위)
-      myScore+=Math.floor(((props.panel.riichi*1000)/cnt)/100)*100;
+      myScore+=Math.floor(((props.panelInfo.riichi*1000)/cnt)/100)*100;
   }
   uma/=cnt; // 동점자 수만큼 우마 나누기
   point=(myScore-props.option.returnScore)/1000+uma;
@@ -181,7 +181,7 @@ const emitEvent = (eventName, ...args) => {
 <template>
 <div class="modal" @click="emitEvent('hide-modal')">
   <!-- 화료 인원 선택창 -->
-  <div v-if="modal.type==='check_player_win'" class="modal_content" @click.stop>
+  <div v-if="modalInfo.type==='check_player_win'" class="modal_content" @click.stop>
     <div class="container_check">
       <div class="guide_message">
         화료한 사람을 선택해 주세요.
@@ -200,7 +200,7 @@ const emitEvent = (eventName, ...args) => {
     </div>
   </div>
   <!--방총 인원 선택창 -->
-  <div v-else-if="modal.type==='check_player_lose'" class="modal_content" @click.stop>
+  <div v-else-if="modalInfo.type==='check_player_lose'" class="modal_content" @click.stop>
     <div class="container_check">
       <div class="guide_message">
         방총당한 사람을 선택해 주세요.
@@ -219,7 +219,7 @@ const emitEvent = (eventName, ...args) => {
     </div>
   </div>
   <!-- 판/부 선택창 -->
-  <div v-else-if="modal.type==='check_score'" class="modal_content" @click.stop>
+  <div v-else-if="modalInfo.type==='check_score'" class="modal_content" @click.stop>
     <div>
       {{ players[scoringState.whoWin].name }}의 점수를 입력해주세요.
     </div>
@@ -276,7 +276,7 @@ const emitEvent = (eventName, ...args) => {
     </div>
   </div>
   <!--책임지불 인원 선택창 -->
-  <div v-else-if="modal.type==='check_player_fao'" class="modal_content" @click.stop>
+  <div v-else-if="modalInfo.type==='check_player_fao'" class="modal_content" @click.stop>
     <div class="container_check">
       <div class="guide_message">
         책임지불할 사람을 선택해 주세요.
@@ -295,7 +295,7 @@ const emitEvent = (eventName, ...args) => {
     </div>
   </div>
   <!-- 책임지불 점수 선택창 -->
-  <div v-else-if="modal.type==='choose_fao_score'" class="modal_content" @click.stop>
+  <div v-else-if="modalInfo.type==='choose_fao_score'" class="modal_content" @click.stop>
     <div>
       책임지불할 점수를 입력해주세요.
     </div>
@@ -313,7 +313,7 @@ const emitEvent = (eventName, ...args) => {
     </div>
   </div>
   <!-- 유국 종류 선택창 -->
-  <div v-else-if="modal.type==='choose_draw_kind'" class="modal_content" @click.stop>
+  <div v-else-if="modalInfo.type==='choose_draw_kind'" class="modal_content" @click.stop>
     <div class="modal_choose_draw" @click.stop="emitEvent('show-modal','check_player_tenpai')">
       일반유국
     </div>
@@ -322,7 +322,7 @@ const emitEvent = (eventName, ...args) => {
     </div>
   </div>
   <!-- 텐파이 인원 선택창 -->
-  <div v-else-if="modal.type==='check_player_tenpai'" class="modal_content" @click.stop>
+  <div v-else-if="modalInfo.type==='check_player_tenpai'" class="modal_content" @click.stop>
     <div class="container_check">
       <div class="guide_message">
         텐파이한 사람을 선택해 주세요.
@@ -341,7 +341,7 @@ const emitEvent = (eventName, ...args) => {
     </div>
   </div>
   <!-- 촌보 인원 선택창 -->
-  <div v-else-if="modal.type==='check_player_cheat'" class="modal_content" @click.stop>
+  <div v-else-if="modalInfo.type==='check_player_cheat'" class="modal_content" @click.stop>
     <div class="container_check">
       <div class="guide_message">
         촌보한 사람을 선택해 주세요.
@@ -360,7 +360,7 @@ const emitEvent = (eventName, ...args) => {
     </div>
   </div>
   <!-- 점수 확인창 -->
-  <div v-else-if="modal.type==='show_score'" class="modal_content" style="border-radius:50%;" @click.stop>
+  <div v-else-if="modalInfo.type==='show_score'" class="modal_content" style="border-radius:50%;" @click.stop>
     <div class="container_show_score_diff">
       <div v-for="(_, i) in class_score_diff"
         :key="i"
@@ -375,7 +375,7 @@ const emitEvent = (eventName, ...args) => {
     </div>
   </div>
   <!-- 주사위 굴림창 -->
-  <div v-else-if="modal.type==='roll_dice'" class="modal_content" :style="diceModalTransform()" @click.stop>
+  <div v-else-if="modalInfo.type==='roll_dice'" class="modal_content" :style="diceModalTransform()" @click.stop>
     <div class="container_roll" @click.stop="emitEvent('roll-dice')">
       <graphics kind="dice" :value="dice.value[0]" style="grid-area: dice_1; transform: scale(2);"/>
       <graphics kind="dice" :value="dice.value[1]" style="grid-area: dice_2; transform: scale(2);"/>
@@ -393,7 +393,7 @@ const emitEvent = (eventName, ...args) => {
     </div>
   </div>
   <!-- 동남서북 선택창 -->
-  <div v-else-if="modal.type==='choose_seat'" class="modal_content" @click.stop>
+  <div v-else-if="modalInfo.type==='choose_seat'" class="modal_content" @click.stop>
     <div class="container_tile">
       <graphics v-for="(_, i) in seatTile.value"
         :key="i"
@@ -405,7 +405,7 @@ const emitEvent = (eventName, ...args) => {
     </div>
   </div>
   <!-- 옵션 종류 선택창 -->
-  <div v-else-if="modal.type==='choose_option_kind'" class="modal_content" @click.stop>
+  <div v-else-if="modalInfo.type==='choose_option_kind'" class="modal_content" @click.stop>
     <div class="container_choose_option">
       <div @click.stop="emitEvent('show-modal', 'score_sheet')">
         게임결과
@@ -420,7 +420,7 @@ const emitEvent = (eventName, ...args) => {
     </div>
   </div>
   <!-- 점수 기록창 -->
-  <div v-else-if="modal.type==='show_record'" class="modal_content" @click.stop>
+  <div v-else-if="modalInfo.type==='show_record'" class="modal_content" @click.stop>
     <div class="container_record">
       <div class="copy" @click.stop="emitEvent('copy-record')">
         복사
@@ -455,16 +455,16 @@ const emitEvent = (eventName, ...args) => {
     </div>
   </div>
   <!-- 점수 롤백창 -->
-  <div v-else-if="modal.type==='rollback_record'" class="modal_content" @click.stop>
+  <div v-else-if="modalInfo.type==='rollback_record'" class="modal_content" @click.stop>
     <div class="modal_text">
-      {{ records.time[modal.status] }}으로 되돌리시겠습니까?
+      {{ records.time[modalInfo.status] }}으로 되돌리시겠습니까?
     </div>
-    <div class="modal_text" style="font-size: 30px;" @click.stop="emitEvent('rollback-record', modal.status)">
+    <div class="modal_text" style="font-size: 30px;" @click.stop="emitEvent('rollback-record', modalInfo.status)">
       OK
     </div>
   </div>
   <!-- 설정 창 -->
-  <div v-else-if="modal.type==='set_options'" class="modal_content" @click.stop>
+  <div v-else-if="modalInfo.type==='set_options'" class="modal_content" @click.stop>
     <div class="container_option">
       <div
         v-for="(_, i) in arr_seat"
@@ -542,7 +542,7 @@ const emitEvent = (eventName, ...args) => {
     </div>
   </div>
   <!-- 게임 결과창 -->
-  <div v-else-if="modal.type==='score_sheet'" class="modal_content" @click.stop>
+  <div v-else-if="modalInfo.type==='score_sheet'" class="modal_content" @click.stop>
     <div class="container_scoresheet">
       <div v-for="(_, i) in class_scoresheet" 
         :key="i"
@@ -573,7 +573,7 @@ const emitEvent = (eventName, ...args) => {
   </div>
   <!-- 메시지 팝업창 -->
   <div v-else class="modal_content" @click.stop>
-    <div class="modal_text">{{ modal.type }}</div>
+    <div class="modal_text">{{ modalInfo.type }}</div>
   </div>
 </div>
 </template>

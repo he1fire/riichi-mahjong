@@ -1,630 +1,640 @@
-<script>
+<script setup>
 import player from './components/player.vue'
 import panel from './components/panel.vue'
 import modal from './components/modal.vue'
-export default {
-  components: {
-    player,
-    panel,
-    modal
-  },
-  data(){
-    return {
-      players: [ // 플레이어
-        /* 위치, 이름, 자풍, 순위,
-        현재 점수, 이펙트용 점수, 점수 차이, 변하는 점수
-        리치, 화료, 방총, 텐파이 유무 */
-        {seat: "Down",  name: "▼", wind: "東", rank: 0,
-          displayScore: 25000, effectScore: 0, gapScore: null, deltaScore: 0,
-          isRiichi: false, isWin: false, isLose: false, isTenpai: false,},
-        {seat: "Right", name: "▶", wind: "南", rank: 0,
-          displayScore: 25000, effectScore: 0, gapScore: null, deltaScore: 0,
-          isRiichi: false, isWin: false, isLose: false, isTenpai: false,},
-        {seat: "Up",    name: "▲", wind: "西", rank: 0,
-          displayScore: 25000, effectScore: 0, gapScore: null, deltaScore: 0,
-          isRiichi: false, isWin: false, isLose: false, isTenpai: false,},
-        {seat: "Left",  name: "◀", wind: "北", rank: 0,
-          displayScore: 25000, effectScore: 0, gapScore: null, deltaScore: 0,
-          isRiichi: false, isWin: false, isLose: false, isTenpai: false,}
-      ],
-      scoringState: { // 점수계산 요소
-        whoWin: -1, // 현재 점수 입력하는 플레이어
-        whoLose: -1, // 현재 방총 플레이어
-        whoCheat: -1, // 현재 촌보 플레이어
-        isFao: false, // 책임지불 유무
-        whoFao: -1, // 현재 책임지불하는 플레이어
-        inputFan: 0, // 현재 점수 (판)
-        inputBu: 2, // 현재 점수 (부)
-        inputFao: -1, // 현재 책임지불 점수 (판)
-      },
-      panel: { // 패널
-        wind: "東", // 현재 장풍
-        round: 1, // 현재 국
-        riichi: 0, // 현재 누적 리치봉
-        renchan: 0, // 현재 누적 연장봉
-      },
-      dice: { // 주사위
-        value: [1, 6], // 값
-        wallDirection: [false, false, false, false], // 주사위 값에 따른 패산방향
-      },
-      seatTile: { // 자리정하기 타일
-        value: ["東", "南", "西", "北"], // 랜덤 타일값
-        isOpened: [false, false, false, false], // 타일이 공개되었는지
-      },
-      records : { // 기록
-        time: ["ㅤ"], // 시간
-        score: [[25000],[25000],[25000],[25000]], // 점수
-        riichi: [[false, false, false, false]], // 리치 횟수
-        win: [[false, false, false, false]], // 화료 횟수
-        lose: [[false, false, false, false]], // 방총 횟수
-      },
-      option: { // 옵션
-        startingScore: 25000, // 시작 점수
-        returnScore: 30000, // 반환 점수
-        rankUma: [30, 10, -10, -30], // 순위 우마
-        roundMangan: false, // 절상만관
-        minusRiichi: false, // 음수리치
-        cheatScore: true, // 촌보 지불 점수
-        endRiichi: true, // 남은 공탁금 처리
-      },
-      modal: { // 모달창
-        isOpen :false, // on/off
-        type: "", // 종류
-        status: "", // 라운드 형태 - 론 쯔모 일반유국 특수유국
-      },
-    };
-  },
-  mounted() {
-    // 자리 선택 창
-    for (let i=3;i>0;i--){ // 자리 섞기
-      let j=Math.floor(Math.random()*(i+1));
-      [this.seatTile.value[i], this.seatTile.value[j]]=[this.seatTile.value[j], this.seatTile.value[i]];
+import { ref, reactive, onMounted } from 'vue'
+
+/**data 정의*/
+const players = reactive([ // 플레이어
+  /* 위치, 이름, 자풍, 순위,
+  현재 점수, 이펙트용 점수, 점수 차이, 변하는 점수
+  리치, 화료, 방총, 텐파이 유무 */
+  {seat: "Down",  name: "▼", wind: "東", rank: 0,
+    displayScore: 25000, effectScore: 0, gapScore: null, deltaScore: 0,
+    isRiichi: false, isWin: false, isLose: false, isTenpai: false,},
+  {seat: "Right", name: "▶", wind: "南", rank: 0,
+    displayScore: 25000, effectScore: 0, gapScore: null, deltaScore: 0,
+    isRiichi: false, isWin: false, isLose: false, isTenpai: false,},
+  {seat: "Up",    name: "▲", wind: "西", rank: 0,
+    displayScore: 25000, effectScore: 0, gapScore: null, deltaScore: 0,
+    isRiichi: false, isWin: false, isLose: false, isTenpai: false,},
+  {seat: "Left",  name: "◀", wind: "北", rank: 0,
+    displayScore: 25000, effectScore: 0, gapScore: null, deltaScore: 0,
+    isRiichi: false, isWin: false, isLose: false, isTenpai: false,}
+])
+const scoringState = reactive({ // 점수계산 요소
+  whoWin: -1, // 현재 점수 입력하는 플레이어
+  whoLose: -1, // 현재 방총 플레이어
+  whoCheat: -1, // 현재 촌보 플레이어
+  isFao: false, // 책임지불 유무
+  whoFao: -1, // 현재 책임지불하는 플레이어
+  inputFan: 0, // 현재 점수 (판)
+  inputBu: 2, // 현재 점수 (부)
+  inputFao: -1, // 현재 책임지불 점수 (판)
+})
+const panelInfo = reactive({ // 패널
+  wind: "東", // 현재 장풍
+  round: 1, // 현재 국
+  riichi: 0, // 현재 누적 리치봉
+  renchan: 0, // 현재 누적 연장봉
+})
+const dice = reactive({ // 주사위
+  value: [1, 6], // 값
+  wallDirection: [false, false, false, false], // 주사위 값에 따른 패산방향
+})
+const seatTile = reactive({ // 자리정하기 타일
+  value: ["東", "南", "西", "北"], // 랜덤 타일값
+  isOpened: [false, false, false, false], // 타일이 공개되었는지
+})
+const records = reactive({ // 기록
+  time: ["ㅤ"], // 시간
+  score: [[25000],[25000],[25000],[25000]], // 점수
+  riichi: [[false, false, false, false]], // 리치 횟수
+  win: [[false, false, false, false]], // 화료 횟수
+  lose: [[false, false, false, false]], // 방총 횟수
+})
+const option = reactive({ // 옵션
+  startingScore: 25000, // 시작 점수
+  returnScore: 30000, // 반환 점수
+  rankUma: [30, 10, -10, -30], // 순위 우마
+  roundMangan: false, // 절상만관
+  minusRiichi: false, // 음수리치
+  cheatScore: true, // 촌보 지불 점수
+  endRiichi: true, // 남은 공탁금 처리
+})
+const modalInfo = reactive({ // 모달창
+  isOpen :false, // on/off
+  type: "", // 종류
+  status: "", // 라운드 형태 - 론 쯔모 일반유국 특수유국
+})
+
+/**시작시 자리선택 타일창 띄우기*/
+onMounted(() => {
+  for (let i=3;i>0;i--){ // 자리 섞기
+    let j=Math.floor(Math.random()*(i+1));
+    [seatTile.value[i], seatTile.value[j]]=[seatTile.value[j], seatTile.value[i]];
+  }
+  showModal('choose_seat');
+})
+
+/**전체화면 활성화/비활성화*/
+const toggleFullScreen = () => {
+  const element=document.documentElement;
+  if (!document.fullscreenElement) {
+    if (element.requestFullscreen)
+      return element.requestFullscreen();
+    if (element.webkitRequestFullscreen)
+      return element.webkitRequestFullscreen();
+    if (element.mozRequestFullScreen)
+      return element.mozRequestFullScreen();
+    if (element.msRequestFullscreen)
+      return element.msRequestFullscreen();
+  } 
+  else {
+    if (document.exitFullscreen)
+      return document.exitFullscreen();
+    if (document.webkitCancelFullscreen)
+      return document.webkitCancelFullscreen();
+    if (document.mozCancelFullScreen)
+      return document.mozCancelFullScreen();
+    if (document.msExitFullscreen)
+      return document.msExitFullscreen();
+  }
+}
+
+/**배열에서 같은값의 인덱스 반환*/
+const returnIndex = (arr, keyOrValue, value) => {
+  if (value===undefined)
+    return arr.indexOf(keyOrValue);
+  else
+    return arr.findIndex(x => x[keyOrValue]===value);
+}
+
+/**리치 활성화/비활성화*/
+const toggleActiveRiichi = (seat) => {
+  let idx=returnIndex(players, 'seat', seat); // 위치 기준 인덱스 반환
+  if (players[idx].isRiichi===false){ // 리치 활성화
+    if (players[idx].displayScore<1000 && option.minusRiichi===false) // 리치를 걸수 없을 때
+      return;
+    else if (players[idx].effectScore!==0) // 점수변동 이펙트 도중이면 실행 x
+      return;
+    else{ // 1000점 이상 있거나 음수리치가 가능하다면
+      players[idx].displayScore-=1000;
+      players[idx].isRiichi=true;
+      panelInfo.riichi++;
     }
-    this.showModal('choose_seat');
-  },
-  methods: {
-    /**전체화면 활성화/비활성화*/
-    toggleFullScreen(){
-      const element=document.documentElement;
-      if (!document.fullscreenElement) {
-        if (element.requestFullscreen)
-          return element.requestFullscreen();
-        if (element.webkitRequestFullscreen)
-          return element.webkitRequestFullscreen();
-        if (element.mozRequestFullScreen)
-          return element.mozRequestFullScreen();
-        if (element.msRequestFullscreen)
-          return element.msRequestFullscreen();
-      } 
-      else {
-        if (document.exitFullscreen)
-          return document.exitFullscreen();
-        if (document.webkitCancelFullscreen)
-          return document.webkitCancelFullscreen();
-        if (document.mozCancelFullScreen)
-          return document.mozCancelFullScreen();
-        if (document.msExitFullscreen)
-          return document.msExitFullscreen();
-      }
-    },
-    /**배열에서 같은값의 인덱스 반환*/
-    returnIndex(arr, keyOrValue, value){
-      if (value===undefined)
-        return arr.indexOf(keyOrValue);
+  }
+  else{ // 리치 비활성화
+    players[idx].displayScore+=1000;
+    players[idx].isRiichi=false;
+    panelInfo.riichi--;
+  }
+}
+
+/**점수 차이 활성화/비활성화*/
+const toggleShowGap = (seat, toggle) => {
+  let idx=returnIndex(players, 'seat', seat); // 위치 기준 인덱스 반환
+  if (players[idx].effectScore!==0) // 점수변동 이펙트 도중이면 실행 x
+    return;
+  if (toggle===true){ // 활성화
+    for (let i=0;i<players.length;i++){
+      if (i!==idx) // 본인이 아니면 점수 차 표시 켜기
+        players[i].gapScore=players[idx].displayScore-players[i].displayScore;
       else
-        return arr.findIndex(x => x[keyOrValue]===value);
-    },
-    /**리치 활성화/비활성화*/
-    toggleActiveRiichi(seat){
-      let idx=this.returnIndex(this.players, 'seat', seat); // 위치 기준 인덱스 반환
-      if (this.players[idx].isRiichi===false){ // 리치 활성화
-        if (this.players[idx].displayScore<1000 && this.option.minusRiichi===false) // 리치를 걸수 없을 때
-          return;
-        else if (this.players[idx].effectScore!==0) // 점수변동 이펙트 도중이면 실행 x
-          return;
-        else{ // 1000점 이상 있거나 음수리치가 가능하다면
-          this.players[idx].displayScore-=1000;
-          this.players[idx].isRiichi=true;
-          this.panel.riichi++;
-        }
-      }
-      else{ // 리치 비활성화
-        this.players[idx].displayScore+=1000;
-        this.players[idx].isRiichi=false;
-        this.panel.riichi--;
-      }
-    },
-    /**점수 차이 활성화/비활성화*/
-    toggleShowGap(seat, toggle){
-      let idx=this.returnIndex(this.players, 'seat', seat); // 위치 기준 인덱스 반환
-      if (this.players[idx].effectScore!==0) // 점수변동 이펙트 도중이면 실행 x
-        return;
-      if (toggle===true){ // 활성화
-        for (let i=0;i<this.players.length;i++){
-          if (i!==idx) // 본인이 아니면 점수 차 표시 켜기
-            this.players[i].gapScore=this.players[idx].displayScore-this.players[i].displayScore;
-          else
-            this.players[i].gapScore=null;
-          this.players[i].rank=this.players.filter(x => x.displayScore>this.players[i].displayScore).length+1; // 순위 표시 켜기
-        }
-      }
-      else{ // 비활성화
-        for (let i=0;i<this.players.length;i++){
-          this.players[i].gapScore=null; // 점수 차 표시 끄기
-          this.players[i].rank=0; // 순위 표시 끄기
-        }
-      }
-    },
-    /**바람 및 라운드 변경*/
-    changeWindsAndRounds(){
-      let allWinds="東南西北";
-      let cnt=0;
-      let playerWinds=this.players.map(x => x.wind); // 개인 바람 복사
-      playerWinds.unshift(playerWinds.pop()); // 개인 바람 변경
-      this.players.forEach((x, idx) => {x.wind=playerWinds[idx];}); // 개인 바람 덮어씌우기
-      for (let i=0;i<allWinds.length;i++){
-        if (this.panel.wind===allWinds[i]) // 현재 라운드 계산
-          cnt+=i*4;
-      }
-      cnt+=this.panel.round; // 국 증가
-      this.panel.wind=allWinds[Math.floor((cnt%16)/4)]; // 현재 바람 수정
-      this.panel.round=cnt%4+1; // 현재 라운드 수정
-    },
-    /**점수 변동 효과*/
-    changeScores(idx){
-      let currentScore=this.players[idx].displayScore;
-      let arrCut=[];
-      for (let i=0;i<50;i++) // 변경될 점수 사이를 50등분해서 저장
-        arrCut[i]=currentScore+(this.players[idx].deltaScore/50)*(i+1);
-      this.players[idx].effectScore=this.players[idx].deltaScore; // 이펙트 켜기
-      let timecnt=0;
-      let repeat=setInterval(() => { // 시간에 따라 반복
-        this.players[idx].displayScore=arrCut[timecnt]; // 100의 자리 변경
-        timecnt++;
-        if (timecnt>=50){
-          clearInterval(repeat); 
-          this.players[idx].effectScore=0; // 이펙트 끄기
-        }
-      }, 20); // 0.02초 * 50번 = 1초동안 실행
-    },
-    /**실제 점수계산후 반환*/
-    calculateScore(who){
-      let arrFan= [1, 2, 3, 4, 5, 6, 8, 11, 13, 13, 14, 15, 16, 17, 18];
-      let arrBu= [20, 25, 30, 40, 50, 60, 70, 80, 90, 100, 110];
-      let arrMangan=[2000,3000,3000,4000,4000,4000,6000,6000,8000,16000,24000,32000,40000,48000]; // 만관 이상 인당 점수
-      let fan=arrFan[this.scoringState.inputFan], bu=arrBu[this.scoringState.inputBu];
-      let baseScore=0;
-      if ((fan===3 && bu>=70) || (fan===4 && bu>=40)) // 3판 70부, 4판 40부 이상이면 만관
-        fan=5;
-      if (((fan===3 && bu>=60) || (fan===4 && bu>=30)) && this.option.roundMangan) // 절상만관시 3판 60부, 4판 30부 인정
-        fan=5;
-      if (5<=fan)
-        baseScore=arrMangan[fan-5]; // 만관 이상이면 배열 참조
+        players[i].gapScore=null;
+      players[i].rank=players.filter(x => x.displayScore>players[i].displayScore).length+1; // 순위 표시 켜기
+    }
+  }
+  else{ // 비활성화
+    for (let i=0;i<players.length;i++){
+      players[i].gapScore=null; // 점수 차 표시 끄기
+      players[i].rank=0; // 순위 표시 끄기
+    }
+  }
+}
+
+/**바람 및 라운드 변경*/
+const changeWindsAndRounds = () => {
+  let allWinds="東南西北";
+  let cnt=0;
+  let playerWinds=players.map(x => x.wind); // 개인 바람 복사
+  playerWinds.unshift(playerWinds.pop()); // 개인 바람 변경
+  players.forEach((x, idx) => {x.wind=playerWinds[idx];}); // 개인 바람 덮어씌우기
+  for (let i=0;i<allWinds.length;i++){
+    if (panelInfo.wind===allWinds[i]) // 현재 라운드 계산
+      cnt+=i*4;
+  }
+  cnt+=panelInfo.round; // 국 증가
+  panelInfo.wind=allWinds[Math.floor((cnt%16)/4)]; // 현재 바람 수정
+  panelInfo.round=cnt%4+1; // 현재 라운드 수정
+}
+
+/**점수 변동 효과*/
+const changeScores = (idx) => {
+  let currentScore=players[idx].displayScore;
+  let arrCut=[];
+  for (let i=0;i<50;i++) // 변경될 점수 사이를 50등분해서 저장
+    arrCut[i]=currentScore+(players[idx].deltaScore/50)*(i+1);
+  players[idx].effectScore=players[idx].deltaScore; // 이펙트 켜기
+  let timecnt=0;
+  let repeat=setInterval(() => { // 시간에 따라 반복
+    players[idx].displayScore=arrCut[timecnt]; // 100의 자리 변경
+    timecnt++;
+    if (timecnt>=50){
+      clearInterval(repeat); 
+      players[idx].effectScore=0; // 이펙트 끄기
+    }
+  }, 20); // 0.02초 * 50번 = 1초동안 실행
+}
+
+/**실제 점수계산후 반환*/
+const calculateScore = (who) => {
+  let arrFan= [1, 2, 3, 4, 5, 6, 8, 11, 13, 13, 14, 15, 16, 17, 18];
+  let arrBu= [20, 25, 30, 40, 50, 60, 70, 80, 90, 100, 110];
+  let arrMangan=[2000,3000,3000,4000,4000,4000,6000,6000,8000,16000,24000,32000,40000,48000]; // 만관 이상 인당 점수
+  let fan=arrFan[scoringState.inputFan], bu=arrBu[scoringState.inputBu];
+  let baseScore=0;
+  if ((fan===3 && bu>=70) || (fan===4 && bu>=40)) // 3판 70부, 4판 40부 이상이면 만관
+    fan=5;
+  if (((fan===3 && bu>=60) || (fan===4 && bu>=30)) && option.roundMangan) // 절상만관시 3판 60부, 4판 30부 인정
+    fan=5;
+  if (5<=fan)
+    baseScore=arrMangan[fan-5]; // 만관 이상이면 배열 참조
+  else
+    baseScore=bu*Math.pow(2,fan+2); // 아니면 점수 계산식으로 계산
+  if (modalInfo.status==='ron'){ // 론일 때
+    if (players[scoringState.whoWin].wind==='東') // 친이라면 6배
+      return Math.ceil(baseScore*6/100)*100;
+    else // 자라면 4배
+      return Math.ceil(baseScore*4/100)*100;
+  }
+  else if (modalInfo.status==='tsumo'){ // 쯔모일 때
+    if (players[scoringState.whoWin].wind==='東'){ // 이긴사람이 친이라면
+      if (who===scoringState.whoWin) // 이겼다면 3배
+        return Math.ceil(baseScore*2/100)*100*3;
+      else // 졌다면 그대로
+        return Math.ceil(baseScore*2/100)*100;
+    }
+    else{ // 이긴사람이 자라면
+      if (who===scoringState.whoWin) // 내가 이겼다면
+        return Math.ceil(baseScore*2/100)*100+Math.ceil(baseScore/100)*100*2;
+      else if (players[who].wind==='東') // 내가 친이라면 
+        return Math.ceil(baseScore*2/100)*100;
       else
-        baseScore=bu*Math.pow(2,fan+2); // 아니면 점수 계산식으로 계산
-      if (this.modal.status==='ron'){ // 론일 때
-        if (this.players[this.scoringState.whoWin].wind==='東') // 친이라면 6배
-          return Math.ceil(baseScore*6/100)*100;
-        else // 자라면 4배
-          return Math.ceil(baseScore*4/100)*100;
+        return Math.ceil(baseScore/100)*100;
+    }
+  }
+}
+
+/**동1국 처음으로 리셋*/
+const resetAll = () => {
+  let allWinds = ["東", "南", "西", "北"];
+  while (1<records.time.length){ // 점수기록 지우기
+    records.time.pop();
+    for (let i=0;i<records.score.length;i++)
+      records.score[i].pop();
+  }
+  while (1<records.riichi.length){ // 리치, 화료, 방총기록 지우기
+    records.riichi.pop();
+    records.win.pop();
+    records.lose.pop();
+  }
+  for (let i=0;i<records.score.length;i++)
+    records.score[i][0]=option.startingScore;
+  players.forEach((x) => {x.isRiichi=false;}); // 리치봉 제거
+  players.forEach((x) => {x.displayScore=option.startingScore;}); // 점수 설정
+  players.forEach((x, idx) => {x.wind=allWinds[idx];}); // 개인 바람 설정
+  panelInfo.wind="東"; // 장풍 설정
+  panelInfo.round=1; // 국 설정
+  panelInfo.renchan=0; // 연장 설정
+  panelInfo.riichi=0; // 리치봉 설정
+}
+
+/**모달 창 켜기*/
+const showModal = (type, status) => {
+  Object.assign(modalInfo, {
+    isOpen: true,
+    type: type,
+    status: status,
+  });
+}
+
+/**모달 창 끄기*/
+const hideModal = () => {
+  if (modalInfo.type==='set_options'){ // 옵션 설정창이라면 확인
+    let arrows=["▼", "▶", "▲", "◀"];
+    let cntScore=players.reduce((acc, x) => acc+x.displayScore, panelInfo.riichi*1000); // 현재 총점
+    let cntUma=option.rankUma.reduce((acc, x) => acc+x, 0); // 현재 총우마
+    for (let i=0;i<players.length;i++){
+      if (players[i].name==='') // 이름이 없는 경우
+        players[i].name=arrows[i]; // 기본이름으로 추가
+    }
+    if (option.startingScore*4!==cntScore){ // 시작점수가 변경되었다면
+      if (option.startingScore%100!==0 || option.startingScore==='') // 이상한 값이면 롤백
+        option.startingScore=cntScore/4;
+      else // 아니라면 동1국으로 롤백
+        resetAll();
+    }
+    if (option.startingScore>option.returnScore) // 시작점수가 반환점수보다 큰 경우
+      option.returnScore=option.startingScore;
+    if (cntUma!==0) // 우마 합계가 0이 아니라면 초기화
+      option.rankUma=[30, 10, -10, -30];
+  }
+  Object.assign(modalInfo, {
+    isOpen: false,
+    type: "",
+    status: "",
+  });
+  Object.assign(scoringState, {
+    whoWin: -1,
+    whoLose: -1,
+    whoCheat: -1,
+    isFao: false,
+    whoFao: -1,
+    inputFan: 0,
+    inputBu: 2,
+    inputFao: -1,
+  });
+  players.forEach((x) => {
+    x.deltaScore=0;
+    x.isWin=false;
+    x.isLose=false;
+    x.isTenpai=false;
+  });
+}
+
+/**화료, 방총, 텐파이, 판/부, 책임지불 체크*/
+const toggleCheckStatus = (idx, status) => {
+  if (status==='win') // 화료 체크
+    players[idx].isWin=!players[idx].isWin;
+  else if (status==='lose'){ // 방총 체크
+    if (players[idx].isWin)// 화료한 사람이랑 겹치는 경우 스킵
+      return;
+    if (players[idx].isLose===false){ // 방총당한 사람을 바꾸는 경우
+      for (let i=0;i<players.length;i++){
+        if (i!==idx) // 자신이 아닌 사람들의 체크를 해제
+          players[i].isLose=false;
       }
-      else if (this.modal.status==='tsumo'){ // 쯔모일 때
-        if (this.players[this.scoringState.whoWin].wind==='東'){ // 이긴사람이 친이라면
-          if (who===this.scoringState.whoWin) // 이겼다면 3배
-            return Math.ceil(baseScore*2/100)*100*3;
-          else // 졌다면 그대로
-            return Math.ceil(baseScore*2/100)*100;
+    }
+    players[idx].isLose=!players[idx].isLose;
+  }
+  else if (status==='tenpai') // 텐파이 체크
+    players[idx].isTenpai=!players[idx].isTenpai;
+  else if (status==='cheat'){ // 촌보 체크
+    if (scoringState.whoCheat===idx)
+      scoringState.whoCheat=-1;
+    else
+      scoringState.whoCheat=idx;
+  }
+  else if (status==='fan'){ // 판 체크
+    if (idx>=9 && scoringState.inputFan===idx) // 역만일경우 처리
+      scoringState.inputFan<14 ? scoringState.inputFan++ : scoringState.inputFan=9;
+    else{
+      scoringState.isFao=false; // 책임지불 초기화
+      scoringState.inputFan=idx;
+    }
+    scoringState.inputBu=2; // 30부로 초기화
+  }
+  else if (status==='bu'){ // 부 체크
+    if (modalInfo.status==='ron' && idx===0) // 론일때 20부 이하 비활성화
+      return;
+    else if (scoringState.inputFan===0 && idx<=1) // 1판 25부 이하 비활성화
+      return;
+    else if (scoringState.inputFan>=4) // 만관 이상일때 부수 비활성화
+      return;
+    scoringState.inputBu=idx;
+  }
+  else if (status==='fao'){
+    if (scoringState.whoWin===idx || scoringState.whoLose===idx) // 현재 승자 또는 패자와 같을때 비활성화
+      return;
+    if (scoringState.whoFao===idx)
+      scoringState.whoFao=-1;
+    else
+      scoringState.whoFao=idx;
+  }
+  else if (status==='isfao') // 책임지불 토글
+    scoringState.isFao=!scoringState.isFao;
+  else if (status=='inputfao') // 책임지불 점수창
+    scoringState.inputFao=idx;
+  else if (status==='tile') // 타일 뒤집기
+    seatTile.isOpened[idx]=true;
+  else if (status==='roundmangan') // 절상만관 토글
+  option.roundMangan=!option.roundMangan;
+  else if (status==='minusriichi') // 음수리치 토글
+    option.minusRiichi=!option.minusRiichi;
+  else if (status==='cheatscore') // 촌보 점수 토글
+    option.cheatScore=!option.cheatScore;
+  else if (status==='endriichi') // 공탁금 처리 토글
+    option.endRiichi=!option.endRiichi;
+}
+
+/**화료 및 방총 불가능한 경우 반환*/
+const checkInvalidStatus = (status) => {
+  let cntWin=players.filter(x => x.isWin===true).length; // 화료 인원 세기
+  let cntLose=players.filter(x => x.isLose===true).length; // 방총 인원 세기
+  if (status==='win'){ // 화료일때
+    if (cntWin===0 || cntWin===4) // 화료한 사람이 없거나 4명임 (불가능한 경우)
+      return;
+    showModal('check_player_lose');
+  }
+  else if (status==='lose'){ // 방총일때
+    if (cntWin!==1 && cntLose===0) // 2명 이상 화료했는데 쯔모임 (불가능한 경우)
+      return;
+    if (!cntLose){ // 쯔모
+      scoringState.whoWin=returnIndex(players, 'isWin', true); // 승자 찾아서 저장
+      showModal('check_score', 'tsumo');
+    }
+    else{ // 론
+      scoringState.whoLose=returnIndex(players, 'isLose', true); // 패자 찾아서 저장
+      for (let i=0;i<players.length;i++){
+        if (players[(scoringState.whoLose+i)%4].isWin===true){ // 승자 찾아서 저장 (선하네 순서로 탐색)
+          scoringState.whoWin=(scoringState.whoLose+i)%4;
+          break;
         }
-        else{ // 이긴사람이 자라면
-          if (who===this.scoringState.whoWin) // 내가 이겼다면
-            return Math.ceil(baseScore*2/100)*100+Math.ceil(baseScore/100)*100*2;
-          else if (this.players[who].wind==='東') // 내가 친이라면 
-            return Math.ceil(baseScore*2/100)*100;
-          else
-            return Math.ceil(baseScore/100)*100;
+      }
+      showModal('check_score', 'ron');
+    }
+  }
+  else if (status==='fao'){ // 책임지불일때
+    scoringState.inputFao=scoringState.inputFan-9;
+    if (scoringState.whoFao===-1) // 책임지불할 사람이 없음 (불가능한 경우)
+      return;
+    if (scoringState.inputFan>=10) // 2배역만 이상이면 점수 선택
+      showModal('choose_fao_score', modalInfo.status);
+    else
+      calculateWin();
+  }
+  else if (status==='cheat'){ // 촌보일때
+    if (scoringState.whoCheat===-1) // 촌보한 사람이 없음 (불가능한 경우)
+      return;
+    calculateCheat();
+  }
+}
+
+/**화료 점수계산*/
+const calculateWin = () => {
+  if (modalInfo.status==='tsumo'){ // 쯔모
+    if (scoringState.isFao===false){
+      for (let i=0;i<players.length;i++){
+        if (i===scoringState.whoWin) // 승자
+          players[i].deltaScore+=calculateScore(i)+panelInfo.riichi*1000+panelInfo.renchan*300;
+        else // 패자
+          players[i].deltaScore-=calculateScore(i)+panelInfo.renchan*100;
+      }
+    }
+    else{ // 책임지불시
+      let tmp=scoringState.inputFan;
+      scoringState.inputFan=scoringState.inputFao+9; // 책임지불할 점수
+      players[scoringState.whoWin].deltaScore+=calculateScore(scoringState.whoWin)+panelInfo.riichi*1000+panelInfo.renchan*300;
+      players[scoringState.whoFao].deltaScore-=calculateScore(scoringState.whoWin)+panelInfo.renchan*300;
+      scoringState.inputFan=tmp-scoringState.inputFao-1; // 롤백
+      if (scoringState.inputFan>=9){ // 다른사람도 여전히 지불해야 하는 경우
+        for (let i=0;i<players.length;i++){
+          if (i===scoringState.whoWin) // 승자
+            players[i].deltaScore+=calculateScore(i)+panelInfo.riichi*1000+panelInfo.renchan*300;
+          else // 패자
+            players[i].deltaScore-=calculateScore(i)+panelInfo.renchan*100;
         }
       }
-    },
-    /**동1국 처음으로 리셋*/
-    resetAll(){
-      let allWinds = ["東", "南", "西", "北"];
-      while (1<this.records.time.length){ // 점수기록 지우기
-        this.records.time.pop();
-        for (let i=0;i<this.records.score.length;i++)
-          this.records.score[i].pop();
+    }
+    showModal('show_score', 'tsumo');
+  }
+  else if (modalInfo.status==='ron'){ // 론
+    let firstWinner=-1, chkFinish=false;
+    for (let i=1;i<players.length;i++){
+      if (players[(scoringState.whoLose+i)%4].isWin===true){
+        firstWinner=(scoringState.whoLose+i)%4; // 선하네 판별
+        break;
       }
-      while (1<this.records.riichi.length){ // 리치, 화료, 방총기록 지우기
-        this.records.riichi.pop();
-        this.records.win.pop();
-        this.records.lose.pop();
+    }
+    if (firstWinner===scoringState.whoWin) { // 승자+선하네
+      players[scoringState.whoWin].deltaScore+=calculateScore(scoringState.whoWin)+panelInfo.riichi*1000+panelInfo.renchan*300;
+      players[scoringState.whoLose].deltaScore-=calculateScore(scoringState.whoLose)+panelInfo.renchan*300;
+    }
+    else{ // 나머지 승자
+      players[scoringState.whoWin].deltaScore+=calculateScore(scoringState.whoWin);
+      players[scoringState.whoLose].deltaScore-=calculateScore(scoringState.whoLose);
+    }
+    if (scoringState.isFao===true){ // 책임지불시 절반 지불
+      scoringState.inputFan=scoringState.inputFao+9; // 책임지불할 점수
+      players[scoringState.whoLose].deltaScore+=Math.floor(calculateScore(scoringState.whoLose)/2);
+      players[scoringState.whoFao].deltaScore-=Math.floor(calculateScore(scoringState.whoLose)/2);
+    }
+    for (let i=1;i<players.length;i++){
+      if ((scoringState.whoWin+i)%4===scoringState.whoLose){ // 1바퀴를 모두 돌았을때
+        chkFinish=true;
+        break;
       }
-      for (let i=0;i<this.records.score.length;i++)
-        this.records.score[i][0]=this.option.startingScore;
-      this.players.forEach((x) => {x.isRiichi=false;}); // 리치봉 제거
-      this.players.forEach((x) => {x.displayScore=this.option.startingScore;}); // 점수 설정
-      this.players.forEach((x, idx) => {x.wind=allWinds[idx];}); // 개인 바람 설정
-      this.panel.wind="東"; // 장풍 설정
-      this.panel.round=1; // 국 설정
-      this.panel.renchan=0; // 연장 설정
-      this.panel.riichi=0; // 리치봉 설정
-    },
-    /**모달 창 켜기*/
-    showModal(type, status){
-      Object.assign(this.modal, {
-        isOpen: true,
-        type: type,
-        status: status,
-      });
-    },
-    /**모달 창 끄기*/
-    hideModal(){
-      if (this.modal.type==='set_options'){ // 옵션 설정창이라면 확인
-        let arrows=["▼", "▶", "▲", "◀"];
-        let cntScore=this.players.reduce((acc, x) => acc+x.displayScore, this.panel.riichi*1000); // 현재 총점
-        let cntUma=this.option.rankUma.reduce((acc, x) => acc+x, 0); // 현재 총우마
-        for (let i=0;i<this.players.length;i++){
-          if (this.players[i].name==='') // 이름이 없는 경우
-            this.players[i].name=arrows[i]; // 기본이름으로 추가
-        }
-        if (this.option.startingScore*4!==cntScore){ // 시작점수가 변경되었다면
-          if (this.option.startingScore%100!==0 || this.option.startingScore==='') // 이상한 값이면 롤백
-            this.option.startingScore=cntScore/4;
-          else // 아니라면 동1국으로 롤백
-            this.resetAll();
-        }
-        if (this.option.startingScore>this.option.returnScore) // 시작점수가 반환점수보다 큰 경우
-          this.option.returnScore=this.option.startingScore;
-        if (cntUma!==0) // 우마 합계가 0이 아니라면 초기화
-          this.option.rankUma=[30, 10, -10, -30];
+      else if (players[(scoringState.whoWin+i)%4].isWin===true){ // 다음 승자가 남아있을때
+        scoringState.whoWin=(scoringState.whoWin+i)%4; // 현재 승자 변경
+        scoringState.isFao=false;
+        scoringState.whoFao=-1;
+        scoringState.inputFan=0;
+        scoringState.inputBu=2;
+        showModal('check_score', 'ron'); // 다음 승자 점수 입력
+        break;
       }
-      Object.assign(this.modal, {
-        isOpen: false,
-        type: "",
-        status: "",
-      });
-      Object.assign(this.scoringState, {
-        whoWin: -1,
-        whoLose: -1,
-        whoCheat: -1,
-        isFao: false,
-        whoFao: -1,
-        inputFan: 0,
-        inputBu: 2,
-        inputFao: -1,
-      });
-      this.players.forEach((x) => {
-        x.deltaScore=0;
-        x.isWin=false;
-        x.isLose=false;
-        x.isTenpai=false;
-      });
-    },
-    /**화료, 방총, 텐파이, 판/부, 책임지불 체크*/
-    toggleCheckStatus(idx, status){
-      if (status==='win') // 화료 체크
-        this.players[idx].isWin=!this.players[idx].isWin;
-      else if (status==='lose'){ // 방총 체크
-        if (this.players[idx].isWin)// 화료한 사람이랑 겹치는 경우 스킵
-          return;
-        if (this.players[idx].isLose===false){ // 방총당한 사람을 바꾸는 경우
-          for (let i=0;i<this.players.length;i++){
-            if (i!==idx) // 자신이 아닌 사람들의 체크를 해제
-              this.players[i].isLose=false;
-          }
-        }
-        this.players[idx].isLose=!this.players[idx].isLose;
-      }
-      else if (status==='tenpai') // 텐파이 체크
-        this.players[idx].isTenpai=!this.players[idx].isTenpai;
-      else if (status==='cheat'){ // 촌보 체크
-        if (this.scoringState.whoCheat===idx)
-          this.scoringState.whoCheat=-1;
+    }
+    if (chkFinish) // 모든 승자의 점수를 체크했다면
+      showModal('show_score', 'ron');
+  }
+}
+
+/**유국 점수계산*/
+const calculateDraw = () => {
+  players.forEach((x) => {x.isTenpai||=x.isRiichi;}); // 리치자 텐파이로 변경
+  let cntTenpai=players.filter(x => x.isTenpai===true).length; // 총 텐파이 인원
+  if (0<cntTenpai && cntTenpai<4){ //올텐파이나 올노텐이 아니라면
+    for (let i=0;i<players.length;i++){
+      if (players[i].isTenpai===true) // 텐파이라면
+        players[i].deltaScore=3000/cntTenpai; // 3000 나눠서 획득
+      else
+        players[i].deltaScore=-3000/(players.length-cntTenpai); 
+    }
+  }
+  showModal('show_score', 'normal_draw');
+}
+
+/**촌보 점수계산*/
+const calculateCheat = () => {
+  if (option.cheatScore===true){ // 3000점씩 지불 
+    for (let i=0;i<players.length;i++){
+      if (scoringState.whoCheat===i)
+        players[i].deltaScore=-9000;
+      else
+        players[i].deltaScore=3000; 
+    }
+  }
+  else{// 만관 지불
+    for (let i=0;i<players.length;i++){
+      if (scoringState.whoCheat===i){
+        if (players[i].wind==='東') // 친일경우
+          players[i].deltaScore=-12000;
         else
-          this.scoringState.whoCheat=idx;
-      }
-      else if (status==='fan'){ // 판 체크
-        if (idx>=9 && this.scoringState.inputFan===idx) // 역만일경우 처리
-          this.scoringState.inputFan<14 ? this.scoringState.inputFan++ : this.scoringState.inputFan=9;
-        else{
-          this.scoringState.isFao=false; // 책임지불 초기화
-          this.scoringState.inputFan=idx;
-        }
-        this.scoringState.inputBu=2; // 30부로 초기화
-      }
-      else if (status==='bu'){ // 부 체크
-        if (this.modal.status==='ron' && idx===0) // 론일때 20부 이하 비활성화
-          return;
-        else if (this.scoringState.inputFan===0 && idx<=1) // 1판 25부 이하 비활성화
-          return;
-        else if (this.scoringState.inputFan>=4) // 만관 이상일때 부수 비활성화
-          return;
-        this.scoringState.inputBu=idx;
-      }
-      else if (status==='fao'){
-        if (this.scoringState.whoWin===idx || this.scoringState.whoLose===idx) // 현재 승자 또는 패자와 같을때 비활성화
-          return;
-        if (this.scoringState.whoFao===idx)
-          this.scoringState.whoFao=-1;
-        else
-          this.scoringState.whoFao=idx;
-      }
-      else if (status==='isfao') // 책임지불 토글
-        this.scoringState.isFao=!this.scoringState.isFao;
-      else if (status=='inputfao') // 책임지불 점수창
-        this.scoringState.inputFao=idx;
-      else if (status==='tile') // 타일 뒤집기
-        this.seatTile.isOpened[idx]=true;
-      else if (status==='roundmangan') // 절상만관 토글
-      this.option.roundMangan=!this.option.roundMangan;
-      else if (status==='minusriichi') // 음수리치 토글
-        this.option.minusRiichi=!this.option.minusRiichi;
-      else if (status==='cheatscore') // 촌보 점수 토글
-        this.option.cheatScore=!this.option.cheatScore;
-      else if (status==='endriichi') // 공탁금 처리 토글
-        this.option.endRiichi=!this.option.endRiichi;
-    },
-    /**화료 및 방총 불가능한 경우 반환*/
-    checkInvalidStatus(status){
-      let cntWin=this.players.filter(x => x.isWin===true).length; // 화료 인원 세기
-      let cntLose=this.players.filter(x => x.isLose===true).length; // 방총 인원 세기
-      if (status==='win'){ // 화료일때
-        if (cntWin===0 || cntWin===4) // 화료한 사람이 없거나 4명임 (불가능한 경우)
-          return;
-        this.showModal('check_player_lose');
-      }
-      else if (status==='lose'){ // 방총일때
-        if (cntWin!==1 && cntLose===0) // 2명 이상 화료했는데 쯔모임 (불가능한 경우)
-          return;
-        if (!cntLose){ // 쯔모
-          this.scoringState.whoWin=this.returnIndex(this.players, 'isWin', true); // 승자 찾아서 저장
-          this.showModal('check_score', 'tsumo');
-        }
-        else{ // 론
-          this.scoringState.whoLose=this.returnIndex(this.players, 'isLose', true); // 패자 찾아서 저장
-          for (let i=0;i<this.players.length;i++){
-            if (this.players[(this.scoringState.whoLose+i)%4].isWin===true){ // 승자 찾아서 저장 (선하네 순서로 탐색)
-              this.scoringState.whoWin=(this.scoringState.whoLose+i)%4;
-              break;
-            }
-          }
-          this.showModal('check_score', 'ron');
-        }
-      }
-      else if (status==='fao'){ // 책임지불일때
-        this.scoringState.inputFao=this.scoringState.inputFan-9;
-        if (this.scoringState.whoFao===-1) // 책임지불할 사람이 없음 (불가능한 경우)
-          return;
-        if (this.scoringState.inputFan>=10) // 2배역만 이상이면 점수 선택
-          this.showModal('choose_fao_score', this.modal.status);
-        else
-          this.calculateWin();
-      }
-      else if (status==='cheat'){ // 촌보일때
-        if (this.scoringState.whoCheat===-1) // 촌보한 사람이 없음 (불가능한 경우)
-          return;
-        this.calculateCheat();
-      }
-    },
-    /**화료 점수계산*/
-    calculateWin(){
-      if (this.modal.status==='tsumo'){ // 쯔모
-        if (this.scoringState.isFao===false){
-          for (let i=0;i<this.players.length;i++){
-            if (i===this.scoringState.whoWin) // 승자
-              this.players[i].deltaScore+=this.calculateScore(i)+this.panel.riichi*1000+this.panel.renchan*300;
-            else // 패자
-              this.players[i].deltaScore-=this.calculateScore(i)+this.panel.renchan*100;
-          }
-        }
-        else{ // 책임지불시
-          let tmp=this.scoringState.inputFan;
-          this.scoringState.inputFan=this.scoringState.inputFao+9; // 책임지불할 점수
-          this.players[this.scoringState.whoWin].deltaScore+=this.calculateScore(this.scoringState.whoWin)+this.panel.riichi*1000+this.panel.renchan*300;
-          this.players[this.scoringState.whoFao].deltaScore-=this.calculateScore(this.scoringState.whoWin)+this.panel.renchan*300;
-          this.scoringState.inputFan=tmp-this.scoringState.inputFao-1; // 롤백
-          if (this.scoringState.inputFan>=9){ // 다른사람도 여전히 지불해야 하는 경우
-            for (let i=0;i<this.players.length;i++){
-              if (i===this.scoringState.whoWin) // 승자
-                this.players[i].deltaScore+=this.calculateScore(i)+this.panel.riichi*1000+this.panel.renchan*300;
-              else // 패자
-                this.players[i].deltaScore-=this.calculateScore(i)+this.panel.renchan*100;
-            }
-          }
-        }
-        this.showModal('show_score', 'tsumo');
-      }
-      else if (this.modal.status==='ron'){ // 론
-        let firstWinner=-1, chkFinish=false;
-        for (let i=1;i<this.players.length;i++){
-          if (this.players[(this.scoringState.whoLose+i)%4].isWin===true){
-            firstWinner=(this.scoringState.whoLose+i)%4; // 선하네 판별
-            break;
-          }
-        }
-        if (firstWinner===this.scoringState.whoWin) { // 승자+선하네
-          this.players[this.scoringState.whoWin].deltaScore+=this.calculateScore(this.scoringState.whoWin)+this.panel.riichi*1000+this.panel.renchan*300;
-          this.players[this.scoringState.whoLose].deltaScore-=this.calculateScore(this.scoringState.whoLose)+this.panel.renchan*300;
-        }
-        else{ // 나머지 승자
-          this.players[this.scoringState.whoWin].deltaScore+=this.calculateScore(this.scoringState.whoWin);
-          this.players[this.scoringState.whoLose].deltaScore-=this.calculateScore(this.scoringState.whoLose);
-        }
-        if (this.scoringState.isFao===true){ // 책임지불시 절반 지불
-          this.scoringState.inputFan=this.scoringState.inputFao+9; // 책임지불할 점수
-          this.players[this.scoringState.whoLose].deltaScore+=Math.floor(this.calculateScore(this.scoringState.whoLose)/2);
-          this.players[this.scoringState.whoFao].deltaScore-=Math.floor(this.calculateScore(this.scoringState.whoLose)/2);
-        }
-        for (let i=1;i<this.players.length;i++){
-          if ((this.scoringState.whoWin+i)%4===this.scoringState.whoLose){ // 1바퀴를 모두 돌았을때
-            chkFinish=true;
-            break;
-          }
-          else if (this.players[(this.scoringState.whoWin+i)%4].isWin===true){ // 다음 승자가 남아있을때
-            this.scoringState.whoWin=(this.scoringState.whoWin+i)%4; // 현재 승자 변경
-            this.scoringState.isFao=false;
-            this.scoringState.whoFao=-1;
-            this.scoringState.inputFan=0;
-            this.scoringState.inputBu=2;
-            this.showModal('check_score', 'ron'); // 다음 승자 점수 입력
-            break;
-          }
-        }
-        if (chkFinish) // 모든 승자의 점수를 체크했다면
-          this.showModal('show_score', 'ron');
-      }
-    },
-    /**유국 점수계산*/
-    calculateDraw(){
-      this.players.forEach((x) => {x.isTenpai||=x.isRiichi;}); // 리치자 텐파이로 변경
-      let cntTenpai=this.players.filter(x => x.isTenpai===true).length; // 총 텐파이 인원
-      if (0<cntTenpai && cntTenpai<4){ //올텐파이나 올노텐이 아니라면
-        for (let i=0;i<this.players.length;i++){
-          if (this.players[i].isTenpai===true) // 텐파이라면
-            this.players[i].deltaScore=3000/cntTenpai; // 3000 나눠서 획득
-          else
-            this.players[i].deltaScore=-3000/(this.players.length-cntTenpai); 
-        }
-      }
-      this.showModal('show_score', 'normal_draw');
-    },
-    /**촌보 점수계산*/
-    calculateCheat(){
-      if (this.option.cheatScore===true){ // 3000점씩 지불 
-        for (let i=0;i<this.players.length;i++){
-          if (this.scoringState.whoCheat===i)
-            this.players[i].deltaScore=-9000;
-          else
-            this.players[i].deltaScore=3000; 
-        }
-      }
-      else{// 만관 지불
-        for (let i=0;i<this.players.length;i++){
-          if (this.scoringState.whoCheat===i){
-            if (this.players[i].wind==='東') // 친일경우
-              this.players[i].deltaScore=-12000;
-            else
-              this.players[i].deltaScore=-8000;
-          }
-          else{
-            if (this.players[i].wind==='東' || this.players[this.scoringState.whoCheat].wind==='東') //촌보자가 친이거나 내가 친일때
-              this.players[i].deltaScore=4000;
-            else
-              this.players[i].deltaScore=2000;
-          }
-        }
-      }
-      this.showModal('show_score', 'cheat');
-    },
-    /**국 결과값 처리*/
-    saveRound(){
-      if (this.modal.status==='cheat'){ // 촌보의 경우 리치봉 반환
-        for (let i=0;i<this.players.length;i++){
-          if (this.players[i].isRiichi===true){
-            this.players[i].displayScore+=1000;
-            this.players[i].isRiichi=false;
-            this.panel.riichi--;
-          }
-        }
+          players[i].deltaScore=-8000;
       }
       else{
-        this.players.forEach((x) => {x.isRiichi=false;}); // 리치봉 수거
+        if (players[i].wind==='東' || players[scoringState.whoCheat].wind==='東') //촌보자가 친이거나 내가 친일때
+          players[i].deltaScore=4000;
+        else
+          players[i].deltaScore=2000;
       }
-      for (let i=0;i<this.players.length;i++) // 점수 배분및 기록
-        this.changeScores(i);
-      for (let i=0;i<this.players.length;i++){ // 점수 기록창에 점수 기록
-        this.records.score[i].push(this.players[i].deltaScore);
-        this.records.score[i].push(this.players[i].displayScore+this.players[i].deltaScore);
-      }
-      this.records.time.push(this.panel.wind+this.panel.round+'局 '+this.panel.renchan+'本場'); // 점수 기록창에 국+본장 기록
-      this.records.time.push('ㅤ');
-      this.records.riichi.push(this.players.map(x => x.isRiichi)); // 리치 기록에 추가
-      this.records.win.push(this.players.map(x => x.isWin)); // 화료 기록에 추가
-      this.records.lose.push(this.players.map(x => x.isLose)); // 방총 기록에 추가
-      let chin=this.players[this.returnIndex(this.players, 'wind', '東')]; // 친이 누구인지 저장
-      if (this.modal.status==='tsumo' || this.modal.status==='ron'){ // 화료로 끝났다면
-        if (chin.isWin===false){ // 친이 화료를 못했다면
-          this.changeWindsAndRounds(); // 바람 및 라운드 변경
-          this.panel.renchan=0; // 연장봉 초기화
-        }
-        else // 연장에 성공했다면
-          this.panel.renchan++; // 연장봉 추가
-        this.panel.riichi=0; // 리치봉 초기화
-      }
-      else if (this.modal.status==='normal_draw'){ // 일반유국이라면
-        if (chin.isTenpai===false) // 친이 노텐이라면
-          this.changeWindsAndRounds(); // 바람 및 라운드 변경
-        this.panel.renchan++; // 연장봉 추가
-      }
-      else if (this.modal.status==='special_draw'){ // 특수유국이라면
-        this.panel.renchan++; // 연장봉 추가
-      }
-      this.hideModal(); // 모달 창 끄기
-    },
-    /**주사위 굴리기*/
-    rollDice(){
-      let timecnt=0;
-      this.dice.wallDirection=[false, false, false, false]; // 패산 떼는 방향 초기화
-      let repeat=setInterval(() => { // 시간에 따라 반복
-        this.dice.value[0]=Math.floor(Math.random()*6)+1;
-        this.dice.value[1]=Math.floor(Math.random()*6)+1;
-        timecnt++;
-        if (timecnt>=10){
-            clearInterval(repeat);
-            this.dice.wallDirection[(this.dice.value[0]+this.dice.value[1]-1)%4]=true; // 패산 떼는 방향 표시
-        }
-      }, 50); // 0.05초 * 10번 = 0.5초동안 실행
-    },
-    /**점수 기록 복사*/
-    copyRecord(){
-      let str='이름\t';
-      for (let i=0;i<this.players.length;i++)
-        str+=this.players[i].name+'\t'; // 이름 복사
-      str+='\n';
-      for (let i=0;i<this.records.time.length;i++){
-        if (this.records.time[i]!=="ㅤ") // 공백 제거
-          str+=this.records.time[i]; // 라운드 복사
-        str+='\t';
-        for (let j=0;j<this.records.score.length;j++){
-          if (this.records.score[j][i]!==0 || i%2===0) // 0점 이동 제거
-            str+=String(this.records.score[j][i]); // 점수 복사
-          str+='\t';
-        }
-        str+='\n';
-      }
-      navigator.clipboard.writeText(str); // 클립보드로 복사
-      this.showModal('클립보드에 기록을 복사했습니다.');
-    },
-    /**해당 국으로 롤백하기*/
-    rollbackRecord(idx){
-      let allWinds = ["東", "南", "西", "北"];
-      let arr=this.records.time[idx].match(/[\u4e00-\u9fff]|\d+|\S/g); // 시간 값 분리
-      let sumScore=0;
-      while (idx<this.records.time.length){ // 점수기록 지우기
-        this.records.time.pop();
-        for (let i=0;i<this.records.score.length;i++)
-          this.records.score[i].pop();
-      }
-      while (Math.floor(idx/2)+1<this.records.riichi.length){ // 리치, 화료, 방총기록 지우기
-        this.records.riichi.pop();
-        this.records.win.pop();
-        this.records.lose.pop();
-      }
-      this.players.forEach((x) => {x.isRiichi=false;}); // 리치봉 제거
-      for (let i=0;i<this.records.score.length;i++){
-        this.players[i].displayScore=Number(this.records.score[i][this.records.score[i].length-1]); // 점수 설정
-        sumScore+=this.players[i].displayScore;
-      }
-      for (let i=1;i<this.panel.round;i++)
-        allWinds.unshift(allWinds.pop()); // 현재 바람 세기
-      this.players.forEach((x, idx) => {x.wind=allWinds[idx];}); // 개인 바람 설정
-      this.panel.wind=arr[0]; // 장풍 설정
-      this.panel.round=Number(arr[1]); // 국 설정
-      this.panel.renchan=Number(arr[3]); // 연장 설정
-      this.panel.riichi=Math.floor((this.option.startingScore*4-sumScore)/1000); // 리치봉 설정
-      this.hideModal(); // 모달 창 끄기
-    },
+    }
   }
-};
+  showModal('show_score', 'cheat');
+}
+
+/**국 결과값 처리*/
+const saveRound = () => {
+  if (modalInfo.status==='cheat'){ // 촌보의 경우 리치봉 반환
+    for (let i=0;i<players.length;i++){
+      if (players[i].isRiichi===true){
+        players[i].displayScore+=1000;
+        players[i].isRiichi=false;
+        panelInfo.riichi--;
+      }
+    }
+  }
+  else{
+    players.forEach((x) => {x.isRiichi=false;}); // 리치봉 수거
+  }
+  for (let i=0;i<players.length;i++) // 점수 배분및 기록
+    changeScores(i);
+  for (let i=0;i<players.length;i++){ // 점수 기록창에 점수 기록
+    records.score[i].push(players[i].deltaScore);
+    records.score[i].push(players[i].displayScore+players[i].deltaScore);
+  }
+  records.time.push(panelInfo.wind+panelInfo.round+'局 '+panelInfo.renchan+'本場'); // 점수 기록창에 국+본장 기록
+  records.time.push('ㅤ');
+  records.riichi.push(players.map(x => x.isRiichi)); // 리치 기록에 추가
+  records.win.push(players.map(x => x.isWin)); // 화료 기록에 추가
+  records.lose.push(players.map(x => x.isLose)); // 방총 기록에 추가
+  let chin=players[returnIndex(players, 'wind', '東')]; // 친이 누구인지 저장
+  if (modalInfo.status==='tsumo' || modalInfo.status==='ron'){ // 화료로 끝났다면
+    if (chin.isWin===false){ // 친이 화료를 못했다면
+      changeWindsAndRounds(); // 바람 및 라운드 변경
+      panelInfo.renchan=0; // 연장봉 초기화
+    }
+    else // 연장에 성공했다면
+      panelInfo.renchan++; // 연장봉 추가
+    panelInfo.riichi=0; // 리치봉 초기화
+  }
+  else if (modalInfo.status==='normal_draw'){ // 일반유국이라면
+    if (chin.isTenpai===false) // 친이 노텐이라면
+      changeWindsAndRounds(); // 바람 및 라운드 변경
+    panelInfo.renchan++; // 연장봉 추가
+  }
+  else if (modalInfo.status==='special_draw'){ // 특수유국이라면
+    panelInfo.renchan++; // 연장봉 추가
+  }
+  hideModal(); // 모달 창 끄기
+}
+
+/**주사위 굴리기*/
+const rollDice = () => {
+  let timecnt=0;
+  dice.wallDirection=[false, false, false, false]; // 패산 떼는 방향 초기화
+  let repeat=setInterval(() => { // 시간에 따라 반복
+    dice.value[0]=Math.floor(Math.random()*6)+1;
+    dice.value[1]=Math.floor(Math.random()*6)+1;
+    timecnt++;
+    if (timecnt>=10){
+        clearInterval(repeat);
+        dice.wallDirection[(dice.value[0]+dice.value[1]-1)%4]=true; // 패산 떼는 방향 표시
+    }
+  }, 50); // 0.05초 * 10번 = 0.5초동안 실행
+}
+
+/**점수 기록 복사*/
+const copyRecord = () => {
+  let str='이름\t';
+  for (let i=0;i<players.length;i++)
+    str+=players[i].name+'\t'; // 이름 복사
+  str+='\n';
+  for (let i=0;i<records.time.length;i++){
+    if (records.time[i]!=="ㅤ") // 공백 제거
+      str+=records.time[i]; // 라운드 복사
+    str+='\t';
+    for (let j=0;j<records.score.length;j++){
+      if (records.score[j][i]!==0 || i%2===0) // 0점 이동 제거
+        str+=String(records.score[j][i]); // 점수 복사
+      str+='\t';
+    }
+    str+='\n';
+  }
+  navigator.clipboard.writeText(str); // 클립보드로 복사
+  showModal('클립보드에 기록을 복사했습니다.');
+}
+
+/**해당 국으로 롤백하기*/
+const rollbackRecord = (idx) => {
+  let allWinds = ["東", "南", "西", "北"];
+  let arr=records.time[idx].match(/[\u4e00-\u9fff]|\d+|\S/g); // 시간 값 분리
+  let sumScore=0;
+  while (idx<records.time.length){ // 점수기록 지우기
+    records.time.pop();
+    for (let i=0;i<records.score.length;i++)
+      records.score[i].pop();
+  }
+  while (Math.floor(idx/2)+1<records.riichi.length){ // 리치, 화료, 방총기록 지우기
+    records.riichi.pop();
+    records.win.pop();
+    records.lose.pop();
+  }
+  players.forEach((x) => {x.isRiichi=false;}); // 리치봉 제거
+  for (let i=0;i<records.score.length;i++){
+    players[i].displayScore=Number(records.score[i][records.score[i].length-1]); // 점수 설정
+    sumScore+=players[i].displayScore;
+  }
+  for (let i=1;i<panelInfo.round;i++)
+    allWinds.unshift(allWinds.pop()); // 현재 바람 세기
+  players.forEach((x, idx) => {x.wind=allWinds[idx];}); // 개인 바람 설정
+  panelInfo.wind=arr[0]; // 장풍 설정
+  panelInfo.round=Number(arr[1]); // 국 설정
+  panelInfo.renchan=Number(arr[3]); // 연장 설정
+  panelInfo.riichi=Math.floor((option.startingScore*4-sumScore)/1000); // 리치봉 설정
+  hideModal(); // 모달 창 끄기
+}
 </script>
 
 <template>
@@ -639,21 +649,21 @@ export default {
   />
   <!-- 중앙 panel 컴포넌트 생성 -->
   <panel
-    :panel
+    :panelInfo
     @show-modal="showModal"
     @roll-dice="rollDice"
   />
   <!-- modal 컴포넌트 생성 -->
   <modal
-    v-if="modal.isOpen"
+    v-if="modalInfo.isOpen"
     :players
     :scoringState
-    :panel
+    :panelInfo
     :dice
     :seatTile
     :records
     :option
-    :modal
+    :modalInfo
     @show-modal="showModal"
     @hide-modal="hideModal"
     @toggle-check-status="toggleCheckStatus"
