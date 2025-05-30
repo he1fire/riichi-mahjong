@@ -5,9 +5,6 @@ import graphics from './graphics.vue'
 const props = defineProps({
   players: Array,
   scoringState: Object,
-  inputFao: Number,
-  inputFan: Number,
-  inputBu: Number,
   panel: Object,
   dice: Object,
   seatTile: Object,
@@ -88,28 +85,28 @@ const toggleButtonStyle = (status) => {
 /**판/부 버튼 색상*/
 const fanBuButtonStyle = (status, idx) => {
   if (status==='fan') // 판 체크
-    return {color: idx===props.inputFan ? 'red' : ''};
+    return {color: idx===props.scoringState.inputFan ? 'red' : ''};
   else if (status==='bu'){ // 부 체크
     if (props.modal.status==='ron' && idx===0) // 론일때 20부 이하시 회색
       return {color: 'gray'};
-    else if (props.inputFan===0 && idx<=1) // 1판 25부 이하시 회색
+    else if (props.scoringState.inputFan===0 && idx<=1) // 1판 25부 이하시 회색
       return {color: 'gray'};
-    else if (props.inputFan>=4) // 만관 이상일때 부수 회색
+    else if (props.scoringState.inputFan>=4) // 만관 이상일때 부수 회색
       return {color: 'gray'};
     else
-      return {color: idx===props.inputBu ? 'red' : ''}; // 선택시 빨간색
+      return {color: idx===props.scoringState.inputBu ? 'red' : ''}; // 선택시 빨간색
   }
   else if (status==='inputfao'){ // 책임지불 점수창
-    if (props.inputFan-9<idx) // 입력값보다 크면 불가능
+    if (props.scoringState.inputFan-9<idx) // 입력값보다 크면 불가능
       return {color: 'gray'};
     else
-      return {color: idx===props.inputFao ? 'red' : ''}; // 선택시 빨간색
+      return {color: idx===props.scoringState.inputFao ? 'red' : ''}; // 선택시 빨간색
   }
 }
 
 /**역만인지 확인하고 숨기기*/
 const yakumanVisibility = (idx) => {
-  return {display: ((props.inputFan<9 && idx===9) || idx===props.inputFan) ? '' : 'none'};
+  return {display: ((props.scoringState.inputFan<9 && idx===9) || idx===props.scoringState.inputFan) ? '' : 'none'};
 }
 
 /**주사위 모달창 회전*/
@@ -246,7 +243,7 @@ const emitEvent = (eventName, ...args) => {
         >
           {{ fan[i+9] }}
         </span>
-        <span v-show="inputFan>=9" style="font-size: 20px;" @click.stop="emitEvent('toggle-check-status', -1, 'isfao')">(책임지불
+        <span v-show="scoringState.inputFan>=9" style="font-size: 20px;" @click.stop="emitEvent('toggle-check-status', -1, 'isfao')">(책임지불
           <span :style="toggleButtonStyle('isfao')">
             <span v-show="scoringState.isFao===true">O</span>
             <span v-show="scoringState.isFao===false">X</span>
@@ -462,7 +459,7 @@ const emitEvent = (eventName, ...args) => {
     <div class="modal_text">
       {{ records.time[modal.status] }}으로 되돌리시겠습니까?
     </div>
-    <div class="modal_text" style="font-size: 30px;" @click.stop="emitEvent('rollback-record')">
+    <div class="modal_text" style="font-size: 30px;" @click.stop="emitEvent('rollback-record', modal.status)">
       OK
     </div>
   </div>

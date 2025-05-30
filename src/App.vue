@@ -33,10 +33,10 @@ export default {
         whoCheat: -1, // 현재 촌보 플레이어
         isFao: false, // 책임지불 유무
         whoFao: -1, // 현재 책임지불하는 플레이어
+        inputFan: 0, // 현재 점수 (판)
+        inputBu: 2, // 현재 점수 (부)
+        inputFao: -1, // 현재 책임지불 점수 (판)
       },
-      inputFao: -1, // 현재 책임지불 점수 (판)
-      inputFan: 0, // 현재 점수 (판)
-      inputBu: 2, // 현재 점수 (부)
       panel: { // 패널
         wind: "東", // 현재 장풍
         round: 1, // 현재 국
@@ -192,7 +192,7 @@ export default {
       let arrFan= [1, 2, 3, 4, 5, 6, 8, 11, 13, 13, 14, 15, 16, 17, 18];
       let arrBu= [20, 25, 30, 40, 50, 60, 70, 80, 90, 100, 110];
       let arrMangan=[2000,3000,3000,4000,4000,4000,6000,6000,8000,16000,24000,32000,40000,48000]; // 만관 이상 인당 점수
-      let fan=arrFan[this.inputFan], bu=arrBu[this.inputBu];
+      let fan=arrFan[this.scoringState.inputFan], bu=arrBu[this.scoringState.inputBu];
       let ret=0, chinScore=0, score=0;
       if ((fan===3 && bu>=70) || (fan===4 && bu>=40)) // 3판 70부, 4판 40부 이상이면 만관
         fan=5;
@@ -289,10 +289,10 @@ export default {
         whoCheat: -1,
         isFao: false,
         whoFao: -1,
+        inputFan: 0,
+        inputBu: 2,
+        inputFao: -1,
       });
-      this.inputFao=-1;
-      this.inputFan=0;
-      this.inputBu=2;
       this.players.forEach((x) => {
         x.deltaScore=0;
         x.isWin=false;
@@ -325,22 +325,22 @@ export default {
           this.scoringState.whoCheat=idx;
       }
       else if (status==='fan'){ // 판 체크
-        if (idx>=9 && this.inputFan===idx) // 역만일경우 처리
-          this.inputFan<14 ? this.inputFan++ : this.inputFan=9;
+        if (idx>=9 && this.scoringState.inputFan===idx) // 역만일경우 처리
+          this.scoringState.inputFan<14 ? this.scoringState.inputFan++ : this.scoringState.inputFan=9;
         else{
           this.scoringState.isFao=false; // 책임지불 초기화
-          this.inputFan=idx;
+          this.scoringState.inputFan=idx;
         }
-        this.inputBu=2; // 30부로 초기화
+        this.scoringState.inputBu=2; // 30부로 초기화
       }
       else if (status==='bu'){ // 부 체크
         if (this.modal.status==='ron' && idx===0) // 론일때 20부 이하 비활성화
           return;
-        else if (this.inputFan===0 && idx<=1) // 1판 25부 이하 비활성화
+        else if (this.scoringState.inputFan===0 && idx<=1) // 1판 25부 이하 비활성화
           return;
-        else if (this.inputFan>=4) // 만관 이상일때 부수 비활성화
+        else if (this.scoringState.inputFan>=4) // 만관 이상일때 부수 비활성화
           return;
-        this.inputBu=idx;
+        this.scoringState.inputBu=idx;
       }
       else if (status==='fao'){
         if (this.scoringState.whoWin===idx || this.scoringState.whoLose===idx) // 현재 승자 또는 패자와 같을때 비활성화
@@ -353,7 +353,7 @@ export default {
       else if (status==='isfao') // 책임지불 토글
         this.scoringState.isFao=!this.scoringState.isFao;
       else if (status=='inputfao') // 책임지불 점수창
-        this.inputFao=idx;
+        this.scoringState.inputFao=idx;
       else if (status==='tile') // 타일 뒤집기
         this.seatTile.isOpened[idx]=true;
       else if (status==='roundmangan') // 절상만관 토글
@@ -393,10 +393,10 @@ export default {
         }
       }
       else if (status==='fao'){ // 책임지불일때
-        this.inputFao=this.inputFan-9;
+        this.scoringState.inputFao=this.scoringState.inputFan-9;
         if (this.scoringState.whoFao===-1) // 책임지불할 사람이 없음 (불가능한 경우)
           return;
-        if (this.inputFan>=10) // 2배역만 이상이면 점수 선택
+        if (this.scoringState.inputFan>=10) // 2배역만 이상이면 점수 선택
           this.showModal('choose_fao_score', this.modal.status);
         else
           this.calculateWin();
@@ -419,12 +419,12 @@ export default {
           }
         }
         else{ // 책임지불시
-          let tmp=this.inputFan;
-          this.inputFan=this.inputFao+9; // 책임지불할 점수
+          let tmp=this.scoringState.inputFan;
+          this.scoringState.inputFan=this.scoringState.inputFao+9; // 책임지불할 점수
           this.players[this.scoringState.whoWin].deltaScore+=this.calculateScore(this.scoringState.whoWin)+this.panel.riichi*1000+this.panel.renchan*300;
           this.players[this.scoringState.whoFao].deltaScore-=this.calculateScore(this.scoringState.whoWin)+this.panel.renchan*300;
-          this.inputFan=tmp-this.inputFao-1; // 롤백
-          if (this.inputFan>=9){ // 다른사람도 여전히 지불해야 하는 경우
+          this.scoringState.inputFan=tmp-this.scoringState.inputFao-1; // 롤백
+          if (this.scoringState.inputFan>=9){ // 다른사람도 여전히 지불해야 하는 경우
             for (let i=0;i<this.players.length;i++){
               if (i===this.scoringState.whoWin) // 승자
                 this.players[i].deltaScore+=this.calculateScore(i)+this.panel.riichi*1000+this.panel.renchan*300;
@@ -452,11 +452,9 @@ export default {
           this.players[this.scoringState.whoLose].deltaScore-=this.calculateScore(this.scoringState.whoWin);
         }
         if (this.scoringState.isFao===true){ // 책임지불시 절반 지불
-          let tmp=this.inputFan;
-          this.inputFan=this.inputFao+9; // 책임지불할 점수
+          this.scoringState.inputFan=this.scoringState.inputFao+9; // 책임지불할 점수
           this.players[this.scoringState.whoLose].deltaScore+=Math.floor(this.calculateScore(this.scoringState.whoWin)/2);
           this.players[this.scoringState.whoFao].deltaScore-=Math.floor(this.calculateScore(this.scoringState.whoWin)/2);
-          this.inputFan=tmp-this.inputFao-1; // 롤백
         }
         for (let i=1;i<this.players.length;i++){
           if ((this.scoringState.whoWin+i)%4===this.scoringState.whoLose){ // 1바퀴를 모두 돌았을때
@@ -467,8 +465,8 @@ export default {
             this.scoringState.whoWin=(this.scoringState.whoWin+i)%4; // 현재 승자 변경
             this.scoringState.isFao=false;
             this.scoringState.whoFao=-1;
-            this.inputFan=0;
-            this.inputBu=2;
+            this.scoringState.inputFan=0;
+            this.scoringState.inputBu=2;
             this.showModal('check_score', 'ron'); // 다음 승자 점수 입력
             break;
           }
@@ -605,9 +603,8 @@ export default {
       this.showModal('클립보드에 기록을 복사했습니다.');
     },
     /**해당 국으로 롤백하기*/
-    rollbackRecord(){
+    rollbackRecord(idx){
       let allWinds = ["東", "南", "西", "北"];
-      let idx=this.modal.status; // 기록 인덱스
       let arr=this.records.time[idx].match(/[\u4e00-\u9fff]|\d+|\S/g); // 시간 값 분리
       let sumScore=0;
       while (idx<this.records.time.length){ // 점수기록 지우기
@@ -659,9 +656,6 @@ export default {
     v-if="modal.isOpen"
     :players
     :scoringState
-    :inputFao
-    :inputFan
-    :inputBu
     :panel
     :dice
     :seatTile
