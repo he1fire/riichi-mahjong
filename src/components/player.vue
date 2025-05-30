@@ -100,32 +100,28 @@ const emitEvent = (eventName, ...args) => {
 #Down{
   bottom: 0;
   right: 50%;
-  margin: 0 -140px 0 0;
-  transform: translateY(5px);
+  transform: translate(50%, 0%) translateY(5px);
 }
 #Right{
   top: 50%;
   right: 0;
-  margin: -70px 0 0 0;
   -ms-transform: rotate(270deg);
   -webkit-transform: rotate(270deg);
-  transform: rotate(270deg) translateY(50%) translateY(5px);
+  transform: rotate(270deg) translate(25%, 50%) translateY(5px);
 }
 #Up{
   top: 0;
   right: 50%;
-  margin: 0 -140px 0 0;
   -ms-transform: rotate(180deg);
   -webkit-transform: rotate(180deg);
-  transform: rotate(180deg) translateY(5px);
+  transform: rotate(180deg) translate(-50%, 0%) translateY(5px);
 }
 #Left{
   top: 50%;
   left: 0;
-  margin: -70px 0 0 0;
   -ms-transform: rotate(90deg);
   -webkit-transform: rotate(90deg);
-  transform: rotate(90deg) translateY(50%) translateY(5px);
+  transform: rotate(90deg) translate(-25%, 50%) translateY(5px);
 }
 /* 플레이어창 */
 .container_player{
