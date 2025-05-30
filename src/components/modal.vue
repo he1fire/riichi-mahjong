@@ -442,7 +442,7 @@ const emitEvent = (eventName, ...args) => {
         <div class="when">
           <div v-for="(_, i) in records.time"
             :key="i"
-            @click.stop="i%2===1 ? emitEvent('show-modal','rollback_record', records.time[i]) : {}"
+            @click.stop="i%2===1 ? emitEvent('show-modal','rollback_record', i) : {}"
           >
             {{ records.time[i] }}
           </div>
@@ -464,7 +464,7 @@ const emitEvent = (eventName, ...args) => {
   <!-- 점수 롤백창 -->
   <div v-else-if="modal.type==='rollback_record'" class="modal_content" @click.stop>
     <div class="modal_text">
-      {{ modal.status }}으로 되돌리시겠습니까?
+      {{ records.time[modal.status] }}으로 되돌리시겠습니까?
     </div>
     <div class="modal_text" style="font-size: 30px;" @click.stop="emitEvent('rollback-record')">
       OK

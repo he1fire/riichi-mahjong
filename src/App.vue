@@ -613,8 +613,8 @@ export default {
     /**해당 국으로 롤백하기*/
     rollbackRecord(){
       let allWinds = ["東", "南", "西", "北"];
-      let arr=this.modal.status.match(/[\u4e00-\u9fff]|\d+|\S/g); // 시간 값 분리
-      let idx=this.returnIndex(this.records.time, this.modal.status); // 기록 인덱스
+      let idx=this.modal.status; // 기록 인덱스
+      let arr=this.records.time[idx].match(/[\u4e00-\u9fff]|\d+|\S/g); // 시간 값 분리
       let sumScore=0;
       while (idx<this.records.time.length){ // 점수기록 지우기
         this.records.time.pop();
