@@ -431,9 +431,9 @@ const calculateWin = () => {
       if (scoringState.inputFan>=9){ // 다른사람도 여전히 지불해야 하는 경우
         for (let i=0;i<players.length;i++){
           if (i===scoringState.whoWin) // 승자
-            players[i].deltaScore+=calculateScore(i)+panelInfo.riichi*1000+panelInfo.renchan*300;
+            players[i].deltaScore+=calculateScore(i);
           else // 패자
-            players[i].deltaScore-=calculateScore(i)+panelInfo.renchan*100;
+            players[i].deltaScore-=calculateScore(i);
         }
       }
     }
