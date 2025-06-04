@@ -303,8 +303,8 @@ const hideModal = () => {
   });
 }
 
-/**화살표 버튼 체크*/
-const toggleArrowButton = (status, idx) => {
+/**화살표 버튼 동작 설정*/
+const setArrowButton = (status, idx) => {
   if (status==='win') // 화료 버튼
     players[idx].isWin=!players[idx].isWin;
   else if (status==='lose'){ // 방총 버튼
@@ -336,8 +336,22 @@ const toggleArrowButton = (status, idx) => {
     players[idx].isTenpai=!players[idx].isTenpai;
 }
 
-/**화료, 방총, 텐파이, 판/부, 책임지불 체크*/
-const toggleCheckStatus = (idx, status) => {
+/**토글 버튼 동작 설정*/
+const setToggleButton = (status) => {
+  if (status==='isfao') // 점수창 책임지불 OX 토글
+    scoringState.isFao=!scoringState.isFao;
+  else if (status==='roundmangan') // 절상만관 토글
+    option.roundMangan=!option.roundMangan;
+  else if (status==='minusriichi') // 음수리치 토글
+    option.minusRiichi=!option.minusRiichi;
+  else if (status==='cheatscore') // 촌보점수 토글
+    option.cheatScore=!option.cheatScore;
+  else if (status==='endriichi') // 공탁처리 토글
+    option.endRiichi=!option.endRiichi;
+}
+
+/**판/부 버튼 동작 설정*/
+const setFanBuButton = (status, idx) => {
   if (status==='fan'){ // 판 체크
     if (idx>=9 && scoringState.inputFan===idx) // 역만일경우 처리
       scoringState.inputFan<14 ? scoringState.inputFan++ : scoringState.inputFan=9;
@@ -356,20 +370,16 @@ const toggleCheckStatus = (idx, status) => {
       return;
     scoringState.inputBu=idx;
   }
-  else if (status==='isfao') // 책임지불 토글
-    scoringState.isFao=!scoringState.isFao;
-  else if (status=='inputfao') // 책임지불 점수창
+  else if (status=='inputfao'){ // 책임지불 점수창
+    if (scoringState.inputFan-9<idx) // 입력 판수보다 크면 불가능
+      return;
     scoringState.inputFao=idx;
-  else if (status==='tile') // 타일 뒤집기
-    seatTile.isOpened[idx]=true;
-  else if (status==='roundmangan') // 절상만관 토글
-  option.roundMangan=!option.roundMangan;
-  else if (status==='minusriichi') // 음수리치 토글
-    option.minusRiichi=!option.minusRiichi;
-  else if (status==='cheatscore') // 촌보 점수 토글
-    option.cheatScore=!option.cheatScore;
-  else if (status==='endriichi') // 공탁금 처리 토글
-    option.endRiichi=!option.endRiichi;
+  }
+}
+
+/**자리타일 동작 설정*/
+const setSeatTile = (idx) => {
+  seatTile.isOpened[idx]=true;
 }
 
 /**화료 및 방총 불가능한 경우 반환*/
@@ -670,8 +680,10 @@ const rollbackRecord = (idx) => {
     :modalInfo
     @show-modal="showModal"
     @hide-modal="hideModal"
-    @toggle-arrow-button="toggleArrowButton"
-    @toggle-check-status="toggleCheckStatus"
+    @set-arrow-button="setArrowButton"
+    @set-toggle-button="setToggleButton"
+    @set-fanbu-button="setFanBuButton"
+    @set-seat-tile="setSeatTile"
     @check-invalid-status="checkInvalidStatus"
     @calculate-win="calculateWin"
     @calculate-draw="calculateDraw"

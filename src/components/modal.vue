@@ -17,8 +17,10 @@ const props = defineProps({
 const emit = defineEmits([
   'show-modal',
   'hide-modal',
-  'toggle-arrow-button',
-  'toggle-check-status',
+  'set-arrow-button',
+  'set-toggle-button',
+  'set-fanbu-button',
+  'set-seat-tile',
   'check-invalid-status',
   'calculate-win',
   'calculate-draw',
@@ -98,7 +100,7 @@ const fanBuButtonStyle = (status, idx) => {
       return {color: idx===props.scoringState.inputBu ? 'red' : ''}; // 선택시 빨간색
   }
   else if (status==='inputfao'){ // 책임지불 점수창
-    if (props.scoringState.inputFan-9<idx) // 입력값보다 크면 불가능
+    if (props.scoringState.inputFan-9<idx) // 입력 판수보다 크면 불가능
       return {color: 'gray'};
     else
       return {color: idx===props.scoringState.inputFao ? 'red' : ''}; // 선택시 빨간색
@@ -191,7 +193,7 @@ const emitEvent = (eventName, ...args) => {
         :key="i"
         :class="class_check[i]"
         :style="arrowButtonStyle('win', i)"
-        @click.stop="emitEvent('toggle-arrow-button', 'win', i)"
+        @click.stop="emitEvent('set-arrow-button', 'win', i)"
       >
         {{ arr_arrow[i] }}
       </div>
@@ -210,7 +212,7 @@ const emitEvent = (eventName, ...args) => {
         :key="i"
         :class="class_check[i]"
         :style="arrowButtonStyle('lose', i)"
-        @click.stop="emitEvent('toggle-arrow-button', 'lose', i)"
+        @click.stop="emitEvent('set-arrow-button', 'lose', i)"
       >
         {{ arr_arrow[i] }}
       </div>
@@ -232,7 +234,7 @@ const emitEvent = (eventName, ...args) => {
         <span v-for="(_, i) in fan.slice(0, 9)"
         :key="i"
         :style="fanBuButtonStyle('fan', i)"
-        @click.stop="emitEvent('toggle-check-status', i, 'fan')"
+        @click.stop="emitEvent('set-fanbu-button', 'fan', i)"
         >
           {{ fan[i] }}
         </span>
@@ -240,11 +242,11 @@ const emitEvent = (eventName, ...args) => {
         <span v-for="(_, i) in fan.slice(9)"
         :key="i"
         :style="[fanBuButtonStyle('fan', i+9), yakumanVisibility(i+9)]"
-        @click.stop="emitEvent('toggle-check-status', i+9, 'fan')"
+        @click.stop="emitEvent('set-fanbu-button', 'fan', i+9)"
         >
           {{ fan[i+9] }}
         </span>
-        <span v-show="scoringState.inputFan>=9" style="font-size: 20px;" @click.stop="emitEvent('toggle-check-status', -1, 'isfao')">(책임지불
+        <span v-show="scoringState.inputFan>=9" style="font-size: 20px;" @click.stop="emitEvent('set-toggle-button', 'isfao')">(책임지불
           <span :style="toggleButtonStyle('isfao')">
             <span v-show="scoringState.isFao===true">O</span>
             <span v-show="scoringState.isFao===false">X</span>
@@ -258,7 +260,7 @@ const emitEvent = (eventName, ...args) => {
         <span v-for="(_, i) in bu.slice(0, 6)"
           :key="i"
           :style="fanBuButtonStyle('bu', i)"
-          @click.stop="emitEvent('toggle-check-status', i, 'bu')"
+          @click.stop="emitEvent('set-fanbu-button', 'bu', i)"
         >
           {{ bu[i] }}
         </span>
@@ -266,7 +268,7 @@ const emitEvent = (eventName, ...args) => {
         <span v-for="(_, i) in bu.slice(6)"
           :key="i"
           :style="fanBuButtonStyle('bu', i+6)"
-          @click.stop="emitEvent('toggle-check-status', i+6, 'bu')"
+          @click.stop="emitEvent('set-fanbu-button', 'bu', i+6)"
         >
           {{ bu[i+6] }}
         </span>
@@ -286,7 +288,7 @@ const emitEvent = (eventName, ...args) => {
         :key="i"
         :class="class_check[i]"
         :style="arrowButtonStyle('fao', i)"
-        @click.stop="emitEvent('toggle-arrow-button', 'fao', i)"
+        @click.stop="emitEvent('set-arrow-button', 'fao', i)"
       >
         {{ arr_arrow[i] }}
       </div>
@@ -304,7 +306,7 @@ const emitEvent = (eventName, ...args) => {
       <span v-for="(_, i) in fan.slice(9)"
         :key="i"
         :style="fanBuButtonStyle('inputfao', i)"
-        @click.stop="emitEvent('toggle-check-status', i, 'inputfao')"
+        @click.stop="emitEvent('set-fanbu-button', 'inputfao', i)"
       >
         {{ fan[i+9] }}
       </span>
@@ -332,7 +334,7 @@ const emitEvent = (eventName, ...args) => {
         :key="i"
         :class="class_check[i]"
         :style="arrowButtonStyle('tenpai', i)"
-        @click.stop="emitEvent('toggle-arrow-button', 'tenpai', i)"
+        @click.stop="emitEvent('set-arrow-button', 'tenpai', i)"
       >
         {{ arr_arrow[i] }}
       </div>
@@ -351,7 +353,7 @@ const emitEvent = (eventName, ...args) => {
         :key="i"
         :class="class_check[i]"
         :style="arrowButtonStyle('cheat', i)"
-        @click.stop="emitEvent('toggle-arrow-button', 'cheat', i)"
+        @click.stop="emitEvent('set-arrow-button', 'cheat', i)"
       >
         {{ arr_arrow[i] }}
       </div>
@@ -401,7 +403,7 @@ const emitEvent = (eventName, ...args) => {
         kind="tile"
         :style="seatTileStyle(i)"
         :value="seatTile.value[i]"
-        @click.stop="emitEvent('toggle-check-status', i, 'tile')"
+        @click.stop="emitEvent('set-seat-tile', i)"
       ></graphics>
     </div>
   </div>
@@ -499,14 +501,14 @@ const emitEvent = (eventName, ...args) => {
           :name="'endScore'"
         >
       </div>
-      <div style="grid-area: option2;" @click.stop="emitEvent('toggle-check-status', -1, 'roundmangan')">
+      <div style="grid-area: option2;" @click.stop="emitEvent('set-toggle-button', 'roundmangan')">
         절상만관<br>
         <span :style="toggleButtonStyle('roundmangan')">
           <span v-show="option.roundMangan===true">O</span>
           <span v-show="option.roundMangan===false">X</span>
         </span>
       </div>
-      <div style="grid-area: option3;" @click.stop="emitEvent('toggle-check-status', -1, 'minusriichi')">
+      <div style="grid-area: option3;" @click.stop="emitEvent('set-toggle-button', 'minusriichi')">
         음수리치<br>
         <span :style="toggleButtonStyle('minusriichi')">
           <span v-show="option.minusRiichi===true">O</span>
@@ -526,14 +528,14 @@ const emitEvent = (eventName, ...args) => {
           :style="{ marginRight: i===option.rankUma.length-1 ? '0px' : '10px' }"
         >
       </div>  
-      <div style="grid-area: option5;" @click.stop="emitEvent('toggle-check-status', -1, 'cheatscore')">
+      <div style="grid-area: option5;" @click.stop="emitEvent('set-toggle-button', 'cheatscore')">
         촌보점수<br>
         <span :style="toggleButtonStyle('cheatscore')">
           <span v-show="option.cheatScore===true">3000 All</span>
           <span v-show="option.cheatScore===false">만관</span>
         </span>
       </div>
-      <div style="grid-area: option6;" @click.stop="emitEvent('toggle-check-status', -1, 'endriichi')">
+      <div style="grid-area: option6;" @click.stop="emitEvent('set-toggle-button', 'endriichi')">
         공탁처리<br>
         <span :style="toggleButtonStyle('endriichi')">
           <span v-show="option.endRiichi===true">1위</span>
