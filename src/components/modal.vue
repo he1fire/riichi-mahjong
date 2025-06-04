@@ -17,6 +17,7 @@ const props = defineProps({
 const emit = defineEmits([
   'show-modal',
   'hide-modal',
+  'toggle-arrow-button',
   'toggle-check-status',
   'check-invalid-status',
   'calculate-win',
@@ -190,7 +191,7 @@ const emitEvent = (eventName, ...args) => {
         :key="i"
         :class="class_check[i]"
         :style="arrowButtonStyle('win', i)"
-        @click.stop="emitEvent('toggle-check-status', i, 'win')"
+        @click.stop="emitEvent('toggle-arrow-button', 'win', i)"
       >
         {{ arr_arrow[i] }}
       </div>
@@ -209,7 +210,7 @@ const emitEvent = (eventName, ...args) => {
         :key="i"
         :class="class_check[i]"
         :style="arrowButtonStyle('lose', i)"
-        @click.stop="emitEvent('toggle-check-status', i, 'lose')"
+        @click.stop="emitEvent('toggle-arrow-button', 'lose', i)"
       >
         {{ arr_arrow[i] }}
       </div>
@@ -285,7 +286,7 @@ const emitEvent = (eventName, ...args) => {
         :key="i"
         :class="class_check[i]"
         :style="arrowButtonStyle('fao', i)"
-        @click.stop="emitEvent('toggle-check-status', i, 'fao')"
+        @click.stop="emitEvent('toggle-arrow-button', 'fao', i)"
       >
         {{ arr_arrow[i] }}
       </div>
@@ -331,7 +332,7 @@ const emitEvent = (eventName, ...args) => {
         :key="i"
         :class="class_check[i]"
         :style="arrowButtonStyle('tenpai', i)"
-        @click.stop="emitEvent('toggle-check-status', i, 'tenpai')"
+        @click.stop="emitEvent('toggle-arrow-button', 'tenpai', i)"
       >
         {{ arr_arrow[i] }}
       </div>
@@ -350,7 +351,7 @@ const emitEvent = (eventName, ...args) => {
         :key="i"
         :class="class_check[i]"
         :style="arrowButtonStyle('cheat', i)"
-        @click.stop="emitEvent('toggle-check-status', i, 'cheat')"
+        @click.stop="emitEvent('toggle-arrow-button', 'cheat', i)"
       >
         {{ arr_arrow[i] }}
       </div>

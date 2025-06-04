@@ -303,12 +303,12 @@ const hideModal = () => {
   });
 }
 
-/**화료, 방총, 텐파이, 판/부, 책임지불 체크*/
-const toggleCheckStatus = (idx, status) => {
-  if (status==='win') // 화료 체크
+/**화살표 버튼 체크*/
+const toggleArrowButton = (status, idx) => {
+  if (status==='win') // 화료 버튼
     players[idx].isWin=!players[idx].isWin;
-  else if (status==='lose'){ // 방총 체크
-    if (players[idx].isWin)// 화료한 사람이랑 겹치는 경우 스킵
+  else if (status==='lose'){ // 방총 버튼
+    if (players[idx].isWin) // 화료한 사람이랑 겹치는 경우 비활성화
       return;
     if (players[idx].isLose===false){ // 방총당한 사람을 바꾸는 경우
       for (let i=0;i<players.length;i++){
@@ -318,15 +318,27 @@ const toggleCheckStatus = (idx, status) => {
     }
     players[idx].isLose=!players[idx].isLose;
   }
-  else if (status==='tenpai') // 텐파이 체크
-    players[idx].isTenpai=!players[idx].isTenpai;
-  else if (status==='cheat'){ // 촌보 체크
+  else if (status==='cheat'){ // 촌보 버튼
     if (scoringState.whoCheat===idx)
       scoringState.whoCheat=-1;
     else
       scoringState.whoCheat=idx;
   }
-  else if (status==='fan'){ // 판 체크
+  else if (status==='fao'){ // 책임지불 버튼
+    if (scoringState.whoWin===idx || scoringState.whoLose===idx) // 현재 승자 또는 패자와 같을때 비활성화
+      return;
+    if (scoringState.whoFao===idx)
+      scoringState.whoFao=-1;
+    else
+      scoringState.whoFao=idx;
+  }
+  else if (status==='tenpai') // 텐파이 버튼
+    players[idx].isTenpai=!players[idx].isTenpai;
+}
+
+/**화료, 방총, 텐파이, 판/부, 책임지불 체크*/
+const toggleCheckStatus = (idx, status) => {
+  if (status==='fan'){ // 판 체크
     if (idx>=9 && scoringState.inputFan===idx) // 역만일경우 처리
       scoringState.inputFan<14 ? scoringState.inputFan++ : scoringState.inputFan=9;
     else{
@@ -343,14 +355,6 @@ const toggleCheckStatus = (idx, status) => {
     else if (scoringState.inputFan>=4) // 만관 이상일때 부수 비활성화
       return;
     scoringState.inputBu=idx;
-  }
-  else if (status==='fao'){
-    if (scoringState.whoWin===idx || scoringState.whoLose===idx) // 현재 승자 또는 패자와 같을때 비활성화
-      return;
-    if (scoringState.whoFao===idx)
-      scoringState.whoFao=-1;
-    else
-      scoringState.whoFao=idx;
   }
   else if (status==='isfao') // 책임지불 토글
     scoringState.isFao=!scoringState.isFao;
@@ -666,6 +670,7 @@ const rollbackRecord = (idx) => {
     :modalInfo
     @show-modal="showModal"
     @hide-modal="hideModal"
+    @toggle-arrow-button="toggleArrowButton"
     @toggle-check-status="toggleCheckStatus"
     @check-invalid-status="checkInvalidStatus"
     @calculate-win="calculateWin"
