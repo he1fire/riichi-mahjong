@@ -1,5 +1,10 @@
 {
     "pageTitle" : "마작 점수 계산기",
+    "panel" : {
+        "win" : "화료",
+        "draw" : "유국",
+        "cheat" : "촌보"
+    },
     "comments" : {
         "checkPlayerWin" : "화료한 사람을 선택해 주세요.",
         "checkPlayerLose" : "방총당한 사람을 선택해 주세요.",
@@ -8,7 +13,8 @@
         "chooseScoreFao" : "책임지불할 점수를 입력해주세요.",
         "checkPlayerTenpai" : "텐파이한 사람을 선택해 주세요.",
         "checkPlayerCheat" : "촌보한 사람을 선택해 주세요.",
-        "rollbackRecord" : "{time}으로 되돌리시겠습니까?"
+        "rollbackRecord" : "{time}으로 되돌리시겠습니까?",
+        "copyRecord" : "클립보드에 기록을 복사했습니다."
     },
     "score" : {
         "fan" : "판",

@@ -604,7 +604,7 @@ const rollDice = () => {
 
 /**점수 기록 복사*/
 const copyRecord = () => {
-  let str='이름\t';
+  let str=t('resultSheet.name')+'\t';
   for (let i=0;i<players.length;i++)
     str+=players[i].name+'\t'; // 이름 복사
   str+='\n';
@@ -620,7 +620,7 @@ const copyRecord = () => {
     str+='\n';
   }
   navigator.clipboard.writeText(str); // 클립보드로 복사
-  showModal('클립보드에 기록을 복사했습니다.');
+  showModal(t('comments.copyRecord'));
 }
 
 /**해당 국으로 롤백하기*/

@@ -1,5 +1,9 @@
 <script setup>
 import graphics from '@/components/graphics.vue';
+import { useI18n } from 'vue-i18n'
+
+/**i18n 속성 가져오기*/
+const { t, locale } = useI18n()
 
 /**props 정의*/
 const props = defineProps({
@@ -36,15 +40,15 @@ const emitEvent = (eventName, ...args) => {
   </div>
   <!-- 화료 버튼 -->
   <div class="win" @click="emitEvent('show-modal', 'check_player_win')">
-    화료
+    {{ t('panel.win') }}
   </div>
   <!-- 유국 버튼 -->
   <div class="draw" @click="emitEvent('show-modal', 'choose_draw_kind')">
-    유국
+    {{ t('panel.draw') }}
   </div>
   <!-- 촌보 버튼 -->
   <div class="cheat" @click="emitEvent('show-modal', 'check_player_cheat')">
-    촌보
+    {{ t('panel.cheat') }}
   </div>
 </div>
 <!-- 옵션 버튼 -->
