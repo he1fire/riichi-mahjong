@@ -19,7 +19,8 @@
     "score" : {
         "fan" : "판",
         "bu" : "부",
-        "yakuman" : "{num}배역만",
+        "yakuman" : "역만",
+        "multipleYakuman" : "{num}배역만",
         "fao" : "책임지불"
     },
     "drawKind" : {

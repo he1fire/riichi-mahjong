@@ -254,12 +254,17 @@ const emitEvent = (eventName, ...args) => {
           {{ fan[i] }}
         </span>
         <br>
-        <span v-for="(_, i) in fan.slice(9)"
+        <span v-show="scoringState.inputFan<9"
+        @click.stop="emitEvent('set-fanbu-button', 'fan', 9)"
+        >
+          {{ t('score.yakuman') }}
+        </span>
+        <span v-show="scoringState.inputFan>=9" v-for="(_, i) in fan.slice(9)"
         :key="i"
         :style="[fanBuButtonStyle('fan', i+9), yakumanVisibility(i+9)]"
         @click.stop="emitEvent('set-fanbu-button', 'fan', i+9)"
         >
-          {{ t('score.yakuman', {num: fan[i+9]}) }}
+          {{ t('score.multipleYakuman', {num: fan[i+9]}) }}
         </span>
         <span v-show="scoringState.inputFan>=9" style="font-size: 20px;" @click.stop="emitEvent('set-toggle-button', 'isfao')">({{ t('score.fao') }}
           <span :style="toggleButtonStyle('isfao')">
@@ -323,7 +328,7 @@ const emitEvent = (eventName, ...args) => {
         :style="fanBuButtonStyle('inputfao', i)"
         @click.stop="emitEvent('set-fanbu-button', 'inputfao', i)"
       >
-      {{ t('score.yakuman', {num: fan[i+9]}) }}
+      {{ t('score.multipleYakuman', {num: fan[i+9]}) }}
       </span>
     </div>
     <div style="font-size: 30px;" @click.stop="emitEvent('calculate-win');">
