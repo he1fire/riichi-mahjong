@@ -146,7 +146,7 @@ const checkFao = () => {
 }
 
 /**순위표 점수 계산*/
-const calculatePoint = (idx) => {
+const calculateScorePoint = (idx) => {
   let myScore=props.players[idx].displayScore;
   let point=0 // 점수기반
   let oka=(props.option.returnScore*4-props.option.startingScore*4)/1000; // 오카
@@ -162,7 +162,10 @@ const calculatePoint = (idx) => {
   }
   uma/=cnt; // 동점자 수만큼 우마 나누기
   point=(myScore-props.option.returnScore)/1000+uma;
-  return String(myScore)+'('+point.toFixed(1)+')';
+  return {
+    score: myScore,
+    point: point.toFixed(1)
+  };
 }
 
 /**순위표 기록 계산*/
@@ -561,7 +564,9 @@ const emitEvent = (eventName, ...args) => {
         <div v-for="(_, i) in players" :key="i">{{ players[i].name }}</div>
       </div>
       <div style="grid-area: score_contents;">
-        <div v-for="(_, i) in players" :key="i">{{calculatePoint(i)}}</div>
+        <div v-for="(_, i) in players" :key="i">
+        {{calculateScorePoint(i).score}}(<span :style="getSignColor(calculateScorePoint(i).point)"><span v-show="calculateScorePoint(i).point>0">+</span>{{calculateScorePoint(i).point}}</span>)
+        </div>
       </div>
       <div style="grid-area: riichi_contents;">
         <div v-for="(_, i) in records.riichi[0]" :key="i">{{calculateRecord(records.riichi, i)}}</div>
