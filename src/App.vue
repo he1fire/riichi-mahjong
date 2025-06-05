@@ -1,8 +1,12 @@
 <script setup>
-import player from './components/player.vue'
-import panel from './components/panel.vue'
-import modal from './components/modal.vue'
+import player from '@/components/player.vue'
+import panel from '@/components/panel.vue'
+import modal from '@/components/modal.vue'
 import { ref, reactive, onMounted } from 'vue'
+import { useI18n } from 'vue-i18n'
+
+/**i18n 속성 가져오기*/
+const { t, locale } = useI18n()
 
 /**data 정의*/
 const players = reactive([ // 플레이어
@@ -70,6 +74,7 @@ const modalInfo = reactive({ // 모달창
 
 /**시작시 자리선택 타일창 띄우기*/
 onMounted(() => {
+  document.title = t('PageTitle')
   for (let i=3;i>0;i--){ // 자리 섞기
     let j=Math.floor(Math.random()*(i+1));
     [seatTile.value[i], seatTile.value[j]]=[seatTile.value[j], seatTile.value[i]];

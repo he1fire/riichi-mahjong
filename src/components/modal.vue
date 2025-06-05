@@ -1,6 +1,6 @@
 <script setup>
 import { computed } from 'vue'
-import graphics from './graphics.vue'
+import graphics from '@/components/graphics.vue'
 
 /**props 정의*/
 const props = defineProps({
@@ -41,7 +41,7 @@ const class_dice = ["down_dice", "right_dice", "up_dice", "left_dice"]
 const class_name = ["down_name", "right_name", "up_name", "left_name"]
 const class_record = ["down_record", "right_record", "up_record", "left_record"]
 const class_scoresheet = ["wind", "name", "score", "riichi", "win", "lose"]
-const fan = ["1", "2", "3", "4", "5", "6+", "8+", "11+", "13+", "1배역만", "2배역만", "3배역만", "4배역만", "5배역만","6배역만"]
+const fan = ["1", "2", "3", "4", "5", "6+", "8+", "11+", "13+", "1", "2", "3", "4", "5","6"]
 const bu = [20, 25, 30, 40, 50, 60, 70, 80, 90, 100, 110]
 
 /**순위표 정보 계산*/
@@ -248,13 +248,13 @@ const emitEvent = (eventName, ...args) => {
         >
           {{ fan[i] }}
         </span>
-        <div></div>
+        <br>
         <span v-for="(_, i) in fan.slice(9)"
         :key="i"
         :style="[fanBuButtonStyle('fan', i+9), yakumanVisibility(i+9)]"
         @click.stop="emitEvent('set-fanbu-button', 'fan', i+9)"
         >
-          {{ fan[i+9] }}
+          {{ fan[i+9]+'배역만' }}
         </span>
         <span v-show="scoringState.inputFan>=9" style="font-size: 20px;" @click.stop="emitEvent('set-toggle-button', 'isfao')">(책임지불
           <span :style="toggleButtonStyle('isfao')">
@@ -274,7 +274,7 @@ const emitEvent = (eventName, ...args) => {
         >
           {{ bu[i] }}
         </span>
-        <div></div>
+        <br>
         <span v-for="(_, i) in bu.slice(6)"
           :key="i"
           :style="fanBuButtonStyle('bu', i+6)"
@@ -825,7 +825,7 @@ const emitEvent = (eventName, ...args) => {
   grid-area: scroll;
   display: grid;
   grid-template-rows: auto;
-  grid-template-columns: 120px auto;
+  grid-template-columns: 120px repeat(4, 100px);
   grid-template-areas: 
   "when down_record right_record up_record left_record";
   text-align: center;

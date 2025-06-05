@@ -1,5 +1,5 @@
 <script setup>
-import graphics from './graphics.vue'
+import graphics from '@/components/graphics.vue'
 import {computed} from 'vue'
 
 /**props 정의*/
