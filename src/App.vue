@@ -280,12 +280,12 @@ const hideModal = () => {
     if (cntUma!==0) // 우마 합계가 0이 아니라면 초기화
       option.rankUma=[30, 10, -10, -30];
   }
-  Object.assign(modalInfo, {
+  Object.assign(modalInfo, { // 모달창 끄기
     isOpen: false,
     type: "",
     status: "",
   });
-  Object.assign(scoringState, {
+  Object.assign(scoringState, { // 점수계산 관련 변수 초기화
     whoWin: -1,
     whoLose: -1,
     whoCheat: -1,
@@ -295,7 +295,7 @@ const hideModal = () => {
     inputBu: 2,
     inputFao: -1,
   });
-  players.forEach((x) => {
+  players.forEach((x) => { // 승자/패자 및 변동점수 초기화
     x.deltaScore=0;
     x.isWin=false;
     x.isLose=false;
@@ -516,7 +516,7 @@ const calculateCheat = () => {
       if (scoringState.whoCheat===i)
         players[i].deltaScore=-9000;
       else
-        players[i].deltaScore=3000; 
+        players[i].deltaScore=3000;
     }
   }
   else{// 만관 지불
@@ -696,11 +696,10 @@ const rollbackRecord = (idx) => {
 </template>
 
 <style>
-/* 전체 설정 */
+/* 글자 드래그 방지 */
 *{
   margin: 0;
   -webkit-text-size-adjust:none;
-  /* 글자 드래그 방지 */
   -webkit-user-drag: none;
   -webkit-user-select: none;
   -moz-user-select: none;
@@ -712,22 +711,29 @@ html{
   overflow: hidden;
   overscroll-behavior: none;
 }
+
+/* 배경화면 크기 및 글꼴 설정 */
 .background{
   position: relative;
   height: 100vh;
   width: 100vw;
   font-family: 'Noto Serif KR', serif;
 }
+
+/* 링크 설정 */
 a {
   text-decoration: none;
   color: inherit;
 }
+
+/* 인풋창 설정 */
 input[type='text'], input[type='number']{
   font-size: 15px;
   width: 100px;
   font-family: 'Noto Serif KR', serif;
   text-align: center;
 }
+/* 인풋창 숫자 업다운 삭제 */
 input[type="number"]::-webkit-outer-spin-button,
 input[type="number"]::-webkit-inner-spin-button {
     -webkit-appearance: none;
