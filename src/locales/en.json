@@ -1,3 +1,22 @@
 {
-    "PageTitle" : "Riichi Calculator"
+    "PageTitle" : "Riichi Calculator",
+    "comments" : {
+        "checkPlayerWin" : "",
+        "checkPlayerLose" : "",
+        "chooseScore" : "{name}",
+        "checkPlayerFao" : "",
+        "chooseScoreFao" : "",
+        "checkPlayerTenpai" : "",
+        "checkPlayerCheat" : ""
+    },
+    "score" : {
+        "fan" : "Han",
+        "bu" : "Fu",
+        "yakuman" : "yakuman*{num}",
+        "fao" : "fao"
+    },
+    "drawKind" : {
+        "normalDraw" : "Exhaustive",
+        "specialDraw" : "Abortive"
+    }
 }

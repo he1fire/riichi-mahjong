@@ -64,7 +64,7 @@ const option = reactive({ // 옵션
   roundMangan: false, // 절상만관
   minusRiichi: false, // 음수리치
   cheatScore: true, // 촌보 지불 점수
-  endRiichi: true, // 남은 공탁금 처리
+  riichiPayout: true, // 남은 공탁금 처리
 })
 const modalInfo = reactive({ // 모달창
   isOpen :false, // on/off
@@ -352,7 +352,7 @@ const setToggleButton = (status) => {
   else if (status==='cheatscore') // 촌보점수 토글
     option.cheatScore=!option.cheatScore;
   else if (status==='endriichi') // 공탁처리 토글
-    option.endRiichi=!option.endRiichi;
+    option.riichiPayout=!option.riichiPayout;
 }
 
 /**판/부 버튼 동작 설정*/

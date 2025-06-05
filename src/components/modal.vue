@@ -37,14 +37,15 @@ const emit = defineEmits([
 
 /**data 정의*/
 const arr_arrow = ["▼", "▶", "▲", "◀"]
-const arr_seat = ["동(東)", "남(南)", "서(西)", "북(北)"]
-const arr_scoresheet = ["바람", "이름", "점수", "리치", "화료", "방총"]
+const arr_wind = ["東", "南", "西", "北"];
+const arr_seat = ["option.east", "option.south", "option.west", "option.north",]
+const arr_resultsheet = ["resultSheet.wind", "resultSheet.name", "resultSheet.score", "resultSheet.riichi", "resultSheet.win", "resultSheet.lose"]
 const class_check = ["down_check", "right_check", "up_check", "left_check"]
 const class_score_diff = ["down_score_diff", "right_score_diff", "up_score_diff", "left_score_diff"]
 const class_dice = ["down_dice", "right_dice", "up_dice", "left_dice"]
 const class_name = ["down_name", "right_name", "up_name", "left_name"]
 const class_record = ["down_record", "right_record", "up_record", "left_record"]
-const class_scoresheet = ["wind", "name", "score", "riichi", "win", "lose"]
+const class_resultsheet = ["wind", "name", "score", "riichi", "win", "lose"]
 const fan = ["1", "2", "3", "4", "5", "6+", "8+", "11+", "13+", "1", "2", "3", "4", "5","6"]
 const bu = [20, 25, 30, 40, 50, 60, 70, 80, 90, 100, 110]
 
@@ -61,7 +62,7 @@ const scoreSheetInfo = computed(() => {
       uma+=Number(props.option.rankUma[rank+i-1]);
     if (rank===1){ // 1위라면 오카도 더하기
       uma+=oka;
-      if (props.option.endRiichi) // 1위에게 공탁금을 몰아주는 경우 (100점단위)
+      if (props.option.riichiPayout) // 1위에게 공탁금을 몰아주는 경우 (100점단위)
         myScore+=Math.floor(((props.panelInfo.riichi*1000)/cnt)/100)*100;
     }
     uma/=cnt; // 동점자 수만큼 우마 나누기
@@ -124,7 +125,7 @@ const toggleButtonStyle = (status) => {
   else if (status==='cheatscore') // 촌보점수 옵션
     return {color: props.option.cheatScore===true ? 'mediumblue' : 'red'};
   else if (status==='endriichi') // 공탁처리 옵션
-    return {color: props.option.endRiichi===true ? 'mediumblue' : 'red'};
+    return {color: props.option.riichiPayout===true ? 'mediumblue' : 'red'};
 }
 
 /**판/부 버튼 색상*/
@@ -201,7 +202,7 @@ const emitEvent = (eventName, ...args) => {
   <div v-if="modalInfo.type==='check_player_win'" class="modal_content" @click.stop>
     <div class="container_check">
       <div class="guide_message">
-        {{ t('checkPlayerWin') }}
+        {{ t('comments.checkPlayerWin') }}
       </div>
       <div v-for="(_, i) in class_check"
         :key="i"
@@ -220,7 +221,7 @@ const emitEvent = (eventName, ...args) => {
   <div v-else-if="modalInfo.type==='check_player_lose'" class="modal_content" @click.stop>
     <div class="container_check">
       <div class="guide_message">
-        {{ t('checkPlayerLose') }}
+        {{ t('comments.checkPlayerLose') }}
       </div>
       <div v-for="(_, i) in class_check"
         :key="i"
@@ -238,11 +239,11 @@ const emitEvent = (eventName, ...args) => {
   <!-- 판/부 선택창 -->
   <div v-else-if="modalInfo.type==='choose_score'" class="modal_content" @click.stop>
     <div>
-      {{ t('chooseScore', {name: players[scoringState.whoWin].name}) }}
+      {{ t('comments.chooseScore', {name: players[scoringState.whoWin].name}) }}
     </div>
     <div class="container_check_fanbu">
       <div class="fan">
-        판:
+        {{ t('score.fan') }}:
       </div>
       <div class="fan_check">
         <span v-for="(_, i) in fan.slice(0, 9)"
@@ -258,9 +259,9 @@ const emitEvent = (eventName, ...args) => {
         :style="[fanBuButtonStyle('fan', i+9), yakumanVisibility(i+9)]"
         @click.stop="emitEvent('set-fanbu-button', 'fan', i+9)"
         >
-          {{ fan[i+9]+'배역만' }}
+          {{ t('score.yakuman', {num: fan[i+9]}) }}
         </span>
-        <span v-show="scoringState.inputFan>=9" style="font-size: 20px;" @click.stop="emitEvent('set-toggle-button', 'isfao')">(책임지불
+        <span v-show="scoringState.inputFan>=9" style="font-size: 20px;" @click.stop="emitEvent('set-toggle-button', 'isfao')">({{ t('score.fao') }}
           <span :style="toggleButtonStyle('isfao')">
             <span v-show="scoringState.isFao===true">O</span>
             <span v-show="scoringState.isFao===false">X</span>
@@ -268,7 +269,7 @@ const emitEvent = (eventName, ...args) => {
         )</span>
       </div>
       <div class="bu">
-        부:
+        {{ t('score.bu') }}:
       </div>
       <div class="bu_check">
         <span v-for="(_, i) in bu.slice(0, 6)"
@@ -296,7 +297,7 @@ const emitEvent = (eventName, ...args) => {
   <div v-else-if="modalInfo.type==='check_player_fao'" class="modal_content" @click.stop>
     <div class="container_check">
       <div class="guide_message">
-        {{ t('checkPlayerFao') }}
+        {{ t('comments.checkPlayerFao') }}
       </div>
       <div v-for="(_, i) in class_check"
         :key="i"
@@ -314,7 +315,7 @@ const emitEvent = (eventName, ...args) => {
   <!-- 책임지불 점수 선택창 -->
   <div v-else-if="modalInfo.type==='choose_score_fao'" class="modal_content" @click.stop>
     <div>
-      {{ t('chooseScoreFao') }}
+      {{ t('comments.chooseScoreFao') }}
     </div>
     <div class="container_choose_fao_score">
       <span v-for="(_, i) in fan.slice(9)"
@@ -322,7 +323,7 @@ const emitEvent = (eventName, ...args) => {
         :style="fanBuButtonStyle('inputfao', i)"
         @click.stop="emitEvent('set-fanbu-button', 'inputfao', i)"
       >
-        {{ fan[i+9] }}
+      {{ t('score.yakuman', {num: fan[i+9]}) }}
       </span>
     </div>
     <div style="font-size: 30px;" @click.stop="emitEvent('calculate-win');">
@@ -332,17 +333,17 @@ const emitEvent = (eventName, ...args) => {
   <!-- 유국 종류 선택창 -->
   <div v-else-if="modalInfo.type==='choose_draw_kind'" class="modal_content" @click.stop>
     <div class="modal_choose_draw" @click.stop="emitEvent('show-modal','check_player_tenpai')">
-      일반유국
+      {{ t('drawKind.normalDraw') }}
     </div>
     <div class="modal_choose_draw" @click.stop="emitEvent('show-modal','show_score', 'special_draw')">
-      도중유국
+      {{ t('drawKind.specialDraw') }}
     </div>
   </div>
   <!-- 텐파이 인원 선택창 -->
   <div v-else-if="modalInfo.type==='check_player_tenpai'" class="modal_content" @click.stop>
     <div class="container_check">
       <div class="guide_message">
-        {{ t('checkPlayerTenpai') }}
+        {{ t('comments.checkPlayerTenpai') }}
       </div>
       <div v-for="(_, i) in class_check"
         :key="i"
@@ -361,7 +362,7 @@ const emitEvent = (eventName, ...args) => {
   <div v-else-if="modalInfo.type==='check_player_cheat'" class="modal_content" @click.stop>
     <div class="container_check">
       <div class="guide_message">
-        {{ t('checkPlayerCheat') }}
+        {{ t('comments.checkPlayerCheat') }}
       </div>
       <div v-for="(_, i) in class_check"
         :key="i"
@@ -422,25 +423,57 @@ const emitEvent = (eventName, ...args) => {
     </div>
   </div>
   <!-- 옵션 종류 선택창 -->
-  <div v-else-if="modalInfo.type==='choose_option_kind'" class="modal_content" @click.stop>
-    <div class="container_choose_option">
-      <div @click.stop="emitEvent('show-modal', 'score_sheet')">
-        게임결과
+  <div v-else-if="modalInfo.type==='choose_menu_kind'" class="modal_content" @click.stop>
+    <div class="container_choose_menu">
+      <div @click.stop="emitEvent('show-modal', 'result_sheet')">
+        {{ t('menu.resultSheet') }}
       </div>
       <div @click.stop="emitEvent('show-modal', 'show_record')">
-        점수기록
+        {{ t('menu.record') }}
       </div>
       <div @click.stop="emitEvent('show-modal', 'set_options')">
-        설정
+        {{ t('menu.option') }}
       </div>
       <a href="https://github.com/he1fire/riichi-mahjong" target="_blank" style="font-size: 20px; "><img src="/github-logo.svg" alt="SVG" />Github</a>
+    </div>
+  </div>
+  <!-- 게임 결과창 -->
+  <div v-else-if="modalInfo.type==='result_sheet'" class="modal_content" @click.stop>
+    <div class="container_resultsheet">
+      <div v-for="(_, i) in class_resultsheet" 
+        :key="i"
+        :class="class_resultsheet[i]"
+        style="font-size: 25px;"
+      >
+        {{ t(arr_resultsheet[i]) }}
+      </div>
+      <div style="grid-area: wind_contents;">
+        <div v-for="(_, i) in arr_wind" :key="i">{{ arr_wind[i] }}</div>
+      </div>
+      <div style="grid-area: name_contents;">
+        <div v-for="(_, i) in players" :key="i">{{ players[i].name }}</div>
+      </div>
+      <div style="grid-area: score_contents;">
+        <div v-for="(_, i) in scoreSheetInfo" :key="i">
+        {{ scoreSheetInfo[i].score }}(<span :style="getSignColor(scoreSheetInfo[i].point, false)"><span v-show="scoreSheetInfo[i].point>0">+</span>{{ scoreSheetInfo[i].point }}</span>)
+        </div>
+      </div>
+      <div style="grid-area: riichi_contents;">
+        <div v-for="(_, i) in scoreSheetInfo" :key="i">{{ scoreSheetInfo[i].cntRiichi }}</div>
+      </div>
+      <div style="grid-area: win_contents;">
+        <div v-for="(_, i) in scoreSheetInfo" :key="i">{{ scoreSheetInfo[i].cntWin }}</div>
+      </div>
+      <div style="grid-area: lose_contents;">
+        <div v-for="(_, i) in scoreSheetInfo" :key="i">{{ scoreSheetInfo[i].cntLose }}</div>
+      </div>
     </div>
   </div>
   <!-- 점수 기록창 -->
   <div v-else-if="modalInfo.type==='show_record'" class="modal_content" @click.stop>
     <div class="container_record">
       <div class="copy" @click.stop="emitEvent('copy-record')">
-        복사
+        {{ t('record.copy') }}
       </div>
       <div v-for="(_, i) in class_name"
         :key="i"
@@ -474,7 +507,7 @@ const emitEvent = (eventName, ...args) => {
   <!-- 점수 롤백창 -->
   <div v-else-if="modalInfo.type==='rollback_record'" class="modal_content" @click.stop>
     <div class="modal_text">
-      {{ records.time[modalInfo.status] }}으로 되돌리시겠습니까?
+      {{ t('comments.rollbackRecord', {time : records.time[modalInfo.status]}) }}
     </div>
     <div class="modal_text" style="font-size: 30px;" @click.stop="emitEvent('rollback-record', modalInfo.status)">
       OK
@@ -488,105 +521,73 @@ const emitEvent = (eventName, ...args) => {
         :key="i"
         :style="`grid-area: input_name${i};`"
       >
-        {{ arr_seat[i] }}<br>
+        {{ t(arr_seat[i]) }}({{ arr_wind[i] }})<br>
         <input
           type="text"
           maxlength="4"
           v-model="players[i].name"
-          :placeholder="`이름${i+1}`"
+          :placeholder="t('option.name', {idx:i+1})"
           :name="`name${i+1}`"
         >
       </div>
       <div style="grid-area: option0;">
-        시작점수<br>
+        {{ t('option.startingScore') }}<br>
         <input 
           type="number"
           v-model="option.startingScore"
           :placeholder="25000"
-          :name="'startScore'"
+          :name="'startingScore'"
         >
       </div>
       <div style="grid-area: option1;">
-        반환점수<br>
+        {{ t('option.returnScore') }}<br>
         <input 
           type="number"
           v-model="option.returnScore"
           :placeholder="30000"
-          :name="'endScore'"
+          :name="'returnScore'"
         >
       </div>
       <div style="grid-area: option2;" @click.stop="emitEvent('set-toggle-button', 'roundmangan')">
-        절상만관<br>
+        {{ t('option.roundMangan') }}<br>
         <span :style="toggleButtonStyle('roundmangan')">
           <span v-show="option.roundMangan===true">O</span>
           <span v-show="option.roundMangan===false">X</span>
         </span>
       </div>
       <div style="grid-area: option3;" @click.stop="emitEvent('set-toggle-button', 'minusriichi')">
-        음수리치<br>
+        {{ t('option.minusRiichi') }}<br>
         <span :style="toggleButtonStyle('minusriichi')">
           <span v-show="option.minusRiichi===true">O</span>
           <span v-show="option.minusRiichi===false">X</span>
         </span>
       </div>
       <div style="grid-area: option4;">
-        순위우마 (1-2-3-4)<br>
+        {{ t('option.rankUma') }} (1-2-3-4)<br>
         <input
           v-for="(_, i) in option.rankUma"
           :key="i"
           style="width: 41px;"
           type="number"
           v-model="option.rankUma[i]"
-          :placeholder="`${i+1}위`"
+          :placeholder="t('option.rank', {idx:i+1})"
           :name="`uma${i+1}`"
           :style="{ marginRight: i===option.rankUma.length-1 ? '0px' : '10px' }"
         >
       </div>  
       <div style="grid-area: option5;" @click.stop="emitEvent('set-toggle-button', 'cheatscore')">
-        촌보점수<br>
+        {{ t('option.cheatScore') }}<br>
         <span :style="toggleButtonStyle('cheatscore')">
           <span v-show="option.cheatScore===true">3000 All</span>
-          <span v-show="option.cheatScore===false">만관</span>
+          <span v-show="option.cheatScore===false">{{ t('option.mangan') }}</span>
         </span>
       </div>
       <div style="grid-area: option6;" @click.stop="emitEvent('set-toggle-button', 'endriichi')">
-        공탁처리<br>
+        {{ t('option.riichiPayout') }}<br>
         <span :style="toggleButtonStyle('endriichi')">
-          <span v-show="option.endRiichi===true">1위</span>
-          <span v-show="option.endRiichi===false">X</span>
+          <span v-show="option.riichiPayout===true">{{ t('option.firstPlace') }}</span>
+          <span v-show="option.riichiPayout===false">X</span>
         </span>
-      </div>
-    </div>
-  </div>
-  <!-- 게임 결과창 -->
-  <div v-else-if="modalInfo.type==='score_sheet'" class="modal_content" @click.stop>
-    <div class="container_scoresheet">
-      <div v-for="(_, i) in class_scoresheet" 
-        :key="i"
-        :class="class_scoresheet[i]"
-        style="font-size: 25px;"
-      >
-        {{ arr_scoresheet[i] }}
-      </div>
-      <div style="grid-area: wind_contents;">
-        <div v-for="(_, i) in arr_seat" :key="i">{{ arr_seat[i][2] }}</div>
-      </div>
-      <div style="grid-area: name_contents;">
-        <div v-for="(_, i) in players" :key="i">{{ players[i].name }}</div>
-      </div>
-      <div style="grid-area: score_contents;">
-        <div v-for="(_, i) in scoreSheetInfo" :key="i">
-        {{ scoreSheetInfo[i].score }}(<span :style="getSignColor(scoreSheetInfo[i].point, false)"><span v-show="scoreSheetInfo[i].point>0">+</span>{{ scoreSheetInfo[i].point }}</span>)
-        </div>
-      </div>
-      <div style="grid-area: riichi_contents;">
-        <div v-for="(_, i) in scoreSheetInfo" :key="i">{{ scoreSheetInfo[i].cntRiichi }}</div>
-      </div>
-      <div style="grid-area: win_contents;">
-        <div v-for="(_, i) in scoreSheetInfo" :key="i">{{ scoreSheetInfo[i].cntWin }}</div>
-      </div>
-      <div style="grid-area: lose_contents;">
-        <div v-for="(_, i) in scoreSheetInfo" :key="i">{{ scoreSheetInfo[i].cntLose }}</div>
       </div>
     </div>
   </div>
@@ -798,7 +799,7 @@ const emitEvent = (eventName, ...args) => {
 }
 
 /* 옵션 선택창 */
-.container_choose_option{
+.container_choose_menu{
   display: grid;
   grid-template-rows: repeat(2, auto);
   grid-template-columns: repeat(2, auto);
@@ -854,7 +855,7 @@ const emitEvent = (eventName, ...args) => {
   margin: 5px;
 }
 /* 게임 결과창 */
-.container_scoresheet{
+.container_resultsheet{
   display: grid;
   grid-template-rows: repeat(2, auto);
   grid-template-columns: 60px 100px 150px repeat(3, 60px);
@@ -864,7 +865,7 @@ const emitEvent = (eventName, ...args) => {
   text-align: center;
   margin: 5px;
 }
-.container_scoresheet div{
+.container_resultsheet div{
   border-top: 1px solid black;
   border-bottom: 1px solid black;
 }

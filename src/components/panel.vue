@@ -48,7 +48,7 @@ const emitEvent = (eventName, ...args) => {
   </div>
 </div>
 <!-- 옵션 버튼 -->
-<div id='Option' @click="emitEvent('show-modal', 'choose_option_kind')">
+<div id='Menu' @click="emitEvent('show-modal', 'choose_menu_kind')">
   <graphics kind="gear"/>
 </div>
 </template>
@@ -61,8 +61,8 @@ const emitEvent = (eventName, ...args) => {
   transform: translate(-50%, -50%);
 }
 
-/* 옵션창 위치 */
-#Option{
+/* 메뉴창 위치 */
+#Menu{
   position: fixed;
   transform: scale(0.75);
   top: 5px;
