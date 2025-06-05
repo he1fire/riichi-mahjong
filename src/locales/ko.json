@@ -1,3 +1,10 @@
 {
-    "PageTitle" : "마작 점수 계산기"
+    "pageTitle" : "마작 점수 계산기",
+    "checkPlayerWin" : "화료한 사람을 선택해 주세요.",
+    "checkPlayerLose" : "방총당한 사람을 선택해 주세요.",
+    "chooseScore" : "{name}의 점수를 입력해주세요.",
+    "checkPlayerFao" : "책임지불할 사람을 선택해 주세요.",
+    "chooseScoreFao" : "책임지불할 점수를 입력해주세요.",
+    "checkPlayerTenpai" : "텐파이한 사람을 선택해 주세요.",
+    "checkPlayerCheat" : "촌보한 사람을 선택해 주세요."
 }

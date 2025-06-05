@@ -74,7 +74,7 @@ const modalInfo = reactive({ // 모달창
 
 /**시작시 자리선택 타일창 띄우기*/
 onMounted(() => {
-  document.title = t('PageTitle')
+  document.title = t('pageTitle') // 페이지 이름 설정
   for (let i=3;i>0;i--){ // 자리 섞기
     let j=Math.floor(Math.random()*(i+1));
     [seatTile.value[i], seatTile.value[j]]=[seatTile.value[j], seatTile.value[i]];
@@ -401,7 +401,7 @@ const checkInvalidStatus = (status) => {
       return;
     if (!cntLose){ // 쯔모
       scoringState.whoWin=returnIndex(players, 'isWin', true); // 승자 찾아서 저장
-      showModal('check_score', 'tsumo');
+      showModal('choose_score', 'tsumo');
     }
     else{ // 론
       scoringState.whoLose=returnIndex(players, 'isLose', true); // 패자 찾아서 저장
@@ -411,7 +411,7 @@ const checkInvalidStatus = (status) => {
           break;
         }
       }
-      showModal('check_score', 'ron');
+      showModal('choose_score', 'ron');
     }
   }
   else if (status==='fao'){ // 책임지불일때
@@ -419,7 +419,7 @@ const checkInvalidStatus = (status) => {
     if (scoringState.whoFao===-1) // 책임지불할 사람이 없음 (불가능한 경우)
       return;
     if (scoringState.inputFan>=10) // 2배역만 이상이면 점수 선택
-      showModal('choose_fao_score', modalInfo.status);
+      showModal('choose_score_fao', modalInfo.status);
     else
       calculateWin();
   }
@@ -490,7 +490,7 @@ const calculateWin = () => {
         scoringState.whoFao=-1;
         scoringState.inputFan=0;
         scoringState.inputBu=2;
-        showModal('check_score', 'ron'); // 다음 승자 점수 입력
+        showModal('choose_score', 'ron'); // 다음 승자 점수 입력
         break;
       }
     }

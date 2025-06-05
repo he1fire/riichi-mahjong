@@ -1,6 +1,10 @@
 <script setup>
-import { computed } from 'vue'
 import graphics from '@/components/graphics.vue'
+import { computed } from 'vue'
+import { useI18n } from 'vue-i18n'
+
+/**i18n 속성 가져오기*/
+const { t, locale } = useI18n()
 
 /**props 정의*/
 const props = defineProps({
@@ -197,7 +201,7 @@ const emitEvent = (eventName, ...args) => {
   <div v-if="modalInfo.type==='check_player_win'" class="modal_content" @click.stop>
     <div class="container_check">
       <div class="guide_message">
-        화료한 사람을 선택해 주세요.
+        {{ t('checkPlayerWin') }}
       </div>
       <div v-for="(_, i) in class_check"
         :key="i"
@@ -216,7 +220,7 @@ const emitEvent = (eventName, ...args) => {
   <div v-else-if="modalInfo.type==='check_player_lose'" class="modal_content" @click.stop>
     <div class="container_check">
       <div class="guide_message">
-        방총당한 사람을 선택해 주세요.
+        {{ t('checkPlayerLose') }}
       </div>
       <div v-for="(_, i) in class_check"
         :key="i"
@@ -232,9 +236,9 @@ const emitEvent = (eventName, ...args) => {
     </div>
   </div>
   <!-- 판/부 선택창 -->
-  <div v-else-if="modalInfo.type==='check_score'" class="modal_content" @click.stop>
+  <div v-else-if="modalInfo.type==='choose_score'" class="modal_content" @click.stop>
     <div>
-      {{ players[scoringState.whoWin].name }}의 점수를 입력해주세요.
+      {{ t('chooseScore', {name: players[scoringState.whoWin].name}) }}
     </div>
     <div class="container_check_fanbu">
       <div class="fan">
@@ -292,7 +296,7 @@ const emitEvent = (eventName, ...args) => {
   <div v-else-if="modalInfo.type==='check_player_fao'" class="modal_content" @click.stop>
     <div class="container_check">
       <div class="guide_message">
-        책임지불할 사람을 선택해 주세요.
+        {{ t('checkPlayerFao') }}
       </div>
       <div v-for="(_, i) in class_check"
         :key="i"
@@ -308,9 +312,9 @@ const emitEvent = (eventName, ...args) => {
     </div>
   </div>
   <!-- 책임지불 점수 선택창 -->
-  <div v-else-if="modalInfo.type==='choose_fao_score'" class="modal_content" @click.stop>
+  <div v-else-if="modalInfo.type==='choose_score_fao'" class="modal_content" @click.stop>
     <div>
-      책임지불할 점수를 입력해주세요.
+      {{ t('chooseScoreFao') }}
     </div>
     <div class="container_choose_fao_score">
       <span v-for="(_, i) in fan.slice(9)"
@@ -338,7 +342,7 @@ const emitEvent = (eventName, ...args) => {
   <div v-else-if="modalInfo.type==='check_player_tenpai'" class="modal_content" @click.stop>
     <div class="container_check">
       <div class="guide_message">
-        텐파이한 사람을 선택해 주세요.
+        {{ t('checkPlayerTenpai') }}
       </div>
       <div v-for="(_, i) in class_check"
         :key="i"
@@ -357,7 +361,7 @@ const emitEvent = (eventName, ...args) => {
   <div v-else-if="modalInfo.type==='check_player_cheat'" class="modal_content" @click.stop>
     <div class="container_check">
       <div class="guide_message">
-        촌보한 사람을 선택해 주세요.
+        {{ t('checkPlayerCheat') }}
       </div>
       <div v-for="(_, i) in class_check"
         :key="i"
