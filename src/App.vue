@@ -549,9 +549,6 @@ const saveRound = () => {
       }
     }
   }
-  else{
-    players.forEach((x) => {x.isRiichi=false;}); // 리치봉 수거
-  }
   for (let i=0;i<players.length;i++) // 점수 배분및 기록
     changeScores(i);
   for (let i=0;i<players.length;i++){ // 점수 기록창에 점수 기록
@@ -563,6 +560,7 @@ const saveRound = () => {
   records.riichi.push(players.map(x => x.isRiichi)); // 리치 기록에 추가
   records.win.push(players.map(x => x.isWin)); // 화료 기록에 추가
   records.lose.push(players.map(x => x.isLose)); // 방총 기록에 추가
+  players.forEach((x) => {x.isRiichi=false;}); // 리치봉 수거
   let chin=players[returnIndex(players, 'wind', '東')]; // 친이 누구인지 저장
   if (modalInfo.status==='tsumo' || modalInfo.status==='ron'){ // 화료로 끝났다면
     if (chin.isWin===false){ // 친이 화료를 못했다면

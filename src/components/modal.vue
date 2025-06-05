@@ -1,4 +1,5 @@
 <script setup>
+import { computed } from 'vue'
 import graphics from './graphics.vue'
 
 /**props 정의*/
@@ -42,6 +43,43 @@ const class_record = ["down_record", "right_record", "up_record", "left_record"]
 const class_scoresheet = ["wind", "name", "score", "riichi", "win", "lose"]
 const fan = ["1", "2", "3", "4", "5", "6+", "8+", "11+", "13+", "1배역만", "2배역만", "3배역만", "4배역만", "5배역만","6배역만"]
 const bu = [20, 25, 30, 40, 50, 60, 70, 80, 90, 100, 110]
+
+/**순위표 정보 계산*/
+const scoreSheetInfo = computed(() => {
+  return props.players.map((_, idx) => {
+    let myScore=props.players[idx].displayScore;
+    let point=0 // 점수기반
+    let oka=(props.option.returnScore*4-props.option.startingScore*4)/1000; // 오카
+    let uma=0; // 우마
+    let rank=props.players.filter(x => x.displayScore>myScore).length+1; // 순위
+    let cnt=props.players.filter(x => x.displayScore===myScore).length; // 동점자 수
+    for (let i=0;i<cnt;i++) // 동점자의 모든 우마 더하기
+      uma+=Number(props.option.rankUma[rank+i-1]);
+    if (rank===1){ // 1위라면 오카도 더하기
+      uma+=oka;
+      if (props.option.endRiichi) // 1위에게 공탁금을 몰아주는 경우 (100점단위)
+        myScore+=Math.floor(((props.panelInfo.riichi*1000)/cnt)/100)*100;
+    }
+    uma/=cnt; // 동점자 수만큼 우마 나누기
+    point=(myScore-props.option.returnScore)/1000+uma;
+    let cntRiichi=0, cntWin=0, cntLose=0;
+    for (let i=0;i<props.records.riichi.length;i++){
+      if (props.records.riichi[i][idx]===true)
+        cntRiichi++;
+      if (props.records.win[i][idx]===true)
+        cntWin++;
+      if (props.records.lose[i][idx]===true)
+        cntLose++;
+    }
+    return {
+      score: myScore,
+      point: point.toFixed(1),
+      cntRiichi,
+      cntWin,
+      cntLose
+    };
+  });
+})
 
 /**ok 버튼 색상*/
 const okButtonStyle = (status) => {
@@ -128,13 +166,15 @@ const seatTileStyle = (idx) => {
 }
 
 /**점수 부호에 따른 색상*/
-const getSignColor = (x) => {
-  if (x>0)
+const getSignColor = (sign, x) => {
+  if (sign>0)
     return {color: 'limegreen'};
-  else if (x<0)
+  else if (sign<0)
     return {color: 'red'};
-  else
+  else if (x===true)
     return {color: 'white'};
+  else
+    return {color: ''};
 }
 
 /**책임지불이 켜져있는지 확인*/
@@ -143,39 +183,6 @@ const checkFao = () => {
     emitEvent('show-modal', 'check_player_fao', props.modalInfo.status);
   else
     emitEvent('calculate-win');
-}
-
-/**순위표 점수 계산*/
-const calculateScorePoint = (idx) => {
-  let myScore=props.players[idx].displayScore;
-  let point=0 // 점수기반
-  let oka=(props.option.returnScore*4-props.option.startingScore*4)/1000; // 오카
-  let uma=0; // 우마
-  let rank=props.players.filter(x => x.displayScore>myScore).length+1; // 순위
-  let cnt=props.players.filter(x => x.displayScore===myScore).length; // 동점자 수
-  for (let i=0;i<cnt;i++) // 동점자의 모든 우마 더하기
-    uma+=Number(props.option.rankUma[rank+i-1]);
-  if (rank===1){ // 1위라면 오카도 더하기
-    uma+=oka;
-    if (props.option.endRiichi) // 1위에게 공탁금을 몰아주는 경우 (100점단위)
-      myScore+=Math.floor(((props.panelInfo.riichi*1000)/cnt)/100)*100;
-  }
-  uma/=cnt; // 동점자 수만큼 우마 나누기
-  point=(myScore-props.option.returnScore)/1000+uma;
-  return {
-    score: myScore,
-    point: point.toFixed(1)
-  };
-}
-
-/**순위표 기록 계산*/
-const calculateRecord = (arr, idx) => {
-  let ret=0;
-  for (let i=0;i<arr.length;i++){
-    if (arr[i][idx]===true)
-      ret++;
-  }
-  return ret;
 }
 
 /**$emit 이벤트 발생*/
@@ -371,7 +378,7 @@ const emitEvent = (eventName, ...args) => {
       <div v-for="(_, i) in class_score_diff"
         :key="i"
         :class="class_score_diff[i]"
-        :style="getSignColor(players[i].deltaScore)"
+        :style="getSignColor(players[i].deltaScore, true)"
       >
         <span v-show="players[i].deltaScore>0">+</span>{{ players[i].deltaScore }}
       </div>
@@ -452,7 +459,7 @@ const emitEvent = (eventName, ...args) => {
         >
           <div v-for="(_, j) in records.score[i]"
             :key="j"
-            :style="j%2===1 ? getSignColor(records.score[i][j]) : {}"
+            :style="j%2===1 ? getSignColor(records.score[i][j], true) : {}"
           >
             <span v-show="j%2===1 && records.score[i][j]>0">+</span>{{ records.score[i][j] }}
           </div>
@@ -564,18 +571,18 @@ const emitEvent = (eventName, ...args) => {
         <div v-for="(_, i) in players" :key="i">{{ players[i].name }}</div>
       </div>
       <div style="grid-area: score_contents;">
-        <div v-for="(_, i) in players" :key="i">
-        {{calculateScorePoint(i).score}}(<span :style="getSignColor(calculateScorePoint(i).point)"><span v-show="calculateScorePoint(i).point>0">+</span>{{calculateScorePoint(i).point}}</span>)
+        <div v-for="(_, i) in scoreSheetInfo" :key="i">
+        {{ scoreSheetInfo[i].score }}(<span :style="getSignColor(scoreSheetInfo[i].point, false)"><span v-show="scoreSheetInfo[i].point>0">+</span>{{ scoreSheetInfo[i].point }}</span>)
         </div>
       </div>
       <div style="grid-area: riichi_contents;">
-        <div v-for="(_, i) in records.riichi[0]" :key="i">{{calculateRecord(records.riichi, i)}}</div>
+        <div v-for="(_, i) in scoreSheetInfo" :key="i">{{ scoreSheetInfo[i].cntRiichi }}</div>
       </div>
       <div style="grid-area: win_contents;">
-        <div v-for="(_, i) in records.win[0]" :key="i">{{calculateRecord(records.win, i)}}</div>
+        <div v-for="(_, i) in scoreSheetInfo" :key="i">{{ scoreSheetInfo[i].cntWin }}</div>
       </div>
       <div style="grid-area: lose_contents;">
-        <div v-for="(_, i) in records.lose[0]" :key="i">{{calculateRecord(records.lose, i)}}</div>
+        <div v-for="(_, i) in scoreSheetInfo" :key="i">{{ scoreSheetInfo[i].cntLose }}</div>
       </div>
     </div>
   </div>
@@ -846,7 +853,7 @@ const emitEvent = (eventName, ...args) => {
 .container_scoresheet{
   display: grid;
   grid-template-rows: repeat(2, auto);
-  grid-template-columns: 50px 125px 150px repeat(3, 60px);
+  grid-template-columns: 60px 100px 150px repeat(3, 60px);
   grid-template-areas:
   "wind name score riichi win lose"
   "wind_contents name_contents score_contents riichi_contents win_contents lose_contents";
