@@ -62,7 +62,7 @@ const option = reactive({ // 옵션
   returnScore: 30000, // 반환 점수
   rankUma: [30, 10, -10, -30], // 순위 우마
   roundMangan: false, // 절상만관
-  minusRiichi: false, // 음수리치
+  tobi: true, // 들통
   cheatScore: true, // 촌보 지불 점수
   riichiPayout: true, // 남은 공탁금 처리
 })
@@ -74,7 +74,7 @@ const modalInfo = reactive({ // 모달창
 
 /**시작시 자리선택 타일창 띄우기*/
 onMounted(() => {
-  document.title = t('pageTitle') // 페이지 이름 설정
+  document.title=t('pageTitle') // 페이지 이름 설정
   for (let i=3;i>0;i--){ // 자리 섞기
     let j=Math.floor(Math.random()*(i+1));
     [seatTile.value[i], seatTile.value[j]]=[seatTile.value[j], seatTile.value[i]];
@@ -107,6 +107,15 @@ const toggleFullScreen = () => {
   }
 }
 
+/**언어 변경*/
+const changeLocale = () => {
+  if (locale.value==='ko')
+    locale.value='en'
+  else
+    locale.value='ko'
+  document.title=t('pageTitle') // 페이지 이름 설정
+}
+
 /**배열에서 같은값의 인덱스 반환*/
 const returnIndex = (arr, keyOrValue, value) => {
   if (value===undefined)
@@ -119,7 +128,7 @@ const returnIndex = (arr, keyOrValue, value) => {
 const toggleActiveRiichi = (seat) => {
   let idx=returnIndex(players, 'seat', seat); // 위치 기준 인덱스 반환
   if (players[idx].isRiichi===false){ // 리치 활성화
-    if (players[idx].displayScore<1000 && option.minusRiichi===false) // 리치를 걸수 없을 때
+    if (players[idx].displayScore<1000 && option.tobi===true) // 리치를 걸수 없을 때
       return;
     else if (players[idx].effectScore!==0) // 점수변동 이펙트 도중이면 실행 x
       return;
@@ -347,8 +356,8 @@ const setToggleButton = (status) => {
     scoringState.isFao=!scoringState.isFao;
   else if (status==='roundmangan') // 절상만관 토글
     option.roundMangan=!option.roundMangan;
-  else if (status==='minusriichi') // 음수리치 토글
-    option.minusRiichi=!option.minusRiichi;
+  else if (status==='tobi') // 토비 토글
+    option.tobi=!option.tobi;
   else if (status==='cheatscore') // 촌보점수 토글
     option.cheatScore=!option.cheatScore;
   else if (status==='endriichi') // 공탁처리 토글
@@ -694,6 +703,7 @@ const rollbackRecord = (idx) => {
     @roll-dice="rollDice"
     @copy-record="copyRecord"
     @rollback-record="rollbackRecord"
+    @change-locale="changeLocale"
   />
 </div>
 </template>

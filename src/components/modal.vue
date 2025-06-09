@@ -32,7 +32,8 @@ const emit = defineEmits([
   'save-round',
   'roll-dice',
   'copy-record',
-  'rollback-record'
+  'rollback-record',
+  'change-locale'
 ])
 
 /**data 정의*/
@@ -120,8 +121,8 @@ const toggleButtonStyle = (status) => {
     return {color: props.scoringState.isFao===true ? 'mediumblue' : 'red'};
   else if (status==='roundmangan') // 유국만관 옵션
     return {color: props.option.roundMangan===true ? 'mediumblue' : 'red'};
-  else if (status==='minusriichi') // 음수리치 옵션
-    return {color: props.option.minusRiichi===true ? 'mediumblue' : 'red'};
+  else if (status==='tobi') // 토비 옵션
+    return {color: props.option.tobi===true ? 'mediumblue' : 'red'};
   else if (status==='cheatscore') // 촌보점수 옵션
     return {color: props.option.cheatScore===true ? 'mediumblue' : 'red'};
   else if (status==='endriichi') // 공탁처리 옵션
@@ -180,6 +181,11 @@ const getSignColor = (sign, x) => {
     return {color: 'white'};
   else
     return {color: ''};
+}
+
+/**언어에 따른 색상*/
+const getLocaleColor = (x) => {
+  return {color: locale.value===x ? 'red' : ''};
 }
 
 /**책임지불이 켜져있는지 확인*/
@@ -439,7 +445,10 @@ const emitEvent = (eventName, ...args) => {
       <div @click.stop="emitEvent('show-modal', 'set_options')">
         {{ t('menu.option') }}
       </div>
-      <a href="https://github.com/he1fire/riichi-mahjong" target="_blank" style="font-size: 20px; "><img src="/github-logo.svg" alt="SVG" />Github</a>
+      <div style="font-size: 20px;" @click.stop="emitEvent('change-locale')">
+        <img src="/globe.svg" alt="SVG"/><span :style="getLocaleColor('ko')">KO</span> | <span :style="getLocaleColor('en')">EN</span>
+        <!-- <a style=" display: flex; align-items: center;" href="https://github.com/he1fire/riichi-mahjong" target="_blank"><img src="/github-logo.svg" alt="SVG"/>Github</a> -->
+      </div>
     </div>
   </div>
   <!-- 게임 결과창 -->
@@ -560,11 +569,11 @@ const emitEvent = (eventName, ...args) => {
           <span v-show="option.roundMangan===false">X</span>
         </span>
       </div>
-      <div style="grid-area: option3;" @click.stop="emitEvent('set-toggle-button', 'minusriichi')">
-        {{ t('option.minusRiichi') }}<br>
-        <span :style="toggleButtonStyle('minusriichi')">
-          <span v-show="option.minusRiichi===true">O</span>
-          <span v-show="option.minusRiichi===false">X</span>
+      <div style="grid-area: option3;" @click.stop="emitEvent('set-toggle-button', 'tobi')">
+        {{ t('option.tobi') }}<br>
+        <span :style="toggleButtonStyle('tobi')">
+          <span v-show="option.tobi===true">O</span>
+          <span v-show="option.tobi===false">X</span>
         </span>
       </div>
       <div style="grid-area: option4;">

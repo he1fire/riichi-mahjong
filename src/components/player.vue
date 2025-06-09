@@ -36,7 +36,7 @@ const windStyle = () => {
 
 /**리치가 불가능하면 회색 표시*/
 const displayScoreStyle = () => {
-  return {color: props.player.displayScore<1000 && props.option.minusRiichi===false ? 'gray' : ''}
+  return {color: props.player.displayScore<1000 && props.option.tobi===true ? 'gray' : ''}
 }
 
 /**리치봉 표시*/
