@@ -448,15 +448,13 @@ const emitEvent = (eventName, ...args) => {
       <div style="font-size: 20px;">
         <div style="display: flex; align-items: center;" @click.stop="emitEvent('change-locale')">
           <img src="/globe.svg" alt="SVG"/>
-          <span style="color : red">{{ locale }} </span>
           <span v-for="(x, i) in Object.keys(messages)"
-            v-show="x!==locale"
             :key="i"
           >
-            |{{ x }}
+            <span v-show="i!==0">/</span><span :style="getLocaleColor(x)">{{ x.toUpperCase() }}</span>
           </span>
         </div>
-        <a style=" display: flex; align-items: center;" href="https://github.com/he1fire/riichi-mahjong" target="_blank"><img src="/github-logo.svg" alt="SVG"/>Github</a>
+        <a style="display: flex; align-items: center;" href="https://github.com/he1fire/riichi-mahjong" target="_blank"><img src="/github-logo.svg" alt="SVG"/>Github</a>
       </div>
     </div>
   </div>

@@ -1,0 +1,63 @@
+{
+    "pageTitle" : "麻雀",
+    "panel" : {
+        "win" : "和了",
+        "draw" : "流局",
+        "cheat" : "冲和"
+    },
+    "comments" : {
+        "checkPlayerWin" : "Select caller.",
+        "checkPlayerLose" : "Select discarder.",
+        "chooseScore" : "Please enter score for {name}.",
+        "checkPlayerFao" : "Select pao.",
+        "chooseScoreFao" : "Please enter score for pao.",
+        "checkPlayerTenpai" : "Select tenpai.",
+        "checkPlayerCheat" : "Select chombo.",
+        "rollbackRecord" : "Revert to {time}?",
+        "copyRecord" : "Copy records to clipboard."
+    },
+    "score" : {
+        "fan" : "飜",
+        "bu" : "符",
+        "yakuman" : "役満",
+        "multipleYakuman" : "{num}*役満",
+        "fao" : "包則"
+    },
+    "drawKind" : {
+        "normalDraw" : "Exhaustive",
+        "specialDraw" : "Abortive"
+    },
+    "menu" : {
+        "resultSheet" : "Result",
+        "record" : "Record",
+        "option" : "Option"
+    },
+    "resultSheet" : {
+        "wind" : "Wind",
+        "name" : "Name",
+        "score" : "Score",
+        "riichi" : "Riichi",
+        "win" : "Win",
+        "lose" : "Lose"
+    },
+    "record" : {
+        "copy" : "Copy"
+    },
+    "option" : {
+        "east" : "East",
+        "south" : "South",
+        "west" : "West",
+        "north" : "North",
+        "name" : "Name {idx}",
+        "startingScore" : "Start",
+        "returnScore" : "Goal",
+        "roundMangan" : "Kiriage",
+        "tobi" : "Tobi",
+        "rankUma" : "Uma",
+        "rank" : "{idx}",
+        "cheatScore" : "冲和",
+        "mangan" : "満貫",
+        "riichiPayout" : "Deposit",
+        "firstPlace" : "1st"
+    }
+}

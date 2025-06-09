@@ -111,9 +111,12 @@ const toggleFullScreen = () => {
 const changeLocale = () => {
   if (locale.value==='ko')
     locale.value='en'
+  else if (locale.value==='en')
+    locale.value='ja'
   else
     locale.value='ko'
   document.title=t('pageTitle') // 페이지 이름 설정
+  localStorage.setItem("language", locale.value);
 }
 
 /**배열에서 같은값의 인덱스 반환*/
@@ -730,7 +733,8 @@ html{
   position: relative;
   height: 100vh;
   width: 100vw;
-  font-family: 'Noto Serif KR', serif;
+  font-family: 'Noto Serif KR', 'Noto Serif JP', 'Noto Serif', serif;
+  font-weight: 500;
 }
 
 /* 링크 설정 */
@@ -740,10 +744,12 @@ a {
 }
 
 /* 인풋창 설정 */
+.background input {
+  font-family: inherit;
+}
 input[type='text'], input[type='number']{
   font-size: 15px;
   width: 100px;
-  font-family: 'Noto Serif KR', serif;
   text-align: center;
 }
 /* 인풋창 숫자 업다운 삭제 */
