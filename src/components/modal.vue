@@ -457,7 +457,7 @@ const emitEvent = (eventName, ...args) => {
       <div v-for="(_, i) in class_resultsheet" 
         :key="i"
         :class="class_resultsheet[i]"
-        style="font-size: 25px;"
+        style="font-weight: bold;"
       >
         {{ t(arr_resultsheet[i]) }}
       </div>
@@ -592,8 +592,8 @@ const emitEvent = (eventName, ...args) => {
       <div style="grid-area: option5;" @click.stop="emitEvent('set-toggle-button', 'cheatscore')">
         {{ t('option.cheatScore') }}<br>
         <span :style="toggleButtonStyle('cheatscore')">
-          <span v-show="option.cheatScore===true">3000 All</span>
-          <span v-show="option.cheatScore===false">{{ t('option.mangan') }}</span>
+          <span v-show="option.cheatScore===true">{{ t('option.mangan') }}</span>
+          <span v-show="option.cheatScore===false">3000 All</span>
         </span>
       </div>
       <div style="grid-area: option6;" @click.stop="emitEvent('set-toggle-button', 'endriichi')">
@@ -685,7 +685,7 @@ const emitEvent = (eventName, ...args) => {
 .container_check_fanbu{
   display: grid;
   grid-template-rows: repeat(2, auto);
-  grid-template-columns: 60px auto;
+  grid-template-columns: 70px auto;
   grid-template-areas:
   "fan fan_check"
   "bu bu_check";

@@ -63,7 +63,7 @@ const option = reactive({ // 옵션
   rankUma: [30, 10, -10, -30], // 순위 우마
   roundMangan: false, // 절상만관
   tobi: true, // 들통
-  cheatScore: true, // 촌보 지불 점수
+  cheatScore: false, // 촌보 지불 점수
   riichiPayout: true, // 남은 공탁금 처리
 })
 const modalInfo = reactive({ // 모달창
@@ -525,15 +525,7 @@ const calculateDraw = () => {
 
 /**촌보 점수계산*/
 const calculateCheat = () => {
-  if (option.cheatScore===true){ // 3000점씩 지불 
-    for (let i=0;i<players.length;i++){
-      if (scoringState.whoCheat===i)
-        players[i].deltaScore=-9000;
-      else
-        players[i].deltaScore=3000;
-    }
-  }
-  else{// 만관 지불
+  if (option.cheatScore===true){ // 만관 지불
     for (let i=0;i<players.length;i++){
       if (scoringState.whoCheat===i){
         if (players[i].wind==='東') // 친일경우
@@ -547,6 +539,14 @@ const calculateCheat = () => {
         else
           players[i].deltaScore=2000;
       }
+    }
+  }
+  else{ // 3000점씩 지불 
+    for (let i=0;i<players.length;i++){
+      if (scoringState.whoCheat===i)
+        players[i].deltaScore=-9000;
+      else
+        players[i].deltaScore=3000;
     }
   }
   showModal('show_score', 'cheat');
