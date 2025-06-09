@@ -1,5 +1,5 @@
 {
-    "pageTitle" : "Riichi Calculator",
+    "pageTitle" : "Riichi Mahjong Calculator",
     "panel" : {
         "win" : "Win",
         "draw" : "Draw",
@@ -20,7 +20,7 @@
         "fan" : "Han",
         "bu" : "Fu",
         "yakuman" : "Yakuman",
-        "multipleYakuman" : "Yakuman*{num}",
+        "multipleYakuman" : "{num}*Yakuman",
         "fao" : "Pao"
     },
     "drawKind" : {

@@ -4,7 +4,7 @@ import { computed } from 'vue'
 import { useI18n } from 'vue-i18n'
 
 /**i18n 속성 가져오기*/
-const { t, locale } = useI18n()
+const { t, locale, messages } = useI18n()
 
 /**props 정의*/
 const props = defineProps({
@@ -445,9 +445,18 @@ const emitEvent = (eventName, ...args) => {
       <div @click.stop="emitEvent('show-modal', 'set_options')">
         {{ t('menu.option') }}
       </div>
-      <div style="font-size: 20px;" @click.stop="emitEvent('change-locale')">
-        <img src="/globe.svg" alt="SVG"/><span :style="getLocaleColor('ko')">KO</span> | <span :style="getLocaleColor('en')">EN</span>
-        <!-- <a style=" display: flex; align-items: center;" href="https://github.com/he1fire/riichi-mahjong" target="_blank"><img src="/github-logo.svg" alt="SVG"/>Github</a> -->
+      <div style="font-size: 20px;">
+        <div style="display: flex; align-items: center;" @click.stop="emitEvent('change-locale')">
+          <img src="/globe.svg" alt="SVG"/>
+          <span style="color : red">{{ locale }} </span>
+          <span v-for="(x, i) in Object.keys(messages)"
+            v-show="x!==locale"
+            :key="i"
+          >
+            |{{ x }}
+          </span>
+        </div>
+        <a style=" display: flex; align-items: center;" href="https://github.com/he1fire/riichi-mahjong" target="_blank"><img src="/github-logo.svg" alt="SVG"/>Github</a>
       </div>
     </div>
   </div>
