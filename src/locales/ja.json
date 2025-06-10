@@ -20,7 +20,7 @@
         "fan" : "飜",
         "bu" : "符",
         "yakuman" : "役満",
-        "multipleYakuman" : "{num}*役満",
+        "multipleYakuman" : "{num}倍役満",
         "fao" : "包則"
     },
     "drawKind" : {
@@ -28,17 +28,17 @@
         "specialDraw" : "Abortive"
     },
     "menu" : {
-        "resultSheet" : "Result",
-        "record" : "Record",
+        "resultSheet" : "結果",
+        "record" : "記録",
         "option" : "Option"
     },
     "resultSheet" : {
-        "wind" : "Wind",
-        "name" : "Name",
-        "score" : "Score",
-        "riichi" : "Riichi",
-        "win" : "Win",
-        "lose" : "Lose"
+        "wind" : "風",
+        "name" : "名前",
+        "score" : "点数",
+        "riichi" : "立直",
+        "win" : "和了",
+        "lose" : "放銃"
     },
     "record" : {
         "copy" : "Copy"
@@ -54,10 +54,10 @@
         "roundMangan" : "Kiriage",
         "tobi" : "Tobi",
         "rankUma" : "Uma",
-        "rank" : "{idx}",
+        "rank" : "{idx}位",
         "cheatScore" : "冲和",
         "mangan" : "満貫",
         "riichiPayout" : "Deposit",
-        "firstPlace" : "1st"
+        "firstPlace" : "1位"
     }
 }

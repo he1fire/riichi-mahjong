@@ -822,10 +822,10 @@ const emitEvent = (eventName, ...args) => {
 /* 옵션 선택창 */
 .container_choose_menu{
   display: grid;
-  grid-template-rows: repeat(2, auto);
-  grid-template-columns: repeat(2, auto);
+  grid-template-rows: repeat(2, 60px);
+  grid-template-columns: repeat(2, 120px);
   font-size: 30px;
-  gap: 30px;
+  gap: 20px;
   margin: 15px;
   place-items: center;
 }

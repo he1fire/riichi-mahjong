@@ -77,7 +77,7 @@ const emitEvent = (eventName, ...args) => {
 .container_mid{
   display: grid;
   grid-template-rows: 50px 50px 70px;
-  grid-template-columns: 130px 130px 150px;
+  grid-template-columns: repeat(3, 130px);
   grid-template-areas: 
     "now now win"
     "now now draw"

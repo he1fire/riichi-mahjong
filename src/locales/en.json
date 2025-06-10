@@ -3,7 +3,7 @@
     "panel" : {
         "win" : "Win",
         "draw" : "Draw",
-        "cheat" : "Chombo"
+        "cheat" : "Cheat"
     },
     "comments" : {
         "checkPlayerWin" : "Select caller.",
