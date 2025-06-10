@@ -194,12 +194,15 @@ const changeScores = (idx) => {
     arrCut[i]=currentScore+(players[idx].deltaScore/50)*(i+1);
   players[idx].effectScore=players[idx].deltaScore; // 이펙트 켜기
   let timecnt=0;
-  let repeat=setInterval(() => { // 시간에 따라 반복
+  let effect=setInterval(() => { // 시간에 따라 반복
     players[idx].displayScore=arrCut[timecnt]; // 100의 자리 변경
     timecnt++;
     if (timecnt>=50){
-      clearInterval(repeat); 
+      clearInterval(effect);
+      timecnt=0;
       players[idx].effectScore=0; // 이펙트 끄기
+      players[idx].rank=players.filter(x => x.displayScore>players[idx].displayScore).length+1; // 순위 표시 켜기
+      setTimeout(() => {players[idx].rank=0;}, 1000); // 1초 후 순위 표시 끄기
     }
   }, 20); // 0.02초 * 50번 = 1초동안 실행
 }
@@ -603,12 +606,12 @@ const saveRound = () => {
 const rollDice = () => {
   let timecnt=0;
   dice.wallDirection=[false, false, false, false]; // 패산 떼는 방향 초기화
-  let repeat=setInterval(() => { // 시간에 따라 반복
+  let roll=setInterval(() => { // 시간에 따라 반복
     dice.value[0]=Math.floor(Math.random()*6)+1;
     dice.value[1]=Math.floor(Math.random()*6)+1;
     timecnt++;
     if (timecnt>=10){
-        clearInterval(repeat);
+        clearInterval(roll);
         dice.wallDirection[(dice.value[0]+dice.value[1]-1)%4]=true; // 패산 떼는 방향 표시
     }
   }, 50); // 0.05초 * 10번 = 0.5초동안 실행
