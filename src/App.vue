@@ -6,7 +6,7 @@ import { ref, reactive, onMounted } from 'vue'
 import { useI18n } from 'vue-i18n'
 
 /**i18n 속성 가져오기*/
-const { t, locale } = useI18n()
+const { t, locale, messages } = useI18n()
 
 /**data 정의*/
 const players = reactive([ // 플레이어
@@ -109,14 +109,10 @@ const toggleFullScreen = () => {
 
 /**언어 변경*/
 const changeLocale = () => {
-  if (locale.value==='ko')
-    locale.value='en'
-  else if (locale.value==='en')
-    locale.value='ja'
-  else
-    locale.value='ko'
+  let arrLanguage=Object.keys(messages.value); // 언어 리스트 가져오기
+  locale.value=arrLanguage[(returnIndex(arrLanguage,locale.value)+1)%arrLanguage.length]; // 다음 언어로 변경
   document.title=t('pageTitle') // 페이지 이름 설정
-  localStorage.setItem("language", locale.value);
+  localStorage.setItem("language", locale.value); // 로컬 스토리지에 저장
 }
 
 /**배열에서 같은값의 인덱스 반환*/
