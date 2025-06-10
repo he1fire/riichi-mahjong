@@ -6,15 +6,15 @@
         "cheat" : "冲和"
     },
     "comments" : {
-        "checkPlayerWin" : "Select caller.",
-        "checkPlayerLose" : "Select discarder.",
-        "chooseScore" : "Please enter score for {name}.",
+        "checkPlayerWin" : "和了者を選択してください。",
+        "checkPlayerLose" : "放銃者を選択してください。",
+        "chooseScore" : "{name}の点数を入力してください。",
         "checkPlayerFao" : "Select pao.",
         "chooseScoreFao" : "Please enter score for pao.",
         "checkPlayerTenpai" : "Select tenpai.",
         "checkPlayerCheat" : "Select chombo.",
-        "rollbackRecord" : "Revert to {time}?",
-        "copyRecord" : "Copy records to clipboard."
+        "rollbackRecord" : "{time}に戻しますか？",
+        "copyRecord" : "記録をクリップボードにコピーしました。"
     },
     "score" : {
         "fan" : "飜",
@@ -24,13 +24,13 @@
         "fao" : "包則"
     },
     "drawKind" : {
-        "normalDraw" : "Exhaustive",
-        "specialDraw" : "Abortive"
+        "normalDraw" : "通常流局",
+        "specialDraw" : "途中流局"
     },
     "menu" : {
         "resultSheet" : "結果",
         "record" : "記録",
-        "option" : "Option"
+        "option" : "設定"
     },
     "resultSheet" : {
         "wind" : "風",
@@ -41,7 +41,7 @@
         "lose" : "放銃"
     },
     "record" : {
-        "copy" : "Copy"
+        "copy" : "コピー"
     },
     "option" : {
         "east" : "East",
