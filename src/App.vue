@@ -187,22 +187,27 @@ const changeWindsAndRounds = () => {
 }
 
 /**점수 변동 효과*/
-const changeScores = (idx) => {
-  let currentScore=players[idx].displayScore;
-  let arrCut=[];
-  for (let i=0;i<50;i++) // 변경될 점수 사이를 50등분해서 저장
-    arrCut[i]=currentScore+(players[idx].deltaScore/50)*(i+1);
-  players[idx].effectScore=players[idx].deltaScore; // 이펙트 켜기
+const changeScores = () => {
+  let currentScore=players.map(x => x.displayScore); // 현재 점수 저장
+  let arrCut=[[],[],[],[]];
+  for (let i=0;i<players.length;i++){
+    for (let j=0;j<50;j++) // 변경될 점수 사이를 50등분해서 저장
+      arrCut[i].push(currentScore[i]+(players[i].deltaScore/50)*(j+1));
+    players[i].effectScore=players[i].deltaScore; // 이펙트 켜기
+  }
   let timecnt=0;
   let effect=setInterval(() => { // 시간에 따라 반복
-    players[idx].displayScore=arrCut[timecnt]; // 100의 자리 변경
+    for (let i=0;i<players.length;i++)
+      players[i].displayScore=arrCut[i][timecnt]; // 이펙트 점수 변경
     timecnt++;
     if (timecnt>=50){
       clearInterval(effect);
       timecnt=0;
-      players[idx].effectScore=0; // 이펙트 끄기
-      players[idx].rank=players.filter(x => x.displayScore>players[idx].displayScore).length+1; // 순위 표시 켜기
-      setTimeout(() => {players[idx].rank=0;}, 1000); // 1초 후 순위 표시 끄기
+      for (let i=0;i<players.length;i++){
+        players[i].effectScore=0; // 이펙트 끄기
+        players[i].rank=players.filter(x => x.displayScore>players[i].displayScore).length+1; // 순위 표시 켜기
+        setTimeout(() => {players[i].rank=0;}, 1000); // 1초 후 순위 표시 끄기
+      }
     }
   }, 20); // 0.02초 * 50번 = 1초동안 실행
 }
@@ -569,8 +574,7 @@ const saveRound = () => {
       }
     }
   }
-  for (let i=0;i<players.length;i++) // 점수 배분및 기록
-    changeScores(i);
+  changeScores(); // 점수 배분및 기록
   for (let i=0;i<players.length;i++){ // 점수 기록창에 점수 기록
     records.score[i].push(players[i].deltaScore);
     records.score[i].push(players[i].displayScore+players[i].deltaScore);
