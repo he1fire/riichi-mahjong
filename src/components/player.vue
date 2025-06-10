@@ -29,6 +29,11 @@ const gapScoreHigh = computed(() => {
   return Math.floor(props.player.gapScore/100);
 })
 
+/**순위별 접미사*/
+const displayRank = computed(() => {
+  return props.player.rank+['st', 'nd', 'rd', 'th'][props.player.rank-1];
+})
+
 /**자풍이 東이라면 붉은색 표시*/
 const windStyle = () => {
   return {color: props.player.wind==='東' ? 'red' : ''}
@@ -86,7 +91,7 @@ const emitEvent = (eventName, ...args) => {
   </div>
   <!-- 순위 표시 -->
   <div v-show="player.rank!==0" class="rank" :style="{color: player.rank===1 ? 'red' : ''}">
-    {{ player.rank }}
+    {{ displayRank }}
   </div>
   <!-- 변경되는 점수 -->
   <div v-show="player.effectScore!==0" class="change" :style="getSignColor(player.effectScore)">
@@ -151,11 +156,9 @@ const emitEvent = (eventName, ...args) => {
 .rank{
   grid-area: rank;
   width: 0px;
-  font-size: 30px;
-  text-align: left;
+  font-size: 25px;
   font-weight: bold;
-  text-decoration: underline 3px;
-  transform: translate(-15px, 15px);
+  transform: rotate(-90deg) translate(-10px, 30px);
 }
 .change{
   grid-area: change;
