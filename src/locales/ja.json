@@ -1,18 +1,18 @@
 {
-    "pageTitle" : "麻雀",
+    "pageTitle" : "麻雀スコア計算機",
     "panel" : {
         "win" : "和了",
         "draw" : "流局",
-        "cheat" : "冲和"
+        "cheat" : "錯和"
     },
     "comments" : {
         "checkPlayerWin" : "和了者を選択してください。",
         "checkPlayerLose" : "放銃者を選択してください。",
         "chooseScore" : "{name}の点数を入力してください。",
-        "checkPlayerFao" : "Select pao.",
-        "chooseScoreFao" : "Please enter score for pao.",
-        "checkPlayerTenpai" : "Select tenpai.",
-        "checkPlayerCheat" : "Select chombo.",
+        "checkPlayerFao" : "包則者を選択してください。",
+        "chooseScoreFao" : "包則の点数を入力してください。",
+        "checkPlayerTenpai" : "テンパイ者を選択してください。",
+        "checkPlayerCheat" : "錯和者を選択してください。",
         "rollbackRecord" : "{time}に戻しますか？",
         "copyRecord" : "記録をクリップボードにコピーしました。"
     },
@@ -44,20 +44,20 @@
         "copy" : "コピー"
     },
     "option" : {
-        "east" : "East",
-        "south" : "South",
-        "west" : "West",
-        "north" : "North",
-        "name" : "Name {idx}",
-        "startingScore" : "Start",
-        "returnScore" : "Goal",
-        "roundMangan" : "Kiriage",
-        "tobi" : "Tobi",
-        "rankUma" : "Uma",
+        "east" : "ひがし",
+        "south" : "みなみ",
+        "west" : "にし",
+        "north" : "きた",
+        "name" : "名前 {idx}",
+        "startingScore" : "開始点",
+        "returnScore" : "返り点",
+        "roundMangan" : "切り上げ満貫",
+        "tobi" : "飛び",
+        "rankUma" : "ウマ",
         "rank" : "{idx}位",
-        "cheatScore" : "冲和",
+        "cheatScore" : "錯和点",
         "mangan" : "満貫",
-        "riichiPayout" : "Deposit",
+        "riichiPayout" : "立直棒処理",
         "firstPlace" : "1位"
     }
 }

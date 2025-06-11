@@ -542,7 +542,7 @@ const emitEvent = (eventName, ...args) => {
         :key="i"
         :style="`grid-area: input_name${i};`"
       >
-        {{ t(arr_seat[i]) }}({{ arr_wind[i] }})<br>
+        {{ arr_wind[i] }}({{ t(arr_seat[i]) }})<br>
         <input
           type="text"
           maxlength="4"
