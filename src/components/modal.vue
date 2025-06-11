@@ -588,7 +588,7 @@ const emitEvent = (eventName, ...args) => {
         <input
           v-for="(_, i) in option.rankUma"
           :key="i"
-          style="width: 41px;"
+          style="width: 51px;"
           type="number"
           v-model="option.rankUma[i]"
           :placeholder="t('option.rank', {idx:i+1})"
@@ -865,8 +865,8 @@ const emitEvent = (eventName, ...args) => {
 /* 옵션 선택창 */
 .container_option{
   display: grid;
-  grid-template-rows: repeat(3, auto);
-  grid-template-columns: repeat(4, auto);
+  grid-template-rows: repeat(3, 60px);
+  grid-template-columns: repeat(4, 120px);
   grid-template-areas:
   "input_name0 input_name1 input_name2 input_name3"
   "option0 option1 option2 option3"

@@ -752,7 +752,10 @@ a {
 }
 input[type='text'], input[type='number']{
   font-size: 15px;
-  width: 100px;
+  width: 116px;
+  padding: 1px;
+  border: 1px solid;
+  border-radius: 3px;
   text-align: center;
 }
 /* 인풋창 숫자 업다운 삭제 */
