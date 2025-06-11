@@ -446,10 +446,11 @@ const emitEvent = (eventName, ...args) => {
         {{ t('menu.option') }}
       </div>
       <div style="font-size: 20px;">
-        <div style="display: flex; align-items: center;" @click.stop="emitEvent('change-locale')">
+        <div style="display: flex; align-items: center;">
           <img src="/globe.svg" alt="SVG"/>
           <span v-for="(x, i) in Object.keys(messages)"
             :key="i"
+            @click.stop="emitEvent('change-locale', x)"
           >
             <span v-show="i!==0">/</span><span :style="getLocaleColor(x)">{{ x.toUpperCase() }}</span>
           </span>

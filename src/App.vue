@@ -108,9 +108,10 @@ const toggleFullScreen = () => {
 }
 
 /**언어 변경*/
-const changeLocale = () => {
-  let arrLanguage=Object.keys(messages.value); // 언어 리스트 가져오기
-  locale.value=arrLanguage[(returnIndex(arrLanguage,locale.value)+1)%arrLanguage.length]; // 다음 언어로 변경
+const changeLocale = (language) => {
+  //let arrLanguage=Object.keys(messages.value); // 언어 리스트 가져오기
+  //locale.value=arrLanguage[(returnIndex(arrLanguage,locale.value)+1)%arrLanguage.length]; // 다음 언어로 변경
+  locale.value=language; // 언어 변경
   document.title=t('pageTitle') // 페이지 이름 설정
   localStorage.setItem("language", locale.value); // 로컬 스토리지에 저장
 }
@@ -759,10 +760,9 @@ input[type='text'], input[type='number']{
   text-align: center;
 }
 /* 인풋창 숫자 업다운 삭제 */
-input[type="number"]::-webkit-outer-spin-button,
-input[type="number"]::-webkit-inner-spin-button {
-    -webkit-appearance: none;
-    margin: 0;
+input[type="number"]::-webkit-outer-spin-button, input[type="number"]::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
 }
 
 /* 가로모드 활성화 */
