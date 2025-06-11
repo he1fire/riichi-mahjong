@@ -1,10 +1,12 @@
 # riichi-mahjong
 
 > 점수 표시가 안되는 탁자에서 리치마작을 즐길때 사용하기 위한 점수 카운터 입니다.
+
 > It is a score counter created for use when playing riichi mahjong on tables without score displays.
+
 > スコア表示ができない卓でリーチ麻雀を楽しむ際に使うための点数カウンターです。
 
-## [Link](https://he1fire.github.io/riichi-mahjong/)
+## [Page Link](https://he1fire.github.io/riichi-mahjong/)
 
 ### 사용법
 - 페이지 접속시 착석을 위한 동, 남, 서, 북 패가 나옵니다.
