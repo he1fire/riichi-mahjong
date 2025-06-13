@@ -96,32 +96,32 @@ const scoreSheetInfo = computed(() => {
 
 /**점수차트 정보 계산*/
 const scoreChartInfo = computed(() => {
-    let datasets=props.players.map((_, idx) => ({
-      label: props.players[idx].name, // 이름 가져오기
-      data: props.records.score[idx].filter((_, i) => i%2===0), // 점수기록 가져오기)
-      borderColor: ['#ff6384', '#4bc0c0', '#36a2eb', '#ffce56'][idx], // 선 색상
-      backgroundColor: ['#ff6384', '#4bc0c0', '#36a2eb', '#ffce56'][idx], // 점 색상
-      pointRadius: 3, // 점 크기
-    }));
-    let times=['', ...props.records.time.filter((_, i) => i%2===1)]; // 시간 가져오기
-    let data={
-      labels: times,
-      datasets: datasets
-    };
-    let options={
-      responsive: true,
-      maintainAspectRatio: false,
-      animation: false,
-      plugins: {
-        legend: {
-          position: 'top',
-        },
+  let datasets=props.players.map((_, idx) => ({
+    label: props.players[idx].name, // 이름 가져오기
+    data: props.records.score[idx].filter((_, i) => i%2===0), // 점수기록 가져오기)
+    borderColor: ['#ff6384', '#4bc0c0', '#36a2eb', '#ffce56'][idx], // 선 색상
+    backgroundColor: ['#ff6384', '#4bc0c0', '#36a2eb', '#ffce56'][idx], // 점 색상
+    pointRadius: 3, // 점 크기
+  }));
+  let times=['', ...props.records.time.filter((_, i) => i%2===1)]; // 시간 가져오기
+  let data={
+    labels: times,
+    datasets: datasets
+  };
+  let options={
+    responsive: true,
+    maintainAspectRatio: false,
+    animation: false,
+    plugins: {
+      legend: {
+        position: 'top',
       },
-    };
-    return {
-      data: data,
-      options: options
-    };
+    },
+  };
+  return {
+    data: data,
+    options: options
+  };
 })
 
 /**ok 버튼 색상*/
