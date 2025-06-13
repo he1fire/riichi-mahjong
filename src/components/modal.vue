@@ -10,6 +10,8 @@ const { t, locale, messages } = useI18n()
 
 /**차트 컴포넌트 등록*/
 ChartJS.register(Title, Tooltip, Legend, LineElement, CategoryScale, LinearScale, PointElement)
+ChartJS.defaults.font.family = "'Noto Serif KR', 'Noto Serif JP', 'Noto Serif', serif"; // 폰트 설정
+ChartJS.defaults.color = '#000000'; // 기본 글자색 설정
 
 /**props 정의*/
 const props = defineProps({
@@ -108,6 +110,7 @@ const scoreChartInfo = computed(() => {
     };
     let options={
       responsive: true,
+      maintainAspectRatio: false,
       plugins: {
         legend: {
           position: 'top',
@@ -935,6 +938,7 @@ const emitEvent = (eventName, ...args) => {
 /* 게임 결과창(차트)*/
 .container_resultchart{
   width: 490px;
+  height: 240px;
   margin: 5px;
 }
 </style>
