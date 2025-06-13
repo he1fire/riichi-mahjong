@@ -102,9 +102,21 @@ const scoreChartInfo = computed(() => {
       pointRadius: 3, // 점 크기
     }));
     let times=['', ...props.records.time.filter((_, i) => i%2===1)]; // 시간 가져오기
-    return {
+    let data={
       labels: times,
       datasets: datasets
+    };
+    let options={
+      responsive: true,
+      plugins: {
+        legend: {
+          position: 'top',
+        },
+      },
+    };
+    return {
+      data: data,
+      options: options
     };
 })
 
@@ -515,7 +527,7 @@ const emitEvent = (eventName, ...args) => {
   <!-- 게임 결과창(차트) -->
   <div v-else-if="modalInfo.type==='result_chart'" class="modal_content" @click.stop>
     <div class="container_resultchart" @click.stop="emitEvent('show-modal','result_sheet')">
-      <LineChart :data="scoreChartInfo"/>
+      <LineChart :data="scoreChartInfo.data" :options="scoreChartInfo.options"/>
     </div>
   </div>
   <!-- 점수 기록창 -->
