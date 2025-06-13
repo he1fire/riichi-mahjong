@@ -726,10 +726,16 @@ const rollbackRecord = (idx) => {
   -ms-user-select: none;
   -khtml-user-select: none;
   user-select: none;
+  /* 스크롤바 삭제 */
+  -ms-overflow-style: none;
+  scrollbar-width: none;
 }
 html{
   overflow: hidden;
   overscroll-behavior: none;
+}
+body::-webkit-scrollbar {
+  display: none;
 }
 
 /* 배경화면 크기 및 글꼴 설정 */

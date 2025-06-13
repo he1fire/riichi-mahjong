@@ -101,7 +101,7 @@ const scoreChartInfo = computed(() => {
       backgroundColor: ['#ff6384', '#4bc0c0', '#36a2eb', '#ffce56'][idx], // 점 색상
       pointRadius: 3, // 점 크기
     }));
-    let times=['start', ...props.records.time.filter((_, i) => i%2===1)]; // 시간 가져오기
+    let times=['', ...props.records.time.filter((_, i) => i%2===1)]; // 시간 가져오기
     return {
       labels: times,
       datasets: datasets
@@ -884,7 +884,7 @@ const emitEvent = (eventName, ...args) => {
   "when down_record right_record up_record left_record";
   text-align: center;
   font-size: 20px;
-  overflow: auto;
+  overflow-y: auto;
 }
 .when{
   grid-area: when;
