@@ -961,5 +961,7 @@ const emitEvent = (eventName, ...args) => {
   width: 490px;
   height: 240px;
   margin: 5px;
+  position: relative;
+  overflow: hidden;
 }
 </style>
