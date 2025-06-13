@@ -2,9 +2,14 @@
 import graphics from '@/components/graphics.vue'
 import { computed } from 'vue'
 import { useI18n } from 'vue-i18n'
+import { Line as LineChart } from 'vue-chartjs'
+import { Chart as ChartJS, Title, Tooltip, Legend, LineElement, CategoryScale, LinearScale, PointElement } from 'chart.js'
 
 /**i18n 속성 가져오기*/
 const { t, locale, messages } = useI18n()
+
+/**차트 컴포넌트 등록*/
+ChartJS.register(Title, Tooltip, Legend, LineElement, CategoryScale, LinearScale, PointElement)
 
 /**props 정의*/
 const props = defineProps({
@@ -85,6 +90,22 @@ const scoreSheetInfo = computed(() => {
       cntLose
     };
   });
+})
+
+/**점수차트 정보 계산*/
+const scoreChartInfo = computed(() => {
+    let datasets=props.players.map((_, idx) => ({
+      label: props.players[idx].name, // 이름 가져오기
+      data: props.records.score[idx].filter((_, i) => i%2===0), // 점수기록 가져오기)
+      borderColor: ['#ff6384', '#4bc0c0', '#36a2eb', '#ffce56'][idx], // 선 색상
+      backgroundColor: ['#ff6384', '#4bc0c0', '#36a2eb', '#ffce56'][idx], // 점 색상
+      pointRadius: 3, // 점 크기
+    }));
+    let times=['start', ...props.records.time.filter((_, i) => i%2===1)]; // 시간 가져오기
+    return {
+      labels: times,
+      datasets: datasets
+    };
 })
 
 /**ok 버튼 색상*/
@@ -459,9 +480,9 @@ const emitEvent = (eventName, ...args) => {
       </div>
     </div>
   </div>
-  <!-- 게임 결과창 -->
+  <!-- 게임 결과창(표) -->
   <div v-else-if="modalInfo.type==='result_sheet'" class="modal_content" @click.stop>
-    <div class="container_resultsheet">
+    <div class="container_resultsheet" @click.stop="emitEvent('show-modal','result_chart')">
       <div v-for="(_, i) in class_resultsheet" 
         :key="i"
         :class="class_resultsheet[i]"
@@ -489,6 +510,12 @@ const emitEvent = (eventName, ...args) => {
       <div style="grid-area: lose_contents;">
         <div v-for="(_, i) in scoreSheetInfo" :key="i">{{ scoreSheetInfo[i].cntLose }}</div>
       </div>
+    </div>
+  </div>
+  <!-- 게임 결과창(차트) -->
+  <div v-else-if="modalInfo.type==='result_chart'" class="modal_content" @click.stop>
+    <div class="container_resultchart" @click.stop="emitEvent('show-modal','result_sheet')">
+      <LineChart :data="scoreChartInfo"/>
     </div>
   </div>
   <!-- 점수 기록창 -->
@@ -876,7 +903,8 @@ const emitEvent = (eventName, ...args) => {
   gap: 10px;
   margin: 5px;
 }
-/* 게임 결과창 */
+
+/* 게임 결과창(표)*/
 .container_resultsheet{
   display: grid;
   grid-template-rows: repeat(2, auto);
@@ -890,5 +918,11 @@ const emitEvent = (eventName, ...args) => {
 .container_resultsheet div{
   border-top: 1px solid black;
   border-bottom: 1px solid black;
+}
+
+/* 게임 결과창(차트)*/
+.container_resultchart{
+  width: 490px;
+  margin: 5px;
 }
 </style>
