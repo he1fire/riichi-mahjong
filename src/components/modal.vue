@@ -120,7 +120,7 @@ const scoreChartInfo = computed(() => {
   let options={
     responsive: true, // 반응형
     maintainAspectRatio: false, // 크기조절
-    animation: false, // 애니메이션 끄기
+    //animation: false, // 애니메이션 끄기
     scales: {
       x: {
         ticks: {
@@ -961,7 +961,5 @@ const emitEvent = (eventName, ...args) => {
   width: 490px;
   height: 240px;
   margin: 5px;
-  position: relative;
-  overflow: hidden;
 }
 </style>
