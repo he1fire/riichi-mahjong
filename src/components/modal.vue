@@ -97,7 +97,7 @@ const scoreSheetInfo = computed(() => {
 /**점수차트 정보 계산*/
 const scoreChartInfo = computed(() => {
   let datasets=props.players.map((_, idx) => ({
-    label: props.players[idx].name+'ㅤ', // 이름 가져오기
+    label: props.players[idx].name, // 이름 가져오기
     data: props.records.score[idx].filter((_, i) => i%2===0), // 점수기록 가져오기)
     borderColor: ['#ff6384', '#4bc0c0', '#36a2eb', '#ffce56'][idx], // 선 색상
     backgroundColor: ['#ff6384', '#4bc0c0', '#36a2eb', '#ffce56'][idx], // 점 색상
@@ -120,13 +120,20 @@ const scoreChartInfo = computed(() => {
   let options={
     responsive: true, // 반응형
     maintainAspectRatio: false, // 크기조절
-    //animation: false, // 애니메이션 끄기
+    animations: {
+      y: {
+        from: (ctx) => {
+          const yScale = ctx.chart.scales.y;
+          return yScale.getPixelForValue(25000); // 애니메이션 시작점 25000
+        }
+      },
+    },
     scales: {
       x: {
         ticks: {
           autoSkip: false, // 모든 라벨 표시
         }
-      }
+      },
     },
     plugins: {
       legend: {
