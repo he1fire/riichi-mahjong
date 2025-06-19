@@ -35,7 +35,7 @@ defineProps<Props>()
   <div v-show="(Number(value)-2)%2===1" class="dice_circle" style="grid-area: _1;"></div>
   <div v-show="Number(value)>=2" class="dice_circle" style="grid-area: _2;"></div>
   <div v-show="Number(value)>=2" class="dice_circle" style="grid-area: _3;"></div>
-  <div v-show="Number(value)e>=4" class="dice_circle" style="grid-area: _4;"></div>
+  <div v-show="Number(value)>=4" class="dice_circle" style="grid-area: _4;"></div>
   <div v-show="Number(value)>=4" class="dice_circle" style="grid-area: _5;"></div>
   <div v-show="Number(value)===6" class="dice_circle" style="grid-area: _6;"></div>
   <div v-show="Number(value)===6" class="dice_circle" style="grid-area: _7;"></div>

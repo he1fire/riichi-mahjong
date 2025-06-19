@@ -1,31 +1,29 @@
-<script setup>
+<script setup lang='ts'>
 import graphics from '@/components/graphics.vue';
+import type { PanelInfo } from '@/types/types.d';
 import { useI18n } from 'vue-i18n'
 
 /**i18n 속성 가져오기*/
-const { t, locale } = useI18n()
+const { t } = useI18n()
 
 /**props 정의*/
-const props = defineProps({
-  panelInfo: Object,
-})
+interface Props {
+  panelInfo: PanelInfo,
+}
+defineProps<Props>()
 
 /**emits 정의*/
-const emit = defineEmits([
-  'show-modal',
-  'roll-dice'
-])
-
-/**emit 이벤트 발생*/
-const emitEvent = (eventName, ...args) => {
-  emit(eventName, ...args)
+type Emits = {
+  (e: 'show-modal', modal: string): void,
+  (e: 'roll-dice'): void
 }
+const emit = defineEmits<Emits>()
 </script>
 
 <template>
 <div class="container_mid" id='Mid'>
   <!-- 현재 라운드 -->
-  <div class="now" @click="emitEvent('show-modal', 'roll_dice'), emitEvent('roll-dice')">
+  <div class="now" @click="emit('show-modal', 'roll_dice'), emit('roll-dice')">
     {{ panelInfo.wind }} {{ panelInfo.round }} 局
   </div>
   <!-- 현재 총 리치봉 -->
@@ -39,20 +37,20 @@ const emitEvent = (eventName, ...args) => {
     <span>x {{ panelInfo.renchan }}</span>
   </div>
   <!-- 화료 버튼 -->
-  <div class="win" @click="emitEvent('show-modal', 'check_player_win')">
+  <div class="win" @click="emit('show-modal', 'check_player_win')">
     {{ t('panel.win') }}
   </div>
   <!-- 유국 버튼 -->
-  <div class="draw" @click="emitEvent('show-modal', 'choose_draw_kind')">
+  <div class="draw" @click="emit('show-modal', 'choose_draw_kind')">
     {{ t('panel.draw') }}
   </div>
   <!-- 촌보 버튼 -->
-  <div class="cheat" @click="emitEvent('show-modal', 'check_player_cheat')">
+  <div class="cheat" @click="emit('show-modal', 'check_player_cheat')">
     {{ t('panel.cheat') }}
   </div>
 </div>
 <!-- 옵션 버튼 -->
-<div id='Menu' @click="emitEvent('show-modal', 'choose_menu_kind')">
+<div id='Menu' @click="emit('show-modal', 'choose_menu_kind')">
   <graphics kind="gear"/>
 </div>
 </template>
