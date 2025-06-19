@@ -1,9 +1,9 @@
-<script setup>
+<script setup lang="ts">
 /**props 정의*/
-const props = defineProps({
-  kind: String,
-  value: [Number, String],
-})
+const props = defineProps<{
+  kind: string
+  value?: string | number
+}>()
 </script>
 
 <template>
