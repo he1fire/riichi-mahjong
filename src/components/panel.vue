@@ -1,7 +1,7 @@
-<script setup lang='ts'>
-import graphics from '@/components/graphics.vue';
-import type { PanelInfo } from '@/types/types.d';
-import { useI18n } from 'vue-i18n'
+<script setup lang="ts">
+import graphics from "@/components/graphics.vue";
+import type { PanelInfo } from "@/types/types.d";
+import { useI18n } from "vue-i18n"
 
 /**i18n 속성 가져오기*/
 const { t } = useI18n()
@@ -21,7 +21,7 @@ const emit = defineEmits<Emits>()
 </script>
 
 <template>
-<div class="container_mid" id='Mid'>
+<div class="container_mid" id="Mid">
   <!-- 현재 라운드 -->
   <div class="now" @click="emit('show-modal', 'roll_dice'), emit('roll-dice')">
     {{ panelInfo.wind }} {{ panelInfo.round }} 局
@@ -50,7 +50,7 @@ const emit = defineEmits<Emits>()
   </div>
 </div>
 <!-- 옵션 버튼 -->
-<div id='Menu' @click="emit('show-modal', 'choose_menu_kind')">
+<div id="Menu" @click="emit('show-modal', 'choose_menu_kind')">
   <graphics kind="gear"/>
 </div>
 </template>
@@ -77,9 +77,9 @@ const emit = defineEmits<Emits>()
   grid-template-rows: 50px 50px 70px;
   grid-template-columns: repeat(3, 130px);
   grid-template-areas: 
-    "now now win"
-    "now now draw"
-    "riichi renchan cheat";
+    'now now win'
+    'now now draw'
+    'riichi renchan cheat';
   position: fixed;
   text-align: center;
   font-size: 40px;

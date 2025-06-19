@@ -101,13 +101,13 @@ defineProps<Props>()
   grid-template-rows: repeat(7, 5px);
   grid-template-columns: repeat(7, 5px);
   grid-template-areas: 
-  ". . . . . . ."
-  ". _2 . . . _5 ."
-  ". . . . . . ."
-  ". _6 . _1 . _7 ."
-  ". . . . . . ."
-  ". _4 . . . _3 ."
-  ". . . . . . ."
+  '. . . . . . .'
+  '. _2 . . . _5 .'
+  '. . . . . . .'
+  '. _6 . _1 . _7 .'
+  '. . . . . . .'
+  '. _4 . . . _3 .'
+  '. . . . . . .'
   ;
   vertical-align: middle;
   text-align: center;
