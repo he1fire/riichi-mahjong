@@ -1,9 +1,10 @@
 <script setup lang="ts">
 /**props 정의*/
-const props = defineProps<{
-  kind: string
-  value?: string | number
-}>()
+interface Props {
+  kind: string,
+  value?: string | number,
+}
+defineProps<Props>()
 </script>
 
 <template>
@@ -30,14 +31,14 @@ const props = defineProps<{
 </div>
 <!-- 주사위 -->
 <div v-else-if="kind==='dice'" class="container_dice">
-  <div v-show="value===1" class="dice_circle" style="grid-area: _1; background-color: red;"></div>
-  <div v-show="(value-2)%2===1" class="dice_circle" style="grid-area: _1;"></div>
-  <div v-show="value>=2" class="dice_circle" style="grid-area: _2;"></div>
-  <div v-show="value>=2" class="dice_circle" style="grid-area: _3;"></div>
-  <div v-show="value>=4" class="dice_circle" style="grid-area: _4;"></div>
-  <div v-show="value>=4" class="dice_circle" style="grid-area: _5;"></div>
-  <div v-show="value===6" class="dice_circle" style="grid-area: _6;"></div>
-  <div v-show="value===6" class="dice_circle" style="grid-area: _7;"></div>
+  <div v-show="Number(value)===1" class="dice_circle" style="grid-area: _1; background-color: red;"></div>
+  <div v-show="(Number(value)-2)%2===1" class="dice_circle" style="grid-area: _1;"></div>
+  <div v-show="Number(value)>=2" class="dice_circle" style="grid-area: _2;"></div>
+  <div v-show="Number(value)>=2" class="dice_circle" style="grid-area: _3;"></div>
+  <div v-show="Number(value)e>=4" class="dice_circle" style="grid-area: _4;"></div>
+  <div v-show="Number(value)>=4" class="dice_circle" style="grid-area: _5;"></div>
+  <div v-show="Number(value)===6" class="dice_circle" style="grid-area: _6;"></div>
+  <div v-show="Number(value)===6" class="dice_circle" style="grid-area: _7;"></div>
 </div>
 <!-- 바람 타일 -->
 <div v-else-if="kind==='tile'" class="tile">{{ value }}</div>
