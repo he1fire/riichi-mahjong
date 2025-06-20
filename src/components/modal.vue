@@ -1,60 +1,63 @@
-<script setup>
-import graphics from '@/components/graphics.vue'
-import { computed } from 'vue'
-import { useI18n } from 'vue-i18n'
-import { Line as LineChart } from 'vue-chartjs'
-import { Chart as ChartJS, Title, Tooltip, Legend, LineElement, CategoryScale, LinearScale, PointElement } from 'chart.js'
+<script setup lang="ts">
+import graphics from "@/components/graphics.vue"
+import type { Player, ScoringState, PanelInfo, Dice, SeatTile, Records, Option, ModalInfo } from "@/types/types.d";
+import { computed } from "vue"
+import { useI18n } from "vue-i18n"
+import { Line as LineChart } from "vue-chartjs"
+import { Chart as ChartJS, Title, Tooltip, Legend, LineElement, CategoryScale, LinearScale, PointElement, type ChartOptions } from "chart.js"
 
 /**i18n 속성 가져오기*/
 const { t, locale, messages } = useI18n()
 
 /**차트 컴포넌트 등록*/
 ChartJS.register(Title, Tooltip, Legend, LineElement, CategoryScale, LinearScale, PointElement)
-ChartJS.defaults.font.family = "'Noto Serif KR', 'Noto Serif JP', 'Noto Serif', serif" // 폰트 설정
+ChartJS.defaults.font.family = "'Noto Serif KR', 'Noto Serif JP', 'Noto Serif', 'serif'" // 폰트 설정
 ChartJS.defaults.color = '#000000' // 기본 글자색 설정
 
 /**props 정의*/
-const props = defineProps({
-  players: Array,
-  scoringState: Object,
-  panelInfo: Object,
-  dice: Object,
-  seatTile: Object,
-  records: Object,
-  option: Object,
-  modalInfo: Object,
-})
+interface Props {
+  players: Player[],
+  scoringState: ScoringState,
+  panelInfo: PanelInfo,
+  dice: Dice,
+  seatTile: SeatTile
+  records: Records,
+  option: Option,
+  modalInfo: ModalInfo,
+}
+const props = defineProps<Props>()
 
 /**emits 정의*/
-const emit = defineEmits([
-  'show-modal',
-  'hide-modal',
-  'set-arrow-button',
-  'set-toggle-button',
-  'set-fanbu-button',
-  'set-seat-tile',
-  'check-invalid-status',
-  'calculate-win',
-  'calculate-draw',
-  'save-round',
-  'roll-dice',
-  'copy-record',
-  'rollback-record',
-  'change-locale'
-])
+type Emits = {
+  (e: 'show-modal', type: string, status?: string): void,
+  (e: 'hide-modal'): void,
+  (e: 'set-arrow-button', status: string, idx: number): void,
+  (e: 'set-toggle-button', status: string): void,
+  (e: 'set-fanbu-button', status: string, idx: number): void,
+  (e: 'set-seat-tile', idx: number): void,
+  (e: 'check-invalid-status', status: string): void,
+  (e: 'calculate-win'): void,
+  (e: 'calculate-draw'): void,
+  (e: 'save-round'): void,
+  (e: 'roll-dice'): void,
+  (e: 'copy-record'): void,
+  (e: 'rollback-record', time: number): void,
+  (e: 'change-locale', locale: string): void
+}
+const emit = defineEmits<Emits>()
 
 /**data 정의*/
-const arr_arrow = ["▼", "▶", "▲", "◀"]
-const arr_wind = ["東", "南", "西", "北"];
-const arr_seat = ["option.east", "option.south", "option.west", "option.north",]
-const arr_resultsheet = ["resultSheet.wind", "resultSheet.name", "resultSheet.score", "resultSheet.riichi", "resultSheet.win", "resultSheet.lose"]
-const class_check = ["down_check", "right_check", "up_check", "left_check"]
-const class_score_diff = ["down_score_diff", "right_score_diff", "up_score_diff", "left_score_diff"]
-const class_dice = ["down_dice", "right_dice", "up_dice", "left_dice"]
-const class_name = ["down_name", "right_name", "up_name", "left_name"]
-const class_record = ["down_record", "right_record", "up_record", "left_record"]
-const class_resultsheet = ["wind", "name", "score", "riichi", "win", "lose"]
-const fan = ["1", "2", "3", "4", "5", "6+", "8+", "11+", "13+", "1", "2", "3", "4", "5","6"]
+const arr_arrow = ['▼', '▶', '▲', '◀']
+const arr_wind = ['東', '南', '西', '北'];
+const arr_seat = ['option.east', 'option.south', 'option.west', 'option.north',]
+const arr_resultsheet = ['resultSheet.wind', 'resultSheet.name', 'resultSheet.score', 'resultSheet.riichi', 'resultSheet.win', 'resultSheet.lose']
+const class_check = ['down_check', 'right_check', 'up_check', 'left_check']
+const class_score_diff = ['down_score_diff', 'right_score_diff', 'up_score_diff', 'left_score_diff']
+const class_dice = ['down_dice', 'right_dice', 'up_dice', 'left_dice']
+const class_name = ['down_name', 'right_name', 'up_name', 'left_name']
+const class_record = ['down_record', 'right_record', 'up_record', 'left_record']
+const class_resultsheet = ['wind', 'name', 'score', 'riichi', 'win', 'lose']
+const fan = ['1', '2', '3', '4', '5', '6+', '8+', '11+', '13+', '1', '2', '3', '4', '5','6']
 const bu = [20, 25, 30, 40, 50, 60, 70, 80, 90, 100, 110]
 
 /**순위표 정보 계산*/
@@ -117,7 +120,7 @@ const scoreChartInfo = computed(() => {
     labels: times,
     datasets: datasets
   };
-  let options={
+  let options: ChartOptions<'line'> = {
     responsive: true, // 반응형
     maintainAspectRatio: false, // 크기조절
     animations: {
@@ -152,7 +155,7 @@ const scoreChartInfo = computed(() => {
 })
 
 /**ok 버튼 색상*/
-const okButtonStyle = (status) => {
+const okButtonStyle = (status: string) => {
   let cntWin=props.players.filter(x => x.isWin===true).length; // 화료 인원 세기
   let cntLose=props.players.filter(x => x.isLose===true).length; // 방총 인원 세기
   if (status==='win') // 화료 ok 버튼
@@ -166,7 +169,7 @@ const okButtonStyle = (status) => {
 }
 
 /**화살표 버튼 색상*/
-const arrowButtonStyle = (status, idx) => {
+const arrowButtonStyle = (status: string, idx: number) => {
   if (status==='win') // 화료 화살표 버튼
     return {color: props.players[idx].isWin===true ? 'red' : ''}; // 선택시 빨간색
   else if (status==='lose') // 방총 화살표 버튼
@@ -180,7 +183,7 @@ const arrowButtonStyle = (status, idx) => {
 }
 
 /**토글 버튼 색상*/
-const toggleButtonStyle = (status) => {
+const toggleButtonStyle = (status: string) => {
   if (status==='isfao') // 점수창 책임지불 OX
     return {color: props.scoringState.isFao===true ? 'mediumblue' : 'red'};
   else if (status==='roundmangan') // 유국만관 옵션
@@ -194,7 +197,7 @@ const toggleButtonStyle = (status) => {
 }
 
 /**판/부 버튼 색상*/
-const fanBuButtonStyle = (status, idx) => {
+const fanBuButtonStyle = (status: string, idx: number) => {
   if (status==='fan') // 판 체크
     return {color: idx===props.scoringState.inputFan ? 'red' : ''};
   else if (status==='bu'){ // 부 체크
@@ -216,7 +219,7 @@ const fanBuButtonStyle = (status, idx) => {
 }
 
 /**역만인지 확인하고 숨기기*/
-const yakumanVisibility = (idx) => {
+const yakumanVisibility = (idx: number) => {
   return {display: ((props.scoringState.inputFan<9 && idx===9) || idx===props.scoringState.inputFan) ? '' : 'none'};
 }
 
@@ -226,17 +229,17 @@ const diceModalTransform = () => {
 }
 
 /**주사위 패산 방향 표시*/
-const wallDirectionVisibility = (idx) => {
+const wallDirectionVisibility = (idx: number): { visibility: 'visible' | 'hidden' } => {
   return {visibility: props.dice.wallDirection[idx]===true ? 'visible' : 'hidden'};
 }
 
 /**타일 앞뒤 표시*/
-const seatTileStyle = (idx) => {
+const seatTileStyle = (idx: number) => {
   return {gridArea: `tile_${idx+1}`, color: props.seatTile.isOpened[idx]===true ? (props.seatTile.value[idx]==='東' ? 'red' : '') : 'orange', backgroundColor: props.seatTile.isOpened[idx]===true ? '' : 'orange'};
 }
 
 /**점수 부호에 따른 색상*/
-const getSignColor = (sign, x) => {
+const getSignColor = (sign: number, x: boolean) => {
   if (sign>0)
     return {color: 'limegreen'};
   else if (sign<0)
@@ -248,26 +251,21 @@ const getSignColor = (sign, x) => {
 }
 
 /**언어에 따른 색상*/
-const getLocaleColor = (x) => {
+const getLocaleColor = (x: string) => {
   return {color: locale.value===x ? 'red' : ''};
 }
 
 /**책임지불이 켜져있는지 확인*/
 const checkFao = () => {
   if (props.scoringState.isFao===true) // 책임지불이 있다면 선택창 키기
-    emitEvent('show-modal', 'check_player_fao', props.modalInfo.status);
+    emit('show-modal', 'check_player_fao', props.modalInfo.status);
   else
-    emitEvent('calculate-win');
-}
-
-/**$emit 이벤트 발생*/
-const emitEvent = (eventName, ...args) => {
-  emit(eventName, ...args);
+    emit('calculate-win');
 }
 </script>
 
 <template>
-<div class="modal" @click="emitEvent('hide-modal')">
+<div class="modal" @click="emit('hide-modal')">
   <!-- 화료 인원 선택창 -->
   <div v-if="modalInfo.type==='check_player_win'" class="modal_content" @click.stop>
     <div class="container_check">
@@ -278,11 +276,11 @@ const emitEvent = (eventName, ...args) => {
         :key="i"
         :class="class_check[i]"
         :style="arrowButtonStyle('win', i)"
-        @click.stop="emitEvent('set-arrow-button', 'win', i)"
+        @click.stop="emit('set-arrow-button', 'win', i)"
       >
         {{ arr_arrow[i] }}
       </div>
-      <div class="ok" :style="okButtonStyle('win')" @click.stop="emitEvent('check-invalid-status', 'win')">
+      <div class="ok" :style="okButtonStyle('win')" @click.stop="emit('check-invalid-status', 'win')">
         OK
       </div>
     </div>
@@ -297,11 +295,11 @@ const emitEvent = (eventName, ...args) => {
         :key="i"
         :class="class_check[i]"
         :style="arrowButtonStyle('lose', i)"
-        @click.stop="emitEvent('set-arrow-button', 'lose', i)"
+        @click.stop="emit('set-arrow-button', 'lose', i)"
       >
         {{ arr_arrow[i] }}
       </div>
-      <div class="ok" :style="okButtonStyle('lose')" @click.stop="emitEvent('check-invalid-status', 'lose')">
+      <div class="ok" :style="okButtonStyle('lose')" @click.stop="emit('check-invalid-status', 'lose')">
         OK
       </div>
     </div>
@@ -319,24 +317,24 @@ const emitEvent = (eventName, ...args) => {
         <span v-for="(_, i) in fan.slice(0, 9)"
         :key="i"
         :style="fanBuButtonStyle('fan', i)"
-        @click.stop="emitEvent('set-fanbu-button', 'fan', i)"
+        @click.stop="emit('set-fanbu-button', 'fan', i)"
         >
           {{ fan[i] }}
         </span>
         <br>
         <span v-show="scoringState.inputFan<9"
-        @click.stop="emitEvent('set-fanbu-button', 'fan', 9)"
+        @click.stop="emit('set-fanbu-button', 'fan', 9)"
         >
           {{ t('score.yakuman') }}
         </span>
         <span v-show="scoringState.inputFan>=9" v-for="(_, i) in fan.slice(9)"
         :key="i"
         :style="[fanBuButtonStyle('fan', i+9), yakumanVisibility(i+9)]"
-        @click.stop="emitEvent('set-fanbu-button', 'fan', i+9)"
+        @click.stop="emit('set-fanbu-button', 'fan', i+9)"
         >
           {{ t('score.multipleYakuman', {num: fan[i+9]}) }}
         </span>
-        <span v-show="scoringState.inputFan>=9" style="font-size: 20px;" @click.stop="emitEvent('set-toggle-button', 'isfao')">({{ t('score.fao') }}
+        <span v-show="scoringState.inputFan>=9" style="font-size: 20px;" @click.stop="emit('set-toggle-button', 'isfao')">({{ t('score.fao') }}
           <span :style="toggleButtonStyle('isfao')">
             <span v-show="scoringState.isFao===true">O</span>
             <span v-show="scoringState.isFao===false">X</span>
@@ -350,7 +348,7 @@ const emitEvent = (eventName, ...args) => {
         <span v-for="(_, i) in bu.slice(0, 6)"
           :key="i"
           :style="fanBuButtonStyle('bu', i)"
-          @click.stop="emitEvent('set-fanbu-button', 'bu', i)"
+          @click.stop="emit('set-fanbu-button', 'bu', i)"
         >
           {{ bu[i] }}
         </span>
@@ -358,7 +356,7 @@ const emitEvent = (eventName, ...args) => {
         <span v-for="(_, i) in bu.slice(6)"
           :key="i"
           :style="fanBuButtonStyle('bu', i+6)"
-          @click.stop="emitEvent('set-fanbu-button', 'bu', i+6)"
+          @click.stop="emit('set-fanbu-button', 'bu', i+6)"
         >
           {{ bu[i+6] }}
         </span>
@@ -378,11 +376,11 @@ const emitEvent = (eventName, ...args) => {
         :key="i"
         :class="class_check[i]"
         :style="arrowButtonStyle('fao', i)"
-        @click.stop="emitEvent('set-arrow-button', 'fao', i)"
+        @click.stop="emit('set-arrow-button', 'fao', i)"
       >
         {{ arr_arrow[i] }}
       </div>
-      <div class="ok" :style="okButtonStyle('fao')" @click.stop="emitEvent('check-invalid-status', 'fao')">
+      <div class="ok" :style="okButtonStyle('fao')" @click.stop="emit('check-invalid-status', 'fao')">
         OK
       </div>
     </div>
@@ -396,21 +394,21 @@ const emitEvent = (eventName, ...args) => {
       <span v-for="(_, i) in fan.slice(9)"
         :key="i"
         :style="fanBuButtonStyle('inputfao', i)"
-        @click.stop="emitEvent('set-fanbu-button', 'inputfao', i)"
+        @click.stop="emit('set-fanbu-button', 'inputfao', i)"
       >
       {{ t('score.multipleYakuman', {num: fan[i+9]}) }}
       </span>
     </div>
-    <div style="font-size: 30px;" @click.stop="emitEvent('calculate-win');">
+    <div style="font-size: 30px;" @click.stop="emit('calculate-win');">
       OK
     </div>
   </div>
   <!-- 유국 종류 선택창 -->
   <div v-else-if="modalInfo.type==='choose_draw_kind'" class="modal_content" @click.stop>
-    <div class="modal_choose_draw" @click.stop="emitEvent('show-modal','check_player_tenpai')">
+    <div class="modal_choose_draw" @click.stop="emit('show-modal', 'check_player_tenpai')">
       {{ t('drawKind.normalDraw') }}
     </div>
-    <div class="modal_choose_draw" @click.stop="emitEvent('show-modal','show_score', 'special_draw')">
+    <div class="modal_choose_draw" @click.stop="emit('show-modal', 'show_score', 'special_draw')">
       {{ t('drawKind.specialDraw') }}
     </div>
   </div>
@@ -424,11 +422,11 @@ const emitEvent = (eventName, ...args) => {
         :key="i"
         :class="class_check[i]"
         :style="arrowButtonStyle('tenpai', i)"
-        @click.stop="emitEvent('set-arrow-button', 'tenpai', i)"
+        @click.stop="emit('set-arrow-button', 'tenpai', i)"
       >
         {{ arr_arrow[i] }}
       </div>
-      <div class="ok" @click.stop="emitEvent('calculate-draw')">
+      <div class="ok" @click.stop="emit('calculate-draw')">
         OK
       </div>
     </div>
@@ -443,11 +441,11 @@ const emitEvent = (eventName, ...args) => {
         :key="i"
         :class="class_check[i]"
         :style="arrowButtonStyle('cheat', i)"
-        @click.stop="emitEvent('set-arrow-button', 'cheat', i)"
+        @click.stop="emit('set-arrow-button', 'cheat', i)"
       >
         {{ arr_arrow[i] }}
       </div>
-      <div class="ok" :style="okButtonStyle('cheat')" @click.stop="emitEvent('check-invalid-status', 'cheat')">
+      <div class="ok" :style="okButtonStyle('cheat')" @click.stop="emit('check-invalid-status', 'cheat')">
         OK
       </div>
     </div>
@@ -462,14 +460,14 @@ const emitEvent = (eventName, ...args) => {
       >
         <span v-show="players[i].deltaScore>0">+</span>{{ players[i].deltaScore }}
       </div>
-      <div class="ok" @click.stop="emitEvent('save-round')">
+      <div class="ok" @click.stop="emit('save-round')">
         OK
       </div>
     </div>
   </div>
   <!-- 주사위 굴림창 -->
   <div v-else-if="modalInfo.type==='roll_dice'" class="modal_content" :style="diceModalTransform()" @click.stop>
-    <div class="container_roll" @click.stop="emitEvent('roll-dice')">
+    <div class="container_roll" @click.stop="emit('roll-dice')">
       <graphics kind="dice" :value="dice.value[0]" style="grid-area: dice_1; transform: scale(2);"/>
       <graphics kind="dice" :value="dice.value[1]" style="grid-area: dice_2; transform: scale(2);"/>
       <div class="sum">
@@ -493,20 +491,20 @@ const emitEvent = (eventName, ...args) => {
         kind="tile"
         :style="seatTileStyle(i)"
         :value="seatTile.value[i]"
-        @click.stop="emitEvent('set-seat-tile', i)"
+        @click.stop="emit('set-seat-tile', i)"
       ></graphics>
     </div>
   </div>
   <!-- 옵션 종류 선택창 -->
   <div v-else-if="modalInfo.type==='choose_menu_kind'" class="modal_content" @click.stop>
     <div class="container_choose_menu">
-      <div @click.stop="emitEvent('show-modal', 'result_sheet')">
+      <div @click.stop="emit('show-modal', 'result_sheet')">
         {{ t('menu.resultSheet') }}
       </div>
-      <div @click.stop="emitEvent('show-modal', 'show_record')">
+      <div @click.stop="emit('show-modal', 'show_record')">
         {{ t('menu.record') }}
       </div>
-      <div @click.stop="emitEvent('show-modal', 'set_options')">
+      <div @click.stop="emit('show-modal', 'set_options')">
         {{ t('menu.option') }}
       </div>
       <div style="font-size: 20px;">
@@ -514,7 +512,7 @@ const emitEvent = (eventName, ...args) => {
           <img src="/globe.svg" alt="SVG"/>
           <span v-for="(x, i) in Object.keys(messages)"
             :key="i"
-            @click.stop="emitEvent('change-locale', x)"
+            @click.stop="emit('change-locale', x)"
           >
             <span v-show="i!==0">/</span><span :style="getLocaleColor(x)">{{ x.toUpperCase() }}</span>
           </span>
@@ -525,7 +523,7 @@ const emitEvent = (eventName, ...args) => {
   </div>
   <!-- 게임 결과창(표) -->
   <div v-else-if="modalInfo.type==='result_sheet'" class="modal_content" @click.stop>
-    <div class="container_resultsheet" @click.stop="emitEvent('show-modal','result_chart')">
+    <div class="container_resultsheet" @click.stop="emit('show-modal', 'result_chart')">
       <div v-for="(_, i) in class_resultsheet" 
         :key="i"
         :class="class_resultsheet[i]"
@@ -541,7 +539,7 @@ const emitEvent = (eventName, ...args) => {
       </div>
       <div style="grid-area: score_contents;">
         <div v-for="(_, i) in scoreSheetInfo" :key="i">
-        {{ scoreSheetInfo[i].score }}(<span :style="getSignColor(scoreSheetInfo[i].point, false)"><span v-show="scoreSheetInfo[i].point>0">+</span>{{ scoreSheetInfo[i].point }}</span>)
+        {{ scoreSheetInfo[i].score }}(<span :style="getSignColor(Number(scoreSheetInfo[i].point), false)"><span v-show="Number(scoreSheetInfo[i].point)>0">+</span>{{ scoreSheetInfo[i].point }}</span>)
         </div>
       </div>
       <div style="grid-area: riichi_contents;">
@@ -557,14 +555,14 @@ const emitEvent = (eventName, ...args) => {
   </div>
   <!-- 게임 결과창(차트) -->
   <div v-else-if="modalInfo.type==='result_chart'" class="modal_content" @click.stop>
-    <div class="container_resultchart" @click.stop="emitEvent('show-modal','result_sheet')">
+    <div class="container_resultchart" @click.stop="emit('show-modal', 'result_sheet')">
       <LineChart :data="scoreChartInfo.data" :options="scoreChartInfo.options"/>
     </div>
   </div>
   <!-- 점수 기록창 -->
   <div v-else-if="modalInfo.type==='show_record'" class="modal_content" @click.stop>
     <div class="container_record">
-      <div class="copy" @click.stop="emitEvent('copy-record')">
+      <div class="copy" @click.stop="emit('copy-record')">
         {{ t('record.copy') }}
       </div>
       <div v-for="(_, i) in class_name"
@@ -577,7 +575,7 @@ const emitEvent = (eventName, ...args) => {
         <div class="when">
           <div v-for="(_, i) in records.time"
             :key="i"
-            @click.stop="i%2===1 ? emitEvent('show-modal','rollback_record', i) : {}"
+            @click.stop="i%2===1 ? emit('show-modal', 'rollback_record', String(i)) : {}"
           >
             {{ records.time[i] }}
           </div>
@@ -599,9 +597,9 @@ const emitEvent = (eventName, ...args) => {
   <!-- 점수 롤백창 -->
   <div v-else-if="modalInfo.type==='rollback_record'" class="modal_content" @click.stop>
     <div class="modal_text">
-      {{ t('comments.rollbackRecord', {time : records.time[modalInfo.status]}) }}
+      {{ t('comments.rollbackRecord', {time : records.time[Number(modalInfo.status)]}) }}
     </div>
-    <div class="modal_text" style="font-size: 30px;" @click.stop="emitEvent('rollback-record', modalInfo.status)">
+    <div class="modal_text" style="font-size: 30px;" @click.stop="emit('rollback-record', Number(modalInfo.status))">
       OK
     </div>
   </div>
@@ -627,7 +625,7 @@ const emitEvent = (eventName, ...args) => {
         <input 
           type="number"
           v-model="option.startingScore"
-          :placeholder="25000"
+          :placeholder="String(25000)"
           :name="'startingScore'"
         >
       </div>
@@ -636,18 +634,18 @@ const emitEvent = (eventName, ...args) => {
         <input 
           type="number"
           v-model="option.returnScore"
-          :placeholder="30000"
+          :placeholder="String(30000)"
           :name="'returnScore'"
         >
       </div>
-      <div style="grid-area: option2;" @click.stop="emitEvent('set-toggle-button', 'roundmangan')">
+      <div style="grid-area: option2;" @click.stop="emit('set-toggle-button', 'roundmangan')">
         {{ t('option.roundMangan') }}<br>
         <span :style="toggleButtonStyle('roundmangan')">
           <span v-show="option.roundMangan===true">O</span>
           <span v-show="option.roundMangan===false">X</span>
         </span>
       </div>
-      <div style="grid-area: option3;" @click.stop="emitEvent('set-toggle-button', 'tobi')">
+      <div style="grid-area: option3;" @click.stop="emit('set-toggle-button', 'tobi')">
         {{ t('option.tobi') }}<br>
         <span :style="toggleButtonStyle('tobi')">
           <span v-show="option.tobi===true">O</span>
@@ -667,14 +665,14 @@ const emitEvent = (eventName, ...args) => {
           :style="{ marginRight: i===option.rankUma.length-1 ? '0px' : '10px' }"
         >
       </div>  
-      <div style="grid-area: option5;" @click.stop="emitEvent('set-toggle-button', 'cheatscore')">
+      <div style="grid-area: option5;" @click.stop="emit('set-toggle-button', 'cheatscore')">
         {{ t('option.cheatScore') }}<br>
         <span :style="toggleButtonStyle('cheatscore')">
           <span v-show="option.cheatScore===true">{{ t('option.mangan') }}</span>
           <span v-show="option.cheatScore===false">3000 All</span>
         </span>
       </div>
-      <div style="grid-area: option6;" @click.stop="emitEvent('set-toggle-button', 'endriichi')">
+      <div style="grid-area: option6;" @click.stop="emit('set-toggle-button', 'endriichi')">
         {{ t('option.riichiPayout') }}<br>
         <span :style="toggleButtonStyle('endriichi')">
           <span v-show="option.riichiPayout===true">{{ t('option.firstPlace') }}</span>
@@ -734,10 +732,10 @@ const emitEvent = (eventName, ...args) => {
   grid-template-rows: auto repeat(3, 100px);
   grid-template-columns: repeat(3, 100px);
   grid-template-areas: 
-    "guide_message guide_message guide_message"
-    ". up_check ."
-    "left_check ok right_check"
-    ". down_check .";
+    'guide_message guide_message guide_message'
+    '. up_check .'
+    'left_check ok right_check'
+    '. down_check .';
   text-align: center;
   font-size: 70px;
   place-items: center;
@@ -765,8 +763,8 @@ const emitEvent = (eventName, ...args) => {
   grid-template-rows: repeat(2, auto);
   grid-template-columns: 70px auto;
   grid-template-areas:
-  "fan fan_check"
-  "bu bu_check";
+  'fan fan_check'
+  'bu bu_check';
   text-align: center;
   font-size: 30px;
 }
@@ -805,9 +803,9 @@ const emitEvent = (eventName, ...args) => {
   grid-template-rows: repeat(3, 100px);
   grid-template-columns: repeat(3, 100px);
   grid-template-areas:
-    ". up_score_diff ."
-    "left_score_diff ok right_score_diff"
-    ". down_score_diff .";
+    '. up_score_diff .'
+    'left_score_diff ok right_score_diff'
+    '. down_score_diff .';
   text-align: center;
   line-height: 100px;
   font-size: 30px;
@@ -840,9 +838,9 @@ const emitEvent = (eventName, ...args) => {
   grid-template-rows: 15px 86px 15px;
   grid-template-columns: repeat(3, 15px 86px) 15px;
   grid-template-areas:
-    ". dice_1 . up_dice . dice_2 ."
-    ". dice_1 left_dice sum right_dice dice_2 ."
-    ". dice_1 . down_dice . dice_2 .";
+    '. dice_1 . up_dice . dice_2 .'
+    '. dice_1 left_dice sum right_dice dice_2 .'
+    '. dice_1 . down_dice . dice_2 .';
   text-align: center;
   font-size: 15px;
 }
@@ -884,7 +882,7 @@ const emitEvent = (eventName, ...args) => {
   grid-template-rows: auto;
   grid-template-columns: repeat(3, 86px 15px) 86px;
   grid-template-areas:
-    "tile_1 . tile_2 . tile_3 . tile_4";
+    'tile_1 . tile_2 . tile_3 . tile_4';
   text-align: center;
   font-size: 80px;
   margin: 15px;
@@ -907,8 +905,8 @@ const emitEvent = (eventName, ...args) => {
   grid-template-rows: 35px 200px;
   grid-template-columns: 120px repeat(4, 100px);
   grid-template-areas: 
-  "copy down_name right_name up_name left_name"
-  "scroll scroll scroll scroll scroll";
+  'copy down_name right_name up_name left_name'
+  'scroll scroll scroll scroll scroll';
   text-align: center;
   font-size: 25px;
   margin: 5px;
@@ -924,7 +922,7 @@ const emitEvent = (eventName, ...args) => {
   grid-template-rows: auto;
   grid-template-columns: 120px repeat(4, 100px);
   grid-template-areas: 
-  "when down_record right_record up_record left_record";
+  'when down_record right_record up_record left_record';
   text-align: center;
   font-size: 20px;
   overflow-y: auto;
@@ -939,9 +937,9 @@ const emitEvent = (eventName, ...args) => {
   grid-template-rows: repeat(3, 60px);
   grid-template-columns: repeat(4, 120px);
   grid-template-areas:
-  "input_name0 input_name1 input_name2 input_name3"
-  "option0 option1 option2 option3"
-  "option4 option4 option5 option6";
+  'input_name0 input_name1 input_name2 input_name3'
+  'option0 option1 option2 option3'
+  'option4 option4 option5 option6';
   text-align: center;
   gap: 10px;
   margin: 5px;
@@ -953,8 +951,8 @@ const emitEvent = (eventName, ...args) => {
   grid-template-rows: repeat(2, auto);
   grid-template-columns: 60px 100px 150px repeat(3, 60px);
   grid-template-areas:
-  "wind name score riichi win lose"
-  "wind_contents name_contents score_contents riichi_contents win_contents lose_contents";
+  'wind name score riichi win lose'
+  'wind_contents name_contents score_contents riichi_contents win_contents lose_contents';
   text-align: center;
   margin: 5px;
 }

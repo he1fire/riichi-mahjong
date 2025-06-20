@@ -67,7 +67,7 @@ const option = reactive({ // 옵션
   riichiPayout: true, // 남은 공탁금 처리
 })
 const modalInfo = reactive({ // 모달창
-  isOpen :false, // on/off
+  isOpen: false, // on/off
   type: "", // 종류
   status: "", // 라운드 형태 - 론 쯔모 일반유국 특수유국
 })
