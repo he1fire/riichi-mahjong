@@ -1,12 +1,12 @@
-<script setup>
-import player from '@/components/player.vue'
-import panel from '@/components/panel.vue'
-import modal from '@/components/modal.vue'
-import { ref, reactive, onMounted } from 'vue'
-import { useI18n } from 'vue-i18n'
+<script setup lang="ts">
+import player from "@/components/player.vue"
+import panel from "@/components/panel.vue"
+import modal from "@/components/modal.vue"
+import { reactive, onMounted } from "vue"
+import { useI18n } from "vue-i18n"
 
 /**i18n 속성 가져오기*/
-const { t, locale, messages } = useI18n()
+const { t, locale } = useI18n()
 
 /**data 정의*/
 const players = reactive([ // 플레이어
@@ -14,16 +14,16 @@ const players = reactive([ // 플레이어
   현재 점수, 이펙트용 점수, 점수 차이, 변하는 점수
   리치, 화료, 방총, 텐파이 유무 */
   {seat: "Down",  name: "▼", wind: "東", rank: 0,
-    displayScore: 25000, effectScore: 0, gapScore: null, deltaScore: 0,
+    displayScore: 25000, effectScore: 0, gapScore: NaN, deltaScore: 0,
     isRiichi: false, isWin: false, isLose: false, isTenpai: false,},
   {seat: "Right", name: "▶", wind: "南", rank: 0,
-    displayScore: 25000, effectScore: 0, gapScore: null, deltaScore: 0,
+    displayScore: 25000, effectScore: 0, gapScore: NaN, deltaScore: 0,
     isRiichi: false, isWin: false, isLose: false, isTenpai: false,},
   {seat: "Up",    name: "▲", wind: "西", rank: 0,
-    displayScore: 25000, effectScore: 0, gapScore: null, deltaScore: 0,
+    displayScore: 25000, effectScore: 0, gapScore: NaN, deltaScore: 0,
     isRiichi: false, isWin: false, isLose: false, isTenpai: false,},
   {seat: "Left",  name: "◀", wind: "北", rank: 0,
-    displayScore: 25000, effectScore: 0, gapScore: null, deltaScore: 0,
+    displayScore: 25000, effectScore: 0, gapScore: NaN, deltaScore: 0,
     isRiichi: false, isWin: false, isLose: false, isTenpai: false,}
 ])
 const scoringState = reactive({ // 점수계산 요소
@@ -88,45 +88,23 @@ const toggleFullScreen = () => {
   if (!document.fullscreenElement) {
     if (element.requestFullscreen)
       return element.requestFullscreen();
-    if (element.webkitRequestFullscreen)
-      return element.webkitRequestFullscreen();
-    if (element.mozRequestFullScreen)
-      return element.mozRequestFullScreen();
-    if (element.msRequestFullscreen)
-      return element.msRequestFullscreen();
   } 
   else {
     if (document.exitFullscreen)
       return document.exitFullscreen();
-    if (document.webkitCancelFullscreen)
-      return document.webkitCancelFullscreen();
-    if (document.mozCancelFullScreen)
-      return document.mozCancelFullScreen();
-    if (document.msExitFullscreen)
-      return document.msExitFullscreen();
   }
 }
 
 /**언어 변경*/
-const changeLocale = (language) => {
-  //let arrLanguage=Object.keys(messages.value); // 언어 리스트 가져오기
-  //locale.value=arrLanguage[(returnIndex(arrLanguage,locale.value)+1)%arrLanguage.length]; // 다음 언어로 변경
+const changeLocale = (language: string) => {
   locale.value=language; // 언어 변경
   document.title=t('pageTitle') // 페이지 이름 설정
   localStorage.setItem("language", locale.value); // 로컬 스토리지에 저장
 }
 
-/**배열에서 같은값의 인덱스 반환*/
-const returnIndex = (arr, keyOrValue, value) => {
-  if (value===undefined)
-    return arr.indexOf(keyOrValue);
-  else
-    return arr.findIndex(x => x[keyOrValue]===value);
-}
-
 /**리치 활성화/비활성화*/
-const toggleActiveRiichi = (seat) => {
-  let idx=returnIndex(players, 'seat', seat); // 위치 기준 인덱스 반환
+const toggleActiveRiichi = (seat: string) => {
+  let idx=players.findIndex(x => x['seat']===seat); // 위치 기준 인덱스 반환
   if (players[idx].isRiichi===false){ // 리치 활성화
     if (players[idx].displayScore<1000 && option.tobi===true) // 리치를 걸수 없을 때
       return;
@@ -146,8 +124,8 @@ const toggleActiveRiichi = (seat) => {
 }
 
 /**점수 차이 활성화/비활성화*/
-const toggleShowGap = (seat, toggle) => {
-  let idx=returnIndex(players, 'seat', seat); // 위치 기준 인덱스 반환
+const toggleShowGap = (seat: string, toggle: boolean) => {
+  let idx=players.findIndex(x => x['seat']===seat); // 위치 기준 인덱스 반환
   if (players[idx].effectScore!==0) // 점수변동 이펙트 도중이면 실행 x
     return;
   if (toggle===true){ // 활성화
@@ -155,13 +133,13 @@ const toggleShowGap = (seat, toggle) => {
       if (i!==idx) // 본인이 아니면 점수 차 표시 켜기
         players[i].gapScore=players[idx].displayScore-players[i].displayScore;
       else
-        players[i].gapScore=null;
+        players[i].gapScore=NaN;
       players[i].rank=players.filter(x => x.displayScore>players[i].displayScore).length+1; // 순위 표시 켜기
     }
   }
   else{ // 비활성화
     for (let i=0;i<players.length;i++){
-      players[i].gapScore=null; // 점수 차 표시 끄기
+      players[i].gapScore=NaN; // 점수 차 표시 끄기
       players[i].rank=0; // 순위 표시 끄기
     }
   }
@@ -172,7 +150,7 @@ const changeWindsAndRounds = () => {
   let allWinds="東南西北";
   let cnt=0;
   let playerWinds=players.map(x => x.wind); // 개인 바람 복사
-  playerWinds.unshift(playerWinds.pop()); // 개인 바람 변경
+  playerWinds.unshift(playerWinds.pop()!); // 개인 바람 변경
   players.forEach((x, idx) => {x.wind=playerWinds[idx];}); // 개인 바람 덮어씌우기
   for (let i=0;i<allWinds.length;i++){
     if (panelInfo.wind===allWinds[i]) // 현재 라운드 계산
@@ -186,7 +164,7 @@ const changeWindsAndRounds = () => {
 /**점수 변동 효과*/
 const changeScores = () => {
   let currentScore=players.map(x => x.displayScore); // 현재 점수 저장
-  let arrCut=[[],[],[],[]];
+  let arrCut: number[][]=[[],[],[],[]];
   for (let i=0;i<players.length;i++){
     for (let j=0;j<50;j++) // 변경될 점수 사이를 50등분해서 저장
       arrCut[i].push(currentScore[i]+(players[i].deltaScore/50)*(j+1));
@@ -210,7 +188,7 @@ const changeScores = () => {
 }
 
 /**실제 점수계산후 반환*/
-const calculateScore = (who) => {
+const calculateScore = (who: number) => {
   let arrFan= [1, 2, 3, 4, 5, 6, 8, 11, 13, 13, 14, 15, 16, 17, 18];
   let arrBu= [20, 25, 30, 40, 50, 60, 70, 80, 90, 100, 110];
   let arrMangan=[2000,3000,3000,4000,4000,4000,6000,6000,8000,16000,24000,32000,40000,48000]; // 만관 이상 인당 점수
@@ -246,6 +224,7 @@ const calculateScore = (who) => {
         return Math.ceil(baseScore/100)*100;
     }
   }
+  return NaN; // 잘못된 경우
 }
 
 /**동1국 처음으로 리셋*/
@@ -273,7 +252,7 @@ const resetAll = () => {
 }
 
 /**모달 창 켜기*/
-const showModal = (type, status) => {
+const showModal = (type: string, status?: string) => {
   Object.assign(modalInfo, {
     isOpen: true,
     type: type,
@@ -292,7 +271,7 @@ const hideModal = () => {
         players[i].name=arrows[i]; // 기본이름으로 추가
     }
     if (option.startingScore*4!==cntScore){ // 시작점수가 변경되었다면
-      if (option.startingScore%100!==0 || option.startingScore==='') // 이상한 값이면 롤백
+      if (option.startingScore%100!==0 || String(option.startingScore)==='') // 이상한 값이면 롤백
         option.startingScore=cntScore/4;
       else // 아니라면 동1국으로 롤백
         resetAll();
@@ -326,7 +305,7 @@ const hideModal = () => {
 }
 
 /**화살표 버튼 동작 설정*/
-const setArrowButton = (status, idx) => {
+const setArrowButton = (status: string, idx: number) => {
   if (status==='win') // 화료 버튼
     players[idx].isWin=!players[idx].isWin;
   else if (status==='lose'){ // 방총 버튼
@@ -359,7 +338,7 @@ const setArrowButton = (status, idx) => {
 }
 
 /**토글 버튼 동작 설정*/
-const setToggleButton = (status) => {
+const setToggleButton = (status: string) => {
   if (status==='isfao') // 점수창 책임지불 OX 토글
     scoringState.isFao=!scoringState.isFao;
   else if (status==='roundmangan') // 절상만관 토글
@@ -373,7 +352,7 @@ const setToggleButton = (status) => {
 }
 
 /**판/부 버튼 동작 설정*/
-const setFanBuButton = (status, idx) => {
+const setFanBuButton = (status: string, idx: number) => {
   if (status==='fan'){ // 판 체크
     if (idx>=9 && scoringState.inputFan===idx) // 역만일경우 처리
       scoringState.inputFan<14 ? scoringState.inputFan++ : scoringState.inputFan=9;
@@ -400,12 +379,12 @@ const setFanBuButton = (status, idx) => {
 }
 
 /**자리타일 동작 설정*/
-const setSeatTile = (idx) => {
+const setSeatTile = (idx: number) => {
   seatTile.isOpened[idx]=true;
 }
 
 /**화료 및 방총 불가능한 경우 반환*/
-const checkInvalidStatus = (status) => {
+const checkInvalidStatus = (status: string) => {
   let cntWin=players.filter(x => x.isWin===true).length; // 화료 인원 세기
   let cntLose=players.filter(x => x.isLose===true).length; // 방총 인원 세기
   if (status==='win'){ // 화료일때
@@ -417,11 +396,11 @@ const checkInvalidStatus = (status) => {
     if (cntWin!==1 && cntLose===0) // 2명 이상 화료했는데 쯔모임 (불가능한 경우)
       return;
     if (!cntLose){ // 쯔모
-      scoringState.whoWin=returnIndex(players, 'isWin', true); // 승자 찾아서 저장
+      scoringState.whoWin=players.findIndex(x => x['isWin']===true); // 승자 찾아서 저장
       showModal('choose_score', 'tsumo');
     }
     else{ // 론
-      scoringState.whoLose=returnIndex(players, 'isLose', true); // 패자 찾아서 저장
+      scoringState.whoLose=players.findIndex(x => x['isLose']===true); // 패자 찾아서 저장
       for (let i=0;i<players.length;i++){
         if (players[(scoringState.whoLose+i)%4].isWin===true){ // 승자 찾아서 저장 (선하네 순서로 탐색)
           scoringState.whoWin=(scoringState.whoLose+i)%4;
@@ -582,7 +561,7 @@ const saveRound = () => {
   records.win.push(players.map(x => x.isWin)); // 화료 기록에 추가
   records.lose.push(players.map(x => x.isLose)); // 방총 기록에 추가
   players.forEach((x) => {x.isRiichi=false;}); // 리치봉 수거
-  let chin=players[returnIndex(players, 'wind', '東')]; // 친이 누구인지 저장
+  let chin=players[players.findIndex(x => x['wind']==='東')]; // 친이 누구인지 저장
   if (modalInfo.status==='tsumo' || modalInfo.status==='ron'){ // 화료로 끝났다면
     if (chin.isWin===false){ // 친이 화료를 못했다면
       changeWindsAndRounds(); // 바람 및 라운드 변경
@@ -640,9 +619,9 @@ const copyRecord = () => {
 }
 
 /**해당 국으로 롤백하기*/
-const rollbackRecord = (idx) => {
+const rollbackRecord = (idx: number) => {
   let allWinds = ["東", "南", "西", "北"];
-  let arr=records.time[idx].match(/[\u4e00-\u9fff]|\d+|\S/g); // 시간 값 분리
+  let arr=records.time[idx].match(/[\u4e00-\u9fff]|\d+|\S/g)!; // 시간 값 분리
   let sumScore=0;
   while (idx<records.time.length){ // 점수기록 지우기
     records.time.pop();
@@ -660,7 +639,7 @@ const rollbackRecord = (idx) => {
     sumScore+=players[i].displayScore;
   }
   for (let i=1;i<panelInfo.round;i++)
-    allWinds.unshift(allWinds.pop()); // 현재 바람 세기
+    allWinds.unshift(allWinds.pop()!); // 현재 바람 세기
   players.forEach((x, idx) => {x.wind=allWinds[idx];}); // 개인 바람 설정
   panelInfo.wind=arr[0]; // 장풍 설정
   panelInfo.round=Number(arr[1]); // 국 설정

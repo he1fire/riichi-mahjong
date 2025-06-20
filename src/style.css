@@ -48,7 +48,7 @@ input[type='text'], input[type='number']{
   text-align: center;
 }
 /* 인풋창 숫자 업다운 삭제 */
-input[type="number"]::-webkit-outer-spin-button, input[type="number"]::-webkit-inner-spin-button {
+input[type='number']::-webkit-outer-spin-button, input[type='number']::-webkit-inner-spin-button {
   -webkit-appearance: none;
   margin: 0;
 }

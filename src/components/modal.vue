@@ -11,7 +11,7 @@ const { t, locale, messages } = useI18n()
 
 /**차트 컴포넌트 등록*/
 ChartJS.register(Title, Tooltip, Legend, LineElement, CategoryScale, LinearScale, PointElement)
-ChartJS.defaults.font.family = "'Noto Serif KR', 'Noto Serif JP', 'Noto Serif', 'serif'" // 폰트 설정
+ChartJS.defaults.font.family = "'Noto Serif KR', 'Noto Serif JP', 'Noto Serif', serif" // 폰트 설정
 ChartJS.defaults.color = '#000000' // 기본 글자색 설정
 
 /**props 정의*/
@@ -42,7 +42,7 @@ type Emits = {
   (e: 'roll-dice'): void,
   (e: 'copy-record'): void,
   (e: 'rollback-record', time: number): void,
-  (e: 'change-locale', locale: string): void
+  (e: 'change-locale', language: string): void
 }
 const emit = defineEmits<Emits>()
 
