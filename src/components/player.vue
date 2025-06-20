@@ -1,18 +1,21 @@
-<script setup>
-import graphics from '@/components/graphics.vue'
-import {computed} from 'vue'
+<script setup lang="ts">
+import graphics from "@/components/graphics.vue"
+import type { Player, Option } from "@/types/types.d";
+import { computed } from "vue"
 
 /**props 정의*/
-const props = defineProps({
-  player: Object,
-  option: Object,
-})
+interface Props {
+  player: Player,
+  option: Option,
+}
+const props = defineProps<Props>()
 
 /**emits 정의*/
-const emit = defineEmits([
-  'toggle-active-riichi',
-  'toggle-show-gap'
-])
+type Emits = {
+  (e: 'toggle-active-riichi', seat: string): void,
+  (e: 'toggle-show-gap', seat: string, toggle: boolean): void
+}
+const emit = defineEmits<Emits>()
 
 /**100 자리 이상 점수*/
 const displayScoreHigh = computed(() => {
@@ -50,18 +53,13 @@ const riichiStickVisibility = () => {
 }
 
 /**점수 부호에 따른 색상*/
-const getSignColor = (x) => {
+const getSignColor = (x: number) => {
   if (x>0)
     return {color: 'limegreen'}
   else if (x<0)
     return {color: 'red'}
   else
     return {color: ''}
-}
-
-/**emit 이벤트 발생*/
-const emitEvent = (eventName, ...args) => {
-  emit(eventName, ...args)
 }
 </script>
 
@@ -71,18 +69,18 @@ const emitEvent = (eventName, ...args) => {
   <graphics kind="riichiStick" class="stick" :style="riichiStickVisibility()"/>
   <!-- 현재 바람 -->
   <div class="wind" :style="windStyle()"
-    @mousedown="emitEvent('toggle-show-gap', player.seat, true)"
-    @mouseup="emitEvent('toggle-show-gap', player.seat, false)"
-    @mouseleave="emitEvent('toggle-show-gap', player.seat, false)"
-    @touchstart="emitEvent('toggle-show-gap', player.seat, true)"
-    @touchend="emitEvent('toggle-show-gap', player.seat, false)"
-    @touchcancel="emitEvent('toggle-show-gap', player.seat, false)"
+    @mousedown="emit('toggle-show-gap', player.seat, true)"
+    @mouseup="emit('toggle-show-gap', player.seat, false)"
+    @mouseleave="emit('toggle-show-gap', player.seat, false)"
+    @touchstart="emit('toggle-show-gap', player.seat, true)"
+    @touchend="emit('toggle-show-gap', player.seat, false)"
+    @touchcancel="emit('toggle-show-gap', player.seat, false)"
   >
     {{ player.wind }}
   </div>
   <!-- 현재 점수 -->
   <div class="score">
-    <div v-if="player.gapScore===null" :style="displayScoreStyle()" @click="emitEvent('toggle-active-riichi', player.seat)">
+    <div v-if="player.gapScore===null" :style="displayScoreStyle()" @click="emit('toggle-active-riichi', player.seat)">
       {{ displayScoreHigh }}<span style="font-size: 50px;"><span v-show="displayScoreLow<10">0</span>{{ displayScoreLow }}</span>
     </div>
     <div v-else :style="getSignColor(player.gapScore)">
@@ -134,8 +132,8 @@ const emitEvent = (eventName, ...args) => {
   grid-template-rows: repeat(2, auto);
   grid-template-columns: repeat(4, auto);
   grid-template-areas: 
-    ". stick stick ."
-    "rank wind score change ";
+    '. stick stick .'
+    'rank wind score change';
   position: fixed;
   text-align: center;
   font-size: 80px;
