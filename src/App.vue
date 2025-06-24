@@ -147,7 +147,7 @@ const toggleShowGap = (seat: string, toggle: boolean) => {
 
 /**바람 및 라운드 변경*/
 const changeWindsAndRounds = () => {
-  let allWinds="東南西北";
+  let allWinds=["東", "南", "西", "北"];
   let cnt=0;
   let playerWinds=players.map(x => x.wind); // 개인 바람 복사
   playerWinds.unshift(playerWinds.pop()!); // 개인 바람 변경
