@@ -17,7 +17,7 @@
 
 |언어 변경 / change language / 言語変更|
 |:---:|
-|<img src="images/change_lang.gif" width="450"/>|
+|<img src="images/gl/change_lang.gif" width="450"/>|
 |옵션 버튼에서 언어를 바꿀 수 있습니다.<br>You can change the language in the settings.<br>セッティングで言語を変えることができます。|
 
 ## Please Share Your Opinion
