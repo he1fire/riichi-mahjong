@@ -12,4 +12,14 @@
 ### [he1fire.github.io/riichi-mahjong](https://he1fire.github.io/riichi-mahjong)
 
 ## How To Use
+
 [![ko](https://img.shields.io/badge/lang-ko-limegreen?style=for-the-badge)](README-ko.md) [![en](https://img.shields.io/badge/lang-en-blue?style=for-the-badge)](README-en.md) [![ja](https://img.shields.io/badge/lang-ja-red?style=for-the-badge)](README-ja.md)
+
+|언어 변경 / change language / 言語変更|
+|:---:|
+|<img src="images/change_lang.gif" width="450"/>|
+|옵션 버튼에서 언어를 바꿀 수 있습니다.<br>You can change the language in the settings.<br>セッティングで言語を変えることができます。|
+
+## Please Share Your Opinion
+
+Feel free to send your opinions, translation suggestions, or feature requests to cmg3172@naver.com or [open a new issue here.](https://github.com/he1fire/riichi-mahjong/issues/new)
