@@ -16,52 +16,52 @@
 
 |자리 선택|
 |:---:|
-|<img src="images/gl/choose_seat.gif" width="400"/>|
+|<img src="images/gl/choose_seat.gif" style="width: 100%; height: auto;"/>|
 |페이지 접속 시 착석을 위한 동, 남, 서, 북 패가 나옵니다.|
 
 |주사위|
 |:---:|
-|<img src="images/ko/roll_dice.gif" width="400"/>|
+|<img src="images/ko/roll_dice.gif" style="width: 100%; height: auto;"/>|
 |현재 국을 클릭 시 자동으로 주사위를 굴립니다.<br>주사위 합 사방의 화살표로 패산을 떼는 사람을 알 수 있습니다.|
 
 |리치 선언|
 |:---:|
-|<img src="images/ko/toggle_riichi.gif" width="400"/>|
+|<img src="images/ko/toggle_riichi.gif" style="width: 100%; height: auto;"/>|
 |리치 선언 시 본인의 점수 부분을 누르면 리치봉을 지불합니다.|
 
 |점수 차 표시|
 |:---:|
-|<img src="images/ko/toggle_gap.gif" width="400"/>|
+|<img src="images/ko/toggle_gap.gif" style="width: 100%; height: auto;"/>|
 |본인의 바람 부분을 누르면 타가와의 점수 차이 및 현재 순위를 알 수 있습니다.|
 
 |화료|
 |:---:|
-|<img src="images/ko/calculate_score.gif" width="400"/>|
+|<img src="images/ko/calculate_score.gif" style="width: 100%; height: auto;"/>|
 |화료 버튼을 누르고 부,판을 입력하면 점수를 자동으로 계산해 줍니다.|
 
 |역만 / 책임지불|
 |:---:|
-|<img src="images/ko/calculate_yakuman.gif" width="400"/>|
+|<img src="images/ko/calculate_yakuman.gif" style="width: 100%; height: auto;"/>|
 |역만의 경우 책임지불 버튼을 활용해 점수를 나눠 지불할 수 있습니다.|
 
 |게임결과|
 |:---:|
-|<img src="images/ko/show_result.gif" width="400"/>|
+|<img src="images/ko/show_result.gif" style="width: 100%; height: auto;"/>|
 |게임결과에서 각 사람의 점수/포인트, 리치, 화료, 방총 횟수를 확인할 수 있습니다.<br>한 번 더 클릭하면 해당 게임의 점수 변화를 그래프로 확인할 수 있습니다.|
 
 |점수 기록|
 |:---:|
-|<img src="images/ko/show_record.gif" width="400"/>|
+|<img src="images/ko/show_record.gif" style="width: 100%; height: auto;"/>|
 |점수 기록에서 현재까지의 진행 상황을 확인할 수 있습니다.<br>복사를 클릭하면 현재까지의 진행 상황을 클립보드로 복사합니다.|
 
 |롤백|
 |:---:|
-|<img src="images/ko/rollback_record.gif" width="400"/>|
+|<img src="images/ko/rollback_record.gif" style="width: 100%; height: auto;"/>|
 |점수 기록에서 국/본장 부분을 터치하면 해당 시점으로 롤백할 수 있습니다.|
 
 |설정|
 |:---:|
-|<img src="images/ko/change_tobi.gif" width="400"/>|
+|<img src="images/ko/change_tobi.gif" style="width: 100%; height: auto;"/>|
 |설정에서 여러 가지 옵션들을 수정할 수 있습니다.<br>시작 점수를 수정할 시 해당 점수를 가지고 동1국부터 다시 시작합니다.|
 
 ---
