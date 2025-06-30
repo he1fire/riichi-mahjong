@@ -59,7 +59,7 @@
 |<img src="images/en/rollback_record.gif" style="width: 100%; height: auto;"/>|
 |Touching the round/point section in the score record allows you to roll back to that point in time.|
 
-|Settings|
+|Options|
 |:---:|
 |<img src="images/en/change_tobi.gif" style="width: 100%; height: auto;"/>|
-|In the settings, you can modify various options.<br>If you change the starting score, the game will restart from East 1 with the new score.|
+|In the options, you can modify various settings.<br>If you change the starting score, the game will restart from East 1 with the new score.|
