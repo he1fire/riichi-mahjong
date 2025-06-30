@@ -189,8 +189,8 @@ const changeScores = () => {
 
 /**실제 점수계산후 반환*/
 const calculateScore = (who: number) => {
-  let arrFan= [1, 2, 3, 4, 5, 6, 8, 11, 13, 13, 14, 15, 16, 17, 18];
-  let arrBu= [20, 25, 30, 40, 50, 60, 70, 80, 90, 100, 110];
+  let arrFan=[1, 2, 3, 4, 5, 6, 8, 11, 13, 13, 14, 15, 16, 17, 18];
+  let arrBu=[20, 25, 30, 40, 50, 60, 70, 80, 90, 100, 110];
   let arrMangan=[2000,3000,3000,4000,4000,4000,6000,6000,8000,16000,24000,32000,40000,48000]; // 만관 이상 인당 점수
   let fan=arrFan[scoringState.inputFan], bu=arrBu[scoringState.inputBu];
   let baseScore=0;
@@ -229,7 +229,7 @@ const calculateScore = (who: number) => {
 
 /**동1국 처음으로 리셋*/
 const resetAll = () => {
-  let allWinds = ["東", "南", "西", "北"];
+  let allWinds=["東", "南", "西", "北"];
   while (1<records.time.length){ // 점수기록 지우기
     records.time.pop();
     for (let i=0;i<records.score.length;i++)
@@ -244,10 +244,10 @@ const resetAll = () => {
     records.score[i][0]=option.startingScore;
   players.forEach((x) => {x.isRiichi=false;}); // 리치봉 제거
   players.forEach((x) => {x.displayScore=option.startingScore;}); // 점수 설정
-  players.forEach((x, idx) => {x.wind=allWinds[idx];}); // 개인 바람 설정
   panelInfo.wind="東"; // 장풍 설정
   panelInfo.round=1; // 국 설정
   panelInfo.renchan=0; // 연장 설정
+  players.forEach((x, idx) => {x.wind=allWinds[idx];}); // 개인 바람 설정
   panelInfo.riichi=0; // 리치봉 설정
 }
 
@@ -620,7 +620,7 @@ const copyRecord = () => {
 
 /**해당 국으로 롤백하기*/
 const rollbackRecord = (idx: number) => {
-  let allWinds = ["東", "南", "西", "北"];
+  let allWinds=["東", "南", "西", "北"];
   let arr=records.time[idx].match(/[\u4e00-\u9fff]|\d+|\S/g)!; // 시간 값 분리
   let sumScore=0;
   while (idx<records.time.length){ // 점수기록 지우기
@@ -638,12 +638,12 @@ const rollbackRecord = (idx: number) => {
     players[i].displayScore=Number(records.score[i][records.score[i].length-1]); // 점수 설정
     sumScore+=players[i].displayScore;
   }
-  for (let i=1;i<panelInfo.round;i++)
-    allWinds.unshift(allWinds.pop()!); // 현재 바람 세기
-  players.forEach((x, idx) => {x.wind=allWinds[idx];}); // 개인 바람 설정
   panelInfo.wind=arr[0]; // 장풍 설정
   panelInfo.round=Number(arr[1]); // 국 설정
   panelInfo.renchan=Number(arr[3]); // 연장 설정
+  for (let i=1;i<panelInfo.round;i++)
+    allWinds.unshift(allWinds.pop()!); // 현재 바람 세기
+  players.forEach((x, idx) => {x.wind=allWinds[idx];}); // 개인 바람 설정
   panelInfo.riichi=Math.floor((option.startingScore*4-sumScore)/1000); // 리치봉 설정
   hideModal(); // 모달 창 끄기
 }
