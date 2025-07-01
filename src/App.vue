@@ -14,16 +14,16 @@ const players = reactive([ // 플레이어
   현재 점수, 이펙트용 점수, 점수 차이, 변하는 점수
   리치, 화료, 방총, 텐파이 유무 */
   {seat: "Down",  name: "▼", wind: "東", rank: 0,
-    displayScore: 25000, effectScore: 0, gapScore: NaN, deltaScore: 0,
+    displayScore: 25000, effectScore: NaN, gapScore: NaN, deltaScore: 0,
     isRiichi: false, isWin: false, isLose: false, isTenpai: false,},
   {seat: "Right", name: "▶", wind: "南", rank: 0,
-    displayScore: 25000, effectScore: 0, gapScore: NaN, deltaScore: 0,
+    displayScore: 25000, effectScore: NaN, gapScore: NaN, deltaScore: 0,
     isRiichi: false, isWin: false, isLose: false, isTenpai: false,},
   {seat: "Up",    name: "▲", wind: "西", rank: 0,
-    displayScore: 25000, effectScore: 0, gapScore: NaN, deltaScore: 0,
+    displayScore: 25000, effectScore: NaN, gapScore: NaN, deltaScore: 0,
     isRiichi: false, isWin: false, isLose: false, isTenpai: false,},
   {seat: "Left",  name: "◀", wind: "北", rank: 0,
-    displayScore: 25000, effectScore: 0, gapScore: NaN, deltaScore: 0,
+    displayScore: 25000, effectScore: NaN, gapScore: NaN, deltaScore: 0,
     isRiichi: false, isWin: false, isLose: false, isTenpai: false,}
 ])
 const scoringState = reactive({ // 점수계산 요소
@@ -105,10 +105,10 @@ const changeLocale = (language: string) => {
 /**리치 활성화/비활성화*/
 const toggleActiveRiichi = (seat: string) => {
   let idx=players.findIndex(x => x['seat']===seat); // 위치 기준 인덱스 반환
+  if (!isNaN(players[idx].effectScore)) // 점수변동 이펙트 도중이면 실행 x
+    return;
   if (players[idx].isRiichi===false){ // 리치 활성화
     if (players[idx].displayScore<1000 && option.tobi===true) // 리치를 걸수 없을 때
-      return;
-    else if (players[idx].effectScore!==0) // 점수변동 이펙트 도중이면 실행 x
       return;
     else{ // 1000점 이상 있거나 음수리치가 가능하다면
       players[idx].displayScore-=1000;
@@ -126,7 +126,7 @@ const toggleActiveRiichi = (seat: string) => {
 /**점수 차이 활성화/비활성화*/
 const toggleShowGap = (seat: string, toggle: boolean) => {
   let idx=players.findIndex(x => x['seat']===seat); // 위치 기준 인덱스 반환
-  if (players[idx].effectScore!==0) // 점수변동 이펙트 도중이면 실행 x
+  if (!isNaN(players[idx].effectScore)) // 점수변동 이펙트 도중이면 실행 x
     return;
   if (toggle===true){ // 활성화
     for (let i=0;i<players.length;i++){
@@ -179,7 +179,7 @@ const changeScores = () => {
       clearInterval(effect);
       timecnt=0;
       for (let i=0;i<players.length;i++){
-        players[i].effectScore=0; // 이펙트 끄기
+        players[i].effectScore=NaN; // 이펙트 끄기
         players[i].rank=players.filter(x => x.displayScore>players[i].displayScore).length+1; // 순위 표시 켜기
         setTimeout(() => {players[i].rank=0;}, 1000); // 1초 후 순위 표시 끄기
       }

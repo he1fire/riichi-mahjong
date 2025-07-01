@@ -53,13 +53,15 @@ const riichiStickVisibility = () => {
 }
 
 /**점수 부호에 따른 색상*/
-const getSignColor = (x: number) => {
-  if (x>0)
-    return {color: 'limegreen'}
-  else if (x<0)
-    return {color: 'red'}
+const getSignColor = (sign: number, x: boolean) => {
+  if (sign>0)
+    return {color: 'limegreen'};
+  else if (sign<0)
+    return {color: 'red'};
+  else if (x===true)
+    return {color: 'white'};
   else
-    return {color: ''}
+    return {color: ''};
 }
 </script>
 
@@ -83,7 +85,7 @@ const getSignColor = (x: number) => {
     <div v-if="isNaN(player.gapScore)" :style="displayScoreStyle()" @click="emit('toggle-active-riichi', player.seat)">
       {{ displayScoreHigh }}<span style="font-size: 50px;"><span v-show="displayScoreLow<10">0</span>{{ displayScoreLow }}</span>
     </div>
-    <div v-else :style="getSignColor(player.gapScore)">
+    <div v-else :style="getSignColor(player.gapScore, false)">
       <span v-show="gapScoreHigh>0">+</span>{{ gapScoreHigh }}<span style="font-size: 50px;">00</span>
     </div>
   </div>
@@ -92,7 +94,7 @@ const getSignColor = (x: number) => {
     {{ displayRank }}
   </div>
   <!-- 변경되는 점수 -->
-  <div v-show="player.effectScore!==0" class="change" :style="getSignColor(player.effectScore)">
+  <div v-show="!isNaN(player.effectScore)" class="change" :style="getSignColor(player.effectScore, true)">
     <span v-show="player.effectScore>0">+</span>{{ player.effectScore }}
   </div>
 </div>
