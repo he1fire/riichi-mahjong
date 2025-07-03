@@ -2,13 +2,8 @@
 import player from "@/components/player.vue"
 import panel from "@/components/panel.vue"
 import modal from "@/components/modal.vue"
-import { reactive, onMounted, watch } from "vue"
-import { useRoute, useRouter } from "vue-router"
+import { reactive, onMounted } from "vue"
 import { useI18n } from "vue-i18n"
-
-/**라우터 가져오기*/
-const route = useRoute()
-const router = useRouter()
 
 /**i18n 속성 가져오기*/
 const { t, locale } = useI18n()
@@ -77,24 +72,14 @@ const modalInfo = reactive({ // 모달창
   status: "", // 라운드 형태 - 론 쯔모 일반유국 특수유국
 })
 
-/**시작시 언어 변경 및 자리선택 타일창 띄우기*/
+/**시작시 자리선택 타일창 띄우기*/
 onMounted(() => {
-  const urlLocale=route.params.locale as string || 'ko';
-  locale.value=urlLocale;
   document.title=t('pageTitle') // 페이지 이름 설정
   for (let i=3;i>0;i--){ // 자리 섞기
     let j=Math.floor(Math.random()*(i+1));
     [seatTile.value[i], seatTile.value[j]]=[seatTile.value[j], seatTile.value[i]];
   }
   showModal('choose_seat');
-})
-
-/**주소 변경시 해당 언어로 변경*/
-watch(() => route.params.locale, (newLocale) => {
-  if (typeof newLocale==='string' && locale.value!==newLocale) {
-    locale.value=newLocale;
-    document.title=t('pageTitle');
-  }
 })
 
 /**전체화면 활성화/비활성화*/
@@ -112,7 +97,6 @@ const toggleFullScreen = () => {
 
 /**언어 변경*/
 const changeLocale = (language: string) => {
-  router.push({params: {locale: language}}); // 라우팅 경로 설정
   locale.value=language; // 언어 변경
   document.title=t('pageTitle') // 페이지 이름 설정
   localStorage.setItem("language", locale.value); // 로컬 스토리지에 저장
