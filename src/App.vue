@@ -113,6 +113,7 @@ const changeLocale = (language: string) => {
   router.push({params: {locale: language}}); // 라우팅 경로 설정
   locale.value=language; // 언어 변경
   document.title=t('pageTitle') // 페이지 이름 설정
+  document.documentElement.setAttribute('lang', language); // lang 속성 변경
   localStorage.setItem("language", locale.value); // 로컬 스토리지에 저장
 }
 
