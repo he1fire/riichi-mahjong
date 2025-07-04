@@ -5,7 +5,7 @@
 
 ## Page Link
 
-### [he1fire.github.io/riichi-mahjong](https://he1fire.github.io/riichi-mahjong)
+### [he1fire.github.io/riichi-mahjong](https://he1fire.github.io/riichi-mahjong/ja)
 
 ## How To Use
 
