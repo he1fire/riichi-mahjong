@@ -13,7 +13,7 @@
 
 ## How To Use
 
-[![ko](https://img.shields.io/badge/lang-ko-limegreen?style=for-the-badge)](README-ko.md) [![en](https://img.shields.io/badge/lang-en-blue?style=for-the-badge)](README-en.md) [![ja](https://img.shields.io/badge/lang-ja-red?style=for-the-badge)](README-ja.md)
+[![ko](https://img.shields.io/badge/readme-ko-limegreen?style=for-the-badge)](README-ko.md) [![en](https://img.shields.io/badge/readme-en-blue?style=for-the-badge)](README-en.md) [![ja](https://img.shields.io/badge/readme-ja-red?style=for-the-badge)](README-ja.md)
 
 |언어 변경 / change language / 言語変更|
 |:---:|
