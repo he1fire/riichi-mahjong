@@ -2,6 +2,7 @@
 import player from "@/components/player.vue"
 import panel from "@/components/panel.vue"
 import modal from "@/components/modal.vue"
+//import p2p from './components/p2p.vue';
 import { reactive, onMounted, watch } from "vue"
 import { useRoute, useRouter } from "vue-router"
 import { useI18n } from "vue-i18n"
@@ -76,6 +77,16 @@ const modalInfo = reactive({ // 모달창
   type: "", // 종류
   status: "", // 라운드 형태 - 론 쯔모 일반유국 특수유국
 })
+// const allStates = reactive({ 
+//   players, 
+//   scoringState, 
+//   panelInfo, 
+//   dice, 
+//   seatTile, 
+//   records, 
+//   option, 
+//   modalInfo 
+// });
 
 /**시작시 언어 변경 및 자리선택 타일창 띄우기*/
 onMounted(async () => {
@@ -705,6 +716,7 @@ const rollbackRecord = (idx: number) => {
     @rollback-record="rollbackRecord"
     @change-locale="changeLocale"
   />
+  <!-- <p2p v-bind="allStates" /> -->
 </div>
 </template>
 
