@@ -2,7 +2,6 @@
 import player from "@/components/player.vue"
 import panel from "@/components/panel.vue"
 import modal from "@/components/modal.vue"
-//import p2p from './components/p2p.vue';
 import { reactive, onMounted, watch } from "vue"
 import { useRoute, useRouter } from "vue-router"
 import { useI18n } from "vue-i18n"
