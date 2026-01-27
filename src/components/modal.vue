@@ -24,6 +24,10 @@ interface Props {
   records: Records,
   option: Option,
   modalInfo: ModalInfo,
+  isHost: any,
+  myId: any,
+  targetId: any,
+  isConnected: any
 }
 const props = defineProps<Props>()
 
@@ -43,6 +47,10 @@ type Emits = {
   (e: 'copy-record'): void,
   (e: 'rollback-record', time: number): void,
   (e: 'change-locale', language: string): void
+
+  (e: 'init-p2p'): void,
+  (e: 'copy-id'): void,
+  (e: 'connect-to-peer', x: string): void,
 }
 const emit = defineEmits<Emits>()
 
@@ -59,6 +67,9 @@ const class_record = ['down_record', 'right_record', 'up_record', 'left_record']
 const class_resultsheet = ['wind', 'name', 'score', 'riichi', 'win', 'lose']
 const fan = ['1', '2', '3', '4', '5', '6+', '8+', '11+', '13+', '1', '2', '3', '4', '5','6']
 const bu = [20, 25, 30, 40, 50, 60, 70, 80, 90, 100, 110]
+
+import { ref } from 'vue';
+const x = ref('');
 
 /**순위표 정보 계산*/
 const scoreSheetInfo = computed(() => {
@@ -507,6 +518,9 @@ const checkFao = () => {
       <div @click.stop="emit('show-modal', 'set_options')">
         {{ t('menu.option') }}
       </div>
+      <div @click.stop="emit('show-modal', 'p2p')">
+        P2P
+      </div>
       <div style="font-size: 20px;">
         <div style="display: flex; align-items: center;">
           <img src="/globe.svg" alt="SVG"/>
@@ -678,6 +692,44 @@ const checkFao = () => {
           <span v-show="option.riichiPayout===true">{{ t('option.firstPlace') }}</span>
           <span v-show="option.riichiPayout===false">X</span>
         </span>
+      </div>
+    </div>
+  </div>
+  <div v-else-if="modalInfo.type==='p2p'" class="modal_content" @click.stop>
+    <div class="fixed bottom-6 right-2 p-5 bg-white shadow-2xl border border-gray-100 rounded-3xl z-[9999] w-72 text-right">
+      <h3 class="text-sm font-bold text-gray-800 mb-4 flex items-center justify-end gap-2">
+        실시간 점수 공유 (P2P)
+        <span :class="['w-2.5 h-2.5 rounded-full animate-pulse', isHost ? 'bg-indigo-500' : 'bg-emerald-500']"></span>
+      </h3>
+
+      <div v-if="!myId">
+        <button @click.stop="emit('init-p2p')"class="w-full bg-indigo-600 text-white py-3 rounded-xl font-bold text-sm shadow-lg active:scale-95 transition">
+          멀티 모드 활성화
+        </button>
+      </div>
+
+      <div v-else class="space-y-3">
+        <div class="bg-gray-50 p-3 rounded-xl border border-gray-100">
+          <p class="text-[10px] text-gray-400 uppercase font-black mb-1 text-left">내 방 코드</p>
+          <div class="flex justify-between items-center gap-2">
+            <code class="text-gray-600 font-mono font-bold tracking-tight text-[10px] overflow-hidden text-ellipsis">{{ myId }}</code>
+            <button @click.stop="emit('copy-id')" class="shrink-0 text-[10px] bg-white px-2 py-1 rounded-md border border-gray-200 text-gray-500 font-bold hover:bg-gray-100 transition">복사</button>
+          </div>
+        </div>
+
+        <div v-if="!isConnected" class="flex flex-col gap-2 text-left">
+          <input v-model="x"
+                placeholder="상대방 코드 입력" 
+                class="border border-gray-200 p-3 rounded-xl text-sm focus:ring-2 focus:ring-indigo-500 outline-none w-full" />
+          <button @click.stop="emit('connect-to-peer', x)" 
+                  class="w-full bg-emerald-500 text-white py-3 rounded-xl hover:bg-emerald-600 font-bold shadow-lg text-sm transition">
+            연결하기
+          </button>
+        </div>
+
+        <div v-else class="py-3 px-4 bg-emerald-50 text-emerald-700 rounded-xl text-xs font-black text-center">
+          연결됨: {{ targetId }}
+        </div>
       </div>
     </div>
   </div>

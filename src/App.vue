@@ -77,16 +77,6 @@ const modalInfo = reactive({ // 모달창
   type: "", // 종류
   status: "", // 라운드 형태 - 론 쯔모 일반유국 특수유국
 })
-// const allStates = reactive({ 
-//   players, 
-//   scoringState, 
-//   panelInfo, 
-//   dice, 
-//   seatTile, 
-//   records, 
-//   option, 
-//   modalInfo 
-// });
 
 /**시작시 언어 변경 및 자리선택 타일창 띄우기*/
 onMounted(async () => {
@@ -673,6 +663,131 @@ const rollbackRecord = (idx: number) => {
   panelInfo.riichi=Math.floor((option.startingScore*4-sumScore)/1000); // 리치봉 설정
   hideModal(); // 모달 창 끄기
 }
+
+import { Peer, DataConnection } from 'peerjs';
+import { ref, nextTick } from 'vue';
+// 1. 전송용 데이터 묶음: 모든 반응형 상태를 하나의 객체로 묶어 송수신을 편리하게 함
+const allStates = reactive({ 
+  players, 
+  scoringState, 
+  panelInfo, 
+  dice, 
+  seatTile, 
+  records, 
+  option, 
+  modalInfo 
+});
+// 2. P2P 상태 변수 정의
+const peer = ref<Peer | null>(null); // PeerJS 인스턴스 저장
+const myId = ref(''); // 내 고유 Peer ID
+const targetId = ref(''); // 연결할 상대방의 ID (Input 입력값)
+const isConnected = ref(false); // 연결 성공 여부 플래그
+const isHost = ref(false); // 내가 방장(서버)인지 참여자(클라이언트)인지 구분
+const connections = ref<DataConnection[]>([]); // 활성화된 모든 연결 객체 배열
+//let p2pTimeout: any = null; // 디바운싱(연속 전송 방지)을 위한 타이머 변수
+const isReceiving = ref(false); // 데이터 수신 중임을 표시 (무한 루프 방지 핵심 변수)
+const updateCounter = ref(0); // DOM 강제 갱신을 유도하기 위한 카운터
+
+// 3. P2P 로직
+/** P2P 초기화: 서버에 접속하여 내 고유 ID를 발급받고 대기 상태로 진입 */
+const initP2P = () => {
+  const shortId = Math.random().toString(36).substring(2, 8);
+  peer.value = new Peer(shortId); // 새로운 Peer 인스턴스 생성
+  peer.value.on('open', (id) => { 
+    myId.value = id; // 서버로부터 발급받은 내 ID 저장
+    isHost.value = true; // 먼저 킨 사람이 기본적으로 방장이 됨
+  });
+  // 다른 Peer가 나에게 연결을 시도할 때(on connection) 처리 로직 실행
+  peer.value.on('connection', (conn) => { setupP2PConnection(conn); });
+};
+/** 상대방에게 연결 시도: 입력한 targetId를 가진 유저에게 접속 */
+const connectToPeer = (x: string) => {
+  targetId.value=x;
+  if (!targetId.value || !peer.value) return; // ID가 없거나 초기화 전이면 중단
+  isHost.value = false; // 연결을 거는 쪽은 참여자가 됨
+  const conn = peer.value.connect(targetId.value); // 상대방 ID로 연결 시도
+  setupP2PConnection(conn); // 생성된 연결 객체 설정
+};
+/** 연결 설정 및 데이터 이벤트 리스너 등록 */
+const setupP2PConnection = (conn: DataConnection) => {
+  conn.on('open', () => { // 연결이 실제로 수립되었을 때 실행
+    connections.value.push(conn); // 활성 연결 목록에 추가
+    isConnected.value = true; // 연결 상태 업데이트
+    if (isHost.value) sendP2PData(); // 방장이라면 현재 게임판 데이터를 즉시 공유
+  });
+  /** 데이터 수신 시 처리: 상대방이 보낸 데이터를 내 로컬 상태에 동기화 */
+  conn.on('data', async (raw_data: any) => {
+    if (!raw_data || !raw_data.players) return; // 유효하지 않은 데이터는 무시
+    isReceiving.value = true; // 수신 시작: 내가 보낸 데이터가 다시 전송되는 루프 방지
+    // JSON 전송 시 NaN이 null로 변환되는 JS 특성을 보완하기 위한 재귀 함수
+    const restoreNaN = (obj: any) => {
+      for (let key in obj) {
+        if (obj[key] === null) {
+          obj[key] = NaN; // 마작 로직의 null은 NaN(점수 차 없음 등)으로 복구
+        } else if (typeof obj[key] === 'object' && obj[key] !== null) {
+          restoreNaN(obj[key]); // 중첩된 객체 안까지 파고들어 검사
+        }
+      }
+      return obj;
+    };
+
+    const data = restoreNaN(raw_data) as typeof allStates; // 데이터 복구 및 타입 캐스팅
+    // [중요] 배열 참조를 유지하며 데이터 교체: Vue가 변경 사항을 감지하도록 splice 사용
+    players.splice(0, players.length, ...data.players); 
+    // 개별 반응형 객체들에 수신받은 데이터 값을 덮어쓰기 (참조 주소 유지)
+    Object.assign(panelInfo, data.panelInfo);
+    Object.assign(scoringState, data.scoringState);
+    Object.assign(option, data.option);
+    Object.assign(modalInfo, data.modalInfo);
+    Object.assign(dice, data.dice);
+    Object.assign(seatTile, data.seatTile);
+    
+    // 복잡한 중첩 구조인 기록(Records) 데이터 동기화
+    if (data.records && data.records.score) {
+      data.records.score.forEach((s: any, i: number) => {
+        if (records.score[i]) {
+          // 각 플레이어별 점수 히스토리 배열을 splice로 교체
+          records.score[i].splice(0, records.score[i].length, ...s);
+        }
+      });
+      // 시간 기록 배열 교체
+      records.time.splice(0, records.time.length, ...data.records.time);
+    }
+
+    await nextTick(); // Vue가 변경된 데이터를 기반으로 DOM을 갱신할 때까지 대기
+    updateCounter.value++; // 자식 컴포넌트의 key를 변경하여 렌더링 강제 트리거
+    isReceiving.value = false; // 수신 완료: 다시 송신 가능한 상태로 복구
+  });
+
+  conn.on('close', () => { // 상대방과 연결이 끊어졌을 때
+    isConnected.value = false;
+    connections.value = []; // 연결 목록 초기화
+  });
+};
+/** 데이터 송신: 내 로컬 상태를 상대방에게 전송 */
+const sendP2PData = () => {
+  // 내가 수신 중일 때 전송하면 무한 루프에 빠지므로 방어 코드 작성
+  if (isReceiving.value || !isConnected.value) return; 
+  
+  // Proxy 객체의 반응성을 제거하고 순수 데이터만 추출하여 전송 준비
+  const payload = JSON.parse(JSON.stringify(allStates)); 
+  
+  // 현재 연결된 모든 피어에게 데이터 전송
+  connections.value.forEach(c => { if (c.open) c.send(payload); });
+};
+/** 실시간 감시: 게임 상태(플레이어, 패널 정보)가 변하면 자동으로 상대에게 전송 */
+watch(() => [players, panelInfo], () => {
+  if (isReceiving.value || !isConnected.value) return; // 수신 중이거나 미연결 시 무시
+  sendP2PData();
+  //clearTimeout(p2pTimeout); // 0.4초 이내에 연속 변경이 일어나면 이전 타이머 취소
+  //p2pTimeout = setTimeout(sendP2PData, 400); // 마지막 변경 발생 0.4초 후에 데이터 전송 (디바운싱)
+}, { deep: true }); // 객체 내부의 깊은 속성 변경까지 모두 감시
+/** ID 복사: 방 코드를 클립보드에 복사하여 공유 용도로 사용 */
+const copyId = () => { 
+  if (!myId.value) return;
+  navigator.clipboard.writeText(myId.value); 
+  alert("방 코드가 복사되었습니다!"); 
+};
 </script>
 
 <template>
@@ -692,8 +807,7 @@ const rollbackRecord = (idx: number) => {
     @roll-dice="rollDice"
   />
   <!-- modal 컴포넌트 생성 -->
-  <modal
-    v-if="modalInfo.isOpen"
+  <modal v-if="modalInfo.isOpen"
     :players
     :scoringState
     :panelInfo
@@ -716,8 +830,15 @@ const rollbackRecord = (idx: number) => {
     @copy-record="copyRecord"
     @rollback-record="rollbackRecord"
     @change-locale="changeLocale"
+    
+    :isHost
+    :myId
+    :targetId
+    :isConnected
+    @init-p2p="initP2P"
+    @copy-id="copyId"
+    @connect-to-peer="connectToPeer"
   />
-  <!-- <p2p v-bind="allStates" /> -->
 </div>
 </template>
 
