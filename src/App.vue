@@ -691,14 +691,41 @@ const updateCounter = ref(0); // DOM 강제 갱신을 유도하기 위한 카운
 // 3. P2P 로직
 /** P2P 초기화: 서버에 접속하여 내 고유 ID를 발급받고 대기 상태로 진입 */
 const initP2P = () => {
+  // 1. 6자리의 짧은 랜덤 ID 생성 (기존 로직 유지)
   const shortId = Math.random().toString(36).substring(2, 8);
-  peer.value = new Peer(shortId); // 새로운 Peer 인스턴스 생성
-  peer.value.on('open', (id) => { 
-    myId.value = id; // 서버로부터 발급받은 내 ID 저장
-    isHost.value = true; // 먼저 킨 사람이 기본적으로 방장이 됨
+
+  // 2. Peer 인스턴스 생성
+  // 첫 번째 인자: 사용할 ID
+  // 두 번째 인자: STUN 서버 설정을 포함한 옵션 객체
+  peer.value = new Peer(shortId, {
+    config: {
+      iceServers: [
+        { urls: 'stun:stun.l.google.com:19302' },
+        { urls: 'stun:stun1.l.google.com:19302' },
+        { urls: 'stun:stun2.l.google.com:19302' },
+        { urls: 'stun:stun3.l.google.com:19302' },
+        { urls: 'stun:stun4.l.google.com:19302' },
+      ],
+      // 연결 후보군 수집 속도를 높이기 위한 설정
+      iceCandidatePoolSize: 10,
+    }
   });
-  // 다른 Peer가 나에게 연결을 시도할 때(on connection) 처리 로직 실행
+
+  peer.value.on('open', (id) => { 
+    myId.value = id; // 생성된 shortId가 저장됨
+    isHost.value = true; 
+  });
+
+  // 다른 기기에서 연결 시도 시 처리
   peer.value.on('connection', (conn) => { setupP2PConnection(conn); });
+
+  // 에러 핸들링 추가 (연결 실패 원인 파악용)
+  peer.value.on('error', (err) => {
+    console.error("PeerJS 에러 발생:", err.type);
+    if (err.type === 'unavailable-id') {
+      alert("이미 사용 중인 ID입니다. 다시 시도해 주세요.");
+    }
+  });
 };
 /** 상대방에게 연결 시도: 입력한 targetId를 가진 유저에게 접속 */
 const connectToPeer = (x: string) => {
@@ -830,7 +857,7 @@ const copyId = () => {
     @copy-record="copyRecord"
     @rollback-record="rollbackRecord"
     @change-locale="changeLocale"
-    
+
     :isHost
     :myId
     :targetId
