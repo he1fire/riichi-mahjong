@@ -16,7 +16,8 @@ export default defineConfig({
         '/riichi-mahjong/ja'  // 일본어
       ],
       exclude: ['/', '/404'],
-      outDir: 'dist'
+      outDir: 'dist',
+      generateRobotsTxt: false
     })
   ],
   base: "/riichi-mahjong/",
