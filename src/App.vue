@@ -685,7 +685,6 @@ const isHost = ref(false); // 내가 방장(서버)인지 참여자(클라이언
 const connections = ref<DataConnection[]>([]); // 활성화된 모든 연결 객체 배열
 //let p2pTimeout: any = null; // 디바운싱(연속 전송 방지)을 위한 타이머 변수
 const isReceiving = ref(false); // 데이터 수신 중임을 표시 (무한 루프 방지 핵심 변수)
-const updateCounter = ref(0); // DOM 강제 갱신을 유도하기 위한 카운터
 
 // 3. P2P 로직
 /** P2P 초기화: 서버에 접속하여 내 고유 ID를 발급받고 대기 상태로 진입 */
@@ -781,7 +780,6 @@ const setupP2PConnection = (conn: DataConnection) => {
     }
 
     await nextTick(); // Vue가 변경된 데이터를 기반으로 DOM을 갱신할 때까지 대기
-    updateCounter.value++; // 자식 컴포넌트의 key를 변경하여 렌더링 강제 트리거
     isReceiving.value = false; // 수신 완료: 다시 송신 가능한 상태로 복구
   });
 
@@ -819,19 +817,21 @@ const copyId = () => {
 <template>
 <div class="background" @dblclick.self="toggleFullScreen()">
   <!-- 각 방향별 player 컴포넌트 생성 -->
-  <player v-for="(_, i) in players"
-    :key="i"
-    :player="players[i]"
-    :option
-    @toggle-active-riichi="toggleActiveRiichi"
-    @toggle-show-gap="toggleShowGap"
-  />
-  <!-- 중앙 panel 컴포넌트 생성 -->
-  <panel
-    :panelInfo
-    @show-modal="showModal"
-    @roll-dice="rollDice"
-  />
+  <main role="main">
+    <player v-for="(_, i) in players"
+      :key="i"
+      :player="players[i]"
+      :option
+      @toggle-active-riichi="toggleActiveRiichi"
+      @toggle-show-gap="toggleShowGap"
+    />
+    <!-- 중앙 panel 컴포넌트 생성 -->
+    <panel
+      :panelInfo
+      @show-modal="showModal"
+      @roll-dice="rollDice"
+    />
+  </main>
   <!-- modal 컴포넌트 생성 -->
   <modal v-if="modalInfo.isOpen"
     :players
