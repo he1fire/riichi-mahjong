@@ -8,16 +8,14 @@ export default defineConfig({
   plugins: [
     vue(),
     sitemap({
-      // 1. hostname은 도메인까지만 적어줍니다.
-      hostname: 'https://he1fire.github.io', 
-      // 2. 경로에 프로젝트 이름을 직접 포함시킵니다.
+      hostname: 'https://he1fire.github.io', // 여기는 도메인만!
       dynamicRoutes: [
-        '/riichi-mahjong/ko',
-        '/riichi-mahjong/en',
-        '/riichi-mahjong/ja'
+        '/riichi-mahjong/',   // 메인
+        '/riichi-mahjong/ko', // 한국어
+        '/riichi-mahjong/en', // 영어
+        '/riichi-mahjong/ja'  // 일본어
       ],
-      // 3. 필요 없는 404 페이지는 제외합니다.
-      exclude: ['/404'],
+      exclude: ['/', '/404'],
       outDir: 'dist'
     })
   ],
