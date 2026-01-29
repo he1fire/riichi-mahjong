@@ -691,7 +691,7 @@ let roomChannel: any = null      // Supabase 채널 객체
  * @param id - 접속할 방 ID. 없으면 새로 생성(방장)
  */
 const initMultiplayer = (id?: string) => {
-  // 1. 방 ID 설정 (없으면 6자리 숫숫자 랜덤 생성)
+  // 1. 방 ID 설정 (없으면 6자리 숫자 랜덤 생성)
   const targetId = id || Math.floor(Math.random() * 1000000).toString().padStart(6, '0');
   roomId.value = targetId;
   isHost.value = !id;
@@ -784,7 +784,7 @@ const sendGameData = () => {
 
 // 데이터 변경 감시 (0.4초 디바운싱)
 //let syncTimeout: any = null;
-watch(() => [players, panelInfo], () => {
+watch(() => [players.map(x => x.displayScore), panelInfo], () => {
   if (isReceiving.value || !isConnected.value) return;
   sendGameData();
   // clearTimeout(syncTimeout);
@@ -793,9 +793,10 @@ watch(() => [players, panelInfo], () => {
 
 /** ID 복사 함수 */
 const copyRoomId = () => {
-  if (!roomId.value) return;
-  navigator.clipboard.writeText(roomId.value);
-  alert("방 코드가 복사되었습니다!");
+  if (!roomId.value)
+    return;
+  navigator.clipboard.writeText(roomId.value); // 클립보드로 복사
+  showModal('방 코드를 복사했습니다.');
 };
 </script>
 

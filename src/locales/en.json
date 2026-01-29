@@ -30,7 +30,8 @@
     "menu" : {
         "resultSheet" : "Result",
         "record" : "Record",
-        "option" : "Option"
+        "option" : "Option",
+        "sync" : "Sync"
     },
     "resultSheet" : {
         "wind" : "Wind",

@@ -201,6 +201,8 @@ const toggleButtonStyle = (status: string) => {
     return {color: props.option.cheatScore===true ? 'mediumblue' : 'red'};
   else if (status==='endriichi') // 공탁처리 옵션
     return {color: props.option.riichiPayout===true ? 'mediumblue' : 'red'};
+  else if (status==='isonline') // 싱크 온/오프라인
+    return {color: props.isConnected===true ? 'red' : 'gray'};
 }
 
 /**판/부 버튼 색상*/
@@ -514,8 +516,8 @@ const checkFao = () => {
       <div @click.stop="emit('show-modal', 'set_options')">
         {{ t('menu.option') }}
       </div>
-      <div @click.stop="emit('show-modal', 'p2p')">
-        P2P
+      <div @click.stop="emit('show-modal', 'sync')">
+        {{ t('menu.sync') }}
       </div>
       <div style="font-size: 20px;">
         <div style="display: flex; align-items: center;">
@@ -691,21 +693,45 @@ const checkFao = () => {
       </div>
     </div>
   </div>
-  <div v-else-if="modalInfo.type==='p2p'" class="modal_content" @click.stop>
-    실시간 점수 공유 (Supabase)
-    <div v-if="!isConnected" class="controls">
-      <button @click="emit('init-multiplayer')" class="btn-primary">새 방 만들기</button>
-      <div class="divider">또는</div>
-      <input v-model="targetRoomId" placeholder="방 코드 입력" />
-      <button @click="emit('init-multiplayer', targetRoomId)" class="btn-success">방 접속하기</button>
-    </div>
-
-    <div v-else class="status-info">
-      <div class="room-code">
-        <span>방 코드: <strong>{{ roomId }}</strong></span>
-        <button @click="emit('copy-room-id')">복사</button>
+  <div v-else-if="modalInfo.type==='sync'" class="modal_content" @click.stop>
+    <div v-if="!isConnected" class="container_sync">
+      <div class="on_off" :style="toggleButtonStyle('isonline')">
+        오프라인
       </div>
-      <div class="status-badge connected">연결됨: 데이터 동기화 중</div>
+      <div style="grid-area: room_id;">
+        ID: 
+        <input
+          type="text"
+          v-model="targetRoomId"
+          placeholder="방 코드 입력"
+          name="roomCode"
+        />
+      </div>
+      <div style="grid-area: button;">
+        <div v-if="!targetRoomId">
+          <div @click.stop="emit('init-multiplayer')">
+            생성
+          </div>
+        </div>
+        <div v-else>
+          <div @click.stop="emit('init-multiplayer', targetRoomId)">
+            접속
+          </div>
+        </div>
+      </div>
+    </div>
+    <div v-else class="container_sync">
+      <div class="on_off" :style="toggleButtonStyle('isonline')">
+        온라인
+      </div>
+      <div style="grid-area: room_id;">
+        ID: {{ roomId }}
+      </div>
+      <div style="grid-area: button;">
+        <div @click.stop="emit('copy-room-id')">
+          복사
+        </div>
+      </div>
     </div>
   </div>
   <!-- 메시지 팝업창 -->
@@ -919,7 +945,7 @@ const checkFao = () => {
 .container_choose_menu{
   display: grid;
   grid-template-rows: repeat(2, 60px);
-  grid-template-columns: repeat(2, 120px);
+  grid-template-columns: repeat(3, 120px);
   font-size: 30px;
   gap: 20px;
   margin: 15px;
@@ -993,5 +1019,27 @@ const checkFao = () => {
   width: 490px;
   height: 240px;
   margin: 5px;
+}
+
+/* 점수 연동창 */
+.container_sync{
+  display: grid;
+  grid-template-rows: 40px 40px;
+  grid-template-columns: 80px 120px;
+  grid-template-areas:
+    'on_off button'
+    'room_id room_id';
+  text-align: center;
+  font-size: 25px;
+  margin: 10px;
+  place-items: center;
+}
+.on_off{
+  grid-area: on_off;
+  font-size: 15px;
+}
+.container_sync input{
+  font-size: 20px;
+  width: 120px;
 }
 </style>

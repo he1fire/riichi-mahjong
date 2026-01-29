@@ -30,7 +30,8 @@
     "menu" : {
         "resultSheet" : "게임결과",
         "record" : "점수기록",
-        "option" : "설정"
+        "option" : "설정",
+        "sync" : "동기화"
     },
     "resultSheet" : {
         "wind" : "바람",

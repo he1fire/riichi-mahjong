@@ -30,7 +30,8 @@
     "menu" : {
         "resultSheet" : "結果",
         "record" : "記録",
-        "option" : "設定"
+        "option" : "設定",
+        "sync" : "同期"
     },
     "resultSheet" : {
         "wind" : "風",
