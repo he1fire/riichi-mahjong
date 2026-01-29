@@ -662,10 +662,8 @@ const rollbackRecord = (idx: number) => {
   panelInfo.riichi=Math.floor((option.startingScore*4-sumScore)/1000); // 리치봉 설정
   hideModal(); // 모달 창 끄기
 }
-
-import { Peer, DataConnection } from 'peerjs';
-import { ref, nextTick } from 'vue';
-// 1. 전송용 데이터 묶음: 모든 반응형 상태를 하나의 객체로 묶어 송수신을 편리하게 함
+import { ref, nextTick } from "vue"
+import { createClient } from '@supabase/supabase-js'
 const allStates = reactive({ 
   players, 
   scoringState, 
@@ -676,141 +674,111 @@ const allStates = reactive({
   option, 
   modalInfo 
 });
-// 2. P2P 상태 변수 정의
-const peer = ref<Peer | null>(null); // PeerJS 인스턴스 저장
-const myId = ref(''); // 내 고유 Peer ID
-const targetId = ref(''); // 연결할 상대방의 ID (Input 입력값)
-const isConnected = ref(false); // 연결 성공 여부 플래그
-const isHost = ref(false); // 내가 방장(서버)인지 참여자(클라이언트)인지 구분
-const connections = ref<DataConnection[]>([]); // 활성화된 모든 연결 객체 배열
-//let p2pTimeout: any = null; // 디바운싱(연속 전송 방지)을 위한 타이머 변수
-const isReceiving = ref(false); // 데이터 수신 중임을 표시 (무한 루프 방지 핵심 변수)
 
-// 3. P2P 로직
-/** P2P 초기화: 서버에 접속하여 내 고유 ID를 발급받고 대기 상태로 진입 */
-const initP2P = () => {
-  // 1. 6자리의 짧은 랜덤 ID 생성 (기존 로직 유지)
-  const shortId = Math.random().toString(36).substring(2, 8);
+// 1. Supabase 클라이언트 초기화
+const SUPABASE_URL = import.meta.env.VITE_SUPABASE_URL
+const SUPABASE_KEY = import.meta.env.VITE_SUPABASE_KEY
+const supabase = createClient(SUPABASE_URL, SUPABASE_KEY)
 
-  // 2. Peer 인스턴스 생성
-  // 첫 번째 인자: 사용할 ID
-  // 두 번째 인자: STUN 서버 설정을 포함한 옵션 객체
-  peer.value = new Peer(shortId, {
-    config: {
-      iceServers: [
-        { urls: 'stun:stun.l.google.com:19302' },
-        { urls: 'stun:stun1.l.google.com:19302' },
-        { urls: 'stun:stun2.l.google.com:19302' },
-        { urls: 'stun:stun3.l.google.com:19302' },
-        { urls: 'stun:stun4.l.google.com:19302' },
-      ],
-      // 연결 후보군 수집 속도를 높이기 위한 설정
-      iceCandidatePoolSize: 10,
-    }
-  });
+// 2. 상태 변수 정의
+const roomId = ref('')           // 현재 접속 중인 방 ID
+const isConnected = ref(false)   // 연결 상태
+const isReceiving = ref(false)   // 수신 중 플래그 (무한루프 방지)
+let roomChannel: any = null      // Supabase 채널 객체
 
-  peer.value.on('open', (id) => { 
-    myId.value = id; // 생성된 shortId가 저장됨
-    isHost.value = true; 
-  });
+/** * 멀티플레이 초기화 (방 만들기 / 접속하기 공용)
+ * @param id - 접속할 방 ID. 없으면 새로 생성(방장)
+ */
+const initMultiplayer = (id?: string) => {
+  // 1. 방 ID 설정 (없으면 6자리 랜덤 생성)
+  const targetId = id || Math.random().toString(36).substring(2, 8);
+  roomId.value = targetId;
 
-  // 다른 기기에서 연결 시도 시 처리
-  peer.value.on('connection', (conn) => { setupP2PConnection(conn); });
+  // 2. 기존 채널이 있다면 제거
+  if (roomChannel) supabase.removeChannel(roomChannel);
 
-  // 에러 핸들링 추가 (연결 실패 원인 파악용)
-  peer.value.on('error', (err) => {
-    console.error("PeerJS 에러 발생:", err.type);
-    if (err.type === 'unavailable-id') {
-      alert("이미 사용 중인 ID입니다. 다시 시도해 주세요.");
-    }
-  });
-};
-/** 상대방에게 연결 시도: 입력한 targetId를 가진 유저에게 접속 */
-const connectToPeer = (x: string) => {
-  targetId.value=x;
-  if (!targetId.value || !peer.value) return; // ID가 없거나 초기화 전이면 중단
-  isHost.value = false; // 연결을 거는 쪽은 참여자가 됨
-  const conn = peer.value.connect(targetId.value); // 상대방 ID로 연결 시도
-  setupP2PConnection(conn); // 생성된 연결 객체 설정
-};
-/** 연결 설정 및 데이터 이벤트 리스너 등록 */
-const setupP2PConnection = (conn: DataConnection) => {
-  conn.on('open', () => { // 연결이 실제로 수립되었을 때 실행
-    connections.value.push(conn); // 활성 연결 목록에 추가
-    isConnected.value = true; // 연결 상태 업데이트
-    if (isHost.value) sendP2PData(); // 방장이라면 현재 게임판 데이터를 즉시 공유
-  });
-  /** 데이터 수신 시 처리: 상대방이 보낸 데이터를 내 로컬 상태에 동기화 */
-  conn.on('data', async (raw_data: any) => {
-    if (!raw_data || !raw_data.players) return; // 유효하지 않은 데이터는 무시
-    isReceiving.value = true; // 수신 시작: 내가 보낸 데이터가 다시 전송되는 루프 방지
-    // JSON 전송 시 NaN이 null로 변환되는 JS 특성을 보완하기 위한 재귀 함수
-    const restoreNaN = (obj: any) => {
-      for (let key in obj) {
-        if (obj[key] === null) {
-          obj[key] = NaN; // 마작 로직의 null은 NaN(점수 차 없음 등)으로 복구
-        } else if (typeof obj[key] === 'object' && obj[key] !== null) {
-          restoreNaN(obj[key]); // 중첩된 객체 안까지 파고들어 검사
+  // 3. 새 채널 생성 및 구독
+  roomChannel = supabase.channel(`room_${targetId}`, {
+    config: { broadcast: { self: false } } // 내가 보낸건 내가 안받음
+  })
+
+  roomChannel
+    .on('broadcast', { event: 'sync' }, ({ payload }: { payload: any }) => {
+      if (isReceiving.value) return;
+      isReceiving.value = true;
+
+      // JSON 변환 시 null로 바뀐 NaN 복구
+      const restoreNaN = (obj: any) => {
+        for (let key in obj) {
+          if (obj[key] === null) obj[key] = NaN;
+          else if (typeof obj[key] === 'object' && obj[key] !== null) restoreNaN(obj[key]);
         }
-      }
-      return obj;
-    };
+        return obj;
+      };
 
-    const data = restoreNaN(raw_data) as typeof allStates; // 데이터 복구 및 타입 캐스팅
-    // [중요] 배열 참조를 유지하며 데이터 교체: Vue가 변경 사항을 감지하도록 splice 사용
-    players.splice(0, players.length, ...data.players); 
-    // 개별 반응형 객체들에 수신받은 데이터 값을 덮어쓰기 (참조 주소 유지)
-    Object.assign(panelInfo, data.panelInfo);
-    Object.assign(scoringState, data.scoringState);
-    Object.assign(option, data.option);
-    Object.assign(modalInfo, data.modalInfo);
-    Object.assign(dice, data.dice);
-    Object.assign(seatTile, data.seatTile);
-    
-    // 복잡한 중첩 구조인 기록(Records) 데이터 동기화
-    if (data.records && data.records.score) {
-      data.records.score.forEach((s: any, i: number) => {
-        if (records.score[i]) {
-          // 각 플레이어별 점수 히스토리 배열을 splice로 교체
-          records.score[i].splice(0, records.score[i].length, ...s);
-        }
+      const data = restoreNaN(payload);
+
+      // 데이터 주입 (기존 reactive 객체들에 덮어쓰기)
+      data.players.forEach((newData: any) => {
+        const target = players.find(p => p.seat === newData.seat);
+        if (target) Object.assign(target, newData);
       });
-      // 시간 기록 배열 교체
-      records.time.splice(0, records.time.length, ...data.records.time);
-    }
+      Object.assign(panelInfo, data.panelInfo);
+      Object.assign(scoringState, data.scoringState);
+      Object.assign(option, data.option);
+      Object.assign(modalInfo, data.modalInfo);
+      Object.assign(dice, data.dice);
+      Object.assign(seatTile, data.seatTile);
+      
+      // 기록 데이터 처리
+      if (data.records && data.records.score) {
+        data.records.score.forEach((s: any, i: number) => {
+          if (records.score[i]) records.score[i].splice(0, records.score[i].length, ...s);
+        });
+        records.time.splice(0, records.time.length, ...data.records.time);
+      }
 
-    await nextTick(); // Vue가 변경된 데이터를 기반으로 DOM을 갱신할 때까지 대기
-    isReceiving.value = false; // 수신 완료: 다시 송신 가능한 상태로 복구
-  });
+      nextTick(() => { isReceiving.value = false; });
+    })
+    .subscribe((status: string) => {
+      if (status === 'SUBSCRIBED') {
+        isConnected.value = true;
+        // 접속 성공 시 현재 내 데이터를 한 번 전송 (동기화)
+        sendGameData();
+      } else if (status === 'CHANNEL_ERROR') {
+        console.error("채널 연결 실패. API 키나 URL을 확인하세요.");
+      } else if (status === 'TIMED_OUT') {
+        console.error("연결 시간 초과. 네트워크 환경을 확인하세요.");
+      }
+    });
+};
 
-  conn.on('close', () => { // 상대방과 연결이 끊어졌을 때
-    isConnected.value = false;
-    connections.value = []; // 연결 목록 초기화
+/** 데이터 전송 로직 */
+const sendGameData = () => {
+  if (!roomChannel || isReceiving.value || !isConnected.value) return;
+
+  const payload = JSON.parse(JSON.stringify(allStates));
+  roomChannel.send({
+    type: 'broadcast',
+    event: 'sync',
+    payload
   });
 };
-/** 데이터 송신: 내 로컬 상태를 상대방에게 전송 */
-const sendP2PData = () => {
-  // 내가 수신 중일 때 전송하면 무한 루프에 빠지므로 방어 코드 작성
-  if (isReceiving.value || !isConnected.value) return; 
-  
-  // Proxy 객체의 반응성을 제거하고 순수 데이터만 추출하여 전송 준비
-  const payload = JSON.parse(JSON.stringify(allStates)); 
-  
-  // 현재 연결된 모든 피어에게 데이터 전송
-  connections.value.forEach(c => { if (c.open) c.send(payload); });
-};
-/** 실시간 감시: 게임 상태(플레이어, 패널 정보)가 변하면 자동으로 상대에게 전송 */
+
+// 데이터 변경 감시 (0.4초 디바운싱)
+//let syncTimeout: any = null;
 watch(() => [players, panelInfo], () => {
-  if (isReceiving.value || !isConnected.value) return; // 수신 중이거나 미연결 시 무시
-  sendP2PData();
-  //clearTimeout(p2pTimeout); // 0.4초 이내에 연속 변경이 일어나면 이전 타이머 취소
-  //p2pTimeout = setTimeout(sendP2PData, 400); // 마지막 변경 발생 0.4초 후에 데이터 전송 (디바운싱)
-}, { deep: true }); // 객체 내부의 깊은 속성 변경까지 모두 감시
-/** ID 복사: 방 코드를 클립보드에 복사하여 공유 용도로 사용 */
-const copyId = () => { 
-  if (!myId.value) return;
-  navigator.clipboard.writeText(myId.value); 
-  alert("방 코드가 복사되었습니다!"); 
+  if (isReceiving.value || !isConnected.value) return;
+  sendGameData();
+  // clearTimeout(syncTimeout);
+  // syncTimeout = setTimeout(sendGameData, 400);
+}, { deep: true });
+
+/** ID 복사 함수 */
+const copyRoomId = () => {
+  if (!roomId.value) return;
+  navigator.clipboard.writeText(roomId.value);
+  alert("방 코드가 복사되었습니다!");
 };
 </script>
 
@@ -856,14 +824,10 @@ const copyId = () => {
     @copy-record="copyRecord"
     @rollback-record="rollbackRecord"
     @change-locale="changeLocale"
-
-    :isHost
-    :myId
-    :targetId
+    :roomId
     :isConnected
-    @init-p2p="initP2P"
-    @copy-id="copyId"
-    @connect-to-peer="connectToPeer"
+    @init-multiplayer="initMultiplayer"
+    @copy-room-id="copyRoomId"
   />
 </div>
 </template>
