@@ -684,15 +684,20 @@ const supabase = createClient(SUPABASE_URL, SUPABASE_KEY)
 const roomId = ref('')           // 현재 접속 중인 방 ID
 const isConnected = ref(false)   // 연결 상태
 const isReceiving = ref(false)   // 수신 중 플래그 (무한루프 방지)
+const isHost = ref(false)   // 방장 여부
 let roomChannel: any = null      // Supabase 채널 객체
 
 /** * 멀티플레이 초기화 (방 만들기 / 접속하기 공용)
  * @param id - 접속할 방 ID. 없으면 새로 생성(방장)
  */
 const initMultiplayer = (id?: string) => {
-  // 1. 방 ID 설정 (없으면 6자리 랜덤 생성)
-  const targetId = id || Math.random().toString(36).substring(2, 8);
+  // 1. 방 ID 설정 (없으면 6자리 숫숫자 랜덤 생성)
+  const targetId = id || Math.floor(Math.random() * 1000000).toString().padStart(6, '0');
   roomId.value = targetId;
+  isHost.value = !id;
+
+  isConnected.value = isHost.value; 
+  isReceiving.value = false;
 
   // 2. 기존 채널이 있다면 제거
   if (roomChannel) supabase.removeChannel(roomChannel);
@@ -737,14 +742,27 @@ const initMultiplayer = (id?: string) => {
         });
         records.time.splice(0, records.time.length, ...data.records.time);
       }
+      // 데이터를 한 번이라도 받으면 이제부터 전송 가능
+      isConnected.value = true;
 
       nextTick(() => { isReceiving.value = false; });
     })
+    .on('broadcast', { event: 'request_sync' }, () => {
+      if (isHost.value) {
+        console.log("새 참여자의 요청으로 데이터를 전송합니다.");
+        sendGameData();
+      }
+    })
     .subscribe((status: string) => {
       if (status === 'SUBSCRIBED') {
-        isConnected.value = true;
-        // 접속 성공 시 현재 내 데이터를 한 번 전송 (동기화)
-        sendGameData();
+        if (!isHost.value) {
+          console.log("방장에게 데이터를 요청합니다...");
+          roomChannel.send({
+            type: 'broadcast',
+            event: 'request_sync',
+            payload: {}
+          });
+        }
       } else if (status === 'CHANNEL_ERROR') {
         console.error("채널 연결 실패. API 키나 URL을 확인하세요.");
       } else if (status === 'TIMED_OUT') {
@@ -756,7 +774,6 @@ const initMultiplayer = (id?: string) => {
 /** 데이터 전송 로직 */
 const sendGameData = () => {
   if (!roomChannel || isReceiving.value || !isConnected.value) return;
-
   const payload = JSON.parse(JSON.stringify(allStates));
   roomChannel.send({
     type: 'broadcast',
