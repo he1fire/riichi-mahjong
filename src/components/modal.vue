@@ -202,7 +202,7 @@ const toggleButtonStyle = (status: string) => {
   else if (status==='endriichi') // 공탁처리 옵션
     return {color: props.option.riichiPayout===true ? 'mediumblue' : 'red'};
   else if (status==='isonline') // 싱크 온/오프라인
-    return {color: props.isConnected===true ? '' : 'gray'};
+    return {color: props.isConnected===true ? 'limegreen' : 'gray'};
 }
 
 /**판/부 버튼 색상*/
@@ -499,7 +499,7 @@ const checkFao = () => {
         :key="i"
         kind="tile"
         :style="seatTileStyle(i)"
-        :value="seatTile.value[i]"
+        :wind="seatTile.value[i]"
         @click.stop="emit('set-seat-tile', i)"
       ></graphics>
     </div>
@@ -696,6 +696,7 @@ const checkFao = () => {
   <div v-else-if="modalInfo.type==='sync'" class="modal_content" @click.stop>
     <div v-if="!isConnected" class="container_sync">
       <div class="on_off" :style="toggleButtonStyle('isonline')">
+        <graphics kind="dot" :status="isConnected"/>
         {{ t('sync.offline') }}
       </div>
       <div style="grid-area: room_id;">
@@ -721,6 +722,7 @@ const checkFao = () => {
     </div>
     <div v-else class="container_sync">
       <div class="on_off" :style="toggleButtonStyle('isonline')">
+        <graphics kind="dot" :status="isConnected"/>
         {{ t('sync.online') }}
       </div>
       <div style="grid-area: room_id;">
@@ -1023,29 +1025,29 @@ const checkFao = () => {
 /* 점수 연동창 */
 .container_sync{
   display: grid;
-  grid-template-rows: 40px 60px;
-  grid-template-columns: 100px 170px;
+  grid-template-rows: 50px 75px;
+  grid-template-columns: 170px 180px;
   grid-template-areas:
     'on_off sync_button'
     'room_id room_id';
   text-align: center;
-  font-size: 25px;
+  font-size: 30px;
   margin: 10px;
   place-items: center;
 }
 .on_off{
   grid-area: on_off;
-  font-size: 15px;
+  font-size: 25px;
 }
 .sync_button{
   grid-area: sync_button;
   color: red;
 }
 .container_sync input{
-  font-size: 25px;
-  width: 200px;
+  font-size: 30px;
+  width: 300px;
 }
 .container_sync input::placeholder {
-  font-size: 20px;
+  font-size: 25px;
 }
 </style>
