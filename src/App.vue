@@ -685,6 +685,8 @@ const roomId = ref('')           // 현재 접속 중인 방 ID
 const isConnected = ref(false)   // 연결 상태
 const isReceiving = ref(false)   // 수신 중 플래그 (무한루프 방지)
 const isHost = ref(false)   // 방장 여부
+const myId = ref('user_' + Math.random().toString(36).substring(2, 8)); // 랜덤 ID
+const userList = ref<any[]>([]); // 현재 접속자 명단
 let roomChannel: any = null      // Supabase 채널 객체
 
 /** * 멀티플레이 초기화 (방 만들기 / 접속하기 공용)
@@ -694,10 +696,6 @@ const initMultiplayer = (id?: string) => {
   // 1. 방 ID 설정 (없으면 6자리 숫자 랜덤 생성)
   const targetId = id || Math.floor(Math.random() * 1000000).toString().padStart(6, '0');
   roomId.value = targetId;
-  isHost.value = !id;
-
-  isConnected.value = isHost.value; 
-  isReceiving.value = false;
 
   // 2. 기존 채널이 있다면 제거
   if (roomChannel) supabase.removeChannel(roomChannel);
@@ -708,6 +706,26 @@ const initMultiplayer = (id?: string) => {
   })
 
   roomChannel
+    .on('presence', { event: 'sync' }, () => {
+      const state = roomChannel.presenceState();
+      
+      // 1. 접속자 목록을 '들어온 시간' 순으로 정렬
+      const presences = Object.values(state).flat() as any[];
+      presences.sort((a, b) => new Date(a.online_at).getTime() - new Date(b.online_at).getTime());
+      
+      userList.value = presences;
+
+      // 2. 가장 먼저 들어온 유저의 ID가 내 ID와 같다면 내가 방장!
+      if (presences.length > 0 && presences[0].user_id === myId.value) {
+        if (!isHost.value) {
+          console.log("당신이 새로운 방장이 되었습니다.");
+          isHost.value = true;
+          isConnected.value = true; // 방장이 되면 즉시 전송 권한 획득
+        }
+      } else {
+        isHost.value = false;
+      }
+    })
     .on('broadcast', { event: 'sync' }, ({ payload }: { payload: any }) => {
       if (isReceiving.value) return;
       isReceiving.value = true;
@@ -753,20 +771,21 @@ const initMultiplayer = (id?: string) => {
         sendGameData();
       }
     })
-    .subscribe((status: string) => {
+    .subscribe(async (status: string) => {
       if (status === 'SUBSCRIBED') {
-        if (!isHost.value) {
-          console.log("방장에게 데이터를 요청합니다...");
-          roomChannel.send({
-            type: 'broadcast',
-            event: 'request_sync',
-            payload: {}
-          });
+        // 3. 내 정보를 등록 (들어온 시간 포함)
+        await roomChannel.track({
+          user_id: myId.value,
+          online_at: new Date().toISOString(),
+        });
+
+        if (!id) {
+          isHost.value = true;
+          isConnected.value = true;
+        } else {
+          // 참여자라면 데이터 요청
+          roomChannel.send({ type: 'broadcast', event: 'request_sync', payload: {} });
         }
-      } else if (status === 'CHANNEL_ERROR') {
-        console.error("채널 연결 실패. API 키나 URL을 확인하세요.");
-      } else if (status === 'TIMED_OUT') {
-        console.error("연결 시간 초과. 네트워크 환경을 확인하세요.");
       }
     });
 };
