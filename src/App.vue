@@ -664,15 +664,11 @@ const rollbackRecord = (idx: number) => {
 }
 import { ref, nextTick } from "vue"
 import { createClient } from '@supabase/supabase-js'
-const allStates = reactive({ 
+const syncData = reactive({ 
   players, 
-  scoringState, 
   panelInfo, 
-  dice, 
-  seatTile, 
   records, 
   option, 
-  modalInfo 
 });
 
 // 1. Supabase 클라이언트 초기화
@@ -747,11 +743,7 @@ const initMultiplayer = (id?: string) => {
         if (target) Object.assign(target, newData);
       });
       Object.assign(panelInfo, data.panelInfo);
-      Object.assign(scoringState, data.scoringState);
       Object.assign(option, data.option);
-      Object.assign(modalInfo, data.modalInfo);
-      Object.assign(dice, data.dice);
-      Object.assign(seatTile, data.seatTile);
       
       // 기록 데이터 처리
       if (data.records && data.records.score) {
@@ -793,7 +785,7 @@ const initMultiplayer = (id?: string) => {
 /** 데이터 전송 로직 */
 const sendGameData = () => {
   if (!roomChannel || isReceiving.value || !isConnected.value) return;
-  const payload = JSON.parse(JSON.stringify(allStates));
+  const payload = JSON.parse(JSON.stringify(syncData));
   roomChannel.send({
     type: 'broadcast',
     event: 'sync',
@@ -803,7 +795,7 @@ const sendGameData = () => {
 
 // 데이터 변경 감시 (0.4초 디바운싱)
 //let syncTimeout: any = null;
-watch(() => [players.map(x => x.displayScore), panelInfo], () => {
+watch(() => [syncData], () => {
   if (isReceiving.value || !isConnected.value) return;
   sendGameData();
   // clearTimeout(syncTimeout);
