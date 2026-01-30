@@ -14,7 +14,7 @@
         "checkPlayerTenpai" : "Select tenpai.",
         "checkPlayerCheat" : "Select chombo.",
         "rollbackRecord" : "Revert to {time}?",
-        "copyRecord" : "Game recode copied to clipboard.",
+        "copyRecord" : "Game record copied to clipboard.",
         "copyRoomCode" : "Room code copied to clipboard."
     },
     "score" : {
