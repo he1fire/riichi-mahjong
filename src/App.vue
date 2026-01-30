@@ -807,7 +807,7 @@ const copyRoomId = () => {
   if (!roomId.value)
     return;
   navigator.clipboard.writeText(roomId.value); // 클립보드로 복사
-  showModal('방 코드를 복사했습니다.');
+  showModal(t('comments.copyRoomCode'));
 };
 </script>
 

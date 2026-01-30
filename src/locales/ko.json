@@ -14,7 +14,8 @@
         "checkPlayerTenpai" : "텐파이한 사람을 선택해 주세요.",
         "checkPlayerCheat" : "촌보한 사람을 선택해 주세요.",
         "rollbackRecord" : "{time}으로 되돌리시겠습니까?",
-        "copyRecord" : "클립보드에 기록을 복사했습니다."
+        "copyRecord" : "대국 기록을 복사했습니다.",
+        "copyRoomCode" : "방 코드를 복사했습니다."
     },
     "score" : {
         "fan" : "판",
@@ -60,5 +61,13 @@
         "mangan" : "만관",
         "riichiPayout" : "공탁금처리",
         "firstPlace" : "1위"
+    },
+    "sync" : {
+        "online" : "온라인",
+        "offline" : "오프라인",
+        "create" : "생성",
+        "join" : "참여",
+        "copy" : "복사",
+        "roomCode" : "방 코드"
     }
 }

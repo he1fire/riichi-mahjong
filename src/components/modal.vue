@@ -202,7 +202,7 @@ const toggleButtonStyle = (status: string) => {
   else if (status==='endriichi') // 공탁처리 옵션
     return {color: props.option.riichiPayout===true ? 'mediumblue' : 'red'};
   else if (status==='isonline') // 싱크 온/오프라인
-    return {color: props.isConnected===true ? 'red' : 'gray'};
+    return {color: props.isConnected===true ? '' : 'gray'};
 }
 
 /**판/부 버튼 색상*/
@@ -696,40 +696,39 @@ const checkFao = () => {
   <div v-else-if="modalInfo.type==='sync'" class="modal_content" @click.stop>
     <div v-if="!isConnected" class="container_sync">
       <div class="on_off" :style="toggleButtonStyle('isonline')">
-        오프라인
+        {{ t('sync.offline') }}
       </div>
       <div style="grid-area: room_id;">
-        ID: 
         <input
           type="text"
           v-model="targetRoomId"
-          placeholder="방 코드 입력"
+          :placeholder="t('sync.roomCode')"
           name="roomCode"
         />
       </div>
-      <div style="grid-area: button;">
+      <div class="sync_button">
         <div v-if="!targetRoomId">
           <div @click.stop="emit('init-multiplayer')">
-            생성
+            {{ t('sync.create') }}
           </div>
         </div>
         <div v-else>
           <div @click.stop="emit('init-multiplayer', targetRoomId)">
-            접속
+            {{ t('sync.join') }}
           </div>
         </div>
       </div>
     </div>
     <div v-else class="container_sync">
       <div class="on_off" :style="toggleButtonStyle('isonline')">
-        온라인
+        {{ t('sync.online') }}
       </div>
       <div style="grid-area: room_id;">
-        ID: {{ roomId }}
+        {{ t('sync.roomCode') }}: {{ roomId }}
       </div>
-      <div style="grid-area: button;">
+      <div class="sync_button">
         <div @click.stop="emit('copy-room-id')">
-          복사
+          {{ t('sync.copy') }}
         </div>
       </div>
     </div>
@@ -1024,10 +1023,10 @@ const checkFao = () => {
 /* 점수 연동창 */
 .container_sync{
   display: grid;
-  grid-template-rows: 40px 40px;
-  grid-template-columns: 80px 120px;
+  grid-template-rows: 40px 60px;
+  grid-template-columns: 100px 170px;
   grid-template-areas:
-    'on_off button'
+    'on_off sync_button'
     'room_id room_id';
   text-align: center;
   font-size: 25px;
@@ -1038,8 +1037,15 @@ const checkFao = () => {
   grid-area: on_off;
   font-size: 15px;
 }
+.sync_button{
+  grid-area: sync_button;
+  color: red;
+}
 .container_sync input{
+  font-size: 25px;
+  width: 200px;
+}
+.container_sync input::placeholder {
   font-size: 20px;
-  width: 120px;
 }
 </style>

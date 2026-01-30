@@ -14,7 +14,8 @@
         "checkPlayerTenpai" : "テンパイ者を選択してください。",
         "checkPlayerCheat" : "錯和者を選択してください。",
         "rollbackRecord" : "{time}に戻しますか？",
-        "copyRecord" : "記録をクリップボードにコピーしました。"
+        "copyRecord" : "対局記録をコピーしました。",
+        "copyRoomCode" : "ルームコードをコピーしました。"
     },
     "score" : {
         "fan" : "飜",
@@ -60,5 +61,13 @@
         "mangan" : "満貫",
         "riichiPayout" : "立直棒処理",
         "firstPlace" : "1位"
+    },
+    "sync" : {
+        "online" : "オンライン",
+        "offline" : "オフライン",
+        "create" : "作成",
+        "join" : "参加",
+        "copy" : "コピー",
+        "roomCode" : "ルームコード"
     }
 }
