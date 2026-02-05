@@ -1,0 +1,18 @@
+name: Supabase Keep Alive
+
+on:
+  schedule:
+    # 3일마다 한 번씩 실행
+    - cron: '0 0 */3 * *'
+  workflow_dispatch: # 직접 실행해볼 수 있는 버튼
+
+jobs:
+  ping:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Send Activity
+        run: |
+          curl -X GET "${{ secrets.VITE_SUPABASE_URL }}/rest/v1/health_check?select=*" \
+          -H "apikey: ${{ secrets.VITE_SUPABASE_KEY }}" \
+          -H "Authorization: Bearer ${{ secrets.VITE_SUPABASE_KEY }}" \
+          -I
