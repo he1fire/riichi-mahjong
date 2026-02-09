@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import graphics from "@/components/graphics.vue"
-import type { Player, ScoringState, PanelInfo, Dice, SeatTile, Records, Option, ModalInfo } from "@/types/types.d";
+import type { Player, ScoringState, PanelInfo, Dice, SeatTile, Records, Option, ModalInfo, SyncInfo } from "@/types/types.d";
 import { computed } from "vue"
 import { useI18n } from "vue-i18n"
 import { Line as LineChart } from "vue-chartjs"
@@ -24,8 +24,7 @@ interface Props {
   records: Records,
   option: Option,
   modalInfo: ModalInfo,
-  roomId: any,
-  isConnected: any,
+  syncInfo: SyncInfo
 }
 const props = defineProps<Props>()
 
@@ -202,7 +201,7 @@ const toggleButtonStyle = (status: string) => {
   else if (status==='endriichi') // 공탁처리 옵션
     return {color: props.option.riichiPayout===true ? 'mediumblue' : 'red'};
   else if (status==='isonline') // 싱크 온/오프라인
-    return {color: props.isConnected===true ? 'limegreen' : 'gray'};
+    return {color: props.syncInfo.isConnected===true ? 'limegreen' : 'gray'};
 }
 
 /**판/부 버튼 색상*/
@@ -694,9 +693,9 @@ const checkFao = () => {
     </div>
   </div>
   <div v-else-if="modalInfo.type==='sync'" class="modal_content" @click.stop>
-    <div v-if="!isConnected" class="container_sync">
+    <div v-if="!syncInfo.isConnected" class="container_sync">
       <div class="on_off" :style="toggleButtonStyle('isonline')">
-        <graphics kind="dot" :status="isConnected"/>
+        <graphics kind="dot" :status="syncInfo.isConnected"/>
         {{ t('sync.offline') }}
       </div>
       <div style="grid-area: room_id;">
@@ -722,11 +721,11 @@ const checkFao = () => {
     </div>
     <div v-else class="container_sync">
       <div class="on_off" :style="toggleButtonStyle('isonline')">
-        <graphics kind="dot" :status="isConnected"/>
+        <graphics kind="dot" :status="syncInfo.isConnected"/>
         {{ t('sync.online') }}
       </div>
       <div style="grid-area: room_id;">
-        {{ t('sync.roomCode') }}: {{ roomId }}
+        {{ t('sync.roomCode') }}: {{ syncInfo.roomId }}
       </div>
       <div class="sync_button">
         <div @click.stop="emit('copy-room-id')">

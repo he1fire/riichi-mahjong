@@ -59,7 +59,17 @@ export interface Option { // 옵션
 }
 
 export interface ModalInfo { // 모달창
-  isOpen : boolean, // on/off
+  isOpen: boolean, // on/off
   type: string, // 종류
   status: string, // 라운드 형태 - 론 쯔모 일반유국 특수유국
+}
+
+export interface SyncInfo { // 점수연동
+  SUPABASE_URL: string, // supabase url
+  SUPABASE_KEY: string, // supabase key
+  myId: string, // 개인 ID
+  roomId: string // 방 ID
+  isConnected: boolean // 연결 상태
+  isReceiving: boolean // 수신 중 플래그 (무한루프 방지)
+  isHost: boolean // 방장 여부
 }

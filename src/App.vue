@@ -2,9 +2,10 @@
 import player from "@/components/player.vue"
 import panel from "@/components/panel.vue"
 import modal from "@/components/modal.vue"
-import { reactive, onMounted, watch } from "vue"
+import { reactive, onMounted, watch, nextTick } from "vue"
 import { useRoute, useRouter } from "vue-router"
 import { useI18n } from "vue-i18n"
+import { createClient } from "@supabase/supabase-js"
 
 /**라우터 가져오기*/
 const route = useRoute()
@@ -75,6 +76,15 @@ const modalInfo = reactive({ // 모달창
   isOpen: false, // on/off
   type: "", // 종류
   status: "", // 라운드 형태 - 론 쯔모 일반유국 특수유국
+})
+const syncInfo = reactive({ // 점수연동
+  SUPABASE_URL: import.meta.env.VITE_SUPABASE_URL, // supabase url
+  SUPABASE_KEY: import.meta.env.VITE_SUPABASE_KEY, // supabase key
+  myId: "user_"+Math.random().toString(36).substring(2,8), // 개인 ID
+  roomId: "", // 방 ID
+  isConnected: false, // 연결 상태
+  isReceiving: false, // 수신 중 플래그 (무한루프 방지)
+  isHost: false // 방장 여부
 })
 
 /**시작시 언어 변경 및 자리선택 타일창 띄우기*/
@@ -662,8 +672,7 @@ const rollbackRecord = (idx: number) => {
   panelInfo.riichi=Math.floor((option.startingScore*4-sumScore)/1000); // 리치봉 설정
   hideModal(); // 모달 창 끄기
 }
-import { ref, nextTick } from "vue"
-import { createClient } from '@supabase/supabase-js'
+
 const syncData = reactive({ 
   players, 
   panelInfo, 
@@ -672,17 +681,9 @@ const syncData = reactive({
 });
 
 // 1. Supabase 클라이언트 초기화
-const SUPABASE_URL = import.meta.env.VITE_SUPABASE_URL
-const SUPABASE_KEY = import.meta.env.VITE_SUPABASE_KEY
-const supabase = createClient(SUPABASE_URL, SUPABASE_KEY)
+const supabase = createClient(syncInfo.SUPABASE_URL, syncInfo.SUPABASE_KEY)
 
 // 2. 상태 변수 정의
-const roomId = ref('')           // 현재 접속 중인 방 ID
-const isConnected = ref(false)   // 연결 상태
-const isReceiving = ref(false)   // 수신 중 플래그 (무한루프 방지)
-const isHost = ref(false)   // 방장 여부
-const myId = ref('user_' + Math.random().toString(36).substring(2, 8)); // 랜덤 ID
-const userList = ref<any[]>([]); // 현재 접속자 명단
 let roomChannel: any = null      // Supabase 채널 객체
 
 /** * 멀티플레이 초기화 (방 만들기 / 접속하기 공용)
@@ -690,16 +691,15 @@ let roomChannel: any = null      // Supabase 채널 객체
  */
 const initMultiplayer = (id?: string) => {
   // 1. 방 ID 설정 (없으면 6자리 숫자 랜덤 생성)
-  const targetId = id || Math.floor(Math.random() * 1000000).toString().padStart(6, '0');
-  roomId.value = targetId;
+  const targetId=id||Math.floor(Math.random()*1000000).toString().padStart(6,'0');
+  syncInfo.roomId=targetId;
 
   // 2. 기존 채널이 있다면 제거
-  if (roomChannel) supabase.removeChannel(roomChannel);
+  if (roomChannel)
+    supabase.removeChannel(roomChannel);
 
   // 3. 새 채널 생성 및 구독
-  roomChannel = supabase.channel(`room_${targetId}`, {
-    config: { broadcast: { self: false } } // 내가 보낸건 내가 안받음
-  })
+  roomChannel=supabase.channel(`room_${targetId}`,{config: {broadcast: {self: false } } }); // 내가 보낸건 내가 안받음
 
   roomChannel
     .on('presence', { event: 'sync' }, () => {
@@ -708,23 +708,21 @@ const initMultiplayer = (id?: string) => {
       // 1. 접속자 목록을 '들어온 시간' 순으로 정렬
       const presences = Object.values(state).flat() as any[];
       presences.sort((a, b) => new Date(a.online_at).getTime() - new Date(b.online_at).getTime());
-      
-      userList.value = presences;
 
       // 2. 가장 먼저 들어온 유저의 ID가 내 ID와 같다면 내가 방장!
-      if (presences.length > 0 && presences[0].user_id === myId.value) {
-        if (!isHost.value) {
+      if (presences.length > 0 && presences[0].user_id === syncInfo.myId) {
+        if (!syncInfo.isHost) {
           console.log("당신이 새로운 방장이 되었습니다.");
-          isHost.value = true;
-          isConnected.value = true; // 방장이 되면 즉시 전송 권한 획득
+          syncInfo.isHost = true;
+          syncInfo.isConnected = true; // 방장이 되면 즉시 전송 권한 획득
         }
       } else {
-        isHost.value = false;
+        syncInfo.isHost = false;
       }
     })
     .on('broadcast', { event: 'sync' }, ({ payload }: { payload: any }) => {
-      if (isReceiving.value) return;
-      isReceiving.value = true;
+      if (syncInfo.isReceiving) return;
+      syncInfo.isReceiving = true;
 
       // JSON 변환 시 null로 바뀐 NaN 복구
       const restoreNaN = (obj: any) => {
@@ -753,12 +751,12 @@ const initMultiplayer = (id?: string) => {
         records.time.splice(0, records.time.length, ...data.records.time);
       }
       // 데이터를 한 번이라도 받으면 이제부터 전송 가능
-      isConnected.value = true;
+      syncInfo.isConnected = true;
 
-      nextTick(() => { isReceiving.value = false; });
+      nextTick(() => { syncInfo.isReceiving = false; });
     })
     .on('broadcast', { event: 'request_sync' }, () => {
-      if (isHost.value) {
+      if (syncInfo.isHost) {
         console.log("새 참여자의 요청으로 데이터를 전송합니다.");
         sendGameData();
       }
@@ -767,13 +765,13 @@ const initMultiplayer = (id?: string) => {
       if (status === 'SUBSCRIBED') {
         // 3. 내 정보를 등록 (들어온 시간 포함)
         await roomChannel.track({
-          user_id: myId.value,
+          user_id: syncInfo.myId,
           online_at: new Date().toISOString(),
         });
 
         if (!id) {
-          isHost.value = true;
-          isConnected.value = true;
+          syncInfo.isHost = true;
+          syncInfo.isConnected = true;
         } else {
           // 참여자라면 데이터 요청
           roomChannel.send({ type: 'broadcast', event: 'request_sync', payload: {} });
@@ -784,7 +782,7 @@ const initMultiplayer = (id?: string) => {
 
 /** 데이터 전송 로직 */
 const sendGameData = () => {
-  if (!roomChannel || isReceiving.value || !isConnected.value) return;
+  if (!roomChannel || syncInfo.isReceiving || !syncInfo.isConnected) return;
   const payload = JSON.parse(JSON.stringify(syncData));
   roomChannel.send({
     type: 'broadcast',
@@ -793,20 +791,18 @@ const sendGameData = () => {
   });
 };
 
-// 데이터 변경 감시 (0.4초 디바운싱)
-//let syncTimeout: any = null;
+/** 데이터 변경 감시 */
 watch(() => [syncData], () => {
-  if (isReceiving.value || !isConnected.value) return;
+  if (syncInfo.isReceiving || !syncInfo.isConnected)
+    return;
   sendGameData();
-  // clearTimeout(syncTimeout);
-  // syncTimeout = setTimeout(sendGameData, 400);
 }, { deep: true });
 
 /** ID 복사 함수 */
 const copyRoomId = () => {
-  if (!roomId.value)
+  if (!syncInfo.roomId)
     return;
-  navigator.clipboard.writeText(roomId.value); // 클립보드로 복사
+  navigator.clipboard.writeText(syncInfo.roomId); // 클립보드로 복사
   showModal(t('comments.copyRoomCode'));
 };
 </script>
@@ -853,8 +849,7 @@ const copyRoomId = () => {
     @copy-record="copyRecord"
     @rollback-record="rollbackRecord"
     @change-locale="changeLocale"
-    :roomId
-    :isConnected
+    :syncInfo
     @init-multiplayer="initMultiplayer"
     @copy-room-id="copyRoomId"
   />
