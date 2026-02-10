@@ -449,6 +449,8 @@ const checkInvalidStatus = (status: string) => {
       return;
     calculateCheat();
   }
+  else if (status==='tenpai') // 유국일때
+    calculateDraw();
 }
 
 /**화료 점수계산*/
