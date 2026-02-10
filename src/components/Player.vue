@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import Graphics from "@/components/Graphics.vue"
-import type { Player, Option } from "@/types/types.d";
+import type { Player, Option } from "@/types/types.d"
 import { computed } from "vue"
 
 /**props 정의*/

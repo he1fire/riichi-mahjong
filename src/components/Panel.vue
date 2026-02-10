@@ -1,6 +1,6 @@
 <script setup lang="ts">
-import Graphics from "@/components/Graphics.vue";
-import type { PanelInfo } from "@/types/types.d";
+import Graphics from "@/components/Graphics.vue"
+import type { PanelInfo } from "@/types/types.d"
 import { useI18n } from "vue-i18n"
 
 /**i18n 속성 가져오기*/

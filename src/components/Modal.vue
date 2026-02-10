@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import Graphics from "@/components/Graphics.vue"
-import type { Player, ScoringState, PanelInfo, Dice, SeatTile, Records, Option, ModalInfo, SyncInfo } from "@/types/types.d";
+import ModalDice from "@/components/ModalDice.vue"
+import type { Player, ScoringState, PanelInfo, Dice, SeatTile, Records, Option, ModalInfo, SyncInfo } from "@/types/types.d"
 import { computed } from "vue"
 import { useI18n } from "vue-i18n"
 import { Line as LineChart } from "vue-chartjs"
@@ -56,7 +57,6 @@ const arr_seat = ['option.east', 'option.south', 'option.west', 'option.north',]
 const arr_resultsheet = ['resultSheet.wind', 'resultSheet.name', 'resultSheet.score', 'resultSheet.riichi', 'resultSheet.win', 'resultSheet.lose']
 const class_check = ['down_check', 'right_check', 'up_check', 'left_check']
 const class_score_diff = ['down_score_diff', 'right_score_diff', 'up_score_diff', 'left_score_diff']
-const class_dice = ['down_dice', 'right_dice', 'up_dice', 'left_dice']
 const class_name = ['down_name', 'right_name', 'up_name', 'left_name']
 const class_record = ['down_record', 'right_record', 'up_record', 'left_record']
 const class_resultsheet = ['wind', 'name', 'score', 'riichi', 'win', 'lose']
@@ -234,11 +234,6 @@ const yakumanVisibility = (idx: number) => {
 /**주사위 모달창 회전*/
 const diceModalTransform = () => {
   return {transform: `translate(-50%, -50%) rotate(${360-props.players.findIndex(player => player.wind==='東')*90}deg)`};
-}
-
-/**주사위 패산 방향 표시*/
-const wallDirectionVisibility = (idx: number): { visibility: 'visible' | 'hidden' } => {
-  return {visibility: props.dice.wallDirection[idx]===true ? 'visible' : 'hidden'};
 }
 
 /**타일 앞뒤 표시*/
@@ -474,23 +469,13 @@ const checkFao = () => {
     </div>
   </div>
   <!-- 주사위 굴림창 -->
-  <div v-else-if="modalInfo.type==='roll_dice'" class="modal_content" :style="diceModalTransform()" @click.stop>
-    <div class="container_roll" @click.stop="emit('roll-dice')">
-      <Graphics kind="dice" :value="dice.value[0]" style="grid-area: dice_1; transform: scale(2);"/>
-      <Graphics kind="dice" :value="dice.value[1]" style="grid-area: dice_2; transform: scale(2);"/>
-      <div class="sum">
-        <span v-show="dice.wallDirection.every(x => x===false)">?</span>
-        <span v-show="dice.wallDirection.some(x => x===true)">{{ dice.value[0]+dice.value[1] }}</span>
-      </div>
-      <div v-for="(_, i) in class_dice"
-        :key="i"
-        :class="class_dice[i]"
-        :style="wallDirectionVisibility(i)"
-      >
-        {{ arr_arrow[i] }}
-      </div>
-    </div>
-  </div>
+  <ModalDice v-else-if="modalInfo.type==='roll_dice'"
+    class="modal_content"
+    :style="diceModalTransform()"
+    :dice
+    @roll-dice="emit('roll-dice')"
+    @click.stop
+  />
   <!-- 동남서북 선택창 -->
   <div v-else-if="modalInfo.type==='choose_seat'" class="modal_content" @click.stop>
     <div class="container_tile">
@@ -766,7 +751,6 @@ const checkFao = () => {
   height: auto;
   padding: 5px;
   z-index: 10;
-  font-size: 20px;
 }
 
 /* 유국 선택창 */
@@ -777,6 +761,7 @@ const checkFao = () => {
 
 /* 메시지 팝업창 */
 .modal_text{
+  font-size: 20px;
   margin: 20px;
 }
 
@@ -886,50 +871,6 @@ const checkFao = () => {
   font-size: 60px;
 }
 
-/* 주사위 굴림창 */
-.container_roll{
-  display: grid;
-  grid-template-rows: 15px 86px 15px;
-  grid-template-columns: repeat(3, 15px 86px) 15px;
-  grid-template-areas:
-    '. dice_1 . up_dice . dice_2 .'
-    '. dice_1 left_dice sum right_dice dice_2 .'
-    '. dice_1 . down_dice . dice_2 .';
-  text-align: center;
-  font-size: 15px;
-}
-.sum{
-  grid-area: sum;
-  font-size: 50px;
-  line-height: 82px;
-  text-underline-position: under;
-  text-decoration: underline red 3px;
-}
-.down_dice{
-  grid-area: down_dice;
-  visibility: hidden;
-  line-height: 15px;
-  color: red;
-}
-.right_dice{
-  grid-area: right_dice;
-  visibility: hidden;
-  line-height: 82px;
-  color: red;
-}
-.up_dice{
-  grid-area: up_dice;
-  visibility: hidden;
-  line-height: 15px;
-  color: red;
-}
-.left_dice{
-  grid-area: left_dice;
-  visibility: hidden;
-  line-height: 82px;
-  color: red;
-}
-
 /* 자리 선택창 */
 .container_tile{
   display: grid;
@@ -995,6 +936,7 @@ const checkFao = () => {
   'option0 option1 option2 option3'
   'option4 option4 option5 option6';
   text-align: center;
+  font-size: 20px;
   gap: 10px;
   margin: 5px;
 }
@@ -1008,6 +950,7 @@ const checkFao = () => {
   'wind name score riichi win lose'
   'wind_contents name_contents score_contents riichi_contents win_contents lose_contents';
   text-align: center;
+  font-size: 20px;
   margin: 5px;
 }
 .container_resultsheet div{
