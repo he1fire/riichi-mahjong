@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import Graphics from "@/components/Graphics.vue"
 import ModalDice from "@/components/ModalDice.vue"
+import ModalTile from "@/components/ModalTile.vue"
 import type { Player, ScoringState, PanelInfo, Dice, SeatTile, Records, Option, ModalInfo, SyncInfo } from "@/types/types.d"
 import { computed } from "vue"
 import { useI18n } from "vue-i18n"
@@ -21,7 +22,7 @@ interface Props {
   scoringState: ScoringState,
   panelInfo: PanelInfo,
   dice: Dice,
-  seatTile: SeatTile
+  seatTile: SeatTile,
   records: Records,
   option: Option,
   modalInfo: ModalInfo,
@@ -234,11 +235,6 @@ const yakumanVisibility = (idx: number) => {
 /**주사위 모달창 회전*/
 const diceModalTransform = () => {
   return {transform: `translate(-50%, -50%) rotate(${360-props.players.findIndex(player => player.wind==='東')*90}deg)`};
-}
-
-/**타일 앞뒤 표시*/
-const seatTileStyle = (idx: number) => {
-  return {gridArea: `tile_${idx+1}`, color: props.seatTile.isOpened[idx]===true ? (props.seatTile.value[idx]==='東' ? 'red' : '') : 'orange', backgroundColor: props.seatTile.isOpened[idx]===true ? '' : 'orange'};
 }
 
 /**점수 부호에 따른 색상*/
@@ -469,24 +465,18 @@ const checkFao = () => {
     </div>
   </div>
   <!-- 주사위 굴림창 -->
-  <ModalDice v-else-if="modalInfo.type==='roll_dice'"
-    class="modal_content"
-    :style="diceModalTransform()"
-    :dice
-    @roll-dice="emit('roll-dice')"
-    @click.stop
-  />
+  <div v-else-if="modalInfo.type==='roll_dice'" class="modal_content" :style="diceModalTransform()" @click.stop>
+    <ModalDice
+      :dice
+      @roll-dice="emit('roll-dice')"
+    />
+  </div>
   <!-- 동남서북 선택창 -->
   <div v-else-if="modalInfo.type==='choose_seat'" class="modal_content" @click.stop>
-    <div class="container_tile">
-      <Graphics v-for="(_, i) in seatTile.value"
-        :key="i"
-        kind="tile"
-        :style="seatTileStyle(i)"
-        :wind="seatTile.value[i]"
-        @click.stop="emit('set-seat-tile', i)"
-      />
-    </div>
+    <ModalTile
+      :seatTile
+      @set-seat-tile="(idx) => emit('set-seat-tile', idx)"
+    />
   </div>
   <!-- 옵션 종류 선택창 -->
   <div v-else-if="modalInfo.type==='choose_menu_kind'" class="modal_content" @click.stop>
@@ -869,18 +859,6 @@ const checkFao = () => {
 .ok{
   grid-area: ok;
   font-size: 60px;
-}
-
-/* 자리 선택창 */
-.container_tile{
-  display: grid;
-  grid-template-rows: auto;
-  grid-template-columns: repeat(3, 86px 15px) 86px;
-  grid-template-areas:
-    'tile_1 . tile_2 . tile_3 . tile_4';
-  text-align: center;
-  font-size: 80px;
-  margin: 15px;
 }
 
 /* 옵션 선택창 */
