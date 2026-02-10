@@ -43,7 +43,7 @@ const wallDirectionVisibility = (idx: number): { visibility: 'visible' | 'hidden
 </div>
 </template>
 
-<style>
+<style scoped>
 /* 주사위 굴림창 */
 .container_roll{
   display: grid;

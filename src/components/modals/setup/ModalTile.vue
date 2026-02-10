@@ -36,7 +36,7 @@ const seatTileStyle = (idx: number) => {
 </div>
 </template>
 
-<style>
+<style scoped>
 /* 동남서북 선택창 */
 .container_tile{
   display: grid;

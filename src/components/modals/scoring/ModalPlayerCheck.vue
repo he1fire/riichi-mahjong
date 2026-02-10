@@ -74,7 +74,7 @@ const okButtonStyle = (status: string) => {
 </div>
 </template>
 
-<style>
+<style scoped>
 /* 인원 선택창 */
 .container_check{
   display: grid;
