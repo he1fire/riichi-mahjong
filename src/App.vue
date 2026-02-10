@@ -1,7 +1,7 @@
 <script setup lang="ts">
-import player from "@/components/player.vue"
-import panel from "@/components/panel.vue"
-import modal from "@/components/modal.vue"
+import Player from "@/components/Player.vue"
+import Panel from "@/components/Panel.vue"
+import Modal from "@/components/Modal.vue"
 import { reactive, onMounted, watch, nextTick } from "vue"
 import { useRoute, useRouter } from "vue-router"
 import { useI18n } from "vue-i18n"
@@ -811,7 +811,7 @@ const copyRoomId = () => {
 <div class="background" @dblclick.self="toggleFullScreen()">
   <!-- 각 방향별 player 컴포넌트 생성 -->
   <main role="main">
-    <player v-for="(_, i) in players"
+    <Player v-for="(_, i) in players"
       :key="i"
       :player="players[i]"
       :option
@@ -819,14 +819,14 @@ const copyRoomId = () => {
       @toggle-show-gap="toggleShowGap"
     />
     <!-- 중앙 panel 컴포넌트 생성 -->
-    <panel
+    <Panel
       :panelInfo
       @show-modal="showModal"
       @roll-dice="rollDice"
     />
   </main>
   <!-- modal 컴포넌트 생성 -->
-  <modal v-if="modalInfo.isOpen"
+  <Modal v-if="modalInfo.isOpen"
     :players
     :scoringState
     :panelInfo
