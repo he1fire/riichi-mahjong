@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import Graphics from "@/components/Graphics.vue"
-import ModalDice from "@/components/ModalDice.vue"
-import ModalTile from "@/components/ModalTile.vue"
+import ModalDice from "@/components/modals/setup/ModalDice.vue"
+import ModalTile from "@/components/modals/setup/ModalTile.vue"
 import type { Player, ScoringState, PanelInfo, Dice, SeatTile, Records, Option, ModalInfo, SyncInfo } from "@/types/types.d"
 import { computed } from "vue"
 import { useI18n } from "vue-i18n"

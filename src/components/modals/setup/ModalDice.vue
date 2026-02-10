@@ -25,6 +25,7 @@ const wallDirectionVisibility = (idx: number): { visibility: 'visible' | 'hidden
 </script>
 
 <template>
+<!-- 주사위 굴림창 -->
 <div class="container_roll" @click.stop="emit('roll-dice')">
   <Graphics kind="dice" :value="dice.value[0]" style="grid-area: dice_1; transform: scale(2);"/>
   <Graphics kind="dice" :value="dice.value[1]" style="grid-area: dice_2; transform: scale(2);"/>

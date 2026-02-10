@@ -24,6 +24,7 @@ const seatTileStyle = (idx: number) => {
 </script>
 
 <template>
+<!-- 동남서북 선택창 -->
 <div class="container_tile">
   <Graphics v-for="(_, i) in seatTile.value"
     :key="i"

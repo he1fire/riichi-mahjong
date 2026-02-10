@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import Player from "@/components/Player.vue"
 import Panel from "@/components/Panel.vue"
-import Modal from "@/components/Modal.vue"
+import Modal from "@/components/modals/Modal.vue"
 import { reactive, onMounted, watch, nextTick } from "vue"
 import { useRoute, useRouter } from "vue-router"
 import { useI18n } from "vue-i18n"
