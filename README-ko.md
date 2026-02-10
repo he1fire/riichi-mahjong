@@ -145,3 +145,11 @@
     - [x] 현재 순위 표시 구현
 - [ ] 점수 이동시 이펙트
 - [ ] firebase(supabase)이용해서 방 생성 및 실시간 데이터 연결
+
+### 타입 네이밍 관례
+- 상수명: SNAKE_CASE
+- 변수명: camelCase
+- 함수명: camelCase
+- 타입: PascalCase
+- 컴포넌트: PascalCase
+- 이벤트 이름: kebab-case
