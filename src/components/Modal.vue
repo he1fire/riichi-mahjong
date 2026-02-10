@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import graphics from "@/components/graphics.vue"
+import Graphics from "@/components/Graphics.vue"
 import type { Player, ScoringState, PanelInfo, Dice, SeatTile, Records, Option, ModalInfo, SyncInfo } from "@/types/types.d";
 import { computed } from "vue"
 import { useI18n } from "vue-i18n"
@@ -476,8 +476,8 @@ const checkFao = () => {
   <!-- 주사위 굴림창 -->
   <div v-else-if="modalInfo.type==='roll_dice'" class="modal_content" :style="diceModalTransform()" @click.stop>
     <div class="container_roll" @click.stop="emit('roll-dice')">
-      <graphics kind="dice" :value="dice.value[0]" style="grid-area: dice_1; transform: scale(2);"/>
-      <graphics kind="dice" :value="dice.value[1]" style="grid-area: dice_2; transform: scale(2);"/>
+      <Graphics kind="dice" :value="dice.value[0]" style="grid-area: dice_1; transform: scale(2);"/>
+      <Graphics kind="dice" :value="dice.value[1]" style="grid-area: dice_2; transform: scale(2);"/>
       <div class="sum">
         <span v-show="dice.wallDirection.every(x => x===false)">?</span>
         <span v-show="dice.wallDirection.some(x => x===true)">{{ dice.value[0]+dice.value[1] }}</span>
@@ -494,13 +494,13 @@ const checkFao = () => {
   <!-- 동남서북 선택창 -->
   <div v-else-if="modalInfo.type==='choose_seat'" class="modal_content" @click.stop>
     <div class="container_tile">
-      <graphics v-for="(_, i) in seatTile.value"
+      <Graphics v-for="(_, i) in seatTile.value"
         :key="i"
         kind="tile"
         :style="seatTileStyle(i)"
         :wind="seatTile.value[i]"
         @click.stop="emit('set-seat-tile', i)"
-      ></graphics>
+      />
     </div>
   </div>
   <!-- 옵션 종류 선택창 -->
@@ -692,10 +692,11 @@ const checkFao = () => {
       </div>
     </div>
   </div>
+  <!-- 동기화 창 -->
   <div v-else-if="modalInfo.type==='sync'" class="modal_content" @click.stop>
     <div v-if="!syncInfo.isConnected" class="container_sync">
       <div class="on_off" :style="toggleButtonStyle('isonline')">
-        <graphics kind="dot" :status="syncInfo.isConnected"/>
+        <Graphics kind="dot" :status="syncInfo.isConnected"/>
         {{ t('sync.offline') }}
       </div>
       <div style="grid-area: room_id;">
