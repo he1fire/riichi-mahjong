@@ -5,7 +5,7 @@ import type { Player } from "@/types/types.d"
 interface Props {
   players: Player[]
 }
-const props = defineProps<Props>()
+defineProps<Props>() // 스크립트에서는 사용x
 
 /**emits 정의*/
 type Emits = {
