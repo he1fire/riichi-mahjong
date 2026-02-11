@@ -1,11 +1,7 @@
 <script setup lang="ts">
 import Graphics from "@/components/Graphics.vue"
-import ModalChooseDraw from "@/components/modals/scoring/ModalChooseDraw.vue"
-import ModalCheckPlayer from "@/components/modals/scoring/ModalCheckPlayer.vue"
-import ModalScoreSelect from "@/components/modals/scoring/ModalScoreSelect.vue"
-import ModalScoreResult from "@/components/modals/scoring/ModalScoreResult.vue"
-import ModalDice from "@/components/modals/setup/ModalDice.vue"
-import ModalTile from "@/components/modals/setup/ModalTile.vue"
+import { ModalChooseDraw, ModalCheckPlayer, ModalScoreSelect, ModalScoreResult } from "@/components/modals/scoring";
+import { ModalDice, ModalTile } from "@/components/modals/setup";
 import type { Player, ScoringState, PanelInfo, Dice, SeatTile, Records, Option, ModalInfo, SyncInfo } from "@/types/types.d"
 import { computed } from "vue"
 import { useI18n } from "vue-i18n"
