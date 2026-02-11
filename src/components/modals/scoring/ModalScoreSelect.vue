@@ -9,7 +9,8 @@ const { t } = useI18n()
 interface Props {
   players: Player[],
   scoringState: ScoringState,
-  modalInfo: ModalInfo
+  modalInfo: ModalInfo,
+  actionType: 'fanbu' | 'fao'
 }
 const props = defineProps<Props>()
 
@@ -70,69 +71,89 @@ const checkFao = () => {
 
 <template>
 <!-- 판/부 선택창 -->
-<div>
-  {{ t('comments.chooseScore', {name: players[scoringState.whoWin].name}) }}
-</div>
-<div class="container_check_fanbu">
-  <div class="fan">
-    {{ t('score.fan') }}:
+<div v-if="actionType==='fanbu'">
+  <div>
+    {{ t('comments.chooseScore', {name: players[scoringState.whoWin].name}) }}
   </div>
-  <div class="fan_check">
-    <span v-for="(_, i) in fan.slice(0, 9)"
-    :key="i"
-    :style="fanBuButtonStyle('fan', i)"
-    @click.stop="emit('set-fanbu-button', 'fan', i)"
-    >
-      {{ fan[i] }}
-    </span>
-    <br>
-    <span v-show="scoringState.inputFan<9"
-    @click.stop="emit('set-fanbu-button', 'fan', 9)"
-    >
-      {{ t('score.yakuman') }}
-    </span>
-    <span v-show="scoringState.inputFan>=9" v-for="(_, i) in fan.slice(9)"
-    :key="i"
-    :style="[fanBuButtonStyle('fan', i+9), yakumanVisibility(i+9)]"
-    @click.stop="emit('set-fanbu-button', 'fan', i+9)"
-    >
-      {{ t('score.multipleYakuman', {num: fan[i+9]}) }}
-    </span>
-    <span v-show="scoringState.inputFan>=9" style="font-size: 20px;" @click.stop="emit('set-toggle-button', 'isfao')">({{ t('score.fao') }}
-      <span :style="toggleButtonStyle('isfao')">
-        <span v-show="scoringState.isFao===true">O</span>
-        <span v-show="scoringState.isFao===false">X</span>
+  <div class="container_check_fanbu">
+    <div class="fan">
+      {{ t('score.fan') }}:
+    </div>
+    <div class="fan_check">
+      <span v-for="(_, i) in fan.slice(0, 9)"
+      :key="i"
+      :style="fanBuButtonStyle('fan', i)"
+      @click.stop="emit('set-fanbu-button', 'fan', i)"
+      >
+        {{ fan[i] }}
       </span>
-    )</span>
-  </div>
-  <div class="bu">
-    {{ t('score.bu') }}:
-  </div>
-  <div class="bu_check">
-    <span v-for="(_, i) in bu.slice(0, 6)"
+      <br>
+      <span v-show="scoringState.inputFan<9"
+      @click.stop="emit('set-fanbu-button', 'fan', 9)"
+      >
+        {{ t('score.yakuman') }}
+      </span>
+      <span v-show="scoringState.inputFan>=9" v-for="(_, i) in fan.slice(9)"
       :key="i"
-      :style="fanBuButtonStyle('bu', i)"
-      @click.stop="emit('set-fanbu-button', 'bu', i)"
-    >
-      {{ bu[i] }}
-    </span>
-    <br>
-    <span v-for="(_, i) in bu.slice(6)"
-      :key="i"
-      :style="fanBuButtonStyle('bu', i+6)"
-      @click.stop="emit('set-fanbu-button', 'bu', i+6)"
-    >
-      {{ bu[i+6] }}
-    </span>
+      :style="[fanBuButtonStyle('fan', i+9), yakumanVisibility(i+9)]"
+      @click.stop="emit('set-fanbu-button', 'fan', i+9)"
+      >
+        {{ t('score.multipleYakuman', {num: fan[i+9]}) }}
+      </span>
+      <span v-show="scoringState.inputFan>=9" style="font-size: 20px;" @click.stop="emit('set-toggle-button', 'isfao')">({{ t('score.fao') }}
+        <span :style="toggleButtonStyle('isfao')">
+          <span v-show="scoringState.isFao===true">O</span>
+          <span v-show="scoringState.isFao===false">X</span>
+        </span>
+      )</span>
+    </div>
+    <div class="bu">
+      {{ t('score.bu') }}:
+    </div>
+    <div class="bu_check">
+      <span v-for="(_, i) in bu.slice(0, 6)"
+        :key="i"
+        :style="fanBuButtonStyle('bu', i)"
+        @click.stop="emit('set-fanbu-button', 'bu', i)"
+      >
+        {{ bu[i] }}
+      </span>
+      <br>
+      <span v-for="(_, i) in bu.slice(6)"
+        :key="i"
+        :style="fanBuButtonStyle('bu', i+6)"
+        @click.stop="emit('set-fanbu-button', 'bu', i+6)"
+      >
+        {{ bu[i+6] }}
+      </span>
+    </div>
+  </div>
+  <div style="font-size: 30px;" @click.stop="checkFao()">
+    OK
   </div>
 </div>
-<div style="font-size: 30px;" @click.stop="checkFao()">
-  OK
+<!-- 책임지불 점수 선택창 -->
+<div v-else-if="actionType==='fao'">
+  <div>
+    {{ t('comments.chooseScoreFao') }}
+  </div>
+  <div class="container_choose_fao_score">
+    <span v-for="(_, i) in fan.slice(9)"
+      :key="i"
+      :style="fanBuButtonStyle('inputfao', i)"
+      @click.stop="emit('set-fanbu-button', 'inputfao', i)"
+    >
+    {{ t('score.multipleYakuman', {num: fan[i+9]}) }}
+    </span>
+  </div>
+  <div style="font-size: 30px;" @click.stop="emit('calculate-win');">
+    OK
+  </div>
 </div>
 </template>
 
 <style scoped>
-/* 부/판 체크창 */
+/* 판/부 선택창 */
 .container_check_fanbu{
   display: grid;
   grid-template-rows: repeat(2, auto);
@@ -159,5 +180,16 @@ const checkFao = () => {
 .bu_check > span {
   padding-right: 5px;
   padding-left: 5px;
+}
+
+/* 책임지불 점수 선택창 */
+.container_choose_fao_score{
+  display: grid;
+  grid-template-rows: repeat(2, auto);
+  grid-template-columns: repeat(3, auto);
+  font-size: 30px;
+  gap: 10px;
+  margin: 5px;
+  place-items: center;
 }
 </style>

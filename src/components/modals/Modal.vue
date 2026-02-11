@@ -61,7 +61,6 @@ const class_score_diff = ['down_score_diff', 'right_score_diff', 'up_score_diff'
 const class_name = ['down_name', 'right_name', 'up_name', 'left_name']
 const class_record = ['down_record', 'right_record', 'up_record', 'left_record']
 const class_resultsheet = ['wind', 'name', 'score', 'riichi', 'win', 'lose']
-const fan = ['1', '2', '3', '4', '5', '6+', '8+', '11+', '13+', '1', '2', '3', '4', '5','6']
 
 import { ref } from 'vue';
 const targetRoomId = ref('');     // 입력창에 적힌 방 ID
@@ -176,28 +175,6 @@ const toggleButtonStyle = (status: string) => {
     return {color: props.syncInfo.isConnected===true ? 'limegreen' : 'gray'};
 }
 
-/**판/부 버튼 색상*/
-const fanBuButtonStyle = (status: string, idx: number) => {
-  if (status==='fan') // 판 체크
-    return {color: idx===props.scoringState.inputFan ? 'red' : ''};
-  else if (status==='bu'){ // 부 체크
-    if (props.modalInfo.status==='ron' && idx===0) // 론일때 20부 이하시 회색
-      return {color: 'gray'};
-    else if (props.scoringState.inputFan===0 && idx<=1) // 1판 25부 이하시 회색
-      return {color: 'gray'};
-    else if (props.scoringState.inputFan>=4) // 만관 이상일때 부수 회색
-      return {color: 'gray'};
-    else
-      return {color: idx===props.scoringState.inputBu ? 'red' : ''}; // 선택시 빨간색
-  }
-  else if (status==='inputfao'){ // 책임지불 점수창
-    if (props.scoringState.inputFan-9<idx) // 입력 판수보다 크면 불가능
-      return {color: 'gray'};
-    else
-      return {color: idx===props.scoringState.inputFao ? 'red' : ''}; // 선택시 빨간색
-  }
-}
-
 /**주사위 모달창 회전*/
 const diceModalTransform = () => {
   return {transform: `translate(-50%, -50%) rotate(${360-props.players.findIndex(player => player.wind==='東')*90}deg)`};
@@ -249,6 +226,7 @@ const getLocaleColor = (x: string) => {
       :players
       :scoringState
       :modalInfo
+      actionType="fanbu"
       @show-modal="(type, status?) => emit('show-modal', type, status)"
       @set-toggle-button="(status) => emit('set-toggle-button', status)"
       @set-fanbu-button="(status, idx) => emit('set-fanbu-button', status, idx)"
@@ -267,21 +245,16 @@ const getLocaleColor = (x: string) => {
   </div>
   <!-- 책임지불 점수 선택창 -->
   <div v-else-if="modalInfo.type==='choose_score_fao'" class="modal_content" @click.stop>
-    <div>
-      {{ t('comments.chooseScoreFao') }}
-    </div>
-    <div class="container_choose_fao_score">
-      <span v-for="(_, i) in fan.slice(9)"
-        :key="i"
-        :style="fanBuButtonStyle('inputfao', i)"
-        @click.stop="emit('set-fanbu-button', 'inputfao', i)"
-      >
-      {{ t('score.multipleYakuman', {num: fan[i+9]}) }}
-      </span>
-    </div>
-    <div style="font-size: 30px;" @click.stop="emit('calculate-win');">
-      OK
-    </div>
+    <ModalScoreSelect
+      :players
+      :scoringState
+      :modalInfo
+      actionType="fao"
+      @show-modal="(type, status?) => emit('show-modal', type, status)"
+      @set-toggle-button="(status) => emit('set-toggle-button', status)"
+      @set-fanbu-button="(status, idx) => emit('set-fanbu-button', status, idx)"
+      @calculate-win="emit('calculate-win')"
+    />
   </div>
   <!-- 유국 종류 선택창 -->
   <div v-else-if="modalInfo.type==='choose_draw_kind'" class="modal_content" @click.stop>
@@ -616,17 +589,6 @@ const getLocaleColor = (x: string) => {
 .modal_text{
   font-size: 20px;
   margin: 20px;
-}
-
-/* 책임지불 점수 선택창 */
-.container_choose_fao_score{
-  display: grid;
-  grid-template-rows: repeat(2, auto);
-  grid-template-columns: repeat(3, auto);
-  font-size: 30px;
-  gap: 10px;
-  margin: 5px;
-  place-items: center;
 }
 
 /* 점수 확인창 */
