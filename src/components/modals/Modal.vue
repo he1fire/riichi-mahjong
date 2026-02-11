@@ -1,6 +1,11 @@
 <script setup lang="ts">
-import graphics from "@/components/graphics.vue"
-import type { Player, ScoringState, PanelInfo, Dice, SeatTile, Records, Option, ModalInfo } from "@/types/types.d";
+import Graphics from "@/components/Graphics.vue"
+import ModalCheckPlayer from "@/components/modals/scoring/ModalCheckPlayer.vue"
+import ModalScoreSelect from "@/components/modals/scoring/ModalScoreSelect.vue"
+import ModalScoreResult from "@/components/modals/scoring/ModalScoreResult.vue"
+import ModalDice from "@/components/modals/setup/ModalDice.vue"
+import ModalTile from "@/components/modals/setup/ModalTile.vue"
+import type { Player, ScoringState, PanelInfo, Dice, SeatTile, Records, Option, ModalInfo, SyncInfo } from "@/types/types.d"
 import { computed } from "vue"
 import { useI18n } from "vue-i18n"
 import { Line as LineChart } from "vue-chartjs"
@@ -20,10 +25,11 @@ interface Props {
   scoringState: ScoringState,
   panelInfo: PanelInfo,
   dice: Dice,
-  seatTile: SeatTile
+  seatTile: SeatTile,
   records: Records,
   option: Option,
   modalInfo: ModalInfo,
+  syncInfo: SyncInfo
 }
 const props = defineProps<Props>()
 
@@ -42,23 +48,22 @@ type Emits = {
   (e: 'roll-dice'): void,
   (e: 'copy-record'): void,
   (e: 'rollback-record', time: number): void,
-  (e: 'change-locale', language: string): void
+  (e: 'change-locale', language: string): void,
+  (e: 'init-multiplayer', id?: string): void,
+  (e: 'copy-room-id'): void,
 }
 const emit = defineEmits<Emits>()
 
 /**data 정의*/
-const arr_arrow = ['▼', '▶', '▲', '◀']
-const arr_wind = ['東', '南', '西', '北'];
+const arr_wind = ['東', '南', '西', '北']
 const arr_seat = ['option.east', 'option.south', 'option.west', 'option.north',]
 const arr_resultsheet = ['resultSheet.wind', 'resultSheet.name', 'resultSheet.score', 'resultSheet.riichi', 'resultSheet.win', 'resultSheet.lose']
-const class_check = ['down_check', 'right_check', 'up_check', 'left_check']
-const class_score_diff = ['down_score_diff', 'right_score_diff', 'up_score_diff', 'left_score_diff']
-const class_dice = ['down_dice', 'right_dice', 'up_dice', 'left_dice']
 const class_name = ['down_name', 'right_name', 'up_name', 'left_name']
 const class_record = ['down_record', 'right_record', 'up_record', 'left_record']
 const class_resultsheet = ['wind', 'name', 'score', 'riichi', 'win', 'lose']
-const fan = ['1', '2', '3', '4', '5', '6+', '8+', '11+', '13+', '1', '2', '3', '4', '5','6']
-const bu = [20, 25, 30, 40, 50, 60, 70, 80, 90, 100, 110]
+
+import { ref } from 'vue';
+const targetRoomId = ref('');     // 입력창에 적힌 방 ID
 
 /**순위표 정보 계산*/
 const scoreSheetInfo = computed(() => {
@@ -154,34 +159,6 @@ const scoreChartInfo = computed(() => {
   };
 })
 
-/**ok 버튼 색상*/
-const okButtonStyle = (status: string) => {
-  let cntWin=props.players.filter(x => x.isWin===true).length; // 화료 인원 세기
-  let cntLose=props.players.filter(x => x.isLose===true).length; // 방총 인원 세기
-  if (status==='win') // 화료 ok 버튼
-    return {color: (cntWin===0 || cntWin===4) ? 'gray' : ''}; // 화료한 사람이 없거나 4명임 (불가능한 경우)
-  else if (status==='lose') // 방총 ok 버튼
-    return {color: (cntWin!==1 && cntLose===0) ? 'gray' : ''}; // 2명 이상 화료했는데 쯔모임 (불가능한 경우)
-  else if (status==='cheat') // 촌보 ok 버튼
-    return {color: props.scoringState.whoCheat===-1 ? 'gray' : ''}; // 촌보한 사람이 없음 (불가능한 경우)
-  else if (status==='fao') // 책임지불 ok 버튼
-    return {color: props.scoringState.whoFao===-1 ? 'gray' : ''}; // 책임지불할 사람이 없음 (불가능한 경우)
-}
-
-/**화살표 버튼 색상*/
-const arrowButtonStyle = (status: string, idx: number) => {
-  if (status==='win') // 화료 화살표 버튼
-    return {color: props.players[idx].isWin===true ? 'red' : ''}; // 선택시 빨간색
-  else if (status==='lose') // 방총 화살표 버튼
-    return {color: props.players[idx].isWin!==true ? (props.players[idx].isLose===true ? 'red' : '') : 'gray'}; // 선택시 빨간색, 불가능시 회색
-  else if (status==='cheat') // 촌보 화살표 버튼
-    return {color: props.scoringState.whoCheat===idx ? 'red' : ''}; // 선택시 빨간색
-  else if (status==='fao') // 책임지불 화살표 버튼
-    return {color: props.scoringState.whoWin!==idx && props.scoringState.whoLose!==idx ? (props.scoringState.whoFao===idx ? 'red' : '') : 'gray'}; // 선택시 빨간색, 불가능시 회색
-  else if (status==='tenpai') // 텐파이 화살표 버튼
-    return {color: (props.players[idx].isTenpai===true || props.players[idx].isRiichi===true) ? 'red' : ''}; // 선택 또는 리치시 빨간색
-}
-
 /**토글 버튼 색상*/
 const toggleButtonStyle = (status: string) => {
   if (status==='isfao') // 점수창 책임지불 OX
@@ -194,48 +171,13 @@ const toggleButtonStyle = (status: string) => {
     return {color: props.option.cheatScore===true ? 'mediumblue' : 'red'};
   else if (status==='endriichi') // 공탁처리 옵션
     return {color: props.option.riichiPayout===true ? 'mediumblue' : 'red'};
-}
-
-/**판/부 버튼 색상*/
-const fanBuButtonStyle = (status: string, idx: number) => {
-  if (status==='fan') // 판 체크
-    return {color: idx===props.scoringState.inputFan ? 'red' : ''};
-  else if (status==='bu'){ // 부 체크
-    if (props.modalInfo.status==='ron' && idx===0) // 론일때 20부 이하시 회색
-      return {color: 'gray'};
-    else if (props.scoringState.inputFan===0 && idx<=1) // 1판 25부 이하시 회색
-      return {color: 'gray'};
-    else if (props.scoringState.inputFan>=4) // 만관 이상일때 부수 회색
-      return {color: 'gray'};
-    else
-      return {color: idx===props.scoringState.inputBu ? 'red' : ''}; // 선택시 빨간색
-  }
-  else if (status==='inputfao'){ // 책임지불 점수창
-    if (props.scoringState.inputFan-9<idx) // 입력 판수보다 크면 불가능
-      return {color: 'gray'};
-    else
-      return {color: idx===props.scoringState.inputFao ? 'red' : ''}; // 선택시 빨간색
-  }
-}
-
-/**역만인지 확인하고 숨기기*/
-const yakumanVisibility = (idx: number) => {
-  return {display: ((props.scoringState.inputFan<9 && idx===9) || idx===props.scoringState.inputFan) ? '' : 'none'};
+  else if (status==='isonline') // 싱크 온/오프라인
+    return {color: props.syncInfo.isConnected===true ? 'limegreen' : 'gray'};
 }
 
 /**주사위 모달창 회전*/
 const diceModalTransform = () => {
   return {transform: `translate(-50%, -50%) rotate(${360-props.players.findIndex(player => player.wind==='東')*90}deg)`};
-}
-
-/**주사위 패산 방향 표시*/
-const wallDirectionVisibility = (idx: number): { visibility: 'visible' | 'hidden' } => {
-  return {visibility: props.dice.wallDirection[idx]===true ? 'visible' : 'hidden'};
-}
-
-/**타일 앞뒤 표시*/
-const seatTileStyle = (idx: number) => {
-  return {gridArea: `tile_${idx+1}`, color: props.seatTile.isOpened[idx]===true ? (props.seatTile.value[idx]==='東' ? 'red' : '') : 'orange', backgroundColor: props.seatTile.isOpened[idx]===true ? '' : 'orange'};
 }
 
 /**점수 부호에 따른 색상*/
@@ -254,154 +196,65 @@ const getSignColor = (sign: number, x: boolean) => {
 const getLocaleColor = (x: string) => {
   return {color: locale.value===x ? 'red' : ''};
 }
-
-/**책임지불이 켜져있는지 확인*/
-const checkFao = () => {
-  if (props.scoringState.isFao===true) // 책임지불이 있다면 선택창 키기
-    emit('show-modal', 'check_player_fao', props.modalInfo.status);
-  else
-    emit('calculate-win');
-}
 </script>
 
 <template>
 <div class="modal" @click="emit('hide-modal')">
   <!-- 화료 인원 선택창 -->
   <div v-if="modalInfo.type==='check_player_win'" class="modal_content" @click.stop>
-    <div class="container_check">
-      <div class="guide_message">
-        {{ t('comments.checkPlayerWin') }}
-      </div>
-      <div v-for="(_, i) in class_check"
-        :key="i"
-        :class="class_check[i]"
-        :style="arrowButtonStyle('win', i)"
-        @click.stop="emit('set-arrow-button', 'win', i)"
-      >
-        {{ arr_arrow[i] }}
-      </div>
-      <div class="ok" :style="okButtonStyle('win')" @click.stop="emit('check-invalid-status', 'win')">
-        OK
-      </div>
-    </div>
+    <ModalCheckPlayer
+      :players
+      :scoringState
+      actionType="win"
+      @set-arrow-button="(status, idx) => emit('set-arrow-button', status, idx)"
+      @check-invalid-status="(status) => emit('check-invalid-status', status)"
+    />
   </div>
   <!--방총 인원 선택창 -->
   <div v-else-if="modalInfo.type==='check_player_lose'" class="modal_content" @click.stop>
-    <div class="container_check">
-      <div class="guide_message">
-        {{ t('comments.checkPlayerLose') }}
-      </div>
-      <div v-for="(_, i) in class_check"
-        :key="i"
-        :class="class_check[i]"
-        :style="arrowButtonStyle('lose', i)"
-        @click.stop="emit('set-arrow-button', 'lose', i)"
-      >
-        {{ arr_arrow[i] }}
-      </div>
-      <div class="ok" :style="okButtonStyle('lose')" @click.stop="emit('check-invalid-status', 'lose')">
-        OK
-      </div>
-    </div>
+    <ModalCheckPlayer
+      :players
+      :scoringState
+      actionType="lose"
+      @set-arrow-button="(status, idx) => emit('set-arrow-button', status, idx)"
+      @check-invalid-status="(status) => emit('check-invalid-status', status)"
+    />
   </div>
-  <!-- 판/부 선택창 -->
+  <!-- 부/판 선택창 -->
   <div v-else-if="modalInfo.type==='choose_score'" class="modal_content" @click.stop>
-    <div>
-      {{ t('comments.chooseScore', {name: players[scoringState.whoWin].name}) }}
-    </div>
-    <div class="container_check_fanbu">
-      <div class="fan">
-        {{ t('score.fan') }}:
-      </div>
-      <div class="fan_check">
-        <span v-for="(_, i) in fan.slice(0, 9)"
-        :key="i"
-        :style="fanBuButtonStyle('fan', i)"
-        @click.stop="emit('set-fanbu-button', 'fan', i)"
-        >
-          {{ fan[i] }}
-        </span>
-        <br>
-        <span v-show="scoringState.inputFan<9"
-        @click.stop="emit('set-fanbu-button', 'fan', 9)"
-        >
-          {{ t('score.yakuman') }}
-        </span>
-        <span v-show="scoringState.inputFan>=9" v-for="(_, i) in fan.slice(9)"
-        :key="i"
-        :style="[fanBuButtonStyle('fan', i+9), yakumanVisibility(i+9)]"
-        @click.stop="emit('set-fanbu-button', 'fan', i+9)"
-        >
-          {{ t('score.multipleYakuman', {num: fan[i+9]}) }}
-        </span>
-        <span v-show="scoringState.inputFan>=9" style="font-size: 20px;" @click.stop="emit('set-toggle-button', 'isfao')">({{ t('score.fao') }}
-          <span :style="toggleButtonStyle('isfao')">
-            <span v-show="scoringState.isFao===true">O</span>
-            <span v-show="scoringState.isFao===false">X</span>
-          </span>
-        )</span>
-      </div>
-      <div class="bu">
-        {{ t('score.bu') }}:
-      </div>
-      <div class="bu_check">
-        <span v-for="(_, i) in bu.slice(0, 6)"
-          :key="i"
-          :style="fanBuButtonStyle('bu', i)"
-          @click.stop="emit('set-fanbu-button', 'bu', i)"
-        >
-          {{ bu[i] }}
-        </span>
-        <br>
-        <span v-for="(_, i) in bu.slice(6)"
-          :key="i"
-          :style="fanBuButtonStyle('bu', i+6)"
-          @click.stop="emit('set-fanbu-button', 'bu', i+6)"
-        >
-          {{ bu[i+6] }}
-        </span>
-      </div>
-    </div>
-    <div style="font-size: 30px;" @click.stop="checkFao()">
-      OK
-    </div>
+    <ModalScoreSelect
+      :players
+      :scoringState
+      :modalInfo
+      actionType="fanbu"
+      @show-modal="(type, status?) => emit('show-modal', type, status)"
+      @set-toggle-button="(status) => emit('set-toggle-button', status)"
+      @set-fanbu-button="(status, idx) => emit('set-fanbu-button', status, idx)"
+      @calculate-win="emit('calculate-win')"
+    />
   </div>
   <!--책임지불 인원 선택창 -->
   <div v-else-if="modalInfo.type==='check_player_fao'" class="modal_content" @click.stop>
-    <div class="container_check">
-      <div class="guide_message">
-        {{ t('comments.checkPlayerFao') }}
-      </div>
-      <div v-for="(_, i) in class_check"
-        :key="i"
-        :class="class_check[i]"
-        :style="arrowButtonStyle('fao', i)"
-        @click.stop="emit('set-arrow-button', 'fao', i)"
-      >
-        {{ arr_arrow[i] }}
-      </div>
-      <div class="ok" :style="okButtonStyle('fao')" @click.stop="emit('check-invalid-status', 'fao')">
-        OK
-      </div>
-    </div>
+    <ModalCheckPlayer
+      :players
+      :scoringState
+      actionType="fao"
+      @set-arrow-button="(status, idx) => emit('set-arrow-button', status, idx)"
+      @check-invalid-status="(status) => emit('check-invalid-status', status)"
+    />
   </div>
   <!-- 책임지불 점수 선택창 -->
   <div v-else-if="modalInfo.type==='choose_score_fao'" class="modal_content" @click.stop>
-    <div>
-      {{ t('comments.chooseScoreFao') }}
-    </div>
-    <div class="container_choose_fao_score">
-      <span v-for="(_, i) in fan.slice(9)"
-        :key="i"
-        :style="fanBuButtonStyle('inputfao', i)"
-        @click.stop="emit('set-fanbu-button', 'inputfao', i)"
-      >
-      {{ t('score.multipleYakuman', {num: fan[i+9]}) }}
-      </span>
-    </div>
-    <div style="font-size: 30px;" @click.stop="emit('calculate-win');">
-      OK
-    </div>
+    <ModalScoreSelect
+      :players
+      :scoringState
+      :modalInfo
+      actionType="fao"
+      @show-modal="(type, status?) => emit('show-modal', type, status)"
+      @set-toggle-button="(status) => emit('set-toggle-button', status)"
+      @set-fanbu-button="(status, idx) => emit('set-fanbu-button', status, idx)"
+      @calculate-win="emit('calculate-win')"
+    />
   </div>
   <!-- 유국 종류 선택창 -->
   <div v-else-if="modalInfo.type==='choose_draw_kind'" class="modal_content" @click.stop>
@@ -414,86 +267,44 @@ const checkFao = () => {
   </div>
   <!-- 텐파이 인원 선택창 -->
   <div v-else-if="modalInfo.type==='check_player_tenpai'" class="modal_content" @click.stop>
-    <div class="container_check">
-      <div class="guide_message">
-        {{ t('comments.checkPlayerTenpai') }}
-      </div>
-      <div v-for="(_, i) in class_check"
-        :key="i"
-        :class="class_check[i]"
-        :style="arrowButtonStyle('tenpai', i)"
-        @click.stop="emit('set-arrow-button', 'tenpai', i)"
-      >
-        {{ arr_arrow[i] }}
-      </div>
-      <div class="ok" @click.stop="emit('calculate-draw')">
-        OK
-      </div>
-    </div>
+    <ModalCheckPlayer
+      :players
+      :scoringState
+      actionType="tenpai"
+      @set-arrow-button="(status, idx) => emit('set-arrow-button', status, idx)"
+      @check-invalid-status="(status) => emit('check-invalid-status', status)"
+    />
   </div>
   <!-- 촌보 인원 선택창 -->
   <div v-else-if="modalInfo.type==='check_player_cheat'" class="modal_content" @click.stop>
-    <div class="container_check">
-      <div class="guide_message">
-        {{ t('comments.checkPlayerCheat') }}
-      </div>
-      <div v-for="(_, i) in class_check"
-        :key="i"
-        :class="class_check[i]"
-        :style="arrowButtonStyle('cheat', i)"
-        @click.stop="emit('set-arrow-button', 'cheat', i)"
-      >
-        {{ arr_arrow[i] }}
-      </div>
-      <div class="ok" :style="okButtonStyle('cheat')" @click.stop="emit('check-invalid-status', 'cheat')">
-        OK
-      </div>
-    </div>
+    <ModalCheckPlayer
+      :players
+      :scoringState
+      actionType="cheat"
+      @set-arrow-button="(status, idx) => emit('set-arrow-button', status, idx)"
+      @check-invalid-status="(status) => emit('check-invalid-status', status)"
+    />
   </div>
   <!-- 점수 확인창 -->
   <div v-else-if="modalInfo.type==='show_score'" class="modal_content" style="border-radius:50%;" @click.stop>
-    <div class="container_show_score_diff">
-      <div v-for="(_, i) in class_score_diff"
-        :key="i"
-        :class="class_score_diff[i]"
-        :style="getSignColor(players[i].deltaScore, true)"
-      >
-        <span v-show="players[i].deltaScore>0">+</span>{{ players[i].deltaScore }}
-      </div>
-      <div class="ok" @click.stop="emit('save-round')">
-        OK
-      </div>
-    </div>
+    <ModalScoreResult
+      :players
+      @save-round="emit('save-round')"
+    />
   </div>
   <!-- 주사위 굴림창 -->
   <div v-else-if="modalInfo.type==='roll_dice'" class="modal_content" :style="diceModalTransform()" @click.stop>
-    <div class="container_roll" @click.stop="emit('roll-dice')">
-      <graphics kind="dice" :value="dice.value[0]" style="grid-area: dice_1; transform: scale(2);"/>
-      <graphics kind="dice" :value="dice.value[1]" style="grid-area: dice_2; transform: scale(2);"/>
-      <div class="sum">
-        <span v-show="dice.wallDirection.every(x => x===false)">?</span>
-        <span v-show="dice.wallDirection.some(x => x===true)">{{ dice.value[0]+dice.value[1] }}</span>
-      </div>
-      <div v-for="(_, i) in class_dice"
-        :key="i"
-        :class="class_dice[i]"
-        :style="wallDirectionVisibility(i)"
-      >
-        {{ arr_arrow[i] }}
-      </div>
-    </div>
+    <ModalDice
+      :dice
+      @roll-dice="emit('roll-dice')"
+    />
   </div>
   <!-- 동남서북 선택창 -->
   <div v-else-if="modalInfo.type==='choose_seat'" class="modal_content" @click.stop>
-    <div class="container_tile">
-      <graphics v-for="(_, i) in seatTile.value"
-        :key="i"
-        kind="tile"
-        :style="seatTileStyle(i)"
-        :value="seatTile.value[i]"
-        @click.stop="emit('set-seat-tile', i)"
-      ></graphics>
-    </div>
+    <ModalTile
+      :seatTile
+      @set-seat-tile="(idx) => emit('set-seat-tile', idx)"
+    />
   </div>
   <!-- 옵션 종류 선택창 -->
   <div v-else-if="modalInfo.type==='choose_menu_kind'" class="modal_content" @click.stop>
@@ -506,6 +317,9 @@ const checkFao = () => {
       </div>
       <div @click.stop="emit('show-modal', 'set_options')">
         {{ t('menu.option') }}
+      </div>
+      <div @click.stop="emit('show-modal', 'sync')">
+        {{ t('menu.sync') }}
       </div>
       <div style="font-size: 20px;">
         <div style="display: flex; align-items: center;">
@@ -681,6 +495,49 @@ const checkFao = () => {
       </div>
     </div>
   </div>
+  <!-- 동기화 창 -->
+  <div v-else-if="modalInfo.type==='sync'" class="modal_content" @click.stop>
+    <div v-if="!syncInfo.isConnected" class="container_sync">
+      <div class="on_off" :style="toggleButtonStyle('isonline')">
+        <Graphics kind="dot" :status="syncInfo.isConnected"/>
+        {{ t('sync.offline') }}
+      </div>
+      <div style="grid-area: room_id;">
+        <input
+          type="text"
+          v-model="targetRoomId"
+          :placeholder="t('sync.roomCode')"
+          name="roomCode"
+        />
+      </div>
+      <div class="sync_button">
+        <div v-if="!targetRoomId">
+          <div @click.stop="emit('init-multiplayer')">
+            {{ t('sync.create') }}
+          </div>
+        </div>
+        <div v-else>
+          <div @click.stop="emit('init-multiplayer', targetRoomId)">
+            {{ t('sync.join') }}
+          </div>
+        </div>
+      </div>
+    </div>
+    <div v-else class="container_sync">
+      <div class="on_off" :style="toggleButtonStyle('isonline')">
+        <graphics kind="dot" :status="syncInfo.isConnected"/>
+        {{ t('sync.online') }}
+      </div>
+      <div style="grid-area: room_id;">
+        {{ t('sync.roomCode') }}: {{ syncInfo.roomId }}
+      </div>
+      <div class="sync_button">
+        <div @click.stop="emit('copy-room-id')">
+          {{ t('sync.copy') }}
+        </div>
+      </div>
+    </div>
+  </div>
   <!-- 메시지 팝업창 -->
   <div v-else class="modal_content" @click.stop>
     <div class="modal_text">{{ modalInfo.type }}</div>
@@ -712,7 +569,6 @@ const checkFao = () => {
   height: auto;
   padding: 5px;
   z-index: 10;
-  font-size: 20px;
 }
 
 /* 유국 선택창 */
@@ -723,176 +579,15 @@ const checkFao = () => {
 
 /* 메시지 팝업창 */
 .modal_text{
-  margin: 20px;
-}
-
-/* 체크창 */
-.container_check{
-  display: grid;
-  grid-template-rows: auto repeat(3, 100px);
-  grid-template-columns: repeat(3, 100px);
-  grid-template-areas: 
-    'guide_message guide_message guide_message'
-    '. up_check .'
-    'left_check ok right_check'
-    '. down_check .';
-  text-align: center;
-  font-size: 70px;
-  place-items: center;
-}
-.guide_message{
-  grid-area: guide_message;
   font-size: 20px;
-}
-.down_check{
-  grid-area: down_check;
-}
-.right_check{
-  grid-area: right_check;
-}
-.up_check{
-  grid-area: up_check;
-}
-.left_check{
-  grid-area: left_check;
-}
-
-/* 부/판 체크창 */
-.container_check_fanbu{
-  display: grid;
-  grid-template-rows: repeat(2, auto);
-  grid-template-columns: 70px auto;
-  grid-template-areas:
-  'fan fan_check'
-  'bu bu_check';
-  text-align: center;
-  font-size: 30px;
-}
-.fan{
-  grid-area: fan;
-}
-.bu{
-  grid-area: bu;
-}
-.fan_check{
-  grid-area: fan_check;
-}
-.bu_check{
-  grid-area: bu_check;
-}
-.fan_check > span,
-.bu_check > span {
-  padding-right: 5px;
-  padding-left: 5px;
-}
-
-/* 책임지불 점수 선택창 */
-.container_choose_fao_score{
-  display: grid;
-  grid-template-rows: repeat(2, auto);
-  grid-template-columns: repeat(3, auto);
-  font-size: 30px;
-  gap: 10px;
-  margin: 5px;
-  place-items: center;
-}
-
-/* 점수 확인창 */
-.container_show_score_diff{
-  display: grid;
-  grid-template-rows: repeat(3, 100px);
-  grid-template-columns: repeat(3, 100px);
-  grid-template-areas:
-    '. up_score_diff .'
-    'left_score_diff ok right_score_diff'
-    '. down_score_diff .';
-  text-align: center;
-  line-height: 100px;
-  font-size: 30px;
-  place-items: center;
-}
-.down_score_diff{
-  grid-area: down_score_diff;
-  transform: rotate(0deg);
-}
-.right_score_diff{
-  grid-area: right_score_diff;
-  transform: rotate(270deg);
-}
-.up_score_diff{
-  grid-area: up_score_diff;
-  transform: rotate(180deg);
-}
-.left_score_diff{
-  grid-area: left_score_diff;
-  transform: rotate(90deg);
-}
-.ok{
-  grid-area: ok;
-  font-size: 60px;
-}
-
-/* 주사위 굴림창 */
-.container_roll{
-  display: grid;
-  grid-template-rows: 15px 86px 15px;
-  grid-template-columns: repeat(3, 15px 86px) 15px;
-  grid-template-areas:
-    '. dice_1 . up_dice . dice_2 .'
-    '. dice_1 left_dice sum right_dice dice_2 .'
-    '. dice_1 . down_dice . dice_2 .';
-  text-align: center;
-  font-size: 15px;
-}
-.sum{
-  grid-area: sum;
-  font-size: 50px;
-  line-height: 82px;
-  text-underline-position: under;
-  text-decoration: underline red 3px;
-}
-.down_dice{
-  grid-area: down_dice;
-  visibility: hidden;
-  line-height: 15px;
-  color: red;
-}
-.right_dice{
-  grid-area: right_dice;
-  visibility: hidden;
-  line-height: 82px;
-  color: red;
-}
-.up_dice{
-  grid-area: up_dice;
-  visibility: hidden;
-  line-height: 15px;
-  color: red;
-}
-.left_dice{
-  grid-area: left_dice;
-  visibility: hidden;
-  line-height: 82px;
-  color: red;
-}
-
-/* 자리 선택창 */
-.container_tile{
-  display: grid;
-  grid-template-rows: auto;
-  grid-template-columns: repeat(3, 86px 15px) 86px;
-  grid-template-areas:
-    'tile_1 . tile_2 . tile_3 . tile_4';
-  text-align: center;
-  font-size: 80px;
-  margin: 15px;
+  margin: 20px;
 }
 
 /* 옵션 선택창 */
 .container_choose_menu{
   display: grid;
   grid-template-rows: repeat(2, 60px);
-  grid-template-columns: repeat(2, 120px);
+  grid-template-columns: repeat(3, 120px);
   font-size: 30px;
   gap: 20px;
   margin: 15px;
@@ -941,6 +636,7 @@ const checkFao = () => {
   'option0 option1 option2 option3'
   'option4 option4 option5 option6';
   text-align: center;
+  font-size: 20px;
   gap: 10px;
   margin: 5px;
 }
@@ -954,6 +650,7 @@ const checkFao = () => {
   'wind name score riichi win lose'
   'wind_contents name_contents score_contents riichi_contents win_contents lose_contents';
   text-align: center;
+  font-size: 20px;
   margin: 5px;
 }
 .container_resultsheet div{
@@ -966,5 +663,34 @@ const checkFao = () => {
   width: 490px;
   height: 240px;
   margin: 5px;
+}
+
+/* 점수 연동창 */
+.container_sync{
+  display: grid;
+  grid-template-rows: 50px 75px;
+  grid-template-columns: 170px 180px;
+  grid-template-areas:
+    'on_off sync_button'
+    'room_id room_id';
+  text-align: center;
+  font-size: 30px;
+  margin: 10px;
+  place-items: center;
+}
+.on_off{
+  grid-area: on_off;
+  font-size: 25px;
+}
+.sync_button{
+  grid-area: sync_button;
+  color: red;
+}
+.container_sync input{
+  font-size: 30px;
+  width: 300px;
+}
+.container_sync input::placeholder {
+  font-size: 25px;
 }
 </style>

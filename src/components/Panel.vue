@@ -1,6 +1,6 @@
 <script setup lang="ts">
-import graphics from "@/components/graphics.vue";
-import type { PanelInfo } from "@/types/types.d";
+import Graphics from "@/components/Graphics.vue"
+import type { PanelInfo } from "@/types/types.d"
 import { useI18n } from "vue-i18n"
 
 /**i18n 속성 가져오기*/
@@ -28,12 +28,12 @@ const emit = defineEmits<Emits>()
   </div>
   <!-- 현재 총 리치봉 -->
   <div class="riichi">
-    <graphics kind="riichiStickMini"/>
+    <Graphics kind="riichiStickMini"/>
     <span>x {{ panelInfo.riichi }}</span>
   </div>
   <!-- 현재 연장봉 -->
   <div class="renchan">
-    <graphics kind="renchanStickMini"/>
+    <Graphics kind="renchanStickMini"/>
     <span>x {{ panelInfo.renchan }}</span>
   </div>
   <!-- 화료 버튼 -->
@@ -51,7 +51,7 @@ const emit = defineEmits<Emits>()
 </div>
 <!-- 옵션 버튼 -->
 <div id="Menu" @click="emit('show-modal', 'choose_menu_kind')">
-  <graphics kind="gear"/>
+  <Graphics kind="gear"/>
 </div>
 </template>
 

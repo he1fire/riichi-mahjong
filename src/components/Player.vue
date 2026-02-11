@@ -1,6 +1,6 @@
 <script setup lang="ts">
-import graphics from "@/components/graphics.vue"
-import type { Player, Option } from "@/types/types.d";
+import Graphics from "@/components/Graphics.vue"
+import type { Player, Option } from "@/types/types.d"
 import { computed } from "vue"
 
 /**props 정의*/
@@ -68,7 +68,7 @@ const getSignColor = (sign: number, x: boolean) => {
 <template>
 <div class="container_player" :id=player.seat>
   <!-- 리치봉 -->
-  <graphics kind="riichiStick" class="stick" :style="riichiStickVisibility()"/>
+  <Graphics kind="riichiStick" class="stick" :style="riichiStickVisibility()"/>
   <!-- 현재 바람 -->
   <div class="wind" :style="windStyle()"
     @mousedown="emit('toggle-show-gap', player.seat, true)"

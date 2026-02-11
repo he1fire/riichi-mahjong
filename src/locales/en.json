@@ -14,7 +14,8 @@
         "checkPlayerTenpai" : "Select tenpai.",
         "checkPlayerCheat" : "Select chombo.",
         "rollbackRecord" : "Revert to {time}?",
-        "copyRecord" : "Copy records to clipboard."
+        "copyRecord" : "Game record copied to clipboard.",
+        "copyRoomCode" : "Room code copied to clipboard."
     },
     "score" : {
         "fan" : "Han",
@@ -30,7 +31,8 @@
     "menu" : {
         "resultSheet" : "Result",
         "record" : "Record",
-        "option" : "Option"
+        "option" : "Option",
+        "sync" : "Sync"
     },
     "resultSheet" : {
         "wind" : "Wind",
@@ -59,5 +61,13 @@
         "mangan" : "Mangan",
         "riichiPayout" : "Deposit",
         "firstPlace" : "1st"
+    },
+    "sync" : {
+        "online" : "Online",
+        "offline" : "Offline",
+        "create" : "Create",
+        "join" : "Join",
+        "copy" : "Copy",
+        "roomCode" : "Room Code"
     }
 }

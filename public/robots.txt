@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://he1fire.github.io/riichi-mahjong/sitemap.xml

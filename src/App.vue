@@ -1,10 +1,11 @@
 <script setup lang="ts">
-import player from "@/components/player.vue"
-import panel from "@/components/panel.vue"
-import modal from "@/components/modal.vue"
-import { reactive, onMounted, watch } from "vue"
+import Player from "@/components/Player.vue"
+import Panel from "@/components/Panel.vue"
+import Modal from "@/components/modals/Modal.vue"
+import { reactive, onMounted, watch, nextTick } from "vue"
 import { useRoute, useRouter } from "vue-router"
 import { useI18n } from "vue-i18n"
+import { createClient } from "@supabase/supabase-js"
 
 /**라우터 가져오기*/
 const route = useRoute()
@@ -75,6 +76,15 @@ const modalInfo = reactive({ // 모달창
   isOpen: false, // on/off
   type: "", // 종류
   status: "", // 라운드 형태 - 론 쯔모 일반유국 특수유국
+})
+const syncInfo = reactive({ // 점수연동
+  SUPABASE_URL: import.meta.env.VITE_SUPABASE_URL, // supabase url
+  SUPABASE_KEY: import.meta.env.VITE_SUPABASE_KEY, // supabase key
+  myId: "user_"+Math.random().toString(36).substring(2,8), // 개인 ID
+  roomId: "", // 방 ID
+  isConnected: false, // 연결 상태
+  isReceiving: false, // 수신 중 플래그 (무한루프 방지)
+  isHost: false // 방장 여부
 })
 
 /**시작시 언어 변경 및 자리선택 타일창 띄우기*/
@@ -439,6 +449,8 @@ const checkInvalidStatus = (status: string) => {
       return;
     calculateCheat();
   }
+  else if (status==='tenpai') // 유국일때
+    calculateDraw();
 }
 
 /**화료 점수계산*/
@@ -662,27 +674,161 @@ const rollbackRecord = (idx: number) => {
   panelInfo.riichi=Math.floor((option.startingScore*4-sumScore)/1000); // 리치봉 설정
   hideModal(); // 모달 창 끄기
 }
+
+const syncData = reactive({ 
+  players, 
+  panelInfo, 
+  records, 
+  option, 
+});
+
+// 1. Supabase 클라이언트 초기화
+const supabase = createClient(syncInfo.SUPABASE_URL, syncInfo.SUPABASE_KEY)
+
+// 2. 상태 변수 정의
+let roomChannel: any = null      // Supabase 채널 객체
+
+/** * 멀티플레이 초기화 (방 만들기 / 접속하기 공용)
+ * @param id - 접속할 방 ID. 없으면 새로 생성(방장)
+ */
+const initMultiplayer = (id?: string) => {
+  // 1. 방 ID 설정 (없으면 6자리 숫자 랜덤 생성)
+  const targetId=id||Math.floor(Math.random()*1000000).toString().padStart(6,'0');
+  syncInfo.roomId=targetId;
+
+  // 2. 기존 채널이 있다면 제거
+  if (roomChannel)
+    supabase.removeChannel(roomChannel);
+
+  // 3. 새 채널 생성 및 구독
+  roomChannel=supabase.channel(`room_${targetId}`,{config: {broadcast: {self: false } } }); // 내가 보낸건 내가 안받음
+
+  roomChannel
+    .on('presence', { event: 'sync' }, () => {
+      const state = roomChannel.presenceState();
+      
+      // 1. 접속자 목록을 '들어온 시간' 순으로 정렬
+      const presences = Object.values(state).flat() as any[];
+      presences.sort((a, b) => new Date(a.online_at).getTime() - new Date(b.online_at).getTime());
+
+      // 2. 가장 먼저 들어온 유저의 ID가 내 ID와 같다면 내가 방장!
+      if (presences.length > 0 && presences[0].user_id === syncInfo.myId) {
+        if (!syncInfo.isHost) {
+          console.log("당신이 새로운 방장이 되었습니다.");
+          syncInfo.isHost = true;
+          syncInfo.isConnected = true; // 방장이 되면 즉시 전송 권한 획득
+        }
+      } else {
+        syncInfo.isHost = false;
+      }
+    })
+    .on('broadcast', { event: 'sync' }, ({ payload }: { payload: any }) => {
+      if (syncInfo.isReceiving) return;
+      syncInfo.isReceiving = true;
+
+      // JSON 변환 시 null로 바뀐 NaN 복구
+      const restoreNaN = (obj: any) => {
+        for (let key in obj) {
+          if (obj[key] === null) obj[key] = NaN;
+          else if (typeof obj[key] === 'object' && obj[key] !== null) restoreNaN(obj[key]);
+        }
+        return obj;
+      };
+
+      const data = restoreNaN(payload);
+
+      // 데이터 주입 (기존 reactive 객체들에 덮어쓰기)
+      data.players.forEach((newData: any) => {
+        const target = players.find(p => p.seat === newData.seat);
+        if (target) Object.assign(target, newData);
+      });
+      Object.assign(panelInfo, data.panelInfo);
+      Object.assign(option, data.option);
+      
+      // 기록 데이터 처리
+      if (data.records && data.records.score) {
+        data.records.score.forEach((s: any, i: number) => {
+          if (records.score[i]) records.score[i].splice(0, records.score[i].length, ...s);
+        });
+        records.time.splice(0, records.time.length, ...data.records.time);
+      }
+      // 데이터를 한 번이라도 받으면 이제부터 전송 가능
+      syncInfo.isConnected = true;
+
+      nextTick(() => { syncInfo.isReceiving = false; });
+    })
+    .on('broadcast', { event: 'request_sync' }, () => {
+      if (syncInfo.isHost) {
+        console.log("새 참여자의 요청으로 데이터를 전송합니다.");
+        sendGameData();
+      }
+    })
+    .subscribe(async (status: string) => {
+      if (status === 'SUBSCRIBED') {
+        // 3. 내 정보를 등록 (들어온 시간 포함)
+        await roomChannel.track({
+          user_id: syncInfo.myId,
+          online_at: new Date().toISOString(),
+        });
+
+        if (!id) {
+          syncInfo.isHost = true;
+          syncInfo.isConnected = true;
+        } else {
+          // 참여자라면 데이터 요청
+          roomChannel.send({ type: 'broadcast', event: 'request_sync', payload: {} });
+        }
+      }
+    });
+};
+
+/** 데이터 전송 로직 */
+const sendGameData = () => {
+  if (!roomChannel || syncInfo.isReceiving || !syncInfo.isConnected) return;
+  const payload = JSON.parse(JSON.stringify(syncData));
+  roomChannel.send({
+    type: 'broadcast',
+    event: 'sync',
+    payload
+  });
+};
+
+/** 데이터 변경 감시 */
+watch(() => [syncData], () => {
+  if (syncInfo.isReceiving || !syncInfo.isConnected)
+    return;
+  sendGameData();
+}, { deep: true });
+
+/** ID 복사 함수 */
+const copyRoomId = () => {
+  if (!syncInfo.roomId)
+    return;
+  navigator.clipboard.writeText(syncInfo.roomId); // 클립보드로 복사
+  showModal(t('comments.copyRoomCode'));
+};
 </script>
 
 <template>
 <div class="background" @dblclick.self="toggleFullScreen()">
   <!-- 각 방향별 player 컴포넌트 생성 -->
-  <player v-for="(_, i) in players"
-    :key="i"
-    :player="players[i]"
-    :option
-    @toggle-active-riichi="toggleActiveRiichi"
-    @toggle-show-gap="toggleShowGap"
-  />
-  <!-- 중앙 panel 컴포넌트 생성 -->
-  <panel
-    :panelInfo
-    @show-modal="showModal"
-    @roll-dice="rollDice"
-  />
+  <main role="main">
+    <Player v-for="(_, i) in players"
+      :key="i"
+      :player="players[i]"
+      :option
+      @toggle-active-riichi="toggleActiveRiichi"
+      @toggle-show-gap="toggleShowGap"
+    />
+    <!-- 중앙 panel 컴포넌트 생성 -->
+    <Panel
+      :panelInfo
+      @show-modal="showModal"
+      @roll-dice="rollDice"
+    />
+  </main>
   <!-- modal 컴포넌트 생성 -->
-  <modal
-    v-if="modalInfo.isOpen"
+  <Modal v-if="modalInfo.isOpen"
     :players
     :scoringState
     :panelInfo
@@ -705,6 +851,9 @@ const rollbackRecord = (idx: number) => {
     @copy-record="copyRecord"
     @rollback-record="rollbackRecord"
     @change-locale="changeLocale"
+    :syncInfo
+    @init-multiplayer="initMultiplayer"
+    @copy-room-id="copyRoomId"
   />
 </div>
 </template>

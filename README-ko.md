@@ -144,4 +144,36 @@
 - [x] 점수 차 비교 구현
     - [x] 현재 순위 표시 구현
 - [ ] 점수 이동시 이펙트
-- [ ] firebase(supabase)이용해서 방 생성 및 실시간 데이터 연결
+- [x] firebase(supabase)이용해서 방 생성 및 실시간 데이터 연결
+
+### 타입 네이밍 관례
+- 상수명: SNAKE_CASE
+- 변수명: camelCase
+- 함수명: camelCase
+- 타입: PascalCase
+- 컴포넌트: PascalCase
+- 이벤트 이름: kebab-case
+
+src/
+└── components/
+    └── modals/             (모든 모달을 관리하는 메인 폴더)
+        ├── Modal.vue       (메인 프레임: 오버레이 및 타입별 분기 처리)
+        │
+        ├── setup/          (게임 시작 전 준비 단계용 모달)
+        │   ├── ModalDice.vue (주사위 굴림 애니메이션 및 결과)
+        │   └── ModalTile.vue (동남서북 자리 선택 타일)
+        │
+        ├── scoring/        (게임 중 점수 계산 및 발생 이벤트 관련)
+        │   ├── ModalCheckPlayer.vue (화료/방총/텐파이/촌보 인원 체크)
+        │   ├── ModalScoreSelect.vue (판/부수 선택 및 책임지불 점수 설정)
+        │   └── ModalScoreResult.vue (점수 변동 수치 확인 - 동그란 창)
+        │
+        ├── stats/          (게임 결과 시각화 및 로그 기록 관련)
+        │   ├── ModalResultSheet.vue (게임 종료 후 순위 및 점수 표)
+        │   ├── ModalResultChart.vue (점수 변동 그래프 - Chart.js)
+        │   └── ModalRecordList.vue (전체 대국 기록 리스트 및 롤백)
+        │
+        └── system/         (게임 외적 설정 및 멀티플레이 환경)
+            ├── ModalMenu.vue (메인 메뉴: 언어 변경 및 링크)
+            ├── ModalOptions.vue (우마, 시작 점수 등 게임 규칙 설정)
+            └── ModalSync.vue (방 생성 및 참여, 실시간 동기화 설정)

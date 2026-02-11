@@ -2,7 +2,9 @@
 /**props 정의*/
 interface Props {
   kind: string,
-  value?: string | number,
+  value?: number,
+  wind?: string,
+  status?: boolean
 }
 defineProps<Props>()
 </script>
@@ -41,7 +43,7 @@ defineProps<Props>()
   <div v-show="Number(value)===6" class="dice_circle" style="grid-area: _7;"></div>
 </div>
 <!-- 바람 타일 -->
-<div v-else-if="kind==='tile'" class="tile">{{ value }}</div>
+<div v-else-if="kind==='tile'" class="tile">{{ wind }}</div>
 <!-- 기어 -->
 <div v-else-if="kind==='gear'" class="gear">
   <div class="center"></div>
@@ -50,6 +52,7 @@ defineProps<Props>()
   <div class="tooth"></div>
   <div class="tooth"></div>
 </div>
+<span v-else-if="kind==='dot'" class="status-dot" :class="{ online: status }"></span>
 </template>
 
 <style scoped>
@@ -163,5 +166,36 @@ defineProps<Props>()
 }
 .tooth:nth-child(4){
   transform: rotate(135deg);
+}
+
+/* 점 */
+.status-dot {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background-color: darkgray;
+  display: inline-block;
+  vertical-align: middle;
+  margin-right: 5px;
+  transition: all 0.3s ease;
+}
+.status-dot.online {
+  background-color: limegreen;
+  box-shadow: 0 0 8px limegreen;
+  animation: pulse-glow 2s infinite;
+}
+@keyframes pulse-glow {
+  0% {
+    box-shadow: 0 0 5px limegreen;
+    opacity: 0.8;
+  }
+  50% {
+    box-shadow: 0 0 20px limegreen;
+    opacity: 1;
+  }
+  100% {
+    box-shadow: 0 0 5px limegreen;
+    opacity: 0.8;
+  }
 }
 </style>

@@ -9,10 +9,11 @@
     "preview": "vite preview"
   },
   "dependencies": {
+    "@supabase/supabase-js": "^2.93.2",
     "chart.js": "^4.5.0",
     "vue": "^3.5.13",
     "vue-chartjs": "^5.3.2",
-    "vue-i18n": "^11.1.6",
+    "vue-i18n": "^11.2.8",
     "vue-router": "^4.5.1"
   },
   "devDependencies": {
@@ -21,6 +22,7 @@
     "@vue/tsconfig": "^0.7.0",
     "typescript": "~5.8.3",
     "vite": "^6.4.1",
+    "vite-plugin-sitemap": "^0.8.2",
     "vue-tsc": "^2.2.8"
   }
 }
