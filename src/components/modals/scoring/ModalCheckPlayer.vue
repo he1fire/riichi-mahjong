@@ -9,8 +9,7 @@ const { t } = useI18n()
 interface Props {
   players: Player[],
   scoringState: ScoringState,
-  guideText: string,
-  actionType: string
+  actionType: 'win' | 'lose' | 'cheat' | 'fao' | 'tenpai'
 }
 const props = defineProps<Props>()
 
@@ -24,6 +23,13 @@ const emit = defineEmits<Emits>()
 /**data 정의*/
 const arr_arrow = ['▼', '▶', '▲', '◀']
 const class_check = ['down_check', 'right_check', 'up_check', 'left_check']
+const guideMessages: Record<string, string> = {
+  win: 'comments.checkPlayerWin',
+  lose: 'comments.checkPlayerLose',
+  cheat: 'comments.checkPlayerCheat',
+  fao: 'comments.checkPlayerFao',
+  tenpai: 'comments.checkPlayerTenpai'
+}
 
 /**화살표 버튼 색상*/
 const arrowButtonStyle = (status: string, idx: number) => {
@@ -51,6 +57,8 @@ const okButtonStyle = (status: string) => {
     return {color: props.scoringState.whoCheat===-1 ? 'gray' : ''}; // 촌보한 사람이 없음 (불가능한 경우)
   else if (status==='fao') // 책임지불 ok 버튼
     return {color: props.scoringState.whoFao===-1 ? 'gray' : ''}; // 책임지불할 사람이 없음 (불가능한 경우)
+  else if (status==='tenpai') // 텐파이 ok 버튼
+    return {color: ''} // 언제나 가능
 }
 </script>
 
@@ -58,7 +66,7 @@ const okButtonStyle = (status: string) => {
 <!-- 인원 선택창 -->
 <div class="container_check">
   <div class="guide_message">
-    {{ t(guideText) }}
+    {{ t(guideMessages[actionType]) }}
   </div>
   <div v-for="(_, i) in class_check"
     :key="i"

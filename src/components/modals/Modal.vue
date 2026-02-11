@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import Graphics from "@/components/Graphics.vue"
-import ModalPlayerCheck from "@/components/modals/scoring/ModalPlayerCheck.vue"
+import ModalCheckPlayer from "@/components/modals/scoring/ModalCheckPlayer.vue"
 import ModalDice from "@/components/modals/setup/ModalDice.vue"
 import ModalTile from "@/components/modals/setup/ModalTile.vue"
 import type { Player, ScoringState, PanelInfo, Dice, SeatTile, Records, Option, ModalInfo, SyncInfo } from "@/types/types.d"
@@ -238,10 +238,9 @@ const checkFao = () => {
 <div class="modal" @click="emit('hide-modal')">
   <!-- 화료 인원 선택창 -->
   <div v-if="modalInfo.type==='check_player_win'" class="modal_content" @click.stop>
-    <ModalPlayerCheck
+    <ModalCheckPlayer
       :players
       :scoringState
-      guideText="comments.checkPlayerWin"
       actionType="win"
       @set-arrow-button="(status, idx) => emit('set-arrow-button', status, idx)"
       @check-invalid-status="(status) => emit('check-invalid-status', status)"
@@ -249,10 +248,9 @@ const checkFao = () => {
   </div>
   <!--방총 인원 선택창 -->
   <div v-else-if="modalInfo.type==='check_player_lose'" class="modal_content" @click.stop>
-    <ModalPlayerCheck
+    <ModalCheckPlayer
       :players
       :scoringState
-      guideText="comments.checkPlayerLose"
       actionType="lose"
       @set-arrow-button="(status, idx) => emit('set-arrow-button', status, idx)"
       @check-invalid-status="(status) => emit('check-invalid-status', status)"
@@ -322,10 +320,9 @@ const checkFao = () => {
   </div>
   <!--책임지불 인원 선택창 -->
   <div v-else-if="modalInfo.type==='check_player_fao'" class="modal_content" @click.stop>
-    <ModalPlayerCheck
+    <ModalCheckPlayer
       :players
       :scoringState
-      guideText="comments.checkPlayerFao"
       actionType="fao"
       @set-arrow-button="(status, idx) => emit('set-arrow-button', status, idx)"
       @check-invalid-status="(status) => emit('check-invalid-status', status)"
@@ -360,10 +357,9 @@ const checkFao = () => {
   </div>
   <!-- 텐파이 인원 선택창 -->
   <div v-else-if="modalInfo.type==='check_player_tenpai'" class="modal_content" @click.stop>
-    <ModalPlayerCheck
+    <ModalCheckPlayer
       :players
       :scoringState
-      guideText="comments.checkPlayerTenpai"
       actionType="tenpai"
       @set-arrow-button="(status, idx) => emit('set-arrow-button', status, idx)"
       @check-invalid-status="(status) => emit('check-invalid-status', status)"
@@ -371,10 +367,9 @@ const checkFao = () => {
   </div>
   <!-- 촌보 인원 선택창 -->
   <div v-else-if="modalInfo.type==='check_player_cheat'" class="modal_content" @click.stop>
-    <ModalPlayerCheck
+    <ModalCheckPlayer
       :players
       :scoringState
-      guideText="comments.checkPlayerCheat"
       actionType="cheat"
       @set-arrow-button="(status, idx) => emit('set-arrow-button', status, idx)"
       @check-invalid-status="(status) => emit('check-invalid-status', status)"
