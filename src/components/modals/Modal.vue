@@ -2,6 +2,7 @@
 import Graphics from "@/components/Graphics.vue"
 import ModalCheckPlayer from "@/components/modals/scoring/ModalCheckPlayer.vue"
 import ModalScoreSelect from "@/components/modals/scoring/ModalScoreSelect.vue"
+import ModalScoreResult from "@/components/modals/scoring/ModalScoreResult.vue"
 import ModalDice from "@/components/modals/setup/ModalDice.vue"
 import ModalTile from "@/components/modals/setup/ModalTile.vue"
 import type { Player, ScoringState, PanelInfo, Dice, SeatTile, Records, Option, ModalInfo, SyncInfo } from "@/types/types.d"
@@ -57,7 +58,6 @@ const emit = defineEmits<Emits>()
 const arr_wind = ['東', '南', '西', '北']
 const arr_seat = ['option.east', 'option.south', 'option.west', 'option.north',]
 const arr_resultsheet = ['resultSheet.wind', 'resultSheet.name', 'resultSheet.score', 'resultSheet.riichi', 'resultSheet.win', 'resultSheet.lose']
-const class_score_diff = ['down_score_diff', 'right_score_diff', 'up_score_diff', 'left_score_diff']
 const class_name = ['down_name', 'right_name', 'up_name', 'left_name']
 const class_record = ['down_record', 'right_record', 'up_record', 'left_record']
 const class_resultsheet = ['wind', 'name', 'score', 'riichi', 'win', 'lose']
@@ -220,7 +220,7 @@ const getLocaleColor = (x: string) => {
       @check-invalid-status="(status) => emit('check-invalid-status', status)"
     />
   </div>
-  <!-- 판/부 선택창 -->
+  <!-- 부/판 선택창 -->
   <div v-else-if="modalInfo.type==='choose_score'" class="modal_content" @click.stop>
     <ModalScoreSelect
       :players
@@ -287,18 +287,10 @@ const getLocaleColor = (x: string) => {
   </div>
   <!-- 점수 확인창 -->
   <div v-else-if="modalInfo.type==='show_score'" class="modal_content" style="border-radius:50%;" @click.stop>
-    <div class="container_show_score_diff">
-      <div v-for="(_, i) in class_score_diff"
-        :key="i"
-        :class="class_score_diff[i]"
-        :style="getSignColor(players[i].deltaScore, true)"
-      >
-        <span v-show="players[i].deltaScore>0">+</span>{{ players[i].deltaScore }}
-      </div>
-      <div class="ok" @click.stop="emit('save-round')">
-        OK
-      </div>
-    </div>
+    <ModalScoreResult
+      :players
+      @save-round="emit('save-round')"
+    />
   </div>
   <!-- 주사위 굴림창 -->
   <div v-else-if="modalInfo.type==='roll_dice'" class="modal_content" :style="diceModalTransform()" @click.stop>
@@ -589,41 +581,6 @@ const getLocaleColor = (x: string) => {
 .modal_text{
   font-size: 20px;
   margin: 20px;
-}
-
-/* 점수 확인창 */
-.container_show_score_diff{
-  display: grid;
-  grid-template-rows: repeat(3, 100px);
-  grid-template-columns: repeat(3, 100px);
-  grid-template-areas:
-    '. up_score_diff .'
-    'left_score_diff ok right_score_diff'
-    '. down_score_diff .';
-  text-align: center;
-  line-height: 100px;
-  font-size: 30px;
-  place-items: center;
-}
-.down_score_diff{
-  grid-area: down_score_diff;
-  transform: rotate(0deg);
-}
-.right_score_diff{
-  grid-area: right_score_diff;
-  transform: rotate(270deg);
-}
-.up_score_diff{
-  grid-area: up_score_diff;
-  transform: rotate(180deg);
-}
-.left_score_diff{
-  grid-area: left_score_diff;
-  transform: rotate(90deg);
-}
-.ok{
-  grid-area: ok;
-  font-size: 60px;
 }
 
 /* 옵션 선택창 */

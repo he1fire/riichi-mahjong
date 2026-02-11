@@ -27,7 +27,7 @@ const emit = defineEmits<Emits>()
 const fan = ['1', '2', '3', '4', '5', '6+', '8+', '11+', '13+', '1', '2', '3', '4', '5','6']
 const bu = [20, 25, 30, 40, 50, 60, 70, 80, 90, 100, 110]
 
-/**판/부 버튼 색상*/
+/**부/판 버튼 색상*/
 const fanBuButtonStyle = (status: string, idx: number) => {
   if (status==='fan') // 판 체크
     return {color: idx===props.scoringState.inputFan ? 'red' : ''};
@@ -70,7 +70,7 @@ const checkFao = () => {
 </script>
 
 <template>
-<!-- 판/부 선택창 -->
+<!-- 부/판 선택창 -->
 <div v-if="actionType==='fanbu'">
   <div>
     {{ t('comments.chooseScore', {name: players[scoringState.whoWin].name}) }}
@@ -153,7 +153,7 @@ const checkFao = () => {
 </template>
 
 <style scoped>
-/* 판/부 선택창 */
+/* 부/판 선택창 */
 .container_check_fanbu{
   display: grid;
   grid-template-rows: repeat(2, auto);
