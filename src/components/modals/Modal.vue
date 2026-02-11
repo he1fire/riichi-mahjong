@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import Graphics from "@/components/Graphics.vue"
 import ModalCheckPlayer from "@/components/modals/scoring/ModalCheckPlayer.vue"
+import ModalScoreSelect from "@/components/modals/scoring/ModalScoreSelect.vue"
 import ModalDice from "@/components/modals/setup/ModalDice.vue"
 import ModalTile from "@/components/modals/setup/ModalTile.vue"
 import type { Player, ScoringState, PanelInfo, Dice, SeatTile, Records, Option, ModalInfo, SyncInfo } from "@/types/types.d"
@@ -61,7 +62,6 @@ const class_name = ['down_name', 'right_name', 'up_name', 'left_name']
 const class_record = ['down_record', 'right_record', 'up_record', 'left_record']
 const class_resultsheet = ['wind', 'name', 'score', 'riichi', 'win', 'lose']
 const fan = ['1', '2', '3', '4', '5', '6+', '8+', '11+', '13+', '1', '2', '3', '4', '5','6']
-const bu = [20, 25, 30, 40, 50, 60, 70, 80, 90, 100, 110]
 
 import { ref } from 'vue';
 const targetRoomId = ref('');     // 입력창에 적힌 방 ID
@@ -198,11 +198,6 @@ const fanBuButtonStyle = (status: string, idx: number) => {
   }
 }
 
-/**역만인지 확인하고 숨기기*/
-const yakumanVisibility = (idx: number) => {
-  return {display: ((props.scoringState.inputFan<9 && idx===9) || idx===props.scoringState.inputFan) ? '' : 'none'};
-}
-
 /**주사위 모달창 회전*/
 const diceModalTransform = () => {
   return {transform: `translate(-50%, -50%) rotate(${360-props.players.findIndex(player => player.wind==='東')*90}deg)`};
@@ -223,14 +218,6 @@ const getSignColor = (sign: number, x: boolean) => {
 /**언어에 따른 색상*/
 const getLocaleColor = (x: string) => {
   return {color: locale.value===x ? 'red' : ''};
-}
-
-/**책임지불이 켜져있는지 확인*/
-const checkFao = () => {
-  if (props.scoringState.isFao===true) // 책임지불이 있다면 선택창 키기
-    emit('show-modal', 'check_player_fao', props.modalInfo.status);
-  else
-    emit('calculate-win');
 }
 </script>
 
@@ -258,65 +245,15 @@ const checkFao = () => {
   </div>
   <!-- 판/부 선택창 -->
   <div v-else-if="modalInfo.type==='choose_score'" class="modal_content" @click.stop>
-    <div>
-      {{ t('comments.chooseScore', {name: players[scoringState.whoWin].name}) }}
-    </div>
-    <div class="container_check_fanbu">
-      <div class="fan">
-        {{ t('score.fan') }}:
-      </div>
-      <div class="fan_check">
-        <span v-for="(_, i) in fan.slice(0, 9)"
-        :key="i"
-        :style="fanBuButtonStyle('fan', i)"
-        @click.stop="emit('set-fanbu-button', 'fan', i)"
-        >
-          {{ fan[i] }}
-        </span>
-        <br>
-        <span v-show="scoringState.inputFan<9"
-        @click.stop="emit('set-fanbu-button', 'fan', 9)"
-        >
-          {{ t('score.yakuman') }}
-        </span>
-        <span v-show="scoringState.inputFan>=9" v-for="(_, i) in fan.slice(9)"
-        :key="i"
-        :style="[fanBuButtonStyle('fan', i+9), yakumanVisibility(i+9)]"
-        @click.stop="emit('set-fanbu-button', 'fan', i+9)"
-        >
-          {{ t('score.multipleYakuman', {num: fan[i+9]}) }}
-        </span>
-        <span v-show="scoringState.inputFan>=9" style="font-size: 20px;" @click.stop="emit('set-toggle-button', 'isfao')">({{ t('score.fao') }}
-          <span :style="toggleButtonStyle('isfao')">
-            <span v-show="scoringState.isFao===true">O</span>
-            <span v-show="scoringState.isFao===false">X</span>
-          </span>
-        )</span>
-      </div>
-      <div class="bu">
-        {{ t('score.bu') }}:
-      </div>
-      <div class="bu_check">
-        <span v-for="(_, i) in bu.slice(0, 6)"
-          :key="i"
-          :style="fanBuButtonStyle('bu', i)"
-          @click.stop="emit('set-fanbu-button', 'bu', i)"
-        >
-          {{ bu[i] }}
-        </span>
-        <br>
-        <span v-for="(_, i) in bu.slice(6)"
-          :key="i"
-          :style="fanBuButtonStyle('bu', i+6)"
-          @click.stop="emit('set-fanbu-button', 'bu', i+6)"
-        >
-          {{ bu[i+6] }}
-        </span>
-      </div>
-    </div>
-    <div style="font-size: 30px;" @click.stop="checkFao()">
-      OK
-    </div>
+    <ModalScoreSelect
+      :players
+      :scoringState
+      :modalInfo
+      @show-modal="(type, status?) => emit('show-modal', type, status)"
+      @set-toggle-button="(status) => emit('set-toggle-button', status)"
+      @set-fanbu-button="(status, idx) => emit('set-fanbu-button', status, idx)"
+      @calculate-win="emit('calculate-win')"
+    />
   </div>
   <!--책임지불 인원 선택창 -->
   <div v-else-if="modalInfo.type==='check_player_fao'" class="modal_content" @click.stop>
@@ -679,35 +616,6 @@ const checkFao = () => {
 .modal_text{
   font-size: 20px;
   margin: 20px;
-}
-
-/* 부/판 체크창 */
-.container_check_fanbu{
-  display: grid;
-  grid-template-rows: repeat(2, auto);
-  grid-template-columns: 70px auto;
-  grid-template-areas:
-  'fan fan_check'
-  'bu bu_check';
-  text-align: center;
-  font-size: 30px;
-}
-.fan{
-  grid-area: fan;
-}
-.bu{
-  grid-area: bu;
-}
-.fan_check{
-  grid-area: fan_check;
-}
-.bu_check{
-  grid-area: bu_check;
-}
-.fan_check > span,
-.bu_check > span {
-  padding-right: 5px;
-  padding-left: 5px;
 }
 
 /* 책임지불 점수 선택창 */
