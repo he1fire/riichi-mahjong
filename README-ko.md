@@ -164,7 +164,8 @@ src/
         │   └── ModalTile.vue (동남서북 자리 선택 타일)
         │
         ├── scoring/        (게임 중 점수 계산 및 발생 이벤트 관련)
-        │   ├── ModalCheckPlayer.vue (화료/방총/텐파이/촌보 인원 체크)
+        │   ├── ModalChooseDraw.vue (유국 종류 선택)
+        │   ├── ModalCheckPlayer.vue (화료/방총/촌보/책임지불/텐파이 인원 체크)
         │   ├── ModalScoreSelect.vue (판/부수 선택 및 책임지불 점수 설정)
         │   └── ModalScoreResult.vue (점수 변동 수치 확인 - 동그란 창)
         │

@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import Graphics from "@/components/Graphics.vue"
+import ModalChooseDraw from "@/components/modals/scoring/ModalChooseDraw.vue"
 import ModalCheckPlayer from "@/components/modals/scoring/ModalCheckPlayer.vue"
 import ModalScoreSelect from "@/components/modals/scoring/ModalScoreSelect.vue"
 import ModalScoreResult from "@/components/modals/scoring/ModalScoreResult.vue"
@@ -258,12 +259,9 @@ const getLocaleColor = (x: string) => {
   </div>
   <!-- 유국 종류 선택창 -->
   <div v-else-if="modalInfo.type==='choose_draw_kind'" class="modal_content" @click.stop>
-    <div class="modal_choose_draw" @click.stop="emit('show-modal', 'check_player_tenpai')">
-      {{ t('drawKind.normalDraw') }}
-    </div>
-    <div class="modal_choose_draw" @click.stop="emit('show-modal', 'show_score', 'special_draw')">
-      {{ t('drawKind.specialDraw') }}
-    </div>
+    <ModalChooseDraw
+      @show-modal="(type, status?) => emit('show-modal', type, status)"
+    />
   </div>
   <!-- 텐파이 인원 선택창 -->
   <div v-else-if="modalInfo.type==='check_player_tenpai'" class="modal_content" @click.stop>
@@ -569,12 +567,6 @@ const getLocaleColor = (x: string) => {
   height: auto;
   padding: 5px;
   z-index: 10;
-}
-
-/* 유국 선택창 */
-.modal_choose_draw{
-  font-size: 40px;
-  margin: 20px;
 }
 
 /* 메시지 팝업창 */
