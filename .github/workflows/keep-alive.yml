@@ -2,17 +2,22 @@ name: Supabase Keep Alive
 
 on:
   schedule:
-    # 3일마다 한 번씩 실행
+    # 3일마다 정기적으로 실행 (UTC 기준 0시 0분)
     - cron: '0 0 */3 * *'
-  workflow_dispatch: # 직접 실행해볼 수 있는 버튼
+  workflow_dispatch: # 버튼을 눌러 수동으로 즉시 실행 가능
 
 jobs:
   ping:
     runs-on: ubuntu-latest
     steps:
-      - name: Send Activity
+      - name: Send Activity (Insert Data)
         run: |
-          curl -X GET "${{ secrets.VITE_SUPABASE_URL }}/rest/v1/health_check?select=*" \
+          curl -X POST "${{ secrets.VITE_SUPABASE_URL }}/rest/v1/health_check" \
           -H "apikey: ${{ secrets.VITE_SUPABASE_KEY }}" \
           -H "Authorization: Bearer ${{ secrets.VITE_SUPABASE_KEY }}" \
-          -I
+          -H "Content-Type: application/json" \
+          -H "Prefer: return=minimal" \
+          -d '{ "id": '$(date +%s)' }'
+
+      - name: Check Status
+        run: echo "Supabase health check log inserted at $(date)"
