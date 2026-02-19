@@ -2,6 +2,7 @@
 import Graphics from "@/components/Graphics.vue"
 import { ModalChooseDraw, ModalCheckPlayer, ModalScoreSelect, ModalScoreResult } from "@/components/modals/scoring";
 import { ModalDice, ModalTile } from "@/components/modals/setup";
+import { ModalChooseMenu } from "@/components/modals/system";
 import type { Player, ScoringState, PanelInfo, Dice, SeatTile, Records, Option, ModalInfo, SyncInfo } from "@/types/types.d"
 import { computed } from "vue"
 import { useI18n } from "vue-i18n"
@@ -9,7 +10,7 @@ import { Line as LineChart } from "vue-chartjs"
 import { Chart as ChartJS, Title, Tooltip, Legend, LineElement, CategoryScale, LinearScale, PointElement, type ChartOptions } from "chart.js"
 
 /**i18n 속성 가져오기*/
-const { t, locale, messages } = useI18n()
+const { t } = useI18n()
 
 /**차트 컴포넌트 등록*/
 ChartJS.register(Title, Tooltip, Legend, LineElement, CategoryScale, LinearScale, PointElement)
@@ -188,11 +189,6 @@ const getSignColor = (sign: number, x: boolean) => {
   else
     return {color: ''};
 }
-
-/**언어에 따른 색상*/
-const getLocaleColor = (x: string) => {
-  return {color: locale.value===x ? 'red' : ''};
-}
 </script>
 
 <template>
@@ -300,34 +296,12 @@ const getLocaleColor = (x: string) => {
       @set-seat-tile="(idx) => emit('set-seat-tile', idx)"
     />
   </div>
-  <!-- 옵션 종류 선택창 -->
+  <!-- 메뉴 선택창 -->
   <div v-else-if="modalInfo.type==='choose_menu_kind'" class="modal_content" @click.stop>
-    <div class="container_choose_menu">
-      <div @click.stop="emit('show-modal', 'result_sheet')">
-        {{ t('menu.resultSheet') }}
-      </div>
-      <div @click.stop="emit('show-modal', 'show_record')">
-        {{ t('menu.record') }}
-      </div>
-      <div @click.stop="emit('show-modal', 'set_options')">
-        {{ t('menu.option') }}
-      </div>
-      <div @click.stop="emit('show-modal', 'sync')">
-        {{ t('menu.sync') }}
-      </div>
-      <div style="font-size: 20px;">
-        <div style="display: flex; align-items: center;">
-          <img src="/globe.svg" alt="SVG"/>
-          <span v-for="(x, i) in Object.keys(messages)"
-            :key="i"
-            @click.stop="emit('change-locale', x)"
-          >
-            <span v-show="i!==0">/</span><span :style="getLocaleColor(x)">{{ x.toUpperCase() }}</span>
-          </span>
-        </div>
-        <a style="display: flex; align-items: center;" href="https://github.com/he1fire/riichi-mahjong" target="_blank"><img src="/github-logo.svg" alt="SVG"/>Github</a>
-      </div>
-    </div>
+    <ModalChooseMenu
+      @show-modal="(type, status?) => emit('show-modal', type, status)"
+      @change-locale="(language) => emit('change-locale', language)"
+    />
   </div>
   <!-- 게임 결과창(표) -->
   <div v-else-if="modalInfo.type==='result_sheet'" class="modal_content" @click.stop>
@@ -569,17 +543,6 @@ const getLocaleColor = (x: string) => {
 .modal_text{
   font-size: 20px;
   margin: 20px;
-}
-
-/* 옵션 선택창 */
-.container_choose_menu{
-  display: grid;
-  grid-template-rows: repeat(2, 60px);
-  grid-template-columns: repeat(3, 120px);
-  font-size: 30px;
-  gap: 20px;
-  margin: 15px;
-  place-items: center;
 }
 
 /* 점수 기록창 */

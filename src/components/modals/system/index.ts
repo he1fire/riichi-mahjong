@@ -1,0 +1,1 @@
+export { default as ModalChooseMenu } from './ModalChooseMenu.vue';
