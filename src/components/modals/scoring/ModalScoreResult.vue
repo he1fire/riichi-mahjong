@@ -17,15 +17,13 @@ const emit = defineEmits<Emits>()
 const class_score_diff = ['down_score_diff', 'right_score_diff', 'up_score_diff', 'left_score_diff']
 
 /**점수 부호에 따른 색상*/
-const getSignColor = (sign: number, x: boolean) => {
+const getSignColor = (sign: number) => {
   if (sign>0)
     return {color: 'limegreen'};
   else if (sign<0)
     return {color: 'red'};
-  else if (x===true)
-    return {color: 'white'};
   else
-    return {color: ''};
+    return {color: 'white'};
 }
 </script>
 
@@ -35,7 +33,7 @@ const getSignColor = (sign: number, x: boolean) => {
   <div v-for="(_, i) in class_score_diff"
     :key="i"
     :class="class_score_diff[i]"
-    :style="getSignColor(players[i].deltaScore, true)"
+    :style="getSignColor(players[i].deltaScore)"
   >
     <span v-show="players[i].deltaScore>0">+</span>{{ players[i].deltaScore }}
   </div>

@@ -24,15 +24,15 @@ const class_name = ['down_name', 'right_name', 'up_name', 'left_name']
 const class_record = ['down_record', 'right_record', 'up_record', 'left_record']
 
 /**점수 부호에 따른 색상*/
-const getSignColor = (sign: number, x: boolean) => {
+const getSignColor = (sign: number, x: number) => {
   if (sign>0)
     return {color: 'limegreen'};
   else if (sign<0)
     return {color: 'red'};
-  else if (x===true)
-    return {color: 'white'};
+  else if (x%4<2)
+    return {color: 'whitesmoke'};
   else
-    return {color: ''};
+    return {color: 'gainsboro'};
 }
 </script>
 
@@ -52,6 +52,7 @@ const getSignColor = (sign: number, x: boolean) => {
     <div class="when">
       <div v-for="(_, i) in records.time"
         :key="i"
+        :style="{backgroundColor: (i%4<2) ? 'whitesmoke' : 'gainsboro'}"
         @click.stop="i%2===1 ? emit('show-modal', 'rollback_record', String(i)) : {}"
       >
         {{ records.time[i] }}
@@ -63,7 +64,7 @@ const getSignColor = (sign: number, x: boolean) => {
     >
       <div v-for="(_, j) in records.score[i]"
         :key="j"
-        :style="j%2===1 ? getSignColor(records.score[i][j], true) : {}"
+        :style="[j%2===1 ? getSignColor(records.score[i][j], j) : {}, {backgroundColor: (j%4<2) ? 'whitesmoke' : 'gainsboro'}]"
       >
         <span v-show="j%2===1 && records.score[i][j]>0">+</span>{{ records.score[i][j] }}
       </div>
