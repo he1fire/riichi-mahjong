@@ -172,7 +172,8 @@ src/
         ├── stats/          (게임 결과 시각화 및 로그 기록 관련)
         │   ├── ModalResultSheet.vue (게임 종료 후 순위 및 점수 표)
         │   ├── ModalResultChart.vue (점수 변동 그래프 - Chart.js)
-        │   └── ModalRecordList.vue (전체 대국 기록 리스트 및 롤백)
+        │   ├── ModalRecordList.vue (전체 대국 기록)
+        |   └── ModalRollback.vue (해당 기록 시점으로 롤백)
         │
         └── system/         (게임 외적 설정 및 멀티플레이 환경)
             ├── ModalChooseMenu.vue (메인 메뉴: 언어 변경 및 링크)

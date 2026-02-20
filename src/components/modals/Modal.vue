@@ -3,7 +3,7 @@ import Graphics from "@/components/Graphics.vue"
 import { ModalChooseDraw, ModalCheckPlayer, ModalScoreSelect, ModalScoreResult } from "@/components/modals/scoring";
 import { ModalDice, ModalTile } from "@/components/modals/setup";
 import { ModalChooseMenu } from "@/components/modals/system";
-import { ModalRecordList } from "@/components/modals/stats";
+import { ModalRecordList, ModalRollback } from "@/components/modals/stats";
 import type { Player, ScoringState, PanelInfo, Dice, SeatTile, Records, Option, ModalInfo, SyncInfo } from "@/types/types.d"
 import { computed } from "vue"
 import { useI18n } from "vue-i18n"
@@ -351,12 +351,11 @@ const getSignColor = (sign: number, x: boolean) => {
   </div>
   <!-- 점수 롤백창 -->
   <div v-else-if="modalInfo.type==='rollback_record'" class="modal_content" @click.stop>
-    <div class="modal_text">
-      {{ t('comments.rollbackRecord', {time : records.time[Number(modalInfo.status)]}) }}
-    </div>
-    <div class="modal_text" style="font-size: 30px;" @click.stop="emit('rollback-record', Number(modalInfo.status))">
-      OK
-    </div>
+    <ModalRollback
+      :records
+      :modalInfo
+      @rollback-record="(time) => emit('rollback-record', time)"
+    />
   </div>
   <!-- 설정 창 -->
   <div v-else-if="modalInfo.type==='set_options'" class="modal_content" @click.stop>
