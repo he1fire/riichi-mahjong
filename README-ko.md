@@ -175,6 +175,6 @@ src/
         │   └── ModalRecordList.vue (전체 대국 기록 리스트 및 롤백)
         │
         └── system/         (게임 외적 설정 및 멀티플레이 환경)
-            ├── ModalMenu.vue (메인 메뉴: 언어 변경 및 링크)
+            ├── ModalChooseMenu.vue (메인 메뉴: 언어 변경 및 링크)
             ├── ModalOptions.vue (우마, 시작 점수 등 게임 규칙 설정)
             └── ModalSync.vue (방 생성 및 참여, 실시간 동기화 설정)

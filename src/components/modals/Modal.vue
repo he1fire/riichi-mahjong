@@ -3,6 +3,7 @@ import Graphics from "@/components/Graphics.vue"
 import { ModalChooseDraw, ModalCheckPlayer, ModalScoreSelect, ModalScoreResult } from "@/components/modals/scoring";
 import { ModalDice, ModalTile } from "@/components/modals/setup";
 import { ModalChooseMenu } from "@/components/modals/system";
+import { ModalRecordList } from "@/components/modals/stats";
 import type { Player, ScoringState, PanelInfo, Dice, SeatTile, Records, Option, ModalInfo, SyncInfo } from "@/types/types.d"
 import { computed } from "vue"
 import { useI18n } from "vue-i18n"
@@ -56,8 +57,6 @@ const emit = defineEmits<Emits>()
 const arr_wind = ['東', '南', '西', '北']
 const arr_seat = ['option.east', 'option.south', 'option.west', 'option.north',]
 const arr_resultsheet = ['resultSheet.wind', 'resultSheet.name', 'resultSheet.score', 'resultSheet.riichi', 'resultSheet.win', 'resultSheet.lose']
-const class_name = ['down_name', 'right_name', 'up_name', 'left_name']
-const class_record = ['down_record', 'right_record', 'up_record', 'left_record']
 const class_resultsheet = ['wind', 'name', 'score', 'riichi', 'win', 'lose']
 
 import { ref } from 'vue';
@@ -343,38 +342,12 @@ const getSignColor = (sign: number, x: boolean) => {
   </div>
   <!-- 점수 기록창 -->
   <div v-else-if="modalInfo.type==='show_record'" class="modal_content" @click.stop>
-    <div class="container_record">
-      <div class="copy" @click.stop="emit('copy-record')">
-        {{ t('record.copy') }}
-      </div>
-      <div v-for="(_, i) in class_name"
-        :key="i"
-        :class="class_name[i]"
-      >
-        {{ players[i].name }}
-      </div>
-      <div class="container_record_scroll">
-        <div class="when">
-          <div v-for="(_, i) in records.time"
-            :key="i"
-            @click.stop="i%2===1 ? emit('show-modal', 'rollback_record', String(i)) : {}"
-          >
-            {{ records.time[i] }}
-          </div>
-        </div>
-        <div v-for="(_, i) in class_record"
-          :key="i"
-          :class="class_record[i]"
-        >
-          <div v-for="(_, j) in records.score[i]"
-            :key="j"
-            :style="j%2===1 ? getSignColor(records.score[i][j], true) : {}"
-          >
-            <span v-show="j%2===1 && records.score[i][j]>0">+</span>{{ records.score[i][j] }}
-          </div>
-        </div>
-      </div>
-    </div>
+    <ModalRecordList
+      :players
+      :records
+      @show-modal="(type, status?) => emit('show-modal', type, status)"
+      @copy-record="emit('copy-record')"
+    />
   </div>
   <!-- 점수 롤백창 -->
   <div v-else-if="modalInfo.type==='rollback_record'" class="modal_content" @click.stop>
@@ -543,38 +516,6 @@ const getSignColor = (sign: number, x: boolean) => {
 .modal_text{
   font-size: 20px;
   margin: 20px;
-}
-
-/* 점수 기록창 */
-.container_record{
-  display: grid;
-  grid-template-rows: 35px 200px;
-  grid-template-columns: 120px repeat(4, 100px);
-  grid-template-areas: 
-  'copy down_name right_name up_name left_name'
-  'scroll scroll scroll scroll scroll';
-  text-align: center;
-  font-size: 25px;
-  margin: 5px;
-}
-.copy{
-  grid-area: copy;
-  color: red; 
-  font-size: 20px;
-}
-.container_record_scroll{
-  grid-area: scroll;
-  display: grid;
-  grid-template-rows: auto;
-  grid-template-columns: 120px repeat(4, 100px);
-  grid-template-areas: 
-  'when down_record right_record up_record left_record';
-  text-align: center;
-  font-size: 20px;
-  overflow-y: auto;
-}
-.when{
-  grid-area: when;
 }
 
 /* 옵션 선택창 */
