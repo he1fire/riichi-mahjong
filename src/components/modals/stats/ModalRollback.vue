@@ -10,7 +10,7 @@ interface Props {
   records: Records,
   modalInfo: ModalInfo
 }
-const props = defineProps<Props>()
+defineProps<Props>()
 
 /**emits 정의*/
 type Emits = {

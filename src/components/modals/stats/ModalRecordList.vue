@@ -10,7 +10,7 @@ interface Props {
   players: Player[],
   records: Records
 }
-const props = defineProps<Props>()
+defineProps<Props>()
 
 /**emits 정의*/
 type Emits = {
