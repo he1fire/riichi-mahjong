@@ -1,4 +1,4 @@
-name: Supabase Keep Alive
+name: Supabase Keep Alive (Zombi Mode)
 
 on:
   schedule:
@@ -10,14 +10,13 @@ jobs:
   ping:
     runs-on: ubuntu-latest
     steps:
-      - name: Send Activity (Insert Data)
+      - name: Wake up Supabase via RPC
         run: |
-          curl -X POST "${{ secrets.VITE_SUPABASE_URL }}/rest/v1/health_check" \
+          curl -X POST "${{ secrets.VITE_SUPABASE_URL }}/rest/v1/rpc/supabase_zombi_run" \
           -H "apikey: ${{ secrets.VITE_SUPABASE_KEY }}" \
           -H "Authorization: Bearer ${{ secrets.VITE_SUPABASE_KEY }}" \
-          -H "Content-Type: application/json" \
-          -H "Prefer: return=minimal" \
-          -d '{ "id": '$(date +%s)' }'
+          -H "Content-Type: application/json"
 
-      - name: Check Status
-        run: echo "Supabase health check log inserted at $(date)"
+      - name: Verify Activity
+        run: |
+          echo "Supabase RPC 'supabase_zombi_run' executed at $(date)"
