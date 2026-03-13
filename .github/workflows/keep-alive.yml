@@ -1,22 +1,29 @@
-name: Supabase Keep Alive (Zombi Mode)
+name: Supabase Keep Alive (Edge Function & RPC)
 
 on:
   schedule:
-    # 3일마다 정기적으로 실행 (UTC 기준 0시 0분)
-    - cron: '0 0 */3 * *'
-  workflow_dispatch: # 버튼을 눌러 수동으로 즉시 실행 가능
+    # 매일 UTC 00:00 (한국 시간 오전 9:00)에 실행
+    - cron: '0 0 * * *'
+  workflow_dispatch: # GitHub Actions 탭에서 수동으로 즉시 실행 가능
 
 jobs:
-  ping:
+  keep_alive:
     runs-on: ubuntu-latest
     steps:
-      - name: Wake up Supabase via RPC
+      - name: 1. Trigger Supabase Edge Function
+        # 엣지 펑션을 실행하여 Supabase 내부 인프라를 활성화합니다.
         run: |
-          curl -X POST "${{ secrets.VITE_SUPABASE_URL }}/rest/v1/rpc/supabase_zombi_run" \
+          curl -i -X POST "${{ secrets.VITE_SUPABASE_URL }}/functions/v1/keep-alive" \
+          -H "Authorization: Bearer ${{ secrets.VITE_SUPABASE_KEY }}" \
+          -H "Content-Type: application/json"
+
+      - name: 2. Execute Supabase RPC (DB Activity)
+        # DB 내부의 복합 쿼리(삽입+삭제+조회)를 실행하여 DB 엔진을 깨웁니다.
+        run: |
+          curl -i -X POST "${{ secrets.VITE_SUPABASE_URL }}/rest/v1/rpc/supabase_zombi_run" \
           -H "apikey: ${{ secrets.VITE_SUPABASE_KEY }}" \
           -H "Authorization: Bearer ${{ secrets.VITE_SUPABASE_KEY }}" \
           -H "Content-Type: application/json"
 
-      - name: Verify Activity
-        run: |
-          echo "Supabase RPC 'supabase_zombi_run' executed at $(date)"
+      - name: 3. Check Status
+        run: echo "Supabase health check completed at $(date)"
