@@ -1,14 +1,9 @@
 <script setup lang="ts">
-import Graphics from "@/components/Graphics.vue"
 import { ModalChooseDraw, ModalCheckPlayer, ModalScoreSelect, ModalScoreResult } from "@/components/modals/scoring";
 import { ModalDice, ModalTile } from "@/components/modals/setup";
-import { ModalChooseMenu, ModalOptions } from "@/components/modals/system";
+import { ModalChooseMenu, ModalOptions, ModalSync } from "@/components/modals/system";
 import { ModalRecordList, ModalRollback, ModalResultSheet, ModalResultChart } from "@/components/modals/stats";
 import type { Player, ScoringState, PanelInfo, Dice, SeatTile, Records, Option, ModalInfo, SyncInfo } from "@/types/types.d"
-import { useI18n } from "vue-i18n"
-
-/**i18n 속성 가져오기*/
-const { t } = useI18n()
 
 /**props 정의*/
 interface Props {
@@ -44,25 +39,6 @@ type Emits = {
   (e: 'copy-room-id'): void,
 }
 const emit = defineEmits<Emits>()
-
-import { ref } from 'vue';
-const targetRoomId = ref('');     // 입력창에 적힌 방 ID
-
-/**토글 버튼 색상*/
-const toggleButtonStyle = (status: string) => {
-  if (status==='isfao') // 점수창 책임지불 OX
-    return {color: props.scoringState.isFao===true ? 'mediumblue' : 'red'};
-  else if (status==='roundmangan') // 유국만관 옵션
-    return {color: props.option.roundMangan===true ? 'mediumblue' : 'red'};
-  else if (status==='tobi') // 토비 옵션
-    return {color: props.option.tobi===true ? 'mediumblue' : 'red'};
-  else if (status==='cheatscore') // 촌보점수 옵션
-    return {color: props.option.cheatScore===true ? 'mediumblue' : 'red'};
-  else if (status==='endriichi') // 공탁처리 옵션
-    return {color: props.option.riichiPayout===true ? 'mediumblue' : 'red'};
-  else if (status==='isonline') // 싱크 온/오프라인
-    return {color: props.syncInfo.isConnected===true ? 'limegreen' : 'gray'};
-}
 
 /**주사위 모달창 회전*/
 const diceModalTransform = () => {
@@ -228,46 +204,11 @@ const diceModalTransform = () => {
   </div>
   <!-- 동기화 창 -->
   <div v-else-if="modalInfo.type==='sync'" class="modal_content" @click.stop>
-    <div v-if="!syncInfo.isConnected" class="container_sync">
-      <div class="on_off" :style="toggleButtonStyle('isonline')">
-        <Graphics kind="dot" :status="syncInfo.isConnected"/>
-        {{ t('sync.offline') }}
-      </div>
-      <div style="grid-area: room_id;">
-        <input
-          type="text"
-          v-model="targetRoomId"
-          :placeholder="t('sync.roomCode')"
-          name="roomCode"
-        />
-      </div>
-      <div class="sync_button">
-        <div v-if="!targetRoomId">
-          <div @click.stop="emit('init-multiplayer')">
-            {{ t('sync.create') }}
-          </div>
-        </div>
-        <div v-else>
-          <div @click.stop="emit('init-multiplayer', targetRoomId)">
-            {{ t('sync.join') }}
-          </div>
-        </div>
-      </div>
-    </div>
-    <div v-else class="container_sync">
-      <div class="on_off" :style="toggleButtonStyle('isonline')">
-        <graphics kind="dot" :status="syncInfo.isConnected"/>
-        {{ t('sync.online') }}
-      </div>
-      <div style="grid-area: room_id;">
-        {{ t('sync.roomCode') }}: {{ syncInfo.roomId }}
-      </div>
-      <div class="sync_button">
-        <div @click.stop="emit('copy-room-id')">
-          {{ t('sync.copy') }}
-        </div>
-      </div>
-    </div>
+    <ModalSync
+      :syncInfo
+      @init-multiplayer="(id?) => emit('init-multiplayer', id)"
+      @copy-room-id="emit('copy-room-id')"
+    />
   </div>
   <!-- 메시지 팝업창 -->
   <div v-else class="modal_content" @click.stop>
@@ -306,34 +247,5 @@ const diceModalTransform = () => {
 .modal_text{
   font-size: 20px;
   margin: 20px;
-}
-
-/* 점수 연동창 */
-.container_sync{
-  display: grid;
-  grid-template-rows: 50px 75px;
-  grid-template-columns: 170px 180px;
-  grid-template-areas:
-    'on_off sync_button'
-    'room_id room_id';
-  text-align: center;
-  font-size: 30px;
-  margin: 10px;
-  place-items: center;
-}
-.on_off{
-  grid-area: on_off;
-  font-size: 25px;
-}
-.sync_button{
-  grid-area: sync_button;
-  color: red;
-}
-.container_sync input{
-  font-size: 30px;
-  width: 300px;
-}
-.container_sync input::placeholder {
-  font-size: 25px;
 }
 </style>
