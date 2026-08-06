@@ -2,7 +2,7 @@
 import Graphics from "@/components/Graphics.vue"
 import { ModalChooseDraw, ModalCheckPlayer, ModalScoreSelect, ModalScoreResult } from "@/components/modals/scoring";
 import { ModalDice, ModalTile } from "@/components/modals/setup";
-import { ModalChooseMenu } from "@/components/modals/system";
+import { ModalChooseMenu, ModalOptions } from "@/components/modals/system";
 import { ModalRecordList, ModalRollback, ModalResultSheet, ModalResultChart } from "@/components/modals/stats";
 import type { Player, ScoringState, PanelInfo, Dice, SeatTile, Records, Option, ModalInfo, SyncInfo } from "@/types/types.d"
 import { useI18n } from "vue-i18n"
@@ -44,10 +44,6 @@ type Emits = {
   (e: 'copy-room-id'): void,
 }
 const emit = defineEmits<Emits>()
-
-/**data 정의*/
-const arr_wind = ['東', '南', '西', '北']
-const arr_seat = ['option.east', 'option.south', 'option.west', 'option.north',]
 
 import { ref } from 'vue';
 const targetRoomId = ref('');     // 입력창에 적힌 방 ID
@@ -223,81 +219,12 @@ const diceModalTransform = () => {
   </div>
   <!-- 설정 창 -->
   <div v-else-if="modalInfo.type==='set_options'" class="modal_content" @click.stop>
-    <div class="container_option">
-      <div
-        v-for="(_, i) in arr_seat"
-        :key="i"
-        :style="`grid-area: input_name${i};`"
-      >
-        {{ arr_wind[i] }}({{ t(arr_seat[i]) }})<br>
-        <input
-          type="text"
-          maxlength="4"
-          v-model="players[i].name"
-          :placeholder="t('option.name', {idx:i+1})"
-          :name="`name${i+1}`"
-        >
-      </div>
-      <div style="grid-area: option0;">
-        {{ t('option.startingScore') }}<br>
-        <input 
-          type="number"
-          v-model="option.startingScore"
-          :placeholder="String(25000)"
-          :name="'startingScore'"
-        >
-      </div>
-      <div style="grid-area: option1;">
-        {{ t('option.returnScore') }}<br>
-        <input 
-          type="number"
-          v-model="option.returnScore"
-          :placeholder="String(30000)"
-          :name="'returnScore'"
-        >
-      </div>
-      <div style="grid-area: option2;" @click.stop="emit('set-toggle-button', 'roundmangan')">
-        {{ t('option.roundMangan') }}<br>
-        <span :style="toggleButtonStyle('roundmangan')">
-          <span v-show="option.roundMangan===true">O</span>
-          <span v-show="option.roundMangan===false">X</span>
-        </span>
-      </div>
-      <div style="grid-area: option3;" @click.stop="emit('set-toggle-button', 'tobi')">
-        {{ t('option.tobi') }}<br>
-        <span :style="toggleButtonStyle('tobi')">
-          <span v-show="option.tobi===true">O</span>
-          <span v-show="option.tobi===false">X</span>
-        </span>
-      </div>
-      <div style="grid-area: option4;">
-        {{ t('option.rankUma') }} (1-2-3-4)<br>
-        <input
-          v-for="(_, i) in option.rankUma"
-          :key="i"
-          style="width: 51px;"
-          type="number"
-          v-model="option.rankUma[i]"
-          :placeholder="t('option.rank', {idx:i+1})"
-          :name="`uma${i+1}`"
-          :style="{ marginRight: i===option.rankUma.length-1 ? '0px' : '10px' }"
-        >
-      </div>  
-      <div style="grid-area: option5;" @click.stop="emit('set-toggle-button', 'cheatscore')">
-        {{ t('option.cheatScore') }}<br>
-        <span :style="toggleButtonStyle('cheatscore')">
-          <span v-show="option.cheatScore===true">{{ t('option.mangan') }}</span>
-          <span v-show="option.cheatScore===false">3000 All</span>
-        </span>
-      </div>
-      <div style="grid-area: option6;" @click.stop="emit('set-toggle-button', 'endriichi')">
-        {{ t('option.riichiPayout') }}<br>
-        <span :style="toggleButtonStyle('endriichi')">
-          <span v-show="option.riichiPayout===true">{{ t('option.firstPlace') }}</span>
-          <span v-show="option.riichiPayout===false">X</span>
-        </span>
-      </div>
-    </div>
+    <ModalOptions
+      :players
+      :option
+      @show-modal="(type, status?) => emit('show-modal', type, status)"
+      @set-toggle-button="(status) => emit('set-toggle-button', status)"
+    />
   </div>
   <!-- 동기화 창 -->
   <div v-else-if="modalInfo.type==='sync'" class="modal_content" @click.stop>
@@ -379,21 +306,6 @@ const diceModalTransform = () => {
 .modal_text{
   font-size: 20px;
   margin: 20px;
-}
-
-/* 옵션 선택창 */
-.container_option{
-  display: grid;
-  grid-template-rows: repeat(3, 60px);
-  grid-template-columns: repeat(4, 120px);
-  grid-template-areas:
-  'input_name0 input_name1 input_name2 input_name3'
-  'option0 option1 option2 option3'
-  'option4 option4 option5 option6';
-  text-align: center;
-  font-size: 20px;
-  gap: 10px;
-  margin: 5px;
 }
 
 /* 점수 연동창 */
