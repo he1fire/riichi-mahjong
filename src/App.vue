@@ -372,7 +372,7 @@ const setToggleButton = (status: string) => {
     option.tobi=!option.tobi;
   else if (status==='cheatscore') // 촌보점수 토글
     option.cheatScore=!option.cheatScore;
-  else if (status==='endriichi') // 공탁처리 토글
+  else if (status==='riichipayout') // 공탁처리 토글
     option.riichiPayout=!option.riichiPayout;
 }
 

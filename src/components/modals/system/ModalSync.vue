@@ -29,7 +29,7 @@ const toggleButtonStyle = () => {
 </script>
 
 <template>
-<!-- 동기화 창 -->
+<!-- 점수 동기화창 -->
 <div v-if="!syncInfo.isConnected" class="container_sync">
   <div class="on_off" :style="toggleButtonStyle()">
     <Graphics kind="dot" :status="syncInfo.isConnected"/>
@@ -73,7 +73,7 @@ const toggleButtonStyle = () => {
 </template>
 
 <style scoped>
-/* 점수 연동창 */
+/* 점수 동기화창 */
 .container_sync{
   display: grid;
   grid-template-rows: 50px 75px;

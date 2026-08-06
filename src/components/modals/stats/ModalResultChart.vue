@@ -81,14 +81,14 @@ const scoreChartInfo = computed(() => {
 </script>
 
 <template>
-<!-- 게임 결과창(차트) -->
+<!-- 게임 결과창 (차트) -->
 <div class="container_resultchart" @click.stop="emit('show-modal', 'result_sheet')">
   <LineChart :data="scoreChartInfo.data" :options="scoreChartInfo.options"/>
 </div>
 </template>
 
 <style scoped>
-/* 게임 결과창(차트)*/
+/* 게임 결과창 (차트) */
 .container_resultchart{
   width: 490px;
   height: 240px;

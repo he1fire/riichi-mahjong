@@ -31,13 +31,13 @@ const toggleButtonStyle = (status: string) => {
     return {color: props.option.tobi===true ? 'mediumblue' : 'red'};
   else if (status==='cheatscore') // 촌보점수 옵션
     return {color: props.option.cheatScore===true ? 'mediumblue' : 'red'};
-  else if (status==='endriichi') // 공탁처리 옵션
+  else if (status==='riichipayout') // 공탁처리 옵션
     return {color: props.option.riichiPayout===true ? 'mediumblue' : 'red'};
 }
 </script>
 
 <template>
-<!-- 설정 창 -->
+<!-- 옵션 설정창 -->
 <div class="container_option">
   <div
     v-for="(_, i) in arr_seat"
@@ -105,9 +105,9 @@ const toggleButtonStyle = (status: string) => {
       <span v-show="option.cheatScore===false">3000 All</span>
     </span>
   </div>
-  <div style="grid-area: option6;" @click.stop="emit('set-toggle-button', 'endriichi')">
+  <div style="grid-area: option6;" @click.stop="emit('set-toggle-button', 'riichipayout')">
     {{ t('option.riichiPayout') }}<br>
-    <span :style="toggleButtonStyle('endriichi')">
+    <span :style="toggleButtonStyle('riichipayout')">
       <span v-show="option.riichiPayout===true">{{ t('option.firstPlace') }}</span>
       <span v-show="option.riichiPayout===false">X</span>
     </span>
@@ -116,7 +116,7 @@ const toggleButtonStyle = (status: string) => {
 </template>
 
 <style scoped>
-/* 옵션 선택창 */
+/* 옵션 설정정창 */
 .container_option{
   display: grid;
   grid-template-rows: repeat(3, 60px);

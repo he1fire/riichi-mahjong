@@ -75,7 +75,7 @@ const getSignColor = (sign: number) => {
 </script>
 
 <template>
-<!-- 게임 결과창(표) -->
+<!-- 게임 결과창 (표) -->
 <div class="container_resultsheet" @click.stop="emit('show-modal', 'result_chart')">
   <div v-for="(_, i) in class_resultsheet" 
     :key="i"
@@ -108,7 +108,7 @@ const getSignColor = (sign: number) => {
 </template>
 
 <style scoped>
-/* 게임 결과창(표)*/
+/* 게임 결과창 (표) */
 .container_resultsheet{
   display: grid;
   grid-template-rows: repeat(2, auto);
