@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { ModalChooseDraw, ModalCheckPlayer, ModalScoreSelect, ModalScoreResult } from "@/components/modals/scoring";
 import { ModalDice, ModalTile } from "@/components/modals/setup";
-import { ModalChooseMenu, ModalOptions, ModalSync } from "@/components/modals/system";
+import { ModalChooseMenu, ModalOptions, ModalSync, ModalMessage } from "@/components/modals/system";
 import { ModalRecordList, ModalRollback, ModalResultSheet, ModalResultChart } from "@/components/modals/stats";
 import type { Player, ScoringState, PanelInfo, Dice, SeatTile, Records, Option, ModalInfo, SyncInfo } from "@/types/types.d"
 
@@ -212,7 +212,9 @@ const diceModalTransform = () => {
   </div>
   <!-- 메시지 팝업창 -->
   <div v-else class="modal_content" @click.stop>
-    <div class="modal_text">{{ modalInfo.type }}</div>
+    <ModalMessage
+      :message="modalInfo.type"
+    />
   </div>
 </div>
 </template>
@@ -241,11 +243,5 @@ const diceModalTransform = () => {
   height: auto;
   padding: 5px;
   z-index: 10;
-}
-
-/* 메시지 팝업창 */
-.modal_text{
-  font-size: 20px;
-  margin: 20px;
 }
 </style>
