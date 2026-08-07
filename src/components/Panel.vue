@@ -14,7 +14,7 @@ defineProps<Props>()
 
 /**emits 정의*/
 type Emits = {
-  (e: 'show-modal', modal: string): void,
+  (e: 'show-modal', type: string, status?: string): void,
   (e: 'roll-dice'): void
 }
 const emit = defineEmits<Emits>()

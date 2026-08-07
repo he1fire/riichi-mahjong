@@ -1,9 +1,7 @@
 <script setup lang="ts">
-import { ModalChooseDraw, ModalCheckPlayer, ModalScoreSelect, ModalScoreResult } from "@/components/modals/scoring";
-import { ModalDice, ModalTile } from "@/components/modals/setup";
-import { ModalChooseMenu, ModalOptions, ModalSync, ModalMessage } from "@/components/modals/system";
-import { ModalRecordList, ModalRollback, ModalResultSheet, ModalResultChart } from "@/components/modals/stats";
+import { type ModalConfig, modalConfigMap } from "@/components/modals/modalConfig.ts"
 import type { Player, ScoringState, PanelInfo, Dice, SeatTile, Records, Option, ModalInfo, SyncInfo } from "@/types/types.d"
+import { computed } from 'vue'
 
 /**props 정의*/
 interface Props {
@@ -39,181 +37,58 @@ type Emits = {
   (e: 'copy-room-id'): void,
 }
 const emit = defineEmits<Emits>()
+/**
+ * 현재 modalInfo.type에 맞는 모달 설정을 반환합니다.
+ * 등록되지 않은 type인 경우 기본값으로 ModalMessage를 렌더링합니다.
+ */
+const currentModalConfig = computed<ModalConfig>(() => {
+  return modalConfigMap[props.modalInfo.type] || modalConfigMap['message'];
+});
 
-/**주사위 모달창 회전*/
-const diceModalTransform = () => {
-  return {transform: `translate(-50%, -50%) rotate(${360-props.players.findIndex(player => player.wind==='東')*90}deg)`};
-}
+/**모달 스타일 동적 계산*/
+const modalContentStyle = computed(() => {
+  if (props.modalInfo.type==='roll_dice') {
+    return {transform: `translate(-50%, -50%) rotate(${360-props.players.findIndex(player => player.wind==='東')*90}deg)`};
+  }
+  if (props.modalInfo.type==='show_score') {
+    return { borderRadius: '50%' };
+  }
+  return {};
+});
 </script>
 
 <template>
 <div class="modal" @click="emit('hide-modal')">
-  <!-- 화료 인원 선택창 -->
-  <div v-if="modalInfo.type==='check_player_win'" class="modal_content" @click.stop>
-    <ModalCheckPlayer
-      :players
-      :scoringState
-      actionType="win"
-      @set-arrow-button="(status, idx) => emit('set-arrow-button', status, idx)"
-      @check-invalid-status="(status) => emit('check-invalid-status', status)"
-    />
-  </div>
-  <!--방총 인원 선택창 -->
-  <div v-else-if="modalInfo.type==='check_player_lose'" class="modal_content" @click.stop>
-    <ModalCheckPlayer
-      :players
-      :scoringState
-      actionType="lose"
-      @set-arrow-button="(status, idx) => emit('set-arrow-button', status, idx)"
-      @check-invalid-status="(status) => emit('check-invalid-status', status)"
-    />
-  </div>
-  <!-- 부/판 선택창 -->
-  <div v-else-if="modalInfo.type==='choose_score'" class="modal_content" @click.stop>
-    <ModalScoreSelect
-      :players
-      :scoringState
-      :modalInfo
-      actionType="fanbu"
-      @show-modal="(type, status?) => emit('show-modal', type, status)"
-      @set-toggle-button="(status) => emit('set-toggle-button', status)"
-      @set-fanbu-button="(status, idx) => emit('set-fanbu-button', status, idx)"
-      @calculate-win="emit('calculate-win')"
-    />
-  </div>
-  <!--책임지불 인원 선택창 -->
-  <div v-else-if="modalInfo.type==='check_player_fao'" class="modal_content" @click.stop>
-    <ModalCheckPlayer
-      :players
-      :scoringState
-      actionType="fao"
-      @set-arrow-button="(status, idx) => emit('set-arrow-button', status, idx)"
-      @check-invalid-status="(status) => emit('check-invalid-status', status)"
-    />
-  </div>
-  <!-- 책임지불 점수 선택창 -->
-  <div v-else-if="modalInfo.type==='choose_score_fao'" class="modal_content" @click.stop>
-    <ModalScoreSelect
-      :players
-      :scoringState
-      :modalInfo
-      actionType="fao"
-      @show-modal="(type, status?) => emit('show-modal', type, status)"
-      @set-toggle-button="(status) => emit('set-toggle-button', status)"
-      @set-fanbu-button="(status, idx) => emit('set-fanbu-button', status, idx)"
-      @calculate-win="emit('calculate-win')"
-    />
-  </div>
-  <!-- 유국 종류 선택창 -->
-  <div v-else-if="modalInfo.type==='choose_draw_kind'" class="modal_content" @click.stop>
-    <ModalChooseDraw
-      @show-modal="(type, status?) => emit('show-modal', type, status)"
-    />
-  </div>
-  <!-- 텐파이 인원 선택창 -->
-  <div v-else-if="modalInfo.type==='check_player_tenpai'" class="modal_content" @click.stop>
-    <ModalCheckPlayer
-      :players
-      :scoringState
-      actionType="tenpai"
-      @set-arrow-button="(status, idx) => emit('set-arrow-button', status, idx)"
-      @check-invalid-status="(status) => emit('check-invalid-status', status)"
-    />
-  </div>
-  <!-- 촌보 인원 선택창 -->
-  <div v-else-if="modalInfo.type==='check_player_cheat'" class="modal_content" @click.stop>
-    <ModalCheckPlayer
-      :players
-      :scoringState
-      actionType="cheat"
-      @set-arrow-button="(status, idx) => emit('set-arrow-button', status, idx)"
-      @check-invalid-status="(status) => emit('check-invalid-status', status)"
-    />
-  </div>
-  <!-- 점수 확인창 -->
-  <div v-else-if="modalInfo.type==='show_score'" class="modal_content" style="border-radius:50%;" @click.stop>
-    <ModalScoreResult
-      :players
-      @save-round="emit('save-round')"
-    />
-  </div>
-  <!-- 주사위 굴림창 -->
-  <div v-else-if="modalInfo.type==='roll_dice'" class="modal_content" :style="diceModalTransform()" @click.stop>
-    <ModalDice
-      :dice
-      @roll-dice="emit('roll-dice')"
-    />
-  </div>
-  <!-- 동남서북 선택창 -->
-  <div v-else-if="modalInfo.type==='choose_seat'" class="modal_content" @click.stop>
-    <ModalTile
-      :seatTile
-      @set-seat-tile="(idx) => emit('set-seat-tile', idx)"
-    />
-  </div>
-  <!-- 메뉴 선택창 -->
-  <div v-else-if="modalInfo.type==='choose_menu_kind'" class="modal_content" @click.stop>
-    <ModalChooseMenu
-      @show-modal="(type, status?) => emit('show-modal', type, status)"
-      @change-locale="(language) => emit('change-locale', language)"
-    />
-  </div>
-  <!-- 게임 결과창(표) -->
-  <div v-else-if="modalInfo.type==='result_sheet'" class="modal_content" @click.stop>
-    <ModalResultSheet
-      :players
-      :panelInfo
-      :records
-      :option
-      @show-modal="(type, status?) => emit('show-modal', type, status)"
-    />
-  </div>
-  <!-- 게임 결과창(차트) -->
-  <div v-else-if="modalInfo.type==='result_chart'" class="modal_content" @click.stop>
-    <ModalResultChart
-      :players
-      :records
-      @show-modal="(type, status?) => emit('show-modal', type, status)"
-    />
-  </div>
-  <!-- 점수 기록창 -->
-  <div v-else-if="modalInfo.type==='show_record'" class="modal_content" @click.stop>
-    <ModalRecordList
-      :players
-      :records
-      @show-modal="(type, status?) => emit('show-modal', type, status)"
-      @copy-record="emit('copy-record')"
-    />
-  </div>
-  <!-- 점수 롤백창 -->
-  <div v-else-if="modalInfo.type==='rollback_record'" class="modal_content" @click.stop>
-    <ModalRollback
-      :records
-      :modalInfo
-      @rollback-record="(time) => emit('rollback-record', time)"
-    />
-  </div>
-  <!-- 설정 창 -->
-  <div v-else-if="modalInfo.type==='set_options'" class="modal_content" @click.stop>
-    <ModalOptions
-      :players
-      :option
-      @show-modal="(type, status?) => emit('show-modal', type, status)"
-      @set-toggle-button="(status) => emit('set-toggle-button', status)"
-    />
-  </div>
-  <!-- 동기화 창 -->
-  <div v-else-if="modalInfo.type==='sync'" class="modal_content" @click.stop>
-    <ModalSync
-      :syncInfo
-      @init-multiplayer="(id?) => emit('init-multiplayer', id)"
-      @copy-room-id="emit('copy-room-id')"
-    />
-  </div>
-  <!-- 메시지 팝업창 -->
-  <div v-else class="modal_content" @click.stop>
-    <ModalMessage
+  <div class="modal_content" :style="modalContentStyle" @click.stop>
+    <component
+      :is="currentModalConfig.Modal"
+      :players="players"
+      :scoringState="scoringState"
+      :panelInfo="panelInfo"
+      :dice="dice"
+      :seatTile="seatTile"
+      :records="records"
+      :option="option"
+      :modalInfo="modalInfo"
+      :syncInfo="syncInfo"
       :message="modalInfo.type"
+      v-bind="currentModalConfig.props"
+      @show-modal="(type: string, status?: string) => emit('show-modal', type, status)"
+      @hide-modal="emit('hide-modal')"
+      @set-arrow-button="(status: string, idx: number) => emit('set-arrow-button', status, idx)"
+      @set-toggle-button="(status: string) => emit('set-toggle-button', status)"
+      @set-fanbu-button="(status: string, idx: number) => emit('set-fanbu-button', status, idx)"
+      @set-seat-tile="(idx: number) => emit('set-seat-tile', idx)"
+      @check-invalid-status="(status: string) => emit('check-invalid-status', status)"
+      @calculate-win="emit('calculate-win')"
+      @calculate-draw="emit('calculate-draw')"
+      @save-round="emit('save-round')"
+      @roll-dice="emit('roll-dice')"
+      @copy-record="emit('copy-record')"
+      @rollback-record="(time: number) => emit('rollback-record', time)"
+      @change-locale="(language: string) => emit('change-locale', language)"
+      @init-multiplayer="(id?: string) => emit('init-multiplayer', id)"
+      @copy-room-id="emit('copy-room-id')"
     />
   </div>
 </div>
